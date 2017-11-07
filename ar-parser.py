@@ -87,8 +87,8 @@ class ActionType:
 
 class Spell:
 
-    def __init__(self):
-        pass
+    def __init__(self, name):
+        self.name = name
 
 class Condition:
     
@@ -100,7 +100,10 @@ class Condition:
     
     def cooldown(self):
         pass
-        
+
+
+class ConditionTree:
+    pass
     
 class Cooldown:
     
@@ -108,7 +111,7 @@ class Cooldown:
         self.condition = condition
     
     def ready(self):
-        self.object = Spell()
+        self.object = Spell(self.condition.condition_list()[1])
         self.method = Method('IsReady')
 
 class Method:
