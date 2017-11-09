@@ -216,7 +216,7 @@ class Talent(LuaExpression):
 
     def enabled(self):
         # talent.spell.enabled
-        self.method = Method('IsLearned')
+        self.method = Method('IsAvailable')
         self.args = []
 
 
