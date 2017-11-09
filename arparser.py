@@ -40,6 +40,35 @@ SPELL_REPLACEMENTS = {
 SPELL = 'spell'
 BUFF = 'buff'
 
+UNARY_OPERATORS = {
+    # TODO the - unary case
+    '!': 'not',
+    'abs': 'math.abs',
+    'floor': 'math.floor',
+    'ceil': 'math.ceil',
+}
+
+BINARY_OPERATORS = {
+    '&': 'and',
+    '|': 'or',
+    '+': '+',
+    '-': '-',
+    '*': '*',
+    '%': '/',
+    '=': '==',
+    '!=': '~=',
+    '<': '<',
+    '<=': '<=',
+    '>': '>',
+    '<=': '<=',
+    # TODO Handle the in/not_in cases
+}
+
+COMPARISON_OPERATORS = ['!=', '<=', '>=', '=', '<', '>']
+ADDITION_OPERATORS = ['+', '-']
+MULTIPLIACTION_OPERATORS = ['*', '%']
+FUNCTION_OPERATORS = ['abs', 'floor', 'ceil']
+
 
 class Player:
 
@@ -93,8 +122,8 @@ class Action:
     def execution(self):
         return Execution(self)
 
-    def condition_tree(self):
-        return ConditionTree(self)
+    def condition_expression(self):
+        return ConditionExpression(self)
 
     def type_(self):
         if self.execution().string() in ITEM_ACTIONS:
@@ -140,13 +169,16 @@ class Spell:
 
 class Condition:
 
-    def __init__(self, condition_tree, simc):
-        self.condition_tree = condition_tree
-        self.action = condition_tree.action
+    def __init__(self, condition_expression, simc):
+        self.condition_expression = condition_expression
+        self.action = condition_expression.action
         self.simc = simc
 
     def expression(self):
-        return getattr(self, self.condition_list()[0])()
+        try:
+            return getattr(self, self.condition_list()[0])()
+        except:
+            return Literal(self.simc)
 
     def condition_list(self):
         return self.simc.split('.')
@@ -174,11 +206,184 @@ class Condition:
         return Rune(self)
 
 
-class ConditionTree:
+class BinaryOperator:
 
-    def __init__(self, action, simc):
+    def __init__(self, symbol):
+        self.symbol = symbol
+
+    def parse_lua(self):
+        return BINARY_OPERATORS[self.symbol]
+
+
+class UnaryOperator:
+
+    def __init__(self, symbol):
+        self.symbol = symbol
+
+    def parse_lua(self):
+        return UNARY_OPERATORS[self.symbol]
+
+
+class ConditionExpression:
+
+    def __init__(self, action, simc, exps=None):
+        expressions = exps.copy() if exps is not None else []
         self.action = action
-        self.simc = simc
+        self.parse_parentheses(simc, expressions)
+
+    def parse_parentheses(self, simc, expressions=[]):
+        """
+        Replaces first-level parentheses by {} and saves the content of
+        parentheses in a list of strings.
+        """
+        n_parentheses = 0
+        parsed_simc = ''
+        for i, c in enumerate(simc):
+            if c == '(':
+                n_parentheses += 1
+                # save index to extract substring for expressions
+                if n_parentheses == 1:
+                    start_index = i
+            elif c == ')':
+                n_parentheses -= 1
+                if n_parentheses == 0:
+                    end_index = i
+                    expressions.append(simc[start_index + 1:end_index])
+                    parsed_simc += '{}'
+                if n_parentheses < 0:
+                    raise ValueError('Invalid condition expression')
+            elif n_parentheses == 0:
+                # Only write in parsed_simc of not in a sub-expression
+                parsed_simc += c
+        self.simc = parsed_simc
+        self.expressions = expressions
+
+    def grow_binary_tree(self, symbol):
+        symbol_index = self.simc.find(symbol)
+        left_simc = self.simc[:symbol_index]
+        right_simc = self.simc[symbol_index + 1:]
+        n_expressions_before = left_simc.count('{}')
+        left_exps = self.expressions[:n_expressions_before]
+        right_exps = self.expressions[n_expressions_before:]
+        return ConditionBinaryNode(
+            self,
+            BinaryOperator(symbol),
+            ConditionExpression(self.action, left_simc, left_exps),
+            ConditionExpression(self.action, right_simc, right_exps))
+
+    def grow_unary_tree(self, symbol):
+        try:
+            assert self.simc.find(symbol) == 0
+        except AssertionError:
+            raise ValueError((f'Invalid expression, unary operator should be '
+                              f'at the beginning: {self.simc}'))
+        exp = self.simc[len(symbol):]
+        return ConditionUnaryNode(
+            self,
+            UnaryOperator(symbol),
+            ConditionExpression(self.action, exp, self.expressions))
+
+    def extract_first_operator(self, symbols):
+        valid_symbols = [symbol for symbol in symbols if symbol in self.simc]
+        symbols_indexes = [self.simc.find(symbol) for symbol in valid_symbols]
+        first_symbol_index = symbols_indexes.index(min(symbols_indexes))
+        return valid_symbols[first_symbol_index]
+
+    def has_symbol_in(self, symbols):
+        return any(symbol in self.simc for symbol in symbols)
+
+    def grow(self):
+        """
+        Use simc precedence: https://github.com/simulationcraft/simc/wiki/ActionLists#complete-list-of-operators
+        """
+        if '|' in self.simc:
+            return self.grow_binary_tree('|')
+        if '&' in self.simc:
+            return self.grow_binary_tree('&')
+        if self.has_symbol_in(COMPARISON_OPERATORS):
+            symbol = self.extract_first_operator(COMPARISON_OPERATORS)
+            return self.grow_binary_tree(symbol)
+        if self.has_symbol_in(ADDITION_OPERATORS):
+            symbol = self.extract_first_operator(ADDITION_OPERATORS)
+            return self.grow_binary_tree(symbol)
+        if self.has_symbol_in(MULTIPLIACTION_OPERATORS):
+            symbol = self.extract_first_operator(MULTIPLIACTION_OPERATORS)
+            return self.grow_binary_tree(symbol)
+        if '!' in self.simc:
+            return self.grow_unary_tree('!')
+        if self.has_symbol_in(FUNCTION_OPERATORS):
+            symbol = self.extract_first_operator(FUNCTION_OPERATORS)
+            return self.grow_unary_tree(symbol)
+        if self.simc == '{}':
+            try:
+                assert len(self.expressions) == 1
+            except AssertionError:
+                raise ValueError((f'Invalid expressions stack: '
+                                  f'{str(self.expressions)}'))
+            return ConditionParenthesesNode(
+                self,
+                ConditionExpression(
+                    self.action, self.expressions[0]))
+        return ConditionLeaf(self, self.simc)
+
+
+class ConditionNode:
+
+    def __init__(self, condition_expression):
+        self.action = condition_expression.action
+        self.condition_expression = condition_expression
+
+    def parse_lua(self):
+        pass
+
+
+class ConditionBinaryNode(ConditionNode):
+
+    def __init__(self, condition_expression, operator, left_expression,
+                 right_expression):
+        self.action = condition_expression.action
+        self.condition_expression = condition_expression
+        self.operator = operator
+        self.left_tree = left_expression.grow()
+        self.right_tree = right_expression.grow()
+
+    def parse_lua(self):
+        return (f'{self.left_tree.parse_lua()} {self.operator.parse_lua()} '
+                f'{self.right_tree.parse_lua()}')
+
+
+class ConditionUnaryNode(ConditionNode):
+
+    def __init__(self, condition_expression, operator, sub_expression):
+        self.action = condition_expression.action
+        self.condition_expression = condition_expression
+        self.operator = operator
+        self.sub_tree = sub_expression.grow()
+
+    def parse_lua(self):
+        return f'{self.operator.parse_lua()} {self.sub_tree.parse_lua()}'
+
+
+class ConditionParenthesesNode(ConditionNode):
+
+    def __init__(self, condition_expression, sub_expression):
+        self.action = condition_expression.action
+        self.condition_expression = condition_expression
+        self.sub_tree = sub_expression.grow()
+
+    def parse_lua(self):
+        return f'({self.sub_tree.parse_lua()})'
+
+
+class ConditionLeaf(ConditionNode):
+
+    def __init__(self, condition_expression, condition):
+        self.action = condition_expression.action
+        self.condition_expression = condition_expression
+        self.condition = Condition(condition_expression, condition)
+
+    def parse_lua(self):
+        return f'{self.condition.expression().parse_lua()}'
 
 
 class LuaExpression:
@@ -191,7 +396,7 @@ class LuaExpression:
 
     def parse_lua(self):
         return (f'{self.object_.parse_lua()}:{self.method.parse_lua()}('
-            f'{", ".join(arg.parse_lua() for arg in self.args)})')
+                f'{", ".join(arg.parse_lua() for arg in self.args)})')
 
 
 class Rune(LuaExpression):
