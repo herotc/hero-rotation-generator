@@ -90,12 +90,6 @@ class Action:
         self.player = action_list.player
         self.action = action
 
-    #def ar_name(self):
-    #    ar_name = self.action.replace('_', ' ').title().replace(' ', '')
-    #    for k, v in ACTION_SPECIAL_REPLACEMENTS.items():
-    #        ar_name.replace(k, v)
-    #    return ar_name
-
     def execution(self):
         return Execution(self)
 
