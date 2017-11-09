@@ -9,7 +9,7 @@ An action is a combination of an execution (the spell, item or such to execute) 
 * `cooldown.{spell}.ready`: `S.{Spell}:IsReady()`
 * `buff.{spell}.up`: `Player:Buff(S.{SpellBuff})`
 * `runic_power.deficit`: `Player:RunicPowerDeficit()`
-* `talent.{spell}.enabled`: `S.{Spell}:IsLearned()`
+* `talent.{spell}.enabled`: `S.{Spell}:IsAvailable()`
 * `gcd`: `Player:GCD()`
 * `buff.{spell}.stack`: `Player:BuffStack(S.{SpellBuff})`
 * `charges_fractional`: `S.BloodBoil:ChargesFractional()`
