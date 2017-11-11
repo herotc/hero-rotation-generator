@@ -9,11 +9,14 @@ ITEM_ACTIONS = [
     'potion',
 ]
 
-ADDITIONAL_PARAMETERS = {
-    'dancing_rune_weapon': 'Settings.Blood.OffGCDasOffGCD.DancingRuneWeapon',
-    'arcane_torrents': 'Settings.Blood.OffGCDasOffGCD.ArcaneTorrent',
-    'blood_drinker': 'Settings.Blood.GCDasOffGCD.BloodDrinker',
-}
+GCD_AS_OFF_GCD = [
+    'blood_drinker',
+]
+
+OFF_GCD_AS_OFF_GCD = [
+    'dancing_rune_weapon',
+    'arcane_torrents',
+]
 
 USABLE_SKILLS = [
     'death_strike',
@@ -70,6 +73,29 @@ ADDITION_OPERATORS = ['+', '-']
 MULTIPLIACTION_OPERATORS = ['*', '%']
 FUNCTION_OPERATORS = ['abs', 'floor', 'ceil']
 
+CLASS_SPECS = {
+    'deathknight': ['blood', 'frost', 'unholy'],
+}
+
+
+class LuaNamed:
+    """
+    An abstract class for elements whose named in lua can be parsed from its
+    name in simc.
+    """
+
+    def __init__(self, simc):
+        self.simc = simc
+
+    def lua_name(self):
+        """
+        Returns the AethysRotation name of the spell.
+        """
+        ar_name = self.simc.replace('_', ' ').title().replace(' ', '')
+        for simc_str, ar_str in SPELL_REPLACEMENTS.items():
+            ar_name.replace(simc_str, ar_str)
+        return ar_name
+
 
 class APL:
     """
@@ -86,20 +112,18 @@ class Player:
     Define a player as the main actor of a simulation.
     """
 
-    def __init__(self):
-        self.class_ = None
-
-    def set_class(self, class_):
-        """
-        Set the class of a player.
-        """
-        self.class_ = class_
+    def __init__(self, simc):
+        self.class_ = PlayerClass(simc)
+        self.spec = None
 
     def potion(self):
         """
         Return the item of the potion used by the player.
         """
-        return self.class_.potion()
+        return self.spec.potion()
+
+    def set_spec(self, spec):
+        self.spec = PlayerSpec(self.class_, spec)
 
     def print_lua(self):
         """
@@ -108,28 +132,39 @@ class Player:
         return 'Player'
 
 
-class DeathKnight:
+class PlayerClass:
     """
-    The Death Knight player class.
+    The player class.
     """
 
-    def __init__(self):
-        pass
+    def __init__(self, simc):
+        try:
+            assert simc in CLASS_SPECS.keys()
+        except AssertionError:
+            ValueError(f'Invalid class {simc}.')
+        self.simc = simc
+
+
+class PlayerSpec(LuaNamed):
+    """
+    The player spec.
+    """
+
+    def __init__(self, class_, simc):
+        try:
+            assert simc in CLASS_SPECS[class_.simc]
+        except AssertionError:
+            ValueError(f'Invalid spec {simc} for class {class_.simc}.')
+        self.class_ = class_
+        super().__init__(simc)
 
     def potion(self):
         """
         Return the potion used by a Death Knight.
         """
-        return Item("ProlongedPower")
-
-
-class Item:
-    """
-    The Item class, used to represent an item.
-    """
-
-    def __init__(self, name):
-        self.name = name
+        if self.class_.simc in ['deathknight']:
+            potion = 'prolonged_power'
+        return potion
 
 
 class ActionList:
@@ -148,31 +183,42 @@ class Action:
     \\actions.action_list_name+=/execution,if=condition_expression
     """
 
-    def __init__(self, action_list, action):
+    def __init__(self, action_list, simc):
         self.action_list = action_list
         self.player = action_list.player
-        self.action = action
+        self.simc = simc
+
+    def split_simc(self):
+        """
+        Splits the simc action string in execution, condition_expression
+        """
+        if ',if=' in self.simc:
+            if_index = self.simc.find(',if=')
+            return self.simc[:if_index], self.simc[if_index+4:]
+        return self.simc, ''
 
     def execution(self):
         """
-        Return the execution of the action (the thing to execute if the 
+        Return the execution of the action (the thing to execute if the
         condition is fulfulled)
         """
-        return Execution(self)
+        execution_string, _ = self.split_simc()
+        return Execution(self, execution_string)
 
     def condition_expression(self):
         """
-        Return the condition expression of the action (the thing to test 
+        Return the condition expression of the action (the thing to test
         before doing the execution)
         """
-        return ConditionExpression(self)
+        _, condition_expression = self.split_simc()
+        return ConditionExpression(self, condition_expression)
 
     # Is this useful?
     def type_(self):
         """
         Return the type of the execution.
         """
-        if self.execution().string() in ITEM_ACTIONS:
+        if self.execution().execution in ITEM_ACTIONS:
             return ActionType('item')
         else:
             return ActionType('spell')
@@ -188,11 +234,44 @@ class Execution:
         self.action = action
         self.execution = execution
 
-    def string(self):
+    def object_(self):
         """
-        Return the string of the execution.
+        Return the object of the execution
         """
-        return self.execution
+        if self.execution in ITEM_ACTIONS:
+            return Item(self.action, self.execution)
+        return Spell(self.action, self.execution)
+
+    def lua_cast_args(self):
+        """
+        Returns the list of arguments for the execution.
+        """
+        args = [self.object_().print_lua()]
+        if self.execution in GCD_AS_OFF_GCD:
+            arg = ('Settings.'
+                   f'{self.action.player.spec.lua_name()}.'
+                   'GCDasOffGCD.'
+                   f'{self.object_().lua_name()}')
+            args.append(arg)
+        if self.execution in OFF_GCD_AS_OFF_GCD:
+            arg = ('Settings.'
+                   f'{self.action.player.spec.lua_name()}.'
+                   'OffGCDasOffGCD.'
+                   f'{self.object_().lua_name()}')
+            args.append(arg)
+        return args
+
+    def print_lua(self):
+        """
+        Print the representation of the action
+        """
+        if self.execution in INTERRUPT_SKILLS:
+            cast_action = 'CastAnnotated'
+        elif type(self.object_()).__name__ == 'Item':
+            cast_action = 'CastSuggested'
+        else:
+            cast_action = 'Cast'
+        return f'AR.{cast_action}({", ".join(self.lua_cast_args())})'
 
 
 class ActionType:
@@ -252,13 +331,13 @@ class ConditionExpression:
         """
         n_parentheses = 0
         parsed_simc = ''
-        for i, c in enumerate(simc):
-            if c == '(':
+        for i, char in enumerate(simc):
+            if char == '(':
                 n_parentheses += 1
                 # save index to extract substring for expressions
                 if n_parentheses == 1:
                     start_index = i
-            elif c == ')':
+            elif char == ')':
                 n_parentheses -= 1
                 if n_parentheses == 0:
                     end_index = i
@@ -268,7 +347,7 @@ class ConditionExpression:
                     raise ValueError('Invalid condition expression')
             elif n_parentheses == 0:
                 # Only write in parsed_simc of not in a sub-expression
-                parsed_simc += c
+                parsed_simc += char
         self.simc = parsed_simc
         self.expressions = expressions
 
@@ -332,34 +411,36 @@ class ConditionExpression:
         Grow the condition expression into a tree represention its condition.
         """
         if '|' in self.simc:
-            return self.grow_binary_tree('|')
-        if '&' in self.simc:
-            return self.grow_binary_tree('&')
-        if self.has_symbol_in(COMPARISON_OPERATORS):
+            tree = self.grow_binary_tree('|')
+        elif '&' in self.simc:
+            tree = self.grow_binary_tree('&')
+        elif self.has_symbol_in(COMPARISON_OPERATORS):
             symbol = self.extract_first_operator(COMPARISON_OPERATORS)
-            return self.grow_binary_tree(symbol)
-        if self.has_symbol_in(ADDITION_OPERATORS):
+            tree = self.grow_binary_tree(symbol)
+        elif self.has_symbol_in(ADDITION_OPERATORS):
             symbol = self.extract_first_operator(ADDITION_OPERATORS)
-            return self.grow_binary_tree(symbol)
-        if self.has_symbol_in(MULTIPLIACTION_OPERATORS):
+            tree = self.grow_binary_tree(symbol)
+        elif self.has_symbol_in(MULTIPLIACTION_OPERATORS):
             symbol = self.extract_first_operator(MULTIPLIACTION_OPERATORS)
-            return self.grow_binary_tree(symbol)
-        if '!' in self.simc:
-            return self.grow_unary_tree('!')
-        if self.has_symbol_in(FUNCTION_OPERATORS):
+            tree = self.grow_binary_tree(symbol)
+        elif '!' in self.simc:
+            tree = self.grow_unary_tree('!')
+        elif self.has_symbol_in(FUNCTION_OPERATORS):
             symbol = self.extract_first_operator(FUNCTION_OPERATORS, unary=True)
-            return self.grow_unary_tree(symbol)
-        if self.simc == '{}':
+            tree = self.grow_unary_tree(symbol)
+        elif self.simc == '{}':
             try:
                 assert len(self.expressions) == 1
             except AssertionError:
                 raise ValueError((f'Invalid expressions stack: '
                                   f'{str(self.expressions)}'))
-            return ConditionParenthesesNode(
+            tree = ConditionParenthesesNode(
                 self,
                 ConditionExpression(
                     self.action, self.expressions[0]))
-        return ConditionLeaf(self, self.simc)
+        else:
+            tree = ConditionLeaf(self, self.simc)
+        return tree
 
 
 class ConditionNode:
@@ -437,23 +518,31 @@ class ConditionLeaf(ConditionNode):
         return f'{self.condition.expression().print_lua()}'
 
 
-class Spell:
+class Item(LuaNamed):
+    """
+    The Item class, used to represent an item.
+    """
+
+    def __init__(self, action, simc):
+        super().__init__(simc)
+        self.action = action
+
+    def print_lua(self):
+        """
+        Print the lua representation of the item.
+        """
+        return f'I.{self.lua_name()}'
+
+
+class Spell(LuaNamed):
     """
     Represents a spell; it can be either a spell, a buff or a debuff.
     """
 
-    def __init__(self, simc, type_=SPELL):
-        self.simc = simc
+    def __init__(self, action, simc, type_=SPELL):
+        super().__init__(simc)
+        self.action = action
         self.type_ = type_
-
-    def lua_name(self):
-        """
-        Returns the AethysRotation name of the spell.
-        """
-        ar_name = self.simc.replace('_', ' ').title().replace(' ', '')
-        for simc_str, ar_str in SPELL_REPLACEMENTS.items():
-            ar_name.replace(simc_str, ar_str)
-        return ar_name
 
     def print_lua(self):
         """
