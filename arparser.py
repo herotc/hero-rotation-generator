@@ -123,6 +123,9 @@ class Player:
         return self.spec.potion()
 
     def set_spec(self, spec):
+        """
+        Sets the spec of the player.
+        """
         self.spec = PlayerSpec(self.class_, spec)
 
     def print_lua(self):
@@ -614,7 +617,8 @@ class Condition:
         Returns the condition when the prefix is charges_fractional.
         """
         return LuaExpression(
-            self, Spell('blood_boil'), Method('ChargesFractional'), [])
+            self, Spell(self.action, 'blood_boil'),
+            Method('ChargesFractional'), [])
 
     def rune(self):
         """
@@ -677,7 +681,7 @@ class Talent(LuaExpression):
         """
         Return the arguments for the expression talent.spell.enabled.
         """
-        object_ = Spell(condition.condition_list()[1])
+        object_ = Spell(self.condition.action, condition.condition_list()[1])
         method = Method('IsAvailable')
         args = []
         return object_, method, args
@@ -746,7 +750,7 @@ class Cooldown(LuaExpression):
         """
         Return the arguments for the expression cooldown.spell.ready.
         """
-        object_ = Spell(condition.condition_list()[1])
+        object_ = Spell(self.condition.action, condition.condition_list()[1])
         method = Method('IsReady')
         args = []
         return object_, method, args
