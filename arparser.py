@@ -39,9 +39,10 @@ SPELL_REPLACEMENTS = {
 
 SPELL = 'spell'
 BUFF = 'buff'
+DEBUFF = 'debuff'
 
 UNARY_OPERATORS = {
-    # TODO the - unary case
+    '-': '-',
     '!': 'not',
     'abs': 'math.abs',
     'floor': 'math.floor',
@@ -60,7 +61,7 @@ BINARY_OPERATORS = {
     '<': '<',
     '<=': '<=',
     '>': '>',
-    '<=': '<=',
+    '>=': '>=',
     # TODO Handle the in/not_in cases
 }
 
@@ -70,49 +71,82 @@ MULTIPLIACTION_OPERATORS = ['*', '%']
 FUNCTION_OPERATORS = ['abs', 'floor', 'ceil']
 
 
-class Player:
-
-    def __init__(self):
-        pass
-
-    def setClass(self, class_):
-        self.class_ = class_
-
-    def potion(self):
-        return self.class_.potion()
-
-    def parse_lua(self):
-        return 'Player'
-
-
-class DeathKnight:
-
-    def __init__(self):
-        pass
-
-    def potion(self):
-        return Item("ProlongedPower")
-
-
-class Item:
-
-    def __init__(self, name):
-        self.name = name
-
-
 class APL:
+    """
+    The main class representing an Action Priority List (or simc profile),
+    extracted from its simc string.
+    """
 
     def __init__(self, player):
         self.player = player
 
 
+class Player:
+    """
+    Define a player as the main actor of a simulation.
+    """
+
+    def __init__(self):
+        self.class_ = None
+
+    def set_class(self, class_):
+        """
+        Set the class of a player.
+        """
+        self.class_ = class_
+
+    def potion(self):
+        """
+        Return the item of the potion used by the player.
+        """
+        return self.class_.potion()
+
+    def print_lua(self):
+        """
+        Print the lua expression for the player.
+        """
+        return 'Player'
+
+
+class DeathKnight:
+    """
+    The Death Knight player class.
+    """
+
+    def __init__(self):
+        pass
+
+    def potion(self):
+        """
+        Return the potion used by a Death Knight.
+        """
+        return Item("ProlongedPower")
+
+
+class Item:
+    """
+    The Item class, used to represent an item.
+    """
+
+    def __init__(self, name):
+        self.name = name
+
+
 class ActionList:
+    """
+    An action list; useful when the APL defines multiple named action lists to
+    handle specific decision branchings.
+    """
 
     def __init__(self, player):
         self.player = player
 
 
 class Action:
+    """
+    A single action in an action list. A action is of the form:
+    \\actions.action_list_name+=/execution,if=condition_expression
+    """
 
     def __init__(self, action_list, action):
         self.action_list = action_list
@@ -120,12 +154,24 @@ class Action:
         self.action = action
 
     def execution(self):
+        """
+        Return the execution of the action (the thing to execute if the 
+        condition is fulfulled)
+        """
         return Execution(self)
 
     def condition_expression(self):
+        """
+        Return the condition expression of the action (the thing to test 
+        before doing the execution)
+        """
         return ConditionExpression(self)
 
+    # Is this useful?
     def type_(self):
+        """
+        Return the type of the execution.
+        """
         if self.execution().string() in ITEM_ACTIONS:
             return ActionType('item')
         else:
@@ -133,105 +179,73 @@ class Action:
 
 
 class Execution:
+    """
+    Represent an execution, what to do in a specific situation during the
+    simulation.
+    """
 
     def __init__(self, action, execution):
         self.action = action
         self.execution = execution
 
     def string(self):
+        """
+        Return the string of the execution.
+        """
         return self.execution
 
 
 class ActionType:
+    """
+    Represent the type of an action.
+    """
 
     def __init__(self, type_):
         self.type_ = type_
 
 
-class Spell:
-
-    def __init__(self, simc, type_=SPELL):
-        self.simc = simc
-        self.type_ = type_
-
-    def ar(self):
-        ar_name = self.simc.replace('_', ' ').title().replace(' ', '')
-        for simc_str, ar_str in SPELL_REPLACEMENTS.items():
-            ar_name.replace(simc_str, ar_str)
-        return ar_name
-
-    def parse_lua(self):
-        if self.type_ == SPELL:
-            return f'S.{self.ar()}'
-        elif self.type_ == BUFF:
-            return f'S.{self.ar()}Buff'
-
-
-class Condition:
-
-    def __init__(self, condition_expression, simc):
-        self.condition_expression = condition_expression
-        self.action = condition_expression.action
-        self.simc = simc
-
-    def expression(self):
-        try:
-            return getattr(self, self.condition_list()[0])()
-        except:
-            return Literal(self.simc)
-
-    def condition_list(self):
-        return self.simc.split('.')
-
-    def cooldown(self):
-        return Cooldown(self)
-
-    def buff(self):
-        return Buff(self)
-
-    def gcd(self):
-        return LuaExpression(self, self.action.player, Method('GCD'), [])
-
-    def runic_power(self):
-        return RunicPower(self)
-
-    def talent(self):
-        return Talent(self)
-
-    def charges_fractional(self):
-        return LuaExpression(
-            self, Spell('blood_boil'), Method('ChargesFractional'), [])
-
-    def rune(self):
-        return Rune(self)
-
-
 class BinaryOperator:
+    """
+    Represent a binary operator in a condition expression.
+    """
 
     def __init__(self, symbol):
         self.symbol = symbol
 
-    def parse_lua(self):
+    def print_lua(self):
+        """
+        Print the lua expression for the binary operator.
+        """
         return BINARY_OPERATORS[self.symbol]
 
 
 class UnaryOperator:
+    """
+    Represent a unary operator in a condition expression.
+    """
 
     def __init__(self, symbol):
         self.symbol = symbol
 
-    def parse_lua(self):
+    def print_lua(self):
+        """
+        Print the lua expression for the binary operator.
+        """
         return UNARY_OPERATORS[self.symbol]
 
 
 class ConditionExpression:
+    """
+    Represent a condition expression from a string extracted from a simc
+    profile.
+    """
 
     def __init__(self, action, simc, exps=None):
         expressions = exps.copy() if exps is not None else []
         self.action = action
         self.parse_parentheses(simc, expressions)
 
-    def parse_parentheses(self, simc, expressions=[]):
+    def parse_parentheses(self, simc, expressions):
         """
         Replaces first-level parentheses by {} and saves the content of
         parentheses in a list of strings.
@@ -259,6 +273,9 @@ class ConditionExpression:
         self.expressions = expressions
 
     def grow_binary_tree(self, symbol):
+        """
+        Grow the condition expression into a binary tree for a binary operator.
+        """
         symbol_index = self.simc.find(symbol)
         left_simc = self.simc[:symbol_index]
         right_simc = self.simc[symbol_index + 1:]
@@ -272,6 +289,9 @@ class ConditionExpression:
             ConditionExpression(self.action, right_simc, right_exps))
 
     def grow_unary_tree(self, symbol):
+        """
+        Grow the condition expression into a unary tree for a unary operator.
+        """
         try:
             assert self.simc.find(symbol) == 0
         except AssertionError:
@@ -283,18 +303,33 @@ class ConditionExpression:
             UnaryOperator(symbol),
             ConditionExpression(self.action, exp, self.expressions))
 
-    def extract_first_operator(self, symbols):
+    def extract_first_operator(self, symbols, unary=False):
+        """
+        Extract the first operator in the symbols list. If unary, the symbol
+        is a unary operator, otherwise it is a binary operator.
+        """
         valid_symbols = [symbol for symbol in symbols if symbol in self.simc]
-        symbols_indexes = [self.simc.find(symbol) for symbol in valid_symbols]
+        if unary:
+            symbols_indexes = [
+                self.simc.find(symbol) for symbol in valid_symbols]
+        else:
+            # Ignores first character to force discovery of a binary operator
+            # (mostly to handle the case of the - as a unary operator)
+            symbols_indexes = [
+                self.simc[1:].find(symbol) for symbol in valid_symbols]
         first_symbol_index = symbols_indexes.index(min(symbols_indexes))
         return valid_symbols[first_symbol_index]
 
     def has_symbol_in(self, symbols):
+        """
+        Retun true if any symbol in symbols is in the condition expression.
+        """
         return any(symbol in self.simc for symbol in symbols)
 
     def grow(self):
         """
         Use simc precedence: https://github.com/simulationcraft/simc/wiki/ActionLists#complete-list-of-operators
+        Grow the condition expression into a tree represention its condition.
         """
         if '|' in self.simc:
             return self.grow_binary_tree('|')
@@ -312,7 +347,7 @@ class ConditionExpression:
         if '!' in self.simc:
             return self.grow_unary_tree('!')
         if self.has_symbol_in(FUNCTION_OPERATORS):
-            symbol = self.extract_first_operator(FUNCTION_OPERATORS)
+            symbol = self.extract_first_operator(FUNCTION_OPERATORS, unary=True)
             return self.grow_unary_tree(symbol)
         if self.simc == '{}':
             try:
@@ -328,65 +363,182 @@ class ConditionExpression:
 
 
 class ConditionNode:
+    """
+    Abstract class to represent a condition node in a tree representing a
+    condition expression.
+    """
 
     def __init__(self, condition_expression):
         self.action = condition_expression.action
         self.condition_expression = condition_expression
 
-    def parse_lua(self):
+    def print_lua(self):
+        """
+        Print the lua code for the tree represention a condition expression.
+        """
         pass
 
 
 class ConditionBinaryNode(ConditionNode):
+    """
+    Node for a binary operator in a tree representing a condition expresion.
+    """
 
     def __init__(self, condition_expression, operator, left_expression,
                  right_expression):
-        self.action = condition_expression.action
-        self.condition_expression = condition_expression
+        super().__init__(condition_expression)
         self.operator = operator
         self.left_tree = left_expression.grow()
         self.right_tree = right_expression.grow()
 
-    def parse_lua(self):
-        return (f'{self.left_tree.parse_lua()} {self.operator.parse_lua()} '
-                f'{self.right_tree.parse_lua()}')
+    def print_lua(self):
+        return (f'{self.left_tree.print_lua()} {self.operator.print_lua()} '
+                f'{self.right_tree.print_lua()}')
 
 
 class ConditionUnaryNode(ConditionNode):
+    """
+    Node for a unary operator in a tree representing a condition expresion.
+    """
 
     def __init__(self, condition_expression, operator, sub_expression):
-        self.action = condition_expression.action
-        self.condition_expression = condition_expression
+        super().__init__(condition_expression)
         self.operator = operator
         self.sub_tree = sub_expression.grow()
 
-    def parse_lua(self):
-        return f'{self.operator.parse_lua()} {self.sub_tree.parse_lua()}'
+    def print_lua(self):
+        return f'{self.operator.print_lua()} {self.sub_tree.print_lua()}'
 
 
 class ConditionParenthesesNode(ConditionNode):
+    """
+    Node for parentheses in a tree representing a condition expresion.
+    """
 
     def __init__(self, condition_expression, sub_expression):
-        self.action = condition_expression.action
-        self.condition_expression = condition_expression
+        super().__init__(condition_expression)
         self.sub_tree = sub_expression.grow()
 
-    def parse_lua(self):
-        return f'({self.sub_tree.parse_lua()})'
+    def print_lua(self):
+        return f'({self.sub_tree.print_lua()})'
 
 
 class ConditionLeaf(ConditionNode):
+    """
+    Node for a leaf containing a singleton condition in a tree representing a
+    condition expresion.
+    """
 
     def __init__(self, condition_expression, condition):
-        self.action = condition_expression.action
-        self.condition_expression = condition_expression
+        super().__init__(condition_expression)
         self.condition = Condition(condition_expression, condition)
 
-    def parse_lua(self):
-        return f'{self.condition.expression().parse_lua()}'
+    def print_lua(self):
+        return f'{self.condition.expression().print_lua()}'
+
+
+class Spell:
+    """
+    Represents a spell; it can be either a spell, a buff or a debuff.
+    """
+
+    def __init__(self, simc, type_=SPELL):
+        self.simc = simc
+        self.type_ = type_
+
+    def lua_name(self):
+        """
+        Returns the AethysRotation name of the spell.
+        """
+        ar_name = self.simc.replace('_', ' ').title().replace(' ', '')
+        for simc_str, ar_str in SPELL_REPLACEMENTS.items():
+            ar_name.replace(simc_str, ar_str)
+        return ar_name
+
+    def print_lua(self):
+        """
+        Print the lua expression for the spell.
+        """
+        if self.type_ == SPELL:
+            return f'S.{self.lua_name()}'
+        elif self.type_ == BUFF:
+            return f'S.{self.lua_name()}Buff'
+
+
+class Condition:
+    """
+    Represent a singleton condition (i.e. without any operator).
+    """
+
+    def __init__(self, condition_expression, simc):
+        self.condition_expression = condition_expression
+        self.action = condition_expression.action
+        self.simc = simc
+
+    def expression(self):
+        """
+        Return the expression of the condition.
+        """
+        try:
+            return getattr(self, self.condition_list()[0])()
+        except AttributeError:
+            return Literal(self.simc)
+
+    def condition_list(self):
+        """
+        Returns the splitted structure of the condition.
+        """
+        return self.simc.split('.')
+
+    def cooldown(self):
+        """
+        Returns the condition when the prefix is cooldown.
+        """
+        return Cooldown(self)
+
+    def buff(self):
+        """
+        Returns the condition when the prefix is buff.
+        """
+        return Buff(self)
+
+    def gcd(self):
+        """
+        Returns the condition when the prefix is gcd.
+        """
+        return LuaExpression(self, self.action.player, Method('GCD'), [])
+
+    def runic_power(self):
+        """
+        Returns the condition when the prefix is runic_power.
+        """
+        return RunicPower(self)
+
+    def talent(self):
+        """
+        Returns the condition when the prefix is talent.
+        """
+        return Talent(self)
+
+    def charges_fractional(self):
+        """
+        Returns the condition when the prefix is charges_fractional.
+        """
+        return LuaExpression(
+            self, Spell('blood_boil'), Method('ChargesFractional'), [])
+
+    def rune(self):
+        """
+        Returns the condition when the prefix is rune.
+        """
+        return Rune(self)
 
 
 class LuaExpression:
+    """
+    Abstract class representing a generic lua expression in the form:
+    object:method(args)
+    """
 
     def __init__(self, condition, object_, method, args):
         self.condition = condition
@@ -394,93 +546,148 @@ class LuaExpression:
         self.method = method
         self.args = args
 
-    def parse_lua(self):
-        return (f'{self.object_.parse_lua()}:{self.method.parse_lua()}('
-                f'{", ".join(arg.parse_lua() for arg in self.args)})')
+    def print_lua(self):
+        """
+        Print the lua code for the expression
+        """
+        return (f'{self.object_.print_lua()}:{self.method.print_lua()}('
+                f'{", ".join(arg.print_lua() for arg in self.args)})')
 
 
 class Rune(LuaExpression):
+    """
+    Represent the expression for a rune. condition.
+    """
 
     def __init__(self, condition):
-        self.condition = condition
-        self.object_ = condition.action.player
-        getattr(self, condition.condition_list()[1])()
+        call = condition.condition_list()[1]
+        object_, method, args = getattr(self, call)(condition)
+        super().__init__(condition, object_, method, args)
 
-    def time_to_3(self):
-        # rune.time_to_3
-        self.method = Method('RuneTimeToX')
-        self.args = [Literal('3')]
+    def time_to_3(self, condition):
+        """
+        Return the arguments for the expression rune.time_to_3.
+        """
+        object_ = condition.action.player
+        method = Method('RuneTimeToX')
+        args = [Literal('3')]
+        return object_, method, args
 
 
 class Talent(LuaExpression):
+    """
+    Represent the expression for a talent. condition.
+    """
 
     def __init__(self, condition):
-        self.condition = condition
-        self.object_ = Spell(condition.condition_list()[1])
-        getattr(self, condition.condition_list()[2])()
+        call = condition.condition_list()[2]
+        object_, method, args = getattr(self, call)(condition)
+        super().__init__(condition, object_, method, args)
 
-    def enabled(self):
-        # talent.spell.enabled
-        self.method = Method('IsAvailable')
-        self.args = []
+    def enabled(self, condition):
+        """
+        Return the arguments for the expression talent.spell.enabled.
+        """
+        object_ = Spell(condition.condition_list()[1])
+        method = Method('IsAvailable')
+        args = []
+        return object_, method, args
 
 
 class RunicPower(LuaExpression):
+    """
+    Represent the expression for a runic_power. condition.
+    """
 
     def __init__(self, condition):
-        self.condition = condition
-        self.object_ = condition.action.player
-        self.args = []
-        getattr(self, condition.condition_list()[1])()
+        call = condition.condition_list()[1]
+        object_, method, args = getattr(self, call)(condition)
+        super().__init__(condition, object_, method, args)
 
-    def deficit(self):
-        # runic_power.deficit
-        self.method = Method('RunicPowerDeficit')
+    def deficit(self, condition):
+        """
+        Return the arguments for the expression runic_power.deficit.
+        """
+        object_ = condition.action.player
+        method = Method('RunicPowerDeficit')
+        args = []
+        return object_, method, args
 
 
 class Buff(LuaExpression):
+    """
+    Represent the expression for a buff. condition.
+    """
 
     def __init__(self, condition):
-        self.condition = condition
-        self.object_ = condition.action.player
-        self.args = [Spell(condition.condition_list()[1], BUFF)]
-        getattr(self, condition.condition_list()[2])()
+        call = condition.condition_list()[2]
+        object_, method, args = getattr(self, call)(condition)
+        super().__init__(condition, object_, method, args)
 
-    def up(self):
-        # buff.spell.up
-        self.method = Method('Buff')
+    def up(self, condition):
+        """
+        Return the arguments for the expression buff.spell.up.
+        """
+        object_ = condition.action.player
+        method = Method('Buff')
+        args = [Spell(condition.condition_list()[1], BUFF)]
+        return object_, method, args
 
-    def stack(self):
-        # buff.spell.stack
-        self.method = Method('BuffStack')
+    def stack(self, condition):
+        """
+        Return the arguments for the expression buff.spell.stack.
+        """
+        object_ = condition.action.player
+        method = Method('BuffStack')
+        args = [Spell(condition.condition_list()[1], BUFF)]
+        return object_, method, args
 
 
 class Cooldown(LuaExpression):
+    """
+    Represent the expression for a cooldown. condition.
+    """
 
     def __init__(self, condition):
-        self.condition = condition
-        self.object_ = Spell(condition.condition_list()[1])
-        getattr(self, condition.condition_list()[2])()
+        call = condition.condition_list()[2]
+        object_, method, args = getattr(self, call)(condition)
+        super().__init__(condition, object_, method, args)
 
-    def ready(self):
-        # cooldown.spell.ready
-        self.method = Method('IsReady')
-        self.args = []
+    def ready(self, condition):
+        """
+        Return the arguments for the expression cooldown.spell.ready.
+        """
+        object_ = Spell(condition.condition_list()[1])
+        method = Method('IsReady')
+        args = []
+        return object_, method, args
 
 
 class Method:
+    """
+    Represent a lua method.
+    """
 
     def __init__(self, name):
         self.name = name
 
-    def parse_lua(self):
+    def print_lua(self):
+        """
+        Print the method.
+        """
         return self.name
 
 
 class Literal:
+    """
+    Represent a literal expression (a value) as a string.
+    """
 
     def __init__(self, value):
         self.value = value
 
-    def parse_lua(self):
+    def print_lua(self):
+        """
+        Print the literal value.
+        """
         return self.value
