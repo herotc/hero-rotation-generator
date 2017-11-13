@@ -38,6 +38,7 @@ CD_SKILLS = [
 SPELL_REPLACEMENTS = {
     'And': 'and',
     'Blooddrinker': 'BloodDrinker',
+    'Of': 'of',
 }
 
 SPELL = 'spell'
@@ -79,6 +80,8 @@ CLASS_SPECS = {
 
 POTION = 'potion'
 
+RUN_ACTION_LIST = 'run_action_list'
+
 
 class LuaNamed:
     """
@@ -93,10 +96,11 @@ class LuaNamed:
         """
         Returns the AethysRotation name of the spell.
         """
-        ar_name = self.simc.replace('_', ' ').title().replace(' ', '')
-        for simc_str, ar_str in SPELL_REPLACEMENTS.items():
-            ar_name = ar_name.replace(simc_str, ar_str)
-        return ar_name
+        ar_words = [word.title() for word in self.simc.split('_')]
+        ar_words = [SPELL_REPLACEMENTS[ar_word]
+                    if ar_word in SPELL_REPLACEMENTS else ar_word
+                    for ar_word in ar_words]
+        return ''.join(ar_words)
 
 
 class APL:
@@ -206,9 +210,25 @@ class ActionList:
     handle specific decision branchings.
     """
 
-    def __init__(self, apl):
+    def __init__(self, apl, simc, name='APL'):
         self.player = apl.player
         self.target = apl.target
+        self.simc = simc
+        self.name = LuaNamed(name)
+
+    def split_simc(self):
+        return self.simc.split('/')
+
+    def actions(self):
+        return [Action(self, simc) for simc in self.split_simc()]
+
+    def print_lua(self):
+        actions = '\n'.join('  ' + action.print_lua().replace('\n', '\n  ')
+                            for action in self.actions())
+        function_name = self.name.lua_name()
+        return ('local function {}()\n'
+                '{}\n'
+                'end').format(function_name, actions)
 
 
 class Action:
@@ -224,20 +244,26 @@ class Action:
         self.simc = simc
 
     def split_simc(self):
+        return self.simc.split(',')
+
+    def properties(self):
         """
         Split the simc action string in execution, condition_expression.
         """
-        if ',if=' in self.simc:
-            if_index = self.simc.find(',if=')
-            return self.simc[:if_index], self.simc[if_index+4:]
-        return self.simc, ''
+        props = {}
+        for simc_prop in self.split_simc()[1:]:
+            equal_index = simc_prop.find('=')
+            simc_key = simc_prop[:equal_index]
+            simc_val = simc_prop[equal_index+1:]
+            props[simc_key] = simc_val
+        return props
 
     def execution(self):
         """
         Return the execution of the action (the thing to execute if the
         condition is fulfulled).
         """
-        execution_string, _ = self.split_simc()
+        execution_string = self.split_simc()[0]
         return Execution(self, execution_string)
 
     def condition_expression(self):
@@ -245,7 +271,10 @@ class Action:
         Return the condition expression of the action (the thing to test
         before doing the execution).
         """
-        _, condition_expression = self.split_simc()
+        if 'if' in self.properties():
+            condition_expression = self.properties()['if']
+        else:
+            condition_expression = ''
         return ConditionExpression(self, condition_expression)
 
     def condition_tree(self):
@@ -264,7 +293,7 @@ class Action:
             return ActionType('item')
         else:
             return ActionType('spell')
-    
+
     def print_lua(self):
         """
         Print the lua code for the action.
@@ -274,7 +303,7 @@ class Action:
         if_cond = self.condition_tree().print_lua()
         exec_cast = self.execution().print_lua_cast()
         return ('if {}{}({}) then\n'
-                '  if {} then return ""; end\n'
+                '  {}\n'
                 'end').format(exec_cond, cond_link, if_cond, exec_cast)
 
 
@@ -296,6 +325,9 @@ class Execution:
             return Potion(self.action)
         elif self.execution in ITEM_ACTIONS:
             return Item(self.action, self.execution)
+        elif self.execution.startswith(RUN_ACTION_LIST):
+            action_list_name = self.action.properties()['name']
+            return RunActionList(self.action, action_list_name)
         return Spell(self.action, self.execution)
 
     def print_lua_condition(self):
@@ -309,7 +341,7 @@ class Execution:
         """
         Print the representation of the action
         """
-        return self.object_().cast().print_lua()
+        return self.object_().print_cast()
 
 
 class ActionType:
@@ -558,7 +590,6 @@ class ConditionLeaf(ConditionNode):
         return f'{self.condition.expression().print_lua()}'
 
 
-
 class LuaCastable:
     """
     The class for castable elements: items and spells.
@@ -589,6 +620,12 @@ class LuaCastable:
     def cast(self):
         return LuaExpression(Literal('AR'), 
                              self.cast_method(), self.cast_args())
+
+    def cast_template(self):
+        return 'if {} then return ""; end'
+
+    def print_cast(self):
+        return self.cast_template().format(self.cast().print_lua())
 
 
 class Item(LuaNamed, LuaCastable):
@@ -624,6 +661,23 @@ class Potion(Item):
 
     def additional_conditions(self):
         return [Literal('Settings.Commons.UsePotions')]
+
+
+class RunActionList(LuaNamed, LuaCastable):
+
+    def __init__(self, action, simc):
+        super().__init__(simc)
+        self.action = action
+
+    def conditions(self):
+        return []
+
+    def cast(self):
+        return Literal(self.lua_name() + '()')
+
+    def cast_template(self):
+        return ('ShouldReturn = {}; '
+                'if ShouldReturn then return ShouldReturn; end')
 
 
 class Spell(LuaNamed, LuaCastable):
@@ -895,6 +949,15 @@ class Cooldown(LuaExpression):
         """
         object_ = Spell(self.condition.action, condition.condition_list()[1])
         method = Method('IsReady')
+        args = []
+        return object_, method, args
+
+    def remains(self, condition):
+        """
+        Return the arguments for the expression cooldown.spell.remains.
+        """
+        object_ = Spell(self.condition.action, condition.condition_list()[1])
+        method = Method('CooldownRemainsP')
         args = []
         return object_, method, args
 
