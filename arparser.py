@@ -5,6 +5,8 @@ Created on Tue Nov  7 12:22:12 2017
 @author: rmondoncancel
 """
 
+from collections import OrderedDict
+
 ITEM_ACTIONS = [
 ]
 
@@ -41,10 +43,6 @@ SPELL_REPLACEMENTS = {
     'Of': 'of',
 }
 
-SPELL = 'spell'
-BUFF = 'buff'
-DEBUFF = 'debuff'
-
 UNARY_OPERATORS = {
     '-': '-',
     '!': 'not',
@@ -74,13 +72,36 @@ ADDITION_OPERATORS = ['+', '-']
 MULTIPLIACTION_OPERATORS = ['*', '%']
 FUNCTION_OPERATORS = ['abs', 'floor', 'ceil']
 
+IGNORED_ACTION_LISTS = [
+    'precombat',
+]
+
 CLASS_SPECS = {
     'deathknight': ['blood', 'frost', 'unholy'],
 }
 
-POTION = 'potion'
+RACES = [
+    'blood_elf',
+    'draenei',
+    'dwarf',
+    'gnome',
+    'goblin',
+    'human',
+    'night_elf',
+    'orc',
+    'pandaren',
+    'tauren',
+    'troll',
+    'undead',
+    'worgen',
+]
 
+SPELL = 'spell'
+BUFF = 'buff'
+DEBUFF = 'debuff'
+POTION = 'potion'
 RUN_ACTION_LIST = 'run_action_list'
+CALL_ACTION_LIST = 'call_action_list'
 
 
 class LuaNamed:
@@ -110,20 +131,99 @@ class APL:
     """
 
     def __init__(self):
+        self.simc_lines = []
         self.player = None
         self.target = Target()
+        self.profile_name = ''
+        self.parsed = True
+        self.action_lists_simc = OrderedDict([('APL', '')])
     
+    def set_simc_lines(self, simc_lines):
+        self.simc_lines = [simc_line for simc_line in simc_lines 
+                           if not simc_line.startswith('#')]
+        self.parsed = False
+    
+    def read_profile(self, file_path):
+        with open(file_path, 'r') as profile:
+            self.set_simc_lines([line.strip() for line in profile.readlines()])
+    
+    def read_string(self, multiline_simc):
+        self.set_simc_lines(multiline_simc.split('\n'))
+
+    def process_lua(self):
+        self.parse_profile()
+        return self.print_lua()
+
+    def export_lua(self, file_path):
+        self.parse_profile()
+        with open(file_path, 'w') as lua_file:
+            lua_file.write(self.print_lua())
+
+    def parse_profile(self):
+        if not self.parsed:
+            for simc in self.simc_lines:
+                self.parse_line(simc)
+            self.parsed = True
+
+    def parse_action(self, simc):
+        equal_index = simc.find('+=')
+        equal_len = 2
+        if equal_index == -1:
+            equal_index = simc.find('=')
+            equal_len = 1
+        if equal_index == -1:
+            return
+        action_call = simc[:equal_index]
+        action_simc = simc[equal_index + equal_len:]
+        action_name = action_call.split('.')[1] if '.' in action_call else 'APL'
+        if action_name not in IGNORED_ACTION_LISTS:
+            if action_name in self.action_lists_simc:
+                self.action_lists_simc[action_name] += action_simc
+            else:
+                self.action_lists_simc[action_name] = action_simc
+
+    def action_lists(self):
+        return [ActionList(self, simc, name)
+                for name, simc in self.action_lists_simc.items()]
+
+    def parse_line(self, simc):
+        if any(simc.startswith(class_) for class_ in CLASS_SPECS):
+            class_, profile_name = simc.split('=')
+            self.set_player(class_)
+            self.set_profile_name(profile_name)
+        elif simc.startswith('spec'):
+            _, spec = simc.split('=')
+            self.player.set_spec(spec)
+        elif simc.startswith('level'):
+            _, level = simc.split('=')
+            self.player.set_level(level)
+        elif simc.startswith('race'):
+            _, race = simc.split('=')
+            self.player.set_race(race)
+        elif simc.startswith('actions'):
+            self.parse_action(simc)
+
+    def set_profile_name(self, simc):
+        self.profile_name = simc.replace('"', '')
+
     def set_player(self, simc):
         """
         Set a player as the main actor of the APL.
         """
         self.player = Player(simc)
-    
+
     def set_target(self, simc):
         """
         Set the target of the main actor of the APL.
         """
         self.target = Target(simc)
+    
+    def print_lua(self):
+        """
+        Print the lua string of the APL.
+        """
+        return '\n'.join(action_list.print_lua() 
+                         for action_list in self.action_lists())
 
 
 class Player:
@@ -134,6 +234,8 @@ class Player:
     def __init__(self, simc):
         self.class_ = PlayerClass(simc)
         self.spec = None
+        self.level = 110
+        self.race = None
 
     def potion(self):
         """
@@ -145,7 +247,19 @@ class Player:
         """
         Sets the spec of the player.
         """
-        self.spec = PlayerSpec(self.class_, spec)
+        self.spec = PlayerSpec(self, spec)
+    
+    def set_race(self, race):
+        """
+        Sets the race of the player.
+        """
+        self.race = PlayerRace(self, race)
+    
+    def set_level(self, level):
+        """
+        Sets the level of the player.
+        """
+        self.level = int(level)
 
     def print_lua(self):
         """
@@ -169,7 +283,7 @@ class Target:
         return 'Target'
 
 
-class PlayerClass:
+class PlayerClass(LuaNamed):
     """
     The player class.
     """
@@ -179,7 +293,21 @@ class PlayerClass:
             assert simc in CLASS_SPECS.keys()
         except AssertionError:
             ValueError(f'Invalid class {simc}.')
-        self.simc = simc
+        super().__init__(simc)
+
+
+class PlayerRace(LuaNamed):
+    """
+    The player race.
+    """
+
+    def __init__(self, player, simc):
+        try:
+            assert simc in RACES
+        except AssertionError:
+            ValueError(f'Invalid race {simc}.')
+        self.player = player
+        super().__init__(simc)
 
 
 class PlayerSpec(LuaNamed):
@@ -187,19 +315,19 @@ class PlayerSpec(LuaNamed):
     The player spec.
     """
 
-    def __init__(self, class_, simc):
+    def __init__(self, player, simc):
         try:
-            assert simc in CLASS_SPECS[class_.simc]
+            assert simc in CLASS_SPECS[player.class_.simc]
         except AssertionError:
-            ValueError(f'Invalid spec {simc} for class {class_.simc}.')
-        self.class_ = class_
+            ValueError(f'Invalid spec {simc} for class {player.class_.simc}.')
+        self.player = player
         super().__init__(simc)
 
     def potion(self):
         """
         Return the potion used by a Death Knight.
         """
-        if self.class_.simc in ['deathknight']:
+        if self.player.class_.simc in ['deathknight']:
             potion = 'prolonged_power'
         return potion
 
@@ -217,12 +345,21 @@ class ActionList:
         self.name = LuaNamed(name)
 
     def split_simc(self):
+        """
+        Split the simc string of an action list into unique action simc strings.
+        """
         return self.simc.split('/')
 
     def actions(self):
+        """
+        Return the list of action as Action instances of the ActionList.
+        """
         return [Action(self, simc) for simc in self.split_simc()]
 
     def print_lua(self):
+        """
+        Print the lua string representing the action list.
+        """
         actions = '\n'.join('  ' + action.print_lua().replace('\n', '\n  ')
                             for action in self.actions())
         function_name = self.name.lua_name()
@@ -244,11 +381,16 @@ class Action:
         self.simc = simc
 
     def split_simc(self):
+        """
+        Split the simc string of an action into its different properties
+        strings.
+        """
         return self.simc.split(',')
 
     def properties(self):
         """
-        Split the simc action string in execution, condition_expression.
+        Return the named properties of the action; corresponds ton the elements
+        of the form key=expression in a simc string.
         """
         props = {}
         for simc_prop in self.split_simc()[1:]:
@@ -325,9 +467,12 @@ class Execution:
             return Potion(self.action)
         elif self.execution in ITEM_ACTIONS:
             return Item(self.action, self.execution)
-        elif self.execution.startswith(RUN_ACTION_LIST):
+        elif self.execution == RUN_ACTION_LIST:
             action_list_name = self.action.properties()['name']
             return RunActionList(self.action, action_list_name)
+        elif self.execution == CALL_ACTION_LIST:
+            action_list_name = self.action.properties()['name']
+            return CallActionList(self.action, action_list_name)
         return Spell(self.action, self.execution)
 
     def print_lua_condition(self):
@@ -596,35 +741,69 @@ class LuaCastable:
     """
 
     def condition_method(self):
+        """
+        Return the method to use in the default condition, which usually tests
+        whether the action is doable.
+        """
         pass
-    
+
     def condition_args(self):
+        """
+        Return the arguments of the default condition, which usually tests
+        whether the action is doable.
+        """
         return []
 
     def condition(self):
-        return LuaExpression(self, self.condition_method(), 
+        """
+        Return the LuaExpression of the default condition.
+        """
+        return LuaExpression(self, self.condition_method(),
                              self.condition_args())
 
     def additional_conditions(self):
+        """
+        Additional conditions to test for the specific action; [] by default if
+        none.
+        """
         return []
 
     def conditions(self):
+        """
+        List of conditions to check before executing the action.
+        """
         return [self.condition()] + self.additional_conditions()
 
     def cast_method(self):
+        """
+        The method to call when executing the action.
+        """
         return Method('Cast')
 
     def cast_args(self):
+        """
+        The arguments of the method used to cast the action.
+        """
         return [self]
 
     def cast(self):
-        return LuaExpression(Literal('AR'), 
+        """
+        Return the LuaExpression to cast the action.
+        """
+        return LuaExpression(Literal('AR'),
                              self.cast_method(), self.cast_args())
 
     def cast_template(self):
+        """
+        The template of the code to execute the action; {} will be replaced by
+        the result of self.cast().print_lua().
+        """
         return 'if {} then return ""; end'
 
     def print_cast(self):
+        """
+        Print the lua code of what to do when casting the action.
+        """
         return self.cast_template().format(self.cast().print_lua())
 
 
@@ -664,6 +843,30 @@ class Potion(Item):
 
 
 class RunActionList(LuaNamed, LuaCastable):
+    """
+    The class to handle a run_action_string action; calls a function containing
+    the code for the speficic ActionList called.
+    """
+
+    def __init__(self, action, simc):
+        super().__init__(simc)
+        self.action = action
+
+    def conditions(self):
+        return []
+
+    def cast(self):
+        return Literal(self.lua_name() + '()')
+
+    def cast_template(self):
+        return ('return {};')
+
+
+class CallActionList(LuaNamed, LuaCastable):
+    """
+    The class to handle a call_action_string action; calls a function containing
+    the code for the speficic ActionList called.
+    """
 
     def __init__(self, action, simc):
         super().__init__(simc)
@@ -689,7 +892,7 @@ class Spell(LuaNamed, LuaCastable):
         super().__init__(simc)
         self.action = action
         self.type_ = type_
-    
+
     def condition_method(self):
         if self.simc in USABLE_SKILLS:
             return Method('IsUsable')
@@ -876,7 +1079,10 @@ class RunicPower(LuaExpression):
 
     def __init__(self, condition):
         self.condition = condition
-        call = condition.condition_list()[1]
+        if len(condition.condition_list()) >= 2:
+            call = condition.condition_list()[1]
+        else:
+            call = 'value'
         object_, method, args = getattr(self, call)(condition)
         super().__init__(object_, method, args)
 
@@ -886,6 +1092,15 @@ class RunicPower(LuaExpression):
         """
         object_ = condition.action.player
         method = Method('RunicPowerDeficit')
+        args = []
+        return object_, method, args
+
+    def value(self, condition):
+        """
+        Return the arguments for the expression runic_power.
+        """
+        object_ = condition.action.player
+        method = Method('RunicPower')
         args = []
         return object_, method, args
 
@@ -927,7 +1142,7 @@ class Buff(LuaExpression):
         """
         object_ = condition.action.player
         method = Method('BuffRemains')
-        args = [Spell(self.condition.action, 
+        args = [Spell(self.condition.action,
                       condition.condition_list()[1], BUFF)]
         return object_, method, args
 
@@ -990,3 +1205,9 @@ class Literal:
         Print the literal value.
         """
         return self.value
+
+
+if __name__ == '__main__':
+    apl = APL()
+    apl.read_profile('test_profile.simc')
+    apl.export_lua('test_profile.lua')
