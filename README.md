@@ -7,13 +7,13 @@ Parser to generate AethysRotation APLs from simc profiles
 The `arparser.py` file currently can be used as a script with the following
 command:
 
-```python3
+```bash
 python ./arparser.py
 ```
 
 This will execute the following commands:
 
-```python3
+```python
 # Create an empty APL object
 apl = APL()
 # Read a profile from a .simc file
