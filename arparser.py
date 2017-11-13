@@ -879,7 +879,7 @@ class CallActionList(LuaNamed, LuaCastable):
         return Literal(self.lua_name() + '()')
 
     def cast_template(self):
-        return ('ShouldReturn = {}; '
+        return ('local ShouldReturn = {}; '
                 'if ShouldReturn then return ShouldReturn; end')
 
 
