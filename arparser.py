@@ -78,6 +78,7 @@ IGNORED_ACTION_LISTS = [
 
 CLASS_SPECS = {
     'deathknight': ['blood', 'frost', 'unholy'],
+    'demonhunter': ['havoc'],
 }
 
 RACES = [
@@ -97,12 +98,21 @@ RACES = [
 ]
 
 SPELL = 'spell'
+ITEM = 'item'
 BUFF = 'buff'
 DEBUFF = 'debuff'
 POTION = 'potion'
 VARIABLE = 'variable'
 RUN_ACTION_LIST = 'run_action_list'
 CALL_ACTION_LIST = 'call_action_list'
+
+
+def indent(string, length=2):
+    """
+    Indent a string by indent_size spaces at the beginning of each new line.
+    """
+    indent_string = '\n' + ' ' * length
+    return ' ' * length + string.replace('\n', indent_string)
 
 
 class LuaNamed:
@@ -116,7 +126,7 @@ class LuaNamed:
 
     def lua_name(self):
         """
-        Returns the AethysRotation name of the spell.
+        Return the AethysRotation name of the spell.
         """
         ar_words = [word.title() for word in self.simc.split('_')]
         ar_words = [SPELL_REPLACEMENTS[ar_word]
@@ -137,7 +147,8 @@ class APL:
         self.target = Target()
         self.profile_name = ''
         self.parsed = True
-        self.action_lists_simc = OrderedDict([('APL', '')])
+        self.apl_simc = ''
+        self.action_lists_simc = OrderedDict()
 
     def set_simc_lines(self, simc_lines):
         """
@@ -201,12 +212,21 @@ class APL:
             return
         action_call = simc[:equal_index]
         action_simc = simc[equal_index + equal_len:]
-        action_name = action_call.split('.')[1] if '.' in action_call else 'APL'
+        if '.' not in action_call:
+            self.apl_simc += action_simc
+            return
+        action_name = action_call.split('.')[1]
         if action_name not in IGNORED_ACTION_LISTS:
             if action_name in self.action_lists_simc:
                 self.action_lists_simc[action_name] += action_simc
             else:
                 self.action_lists_simc[action_name] = action_simc
+
+    def main_action_list(self):
+        """
+        Get the ActionList object for the main action list.
+        """
+        return ActionList(self, self.apl_simc, 'APL')
 
     def action_lists(self):
         """
@@ -253,12 +273,24 @@ class APL:
         """
         self.target = Target(simc)
 
-    def print_lua(self):
+    def print_action_lists_lua(self):
         """
         Print the lua string of the APL.
         """
-        return '\n'.join(action_list.print_lua()
+        return '\n'.join(indent(action_list.print_lua())
                          for action_list in self.action_lists())
+
+    def print_lua(self):
+        """
+        Print the lua string representing the action list.
+        """
+        function_name = self.main_action_list().name.lua_name()
+        action_lists = self.print_action_lists_lua()
+        main_actions = self.main_action_list().print_actions_lua()
+        return (f'local function {function_name}()\n'
+                f'{action_lists}\n'
+                f'{main_actions}\n'
+                f'end')
 
 
 class Player:
@@ -362,7 +394,7 @@ class PlayerSpec(LuaNamed):
         """
         Return the potion used by a Death Knight.
         """
-        if self.player.class_.simc in ['deathknight']:
+        if self.player.class_.simc in ['deathknight', 'demonhunter']:
             potion = 'prolonged_power'
         return potion
 
@@ -391,16 +423,23 @@ class ActionList:
         """
         return [Action(self, simc) for simc in self.split_simc()]
 
+    def print_actions_lua(self):
+        """
+        Print the lua string for the actions of the list (without the function
+        wrapper).
+        """
+        return '\n'.join(indent(action.print_lua())
+                         for action in self.actions())
+
     def print_lua(self):
         """
         Print the lua string representing the action list.
         """
-        actions = '\n'.join('  ' + action.print_lua().replace('\n', '\n  ')
-                            for action in self.actions())
+        actions = self.print_actions_lua()
         function_name = self.name.lua_name()
-        return ('local function {}()\n'
-                '{}\n'
-                'end').format(function_name, actions)
+        return (f'local function {function_name}()\n'
+                f'{actions}\n'
+                f'end')
 
 
 class Action:
@@ -474,13 +513,30 @@ class Action:
         return self.condition_expression().grow()
 
     def value_tree(self):
+        """
+        Return the expression tree for the value attribute, in case of a
+        variable action.
+        """
         return self.value_expression().grow()
 
     def print_lua(self):
         """
-        Print the lua code for the action.
+        Print the lua expression of the action.
         """
-        return self.execution().type_.print_lua_closure()(self)
+        if self.execution().type_() == VARIABLE:
+            fun_name = self.execution().object_().print_lua()
+            var_value = self.value_tree().print_lua()
+            return (f'local function {fun_name}()\n'
+                    f'  return {var_value};\n'
+                    f'end')
+        else:
+            exec_cond = self.execution().object_().print_conditions()
+            cond_link = ' and ' if exec_cond != '' else ''
+            if_cond = self.condition_tree().print_lua()
+            exec_cast = self.execution().object_().print_cast()
+            return (f'if {exec_cond}{cond_link}({if_cond}) then\n'
+                    f'  {exec_cast}\n'
+                    f'end')
 
 
 class Execution:
@@ -492,63 +548,41 @@ class Execution:
     def __init__(self, action, execution):
         self.action = action
         self.execution = execution
-        self.object_ = None
-        self.type_ = None
-        self.build_object()
 
-    def build_object(self):
+    def switch_type(self):
         """
-        Return the object of the execution
+        Return the couple type, object of the execution depending on its value.
         """
         if self.execution == POTION:
-            self.type_ = ExecutionType('item')
-            self.object_ = Potion(self.action)
+            type_, object_ = ITEM, Potion(self.action)
         elif self.execution in ITEM_ACTIONS:
-            self.type_ = ExecutionType('item')
-            self.object_ = Item(self.action, self.execution)
+            type_, object_ = ITEM, Item(self.action, self.execution)
         elif self.execution == VARIABLE:
-            self.type_ = ExecutionType('variable')
             variable_name = self.action.properties()['name']
-            self.object_ = Variable(self.action, variable_name)
+            type_, object_ = VARIABLE, Variable(self.action, variable_name)
         elif self.execution == RUN_ACTION_LIST:
-            self.type_ = ExecutionType('run_action_list')
             action_list_name = self.action.properties()['name']
-            self.object_ = RunActionList(self.action, action_list_name)
+            type_, object_ = (RUN_ACTION_LIST,
+                              RunActionList(self.action, action_list_name))
         elif self.execution == CALL_ACTION_LIST:
-            self.type_ = ExecutionType('call_action_list')
             action_list_name = self.action.properties()['name']
-            self.object_ = CallActionList(self.action, action_list_name)
+            type_, object_ = (CALL_ACTION_LIST,
+                              CallActionList(self.action, action_list_name))
         else:
-            self.type_ = ExecutionType('spell')
-            self.object_ = Spell(self.action, self.execution)
+            type_, object_ = SPELL, Spell(self.action, self.execution)
+        return type_, object_
 
+    def type_(self):
+        """
+        Get the type of the execution.
+        """
+        return self.switch_type()[0]
 
-class ExecutionType:
-    """
-    Represent the type of an action.
-    """
-
-    def __init__(self, type_):
-        self.type_ = type_
-    
-    def print_lua_closure(self):
-        if self.type_ == VARIABLE:
-            def print_lua(action):
-                fun_name = action.execution().object_.print_lua()
-                var_value = action.value_tree().print_lua()
-                return ('local function {}()\n'
-                        '  return {};\n'
-                        'end').format(fun_name, var_value)
-        else:
-            def print_lua(action):
-                exec_cond = action.execution().object_.print_conditions()
-                cond_link = ' and ' if exec_cond != '' else ''
-                if_cond = action.condition_tree().print_lua()
-                exec_cast = action.execution().object_.print_cast()
-                return ('if {}{}({}) then\n'
-                        '  {}\n'
-                        'end').format(exec_cond, cond_link, if_cond, exec_cast)
-        return print_lua
+    def object_(self):
+        """
+        Get the object of the execution.
+        """
+        return self.switch_type()[1]
 
 
 class BinaryOperator:
@@ -896,7 +930,6 @@ class Potion(Item):
 
     def __init__(self, action):
         super().__init__(action, action.player.potion())
-        self.action = action
 
     def additional_conditions(self):
         return [Literal('Settings.Commons.UsePotions')]
@@ -954,6 +987,9 @@ class Variable(LuaNamed):
         self.action = action
 
     def print_lua(self):
+        """
+        Print the lua name of a variable.
+        """
         return f'{self.lua_name()}'
 
 
@@ -1010,10 +1046,11 @@ class Spell(LuaNamed, LuaCastable):
         """
         Print the lua expression for the spell.
         """
-        if self.type_ == SPELL:
-            return f'S.{self.lua_name()}'
-        elif self.type_ == BUFF:
+        if self.type_ == BUFF:
             return f'S.{self.lua_name()}Buff'
+        elif self.type_ == DEBUFF:
+            return f'S.{self.lua_name()}Debuff'
+        return f'S.{self.lua_name()}'
 
 
 class Condition:
@@ -1023,66 +1060,103 @@ class Condition:
 
     def __init__(self, condition_expression, simc):
         self.condition_expression = condition_expression
-        self.action = condition_expression.action
+        self.parent_action = condition_expression.action
         self.simc = simc
 
     def expression(self):
         """
         Return the expression of the condition.
         """
+        if (self.condition_list()[0] in self.actions_to_self()
+                and len(self.condition_list()) == 1):
+            return self.action(to_self=True)
         try:
             return getattr(self, self.condition_list()[0])()
         except AttributeError:
             return Literal(self.simc)
 
+    def actions_to_self(self):
+        """
+        The list of actions that can be applied to self (i.e. the execution of
+        the action) for shortcut.
+        """
+        return [method for method in dir(ActionCondition)
+                if callable(getattr(ActionCondition, method))
+                and not method.startswith('__') and not method == 'print_lua']
+
     def condition_list(self):
         """
-        Returns the splitted structure of the condition.
+        Return the splitted structure of the condition.
         """
         return self.simc.split('.')
 
+    def action(self, to_self=False):
+        """
+        Return the condition when the prefix is action.
+        """
+        return ActionCondition(self, to_self)
+
     def cooldown(self):
         """
-        Returns the condition when the prefix is cooldown.
+        Return the condition when the prefix is cooldown.
         """
         return Cooldown(self)
 
     def buff(self):
         """
-        Returns the condition when the prefix is buff.
+        Return the condition when the prefix is buff.
         """
         return Buff(self)
 
     def gcd(self):
         """
-        Returns the condition when the prefix is gcd.
+        Return the condition when the prefix is gcd.
         """
-        return LuaExpression(self.action.player, Method('GCD'), [])
+        return GCD(self)
 
     def runic_power(self):
         """
-        Returns the condition when the prefix is runic_power.
+        Return the condition when the prefix is runic_power.
         """
         return RunicPower(self)
 
     def talent(self):
         """
-        Returns the condition when the prefix is talent.
+        Return the condition when the prefix is talent.
         """
         return Talent(self)
 
     def charges_fractional(self):
         """
-        Returns the condition when the prefix is charges_fractional.
+        Return the condition when the prefix is charges_fractional.
         """
-        return LuaExpression(Spell(self.action, 'blood_boil'),
+        return LuaExpression(Spell(self.parent_action, 'blood_boil'),
                              Method('ChargesFractional'), [])
 
     def rune(self):
         """
-        Returns the condition when the prefix is rune.
+        Return the condition when the prefix is rune.
         """
         return Rune(self)
+
+    def target(self):
+        """
+        Return the condition when the prefix is target.
+        """
+        return TargetCondition(self)
+
+    def fury(self):
+        """
+        Return the condition when the prefix is fury.
+        """
+        return Fury(self)
+
+    def variable(self):
+        """
+        Return the condition when the prefix is variable.
+        """
+        lua_method = LuaNamed(self.condition_list()[1]).lua_name()
+        return LuaExpression(None, Method(lua_method), [])
 
 
 class LuaExpression:
@@ -1100,8 +1174,96 @@ class LuaExpression:
         """
         Print the lua code for the expression
         """
-        return (f'{self.object_.print_lua()}:{self.method.print_lua()}('
+        object_caller = f'{self.object_.print_lua()}:' if self.object_ else ''
+        return (f'{object_caller}{self.method.print_lua()}('
                 f'{", ".join(arg.print_lua() for arg in self.args)})')
+
+
+class ActionCondition(LuaExpression):
+    """
+    Represent the expression for a action. condition.
+    """
+
+    def __init__(self, condition, to_self=False):
+        self.condition = condition
+        self.to_self = to_self
+        if to_self:
+            call = condition.condition_list()[0]
+        else:
+            call = condition.condition_list()[2]
+        object_, method, args = getattr(self, call)()
+        super().__init__(object_, method, args)
+
+    def action_object(self):
+        """
+        The object of the action, depending on whether the action is applied to
+        self (i.e. the execution) or not.
+        """
+        if self.to_self:
+            return self.condition.parent_action.execution().object_()
+        else:
+            return Spell(self.condition.parent_action,
+                         self.condition.condition_list()[1])
+
+    def recharge_time(self):
+        """
+        Return the arguments for the expression action.spell.recharge_time.
+        """
+        object_ = self.action_object()
+        method = Method('RechargeP')
+        args = []
+        return object_, method, args
+
+    def cast_time(self):
+        """
+        Return the arguments for the expression action.spell.cast_time.
+        """
+        object_ = self.action_object()
+        method = Method('CastTime')
+        args = []
+        return object_, method, args
+
+    def charges(self):
+        """
+        Return the arguments for the expression action.spell.charges.
+        """
+        object_ = self.action_object()
+        method = Method('ChargesP')
+        args = []
+        return object_, method, args
+
+
+class GCD(LuaExpression):
+    """
+    Represent the expression for a gcd. condition.
+    """
+
+    def __init__(self, condition):
+        self.condition = condition
+        if len(condition.condition_list()) > 1:
+            call = condition.condition_list()[1]
+        else:
+            call = 'value'
+        object_, method, args = getattr(self, call)()
+        super().__init__(object_, method, args)
+
+    def remains(self):
+        """
+        Return the arguments for the expression gcd.deficit.
+        """
+        object_ = self.condition.parent_action.player
+        method = Method('GCDRemains')
+        args = []
+        return object_, method, args
+
+    def value(self):
+        """
+        Return the arguments for the expression gcd.
+        """
+        object_ = self.condition.parent_action.player
+        method = Method('GCD')
+        args = []
+        return object_, method, args
 
 
 class Rune(LuaExpression):
@@ -1112,14 +1274,14 @@ class Rune(LuaExpression):
     def __init__(self, condition):
         self.condition = condition
         call = condition.condition_list()[1]
-        object_, method, args = getattr(self, call)(condition)
+        object_, method, args = getattr(self, call)()
         super().__init__(object_, method, args)
 
-    def time_to_3(self, condition):
+    def time_to_3(self):
         """
         Return the arguments for the expression rune.time_to_3.
         """
-        object_ = condition.action.player
+        object_ = self.condition.parent_action.player
         method = Method('RuneTimeToX')
         args = [Literal('3')]
         return object_, method, args
@@ -1133,14 +1295,15 @@ class Talent(LuaExpression):
     def __init__(self, condition):
         self.condition = condition
         call = condition.condition_list()[2]
-        object_, method, args = getattr(self, call)(condition)
+        object_, method, args = getattr(self, call)()
         super().__init__(object_, method, args)
 
-    def enabled(self, condition):
+    def enabled(self):
         """
         Return the arguments for the expression talent.spell.enabled.
         """
-        object_ = Spell(self.condition.action, condition.condition_list()[1])
+        object_ = Spell(self.condition.parent_action,
+                        self.condition.condition_list()[1])
         method = Method('IsAvailable')
         args = []
         return object_, method, args
@@ -1153,29 +1316,115 @@ class RunicPower(LuaExpression):
 
     def __init__(self, condition):
         self.condition = condition
-        if len(condition.condition_list()) >= 2:
+        if len(condition.condition_list()) > 1:
             call = condition.condition_list()[1]
         else:
             call = 'value'
-        object_, method, args = getattr(self, call)(condition)
+        object_, method, args = getattr(self, call)()
         super().__init__(object_, method, args)
 
-    def deficit(self, condition):
+    def deficit(self):
         """
         Return the arguments for the expression runic_power.deficit.
         """
-        object_ = condition.action.player
+        object_ = self.condition.parent_action.player
         method = Method('RunicPowerDeficit')
         args = []
         return object_, method, args
 
-    def value(self, condition):
+    def value(self):
         """
         Return the arguments for the expression runic_power.
         """
-        object_ = condition.action.player
+        object_ = self.condition.parent_action.player
         method = Method('RunicPower')
         args = []
+        return object_, method, args
+
+
+class Fury(LuaExpression):
+    """
+    Represent the expression for a fury. condition.
+    """
+
+    def __init__(self, condition):
+        self.condition = condition
+        if len(condition.condition_list()) > 1:
+            call = condition.condition_list()[1]
+        else:
+            call = 'value'
+        object_, method, args = getattr(self, call)()
+        super().__init__(object_, method, args)
+
+    def deficit(self):
+        """
+        Return the arguments for the expression fury.deficit.
+        """
+        object_ = self.condition.parent_action.player
+        method = Method('FuryDeficit')
+        args = []
+        return object_, method, args
+
+    def value(self):
+        """
+        Return the arguments for the expression fury.
+        """
+        object_ = self.condition.parent_action.player
+        method = Method('Fury')
+        args = []
+        return object_, method, args
+
+
+class Debuff(LuaExpression):
+    """
+    Represent the expression for a debuff. condition.
+    """
+
+    def __init__(self, condition):
+        self.condition = condition
+        call = condition.condition_list()[2]
+        call = 'ready' if call == 'up' else call
+        object_, method, args = getattr(self, call)()
+        super().__init__(object_, method, args)
+
+    def ready(self):
+        """
+        Return the arguments for the expression debuff.spell.up.
+        """
+        object_ = self.condition.parent_action.player
+        method = Method('Debuff')
+        args = [Spell(self.condition.parent_action,
+                      self.condition.condition_list()[1], DEBUFF)]
+        return object_, method, args
+
+    def down(self):
+        """
+        Return the arguments for the expression debuff.spell.down.
+        """
+        object_ = self.condition.parent_action.player
+        method = Method('DebuffDown')
+        args = [Spell(self.condition.parent_action,
+                      self.condition.condition_list()[1], DEBUFF)]
+        return object_, method, args
+
+    def stack(self):
+        """
+        Return the arguments for the expression debuff.spell.stack.
+        """
+        object_ = self.condition.parent_action.player
+        method = Method('DebuffStack')
+        args = [Spell(self.condition.parent_action,
+                      self.condition.condition_list()[1], DEBUFF)]
+        return object_, method, args
+
+    def remains(self):
+        """
+        Return the arguments for the expression debuff.spell.remains.
+        """
+        object_ = self.condition.parent_action.player
+        method = Method('DebuffRemains')
+        args = [Spell(self.condition.parent_action,
+                      self.condition.condition_list()[1], DEBUFF)]
         return object_, method, args
 
 
@@ -1187,37 +1436,48 @@ class Buff(LuaExpression):
     def __init__(self, condition):
         self.condition = condition
         call = condition.condition_list()[2]
-        object_, method, args = getattr(self, call)(condition)
+        call = 'ready' if call == 'up' else call
+        object_, method, args = getattr(self, call)()
         super().__init__(object_, method, args)
 
-    def up(self, condition):
+    def ready(self):
         """
         Return the arguments for the expression buff.spell.up.
         """
-        object_ = condition.action.player
+        object_ = self.condition.parent_action.player
         method = Method('Buff')
-        args = [Spell(self.condition.action,
-                      condition.condition_list()[1], BUFF)]
+        args = [Spell(self.condition.parent_action,
+                      self.condition.condition_list()[1], BUFF)]
         return object_, method, args
 
-    def stack(self, condition):
+    def down(self):
+        """
+        Return the arguments for the expression buff.spell.down.
+        """
+        object_ = self.condition.parent_action.player
+        method = Method('BuffDown')
+        args = [Spell(self.condition.parent_action,
+                      self.condition.condition_list()[1], BUFF)]
+        return object_, method, args
+
+    def stack(self):
         """
         Return the arguments for the expression buff.spell.stack.
         """
-        object_ = condition.action.player
+        object_ = self.condition.parent_action.player
         method = Method('BuffStack')
-        args = [Spell(self.condition.action,
-                      condition.condition_list()[1], BUFF)]
+        args = [Spell(self.condition.parent_action,
+                      self.condition.condition_list()[1], BUFF)]
         return object_, method, args
 
-    def remains(self, condition):
+    def remains(self):
         """
         Return the arguments for the expression buff.spell.remains.
         """
-        object_ = condition.action.player
+        object_ = self.condition.parent_action.player
         method = Method('BuffRemains')
-        args = [Spell(self.condition.action,
-                      condition.condition_list()[1], BUFF)]
+        args = [Spell(self.condition.parent_action,
+                      self.condition.condition_list()[1], BUFF)]
         return object_, method, args
 
 
@@ -1228,25 +1488,55 @@ class Cooldown(LuaExpression):
 
     def __init__(self, condition):
         self.condition = condition
-        call = condition.condition_list()[2]
-        object_, method, args = getattr(self, call)(condition)
+        if len(condition.condition_list()) > 2:
+            call = condition.condition_list()[2]
+        else:
+            call = 'remains'
+        call = 'ready' if call == 'up' else call
+        object_, method, args = getattr(self, call)()
         super().__init__(object_, method, args)
 
-    def ready(self, condition):
+    def ready(self):
         """
         Return the arguments for the expression cooldown.spell.ready.
         """
-        object_ = Spell(self.condition.action, condition.condition_list()[1])
+        object_ = Spell(self.condition.parent_action,
+                        self.condition.condition_list()[1])
         method = Method('IsReady')
         args = []
         return object_, method, args
 
-    def remains(self, condition):
+    def remains(self):
         """
         Return the arguments for the expression cooldown.spell.remains.
         """
-        object_ = Spell(self.condition.action, condition.condition_list()[1])
+        if len(self.condition.condition_list()) > 1:
+            object_ = Spell(self.condition.parent_action,
+                            self.condition.condition_list()[1])
+        else:
+            object_ = self.condition.parent_action.execution().object_()
         method = Method('CooldownRemainsP')
+        args = []
+        return object_, method, args
+
+
+class TargetCondition(LuaExpression):
+    """
+    Represent the expression for a target. condition.
+    """
+
+    def __init__(self, condition):
+        self.condition = condition
+        call = condition.condition_list()[1]
+        object_, method, args = getattr(self, call)()
+        super().__init__(object_, method, args)
+
+    def time_to_die(self):
+        """
+        Return the arguments for the expression cooldown.spell.ready.
+        """
+        object_ = self.condition.parent_action.target
+        method = Method('TimeToDie')
         args = []
         return object_, method, args
 
@@ -1291,4 +1581,4 @@ def main(simc_profile, lua_file):
 
 
 if __name__ == '__main__':
-    main('test_profile.simc', 'test_profile.lua')
+    main('test_profile2.simc', 'test_profile2.lua')
