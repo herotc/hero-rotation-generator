@@ -1435,7 +1435,7 @@ class Debuff(LuaExpression):
         Return the arguments for the expression debuff.spell.remains.
         """
         object_ = self.condition.parent_action.player
-        method = Method('DebuffRemains')
+        method = Method('DebuffRemainsP')
         args = [Spell(self.condition.parent_action,
                       self.condition.condition_list()[1], DEBUFF)]
         return object_, method, args
@@ -1488,7 +1488,7 @@ class Buff(LuaExpression):
         Return the arguments for the expression buff.spell.remains.
         """
         object_ = self.condition.parent_action.player
-        method = Method('BuffRemains')
+        method = Method('BuffRemainsP')
         args = [Spell(self.condition.parent_action,
                       self.condition.condition_list()[1], BUFF)]
         return object_, method, args
