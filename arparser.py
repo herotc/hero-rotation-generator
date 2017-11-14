@@ -100,6 +100,7 @@ SPELL = 'spell'
 BUFF = 'buff'
 DEBUFF = 'debuff'
 POTION = 'potion'
+VARIABLE = 'variable'
 RUN_ACTION_LIST = 'run_action_list'
 CALL_ACTION_LIST = 'call_action_list'
 
@@ -442,16 +443,28 @@ class Action:
         execution_string = self.split_simc()[0]
         return Execution(self, execution_string)
 
+    def get_expression(self, key):
+        """
+        Return an expression from the name of the key to parse.
+        """
+        if key in self.properties():
+            condition_expression = self.properties()[key]
+        else:
+            condition_expression = ''
+        return ConditionExpression(self, condition_expression)
+
     def condition_expression(self):
         """
         Return the condition expression of the action (the thing to test
         before doing the execution).
         """
-        if 'if' in self.properties():
-            condition_expression = self.properties()['if']
-        else:
-            condition_expression = ''
-        return ConditionExpression(self, condition_expression)
+        return self.get_expression('if')
+
+    def value_expression(self):
+        """
+        Return the value expression of the action (for a variable).
+        """
+        return self.get_expression('value')
 
     def condition_tree(self):
         """
@@ -460,27 +473,14 @@ class Action:
         """
         return self.condition_expression().grow()
 
-    # Is this useful?
-    def type_(self):
-        """
-        Return the type of the execution.
-        """
-        if self.execution().execution in ITEM_ACTIONS:
-            return ActionType('item')
-        else:
-            return ActionType('spell')
+    def value_tree(self):
+        return self.value_expression().grow()
 
     def print_lua(self):
         """
         Print the lua code for the action.
         """
-        exec_cond = self.execution().print_lua_condition()
-        cond_link = ' and ' if exec_cond != '' else ''
-        if_cond = self.condition_tree().print_lua()
-        exec_cast = self.execution().print_lua_cast()
-        return ('if {}{}({}) then\n'
-                '  {}\n'
-                'end').format(exec_cond, cond_link, if_cond, exec_cast)
+        return self.execution().type_.print_lua_closure()(self)
 
 
 class Execution:
@@ -492,44 +492,63 @@ class Execution:
     def __init__(self, action, execution):
         self.action = action
         self.execution = execution
+        self.object_ = None
+        self.type_ = None
+        self.build_object()
 
-    def object_(self):
+    def build_object(self):
         """
         Return the object of the execution
         """
         if self.execution == POTION:
-            return Potion(self.action)
+            self.type_ = ExecutionType('item')
+            self.object_ = Potion(self.action)
         elif self.execution in ITEM_ACTIONS:
-            return Item(self.action, self.execution)
+            self.type_ = ExecutionType('item')
+            self.object_ = Item(self.action, self.execution)
+        elif self.execution == VARIABLE:
+            self.type_ = ExecutionType('variable')
+            variable_name = self.action.properties()['name']
+            self.object_ = Variable(self.action, variable_name)
         elif self.execution == RUN_ACTION_LIST:
+            self.type_ = ExecutionType('run_action_list')
             action_list_name = self.action.properties()['name']
-            return RunActionList(self.action, action_list_name)
+            self.object_ = RunActionList(self.action, action_list_name)
         elif self.execution == CALL_ACTION_LIST:
+            self.type_ = ExecutionType('call_action_list')
             action_list_name = self.action.properties()['name']
-            return CallActionList(self.action, action_list_name)
-        return Spell(self.action, self.execution)
-
-    def print_lua_condition(self):
-        """
-        Print the lua code for the condition of the execution.
-        """
-        conditions = self.object_().conditions()
-        return ' and '.join(condition.print_lua() for condition in conditions)
-
-    def print_lua_cast(self):
-        """
-        Print the representation of the action
-        """
-        return self.object_().print_cast()
+            self.object_ = CallActionList(self.action, action_list_name)
+        else:
+            self.type_ = ExecutionType('spell')
+            self.object_ = Spell(self.action, self.execution)
 
 
-class ActionType:
+class ExecutionType:
     """
     Represent the type of an action.
     """
 
     def __init__(self, type_):
         self.type_ = type_
+    
+    def print_lua_closure(self):
+        if self.type_ == VARIABLE:
+            def print_lua(action):
+                fun_name = action.execution().object_.print_lua()
+                var_value = action.value_tree().print_lua()
+                return ('local function {}()\n'
+                        '  return {};\n'
+                        'end').format(fun_name, var_value)
+        else:
+            def print_lua(action):
+                exec_cond = action.execution().object_.print_conditions()
+                cond_link = ' and ' if exec_cond != '' else ''
+                if_cond = action.condition_tree().print_lua()
+                exec_cast = action.execution().object_.print_cast()
+                return ('if {}{}({}) then\n'
+                        '  {}\n'
+                        'end').format(exec_cond, cond_link, if_cond, exec_cast)
+        return print_lua
 
 
 class BinaryOperator:
@@ -808,6 +827,13 @@ class LuaCastable:
         """
         return [self.condition()] + self.additional_conditions()
 
+    def print_conditions(self):
+        """
+        Print the lua code for the condition of the execution.
+        """
+        return ' and '.join(condition.print_lua()
+                            for condition in self.conditions())
+
     def cast_method(self):
         """
         The method to call when executing the action.
@@ -915,6 +941,20 @@ class CallActionList(LuaNamed, LuaCastable):
     def cast_template(self):
         return ('local ShouldReturn = {}; '
                 'if ShouldReturn then return ShouldReturn; end')
+
+
+class Variable(LuaNamed):
+    """
+    The class to handle a variable action; this creates a new variable as a
+    local function to compute a value used afterwards.
+    """
+
+    def __init__(self, action, simc):
+        super().__init__(simc)
+        self.action = action
+
+    def print_lua(self):
+        return f'{self.lua_name()}'
 
 
 class Spell(LuaNamed, LuaCastable):

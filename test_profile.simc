@@ -29,7 +29,7 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
 
 # Executed every time the actor is available.
-actions=auto_attack
+actions=variable,name=waiting_for_nemesis,value=!(!talent.nemesis.enabled|cooldown.nemesis.ready|cooldown.nemesis.remains>target.time_to_die|cooldown.nemesis.remains>60)
 actions+=/mind_freeze
 actions+=/arcane_torrent,if=runic_power.deficit>20
 actions+=/blood_fury

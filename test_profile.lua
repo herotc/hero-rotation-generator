@@ -1,6 +1,6 @@
 local function Apl()
-  if S.AutoAttack:IsCastable() and (true) then
-    if AR:Cast(S.AutoAttack) then return ""; end
+  local function WaitingForNemesis()
+    return not (not S.Nemesis:IsAvailable() or S.Nemesis:IsReady() or S.Nemesis:CooldownRemainsP() > target.time_to_die or S.Nemesis:CooldownRemainsP() > 60);
   end
   if S.MindFreeze:IsCastable("melee") and Settings.General.InterruptEnabled and Target:IsInterruptible() and (true) then
     if AR:CastAnnotated(S.MindFreeze, false, "Interrupt") then return ""; end
@@ -27,7 +27,7 @@ local function Apl()
     if AR:Cast(S.VampiricBlood) then return ""; end
   end
   if (true) then
-    return Standard()
+    local ShouldReturn = Standard(); if ShouldReturn then return ShouldReturn; end
   end
 end
 local function Standard()
