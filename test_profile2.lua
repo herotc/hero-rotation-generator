@@ -21,7 +21,7 @@ local function Apl()
       if AR:Cast(S.ChaosBlades) then return ""; end
     end
     -- potion,if=buff.metamorphosis.remains>25|target.time_to_die<30
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffRemains(S.MetamorphosisBuff) > 25 or Target:TimeToDie() < 30) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffRemainsP(S.MetamorphosisBuff) > 25 or Target:TimeToDie() < 30) then
       if AR:CastSuggested(I.ProlongedPower) then return ""; end
     end
   end
@@ -67,11 +67,11 @@ local function Apl()
       if AR:Cast(S.Felblade) then return ""; end
     end
     -- eye_beam,if=spell_targets.eye_beam_tick>desired_targets|!buff.metamorphosis.extended_by_demonic|(set_bonus.tier21_4pc&buff.metamorphosis.remains>8)
-    if S.EyeBeam:IsCastable() and (spell_targets.eye_beam_tick > desired_targets or not buff.metamorphosis.extended_by_demonic or (set_bonus.tier21_4pc and Player:BuffRemains(S.MetamorphosisBuff) > 8)) then
+    if S.EyeBeam:IsCastable() and (spell_targets.eye_beam_tick > desired_targets or not buff.metamorphosis.extended_by_demonic or (set_bonus.tier21_4pc and Player:BuffRemainsP(S.MetamorphosisBuff) > 8)) then
       if AR:Cast(S.EyeBeam) then return ""; end
     end
     -- annihilation,if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance
-    if S.Annihilation:IsCastable() and ((not S.Momentum:IsAvailable() or Player:Buff(S.MomentumBuff) or Player:FuryDeficit() < 30 + Player:Buff(S.PreparedBuff) * 8 or Player:BuffRemains(S.MetamorphosisBuff) < 5) and not PoolingForBladeDance()) then
+    if S.Annihilation:IsCastable() and ((not S.Momentum:IsAvailable() or Player:Buff(S.MomentumBuff) or Player:FuryDeficit() < 30 + Player:Buff(S.PreparedBuff) * 8 or Player:BuffRemainsP(S.MetamorphosisBuff) < 5) and not PoolingForBladeDance()) then
       if AR:Cast(S.Annihilation) then return ""; end
     end
     -- throw_glaive,if=talent.bloodlet.enabled&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&raid_event.adds.in>recharge_time+cooldown
@@ -161,7 +161,7 @@ local function Apl()
       if AR:Cast(S.EyeBeam) then return ""; end
     end
     -- annihilation,if=(talent.demon_blades.enabled|!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance
-    if S.Annihilation:IsCastable() and ((S.DemonBlades:IsAvailable() or not S.Momentum:IsAvailable() or Player:Buff(S.MomentumBuff) or Player:FuryDeficit() < 30 + Player:Buff(S.PreparedBuff) * 8 or Player:BuffRemains(S.MetamorphosisBuff) < 5) and not PoolingForBladeDance()) then
+    if S.Annihilation:IsCastable() and ((S.DemonBlades:IsAvailable() or not S.Momentum:IsAvailable() or Player:Buff(S.MomentumBuff) or Player:FuryDeficit() < 30 + Player:Buff(S.PreparedBuff) * 8 or Player:BuffRemainsP(S.MetamorphosisBuff) < 5) and not PoolingForBladeDance()) then
       if AR:Cast(S.Annihilation) then return ""; end
     end
     -- throw_glaive,if=talent.bloodlet.enabled&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&raid_event.adds.in>recharge_time+cooldown
