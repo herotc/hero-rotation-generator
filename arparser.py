@@ -148,7 +148,14 @@ class APL:
         self.profile_name = ''
         self.parsed = True
         self.apl_simc = ''
+        self.show_comments = True
         self.action_lists_simc = OrderedDict()
+    
+    def hide_simc_comments(self):
+        """
+        Hide the default commented simc lines to the printed lua code.
+        """
+        self.show_comments = False
 
     def set_simc_lines(self, simc_lines):
         """
@@ -408,6 +415,7 @@ class ActionList:
     def __init__(self, apl, simc, name='APL'):
         self.player = apl.player
         self.target = apl.target
+        self.show_comments = apl.show_comments
         self.simc = simc
         self.name = LuaNamed(name)
 
@@ -452,6 +460,7 @@ class Action:
         self.action_list = action_list
         self.player = action_list.player
         self.target = action_list.target
+        self.show_comments = action_list.show_comments
         self.simc = simc
 
     def split_simc(self):
@@ -523,20 +532,24 @@ class Action:
         """
         Print the lua expression of the action.
         """
+        lua_string = ''
+        if self.show_comments:
+            lua_string += f'-- {self.simc}\n'
         if self.execution().type_() == VARIABLE:
             fun_name = self.execution().object_().print_lua()
             var_value = self.value_tree().print_lua()
-            return (f'local function {fun_name}()\n'
-                    f'  return {var_value};\n'
-                    f'end')
+            lua_string += (f'local function {fun_name}()\n'
+                           f'  return {var_value};\n'
+                           f'end')
         else:
             exec_cond = self.execution().object_().print_conditions()
             cond_link = ' and ' if exec_cond != '' else ''
             if_cond = self.condition_tree().print_lua()
             exec_cast = self.execution().object_().print_cast()
-            return (f'if {exec_cond}{cond_link}({if_cond}) then\n'
-                    f'  {exec_cast}\n'
-                    f'end')
+            lua_string += (f'if {exec_cond}{cond_link}({if_cond}) then\n'
+                           f'  {exec_cast}\n'
+                           f'end')
+        return lua_string
 
 
 class Execution:
