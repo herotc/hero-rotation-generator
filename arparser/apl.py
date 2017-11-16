@@ -12,15 +12,6 @@ from .helpers import indent
 from .constants import (CLASS_SPECS, IGNORED_ACTION_LISTS)
 
 
-def main(simc_profile, lua_file):
-    """
-    Function to process if ARParser is used as a script.
-    """
-    apl = APL()
-    apl.read_profile(simc_profile)
-    apl.export_lua(lua_file)
-
-
 class APL:
     """
     The main class representing an Action Priority List (or simc profile),
