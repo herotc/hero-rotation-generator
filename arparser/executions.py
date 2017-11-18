@@ -61,7 +61,7 @@ class Castable:
         """
         The method to call when executing the action.
         """
-        return Method('Cast')
+        return Method('AR.Cast')
 
     def cast_args(self):
         """
@@ -73,8 +73,7 @@ class Castable:
         """
         Return the LuaExpression to cast the action.
         """
-        return LuaExpression(Literal('AR'),
-                             self.cast_method(), self.cast_args())
+        return LuaExpression(None, self.cast_method(), self.cast_args())
 
     def cast_template(self):
         """
@@ -103,7 +102,7 @@ class Item(LuaNamed, Castable):
         return Method('IsReady')
 
     def cast_method(self):
-        return Method('CastSuggested')
+        return Method('AR.CastSuggested')
 
     def print_lua(self):
         """
@@ -211,8 +210,8 @@ class Spell(LuaNamed, Castable):
 
     def cast_method(self):
         if self.simc in INTERRUPT_SKILLS:
-            return Method('CastAnnotated')
-        return Method('Cast')
+            return Method('AR.CastAnnotated')
+        return Method('AR.Cast')
 
     def cast_args(self):
         args = [self]
