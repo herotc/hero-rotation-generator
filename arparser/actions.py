@@ -139,6 +139,32 @@ class Action:
         """
         return self.value_expression().grow()
 
+    def print_exec(self):
+        """
+        Print the execution line of the action.
+        """
+        if 'op' in self.properties():
+            operation = self.properties()['op']
+        else:
+            operation = 'set'
+        if operation == 'set':
+            exec_cast = self.execution().object_().print_cast()
+            exec_value = self.value_tree().print_lua()
+            exec_link = ' = ' if exec_value != '' else ''
+            return f'{exec_cast}{exec_link}{exec_value}'
+        elif operation == 'reset':
+            exec_cast = self.execution().object_().print_cast()
+            exec_default = self.execution().object_().default
+            return f'{exec_cast} = {exec_default}'
+        elif operation == 'max':
+            exec_cast = self.execution().object_().print_cast()
+            exec_value = self.value_tree().print_lua()
+            return f'{exec_cast} = math.max({exec_cast}, {exec_value})'
+        elif operation == 'min':
+            exec_cast = self.execution().object_().print_cast()
+            exec_value = self.value_tree().print_lua()
+            return f'{exec_cast} = math.min({exec_cast}, {exec_value})'
+
     def print_lua(self):
         """
         Print the lua expression of the action.
@@ -149,11 +175,8 @@ class Action:
         exec_cond = self.execution().object_().print_conditions()
         cond_link = ' and ' if exec_cond != '' else ''
         if_cond = self.condition_tree().print_lua()
-        exec_cast = self.execution().object_().print_cast()
-        exec_value = self.value_tree().print_lua()
-        exec_link = ' = ' if exec_value != '' else ''
         lua_string += (f'if {exec_cond}{cond_link}({if_cond}) then\n'
-                       f'  {exec_cast}{exec_link}{exec_value}\n'
+                       f'  {self.print_exec()}\n'
                        f'end')
         return lua_string
 

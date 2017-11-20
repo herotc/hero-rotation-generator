@@ -113,8 +113,8 @@ class Context:
         Print the variables object in lua context.
         """
         lua_variables = '-- Variables\n'
-        for variable in self.variables.values():
-            lua_variables += f'local {variable.lua_name()};\n'
+        for var in self.variables.values():
+            lua_variables += f'local {var.lua_name()} = {var.default};\n'
         return lua_variables
 
     def print_custom_code(self):

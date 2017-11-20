@@ -75,12 +75,12 @@ local Settings = {
 };
 
 -- Variables
-local WaitingForNemesis;
-local WaitingForChaosBlades;
-local PoolingForMeta;
-local BladeDance;
-local PoolingForBladeDance;
-local PoolingForChaosStrike;
+local WaitingForNemesis = 0;
+local WaitingForChaosBlades = 0;
+local PoolingForMeta = 0;
+local BladeDance = 0;
+local PoolingForBladeDance = 0;
+local PoolingForChaosStrike = 0;
 
 local function IsInMeleeRange()
   if S.Felblade:TimeSinceLastCast() <= Player:GCD() then

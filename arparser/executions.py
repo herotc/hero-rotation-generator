@@ -175,6 +175,10 @@ class Variable(LuaNamed, Castable):
     def __init__(self, action, simc):
         super().__init__(simc)
         self.action = action
+        if 'default' in action.properties():
+            self.default = action.properties()['default']
+        else:
+            self.default = '0'
         self.action.context.add_variable(self)
 
     def print_conditions(self):

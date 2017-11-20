@@ -66,7 +66,7 @@ local Settings = {
 };
 
 -- Variables
-local WaitingForNemesis;
+local WaitingForNemesis = 0;
 
 --- ======= ACTION LISTS =======
 local function Apl()
