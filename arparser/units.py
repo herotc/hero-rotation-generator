@@ -6,6 +6,7 @@ Define the objects representing simc units.
 """
 
 from .lua import LuaNamed
+from .modifiers import class_specific_context
 from .constants import (CLASS_SPECS, RACES)
 
 
@@ -14,11 +15,12 @@ class Player:
     Define a player as the main actor of a simulation.
     """
 
-    def __init__(self, simc):
+    def __init__(self, simc, apl):
         self.class_ = PlayerClass(simc)
         self.spec = None
         self.level = 110
         self.race = None
+        self.apl = apl
 
     def potion(self):
         """
@@ -26,6 +28,7 @@ class Player:
         """
         return self.spec.potion()
 
+    @class_specific_context
     def set_spec(self, spec):
         """
         Sets the spec of the player.

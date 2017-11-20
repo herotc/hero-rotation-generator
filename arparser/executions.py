@@ -6,8 +6,9 @@ Define the objects representing simc executions.
 """
 
 from .lua import LuaNamed, LuaExpression, Literal, Method
+from .modifiers import class_specific_conditions
 from .constants import (SPELL, BUFF, DEBUFF,
-                        USABLE_SKILLS, MELEE_SKILLS, INTERRUPT_SKILLS,
+                        USABLE_SKILLS, INTERRUPT_SKILLS,
                         GCD_AS_OFF_GCD, OFF_GCD_AS_OFF_GCD)
 
 
@@ -208,10 +209,9 @@ class Spell(LuaNamed, Castable):
         return Method('IsCastable')
 
     def condition_args(self):
-        if self.simc in MELEE_SKILLS:
-            return [Literal('"melee"')]
         return [self]
 
+    @class_specific_conditions
     def additional_conditions(self):
         if self.simc in INTERRUPT_SKILLS:
             return [Literal('Settings.General.InterruptEnabled'),

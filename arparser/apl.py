@@ -151,7 +151,7 @@ class APL:
         """
         Set a player as the main actor of the APL.
         """
-        self.player = Player(simc)
+        self.player = Player(simc, self)
         self.context.set_player(self.player)
 
     def set_target(self, simc):

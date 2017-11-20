@@ -130,7 +130,7 @@ local function Apl()
     return not (not S.Nemesis:IsAvailable() or S.Nemesis:IsReady() or S.Nemesis:CooldownRemainsP() > Target:TimeToDie() or S.Nemesis:CooldownRemainsP() > 60);
   end
   -- mind_freeze
-  if S.MindFreeze:IsCastable("melee") and Settings.General.InterruptEnabled and Target:IsInterruptible() and (true) then
+  if S.MindFreeze:IsCastable(S.MindFreeze) and Settings.General.InterruptEnabled and Target:IsInterruptible() and (true) then
     if AR.CastAnnotated(S.MindFreeze, false, "Interrupt") then return ""; end
   end
   -- arcane_torrent,if=runic_power.deficit>20

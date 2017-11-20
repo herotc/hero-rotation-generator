@@ -54,6 +54,9 @@ INTERRUPT_SKILLS = [
 # Skills for which "melee" must be specified as an argument of IsCastable
 MELEE_SKILLS = [
     'mind_freeze',
+    'annihilation',
+    'chaos_strike',
+    'demons_bite',
 ]
 
 CD_SKILLS = [

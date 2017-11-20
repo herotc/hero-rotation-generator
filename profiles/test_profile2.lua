@@ -74,6 +74,15 @@ local Settings = {
   Havoc = AR.GUISettings.APL.DemonHunter.Havoc,
 };
 
+local function IsInMeleeRange()
+  if S.Felblade:TimeSinceLastCast() <= Player:GCD() then
+    return true
+  elseif S.VengefulRetreat:TimeSinceLastCast() < 1.0 then
+    return false
+  end
+  return Target:IsInRange("Melee")
+end
+
 --- ======= ACTION LISTS =======
 local function Apl()
   local function Cooldown()
@@ -148,7 +157,7 @@ local function Apl()
       if AR.Cast(S.EyeBeam) then return ""; end
     end
     -- annihilation,if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance
-    if S.Annihilation:IsCastable(S.Annihilation) and ((not S.Momentum:IsAvailable() or Player:Buff(S.MomentumBuff) or Player:FuryDeficit() < 30 + Player:Buff(S.PreparedBuff) * 8 or Player:BuffRemainsP(S.MetamorphosisBuff) < 5) and not PoolingForBladeDance()) then
+    if S.Annihilation:IsCastable(S.Annihilation) and IsInMeleeRange() and ((not S.Momentum:IsAvailable() or Player:Buff(S.MomentumBuff) or Player:FuryDeficit() < 30 + Player:Buff(S.PreparedBuff) * 8 or Player:BuffRemainsP(S.MetamorphosisBuff) < 5) and not PoolingForBladeDance()) then
       if AR.Cast(S.Annihilation) then return ""; end
     end
     -- throw_glaive,if=talent.bloodlet.enabled&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&raid_event.adds.in>recharge_time+cooldown
@@ -156,7 +165,7 @@ local function Apl()
       if AR.Cast(S.ThrowGlaive) then return ""; end
     end
     -- chaos_strike,if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8)&!variable.pooling_for_chaos_strike&!variable.pooling_for_meta&!variable.pooling_for_blade_dance
-    if S.ChaosStrike:IsCastable(S.ChaosStrike) and ((not S.Momentum:IsAvailable() or Player:Buff(S.MomentumBuff) or Player:FuryDeficit() < 30 + Player:Buff(S.PreparedBuff) * 8) and not PoolingForChaosStrike() and not PoolingForMeta() and not PoolingForBladeDance()) then
+    if S.ChaosStrike:IsCastable(S.ChaosStrike) and IsInMeleeRange() and ((not S.Momentum:IsAvailable() or Player:Buff(S.MomentumBuff) or Player:FuryDeficit() < 30 + Player:Buff(S.PreparedBuff) * 8) and not PoolingForChaosStrike() and not PoolingForMeta() and not PoolingForBladeDance()) then
       if AR.Cast(S.ChaosStrike) then return ""; end
     end
     -- fel_rush,if=!talent.momentum.enabled&(buff.metamorphosis.down|talent.demon_blades.enabled)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
@@ -164,7 +173,7 @@ local function Apl()
       if AR.Cast(S.FelRush) then return ""; end
     end
     -- demons_bite
-    if S.DemonsBite:IsCastable(S.DemonsBite) and (true) then
+    if S.DemonsBite:IsCastable(S.DemonsBite) and IsInMeleeRange() and (true) then
       if AR.Cast(S.DemonsBite) then return ""; end
     end
     -- throw_glaive,if=buff.out_of_range.up|!talent.bloodlet.enabled
@@ -238,7 +247,7 @@ local function Apl()
       if AR.Cast(S.EyeBeam) then return ""; end
     end
     -- annihilation,if=(talent.demon_blades.enabled|!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance
-    if S.Annihilation:IsCastable(S.Annihilation) and ((S.DemonBlades:IsAvailable() or not S.Momentum:IsAvailable() or Player:Buff(S.MomentumBuff) or Player:FuryDeficit() < 30 + Player:Buff(S.PreparedBuff) * 8 or Player:BuffRemainsP(S.MetamorphosisBuff) < 5) and not PoolingForBladeDance()) then
+    if S.Annihilation:IsCastable(S.Annihilation) and IsInMeleeRange() and ((S.DemonBlades:IsAvailable() or not S.Momentum:IsAvailable() or Player:Buff(S.MomentumBuff) or Player:FuryDeficit() < 30 + Player:Buff(S.PreparedBuff) * 8 or Player:BuffRemainsP(S.MetamorphosisBuff) < 5) and not PoolingForBladeDance()) then
       if AR.Cast(S.Annihilation) then return ""; end
     end
     -- throw_glaive,if=talent.bloodlet.enabled&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&raid_event.adds.in>recharge_time+cooldown
@@ -250,7 +259,7 @@ local function Apl()
       if AR.Cast(S.ThrowGlaive) then return ""; end
     end
     -- chaos_strike,if=(talent.demon_blades.enabled|!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8)&!variable.pooling_for_chaos_strike&!variable.pooling_for_meta&!variable.pooling_for_blade_dance
-    if S.ChaosStrike:IsCastable(S.ChaosStrike) and ((S.DemonBlades:IsAvailable() or not S.Momentum:IsAvailable() or Player:Buff(S.MomentumBuff) or Player:FuryDeficit() < 30 + Player:Buff(S.PreparedBuff) * 8) and not PoolingForChaosStrike() and not PoolingForMeta() and not PoolingForBladeDance()) then
+    if S.ChaosStrike:IsCastable(S.ChaosStrike) and IsInMeleeRange() and ((S.DemonBlades:IsAvailable() or not S.Momentum:IsAvailable() or Player:Buff(S.MomentumBuff) or Player:FuryDeficit() < 30 + Player:Buff(S.PreparedBuff) * 8) and not PoolingForChaosStrike() and not PoolingForMeta() and not PoolingForBladeDance()) then
       if AR.Cast(S.ChaosStrike) then return ""; end
     end
     -- fel_rush,if=!talent.momentum.enabled&raid_event.movement.in>charges*10&(talent.demon_blades.enabled|buff.metamorphosis.down)
@@ -258,7 +267,7 @@ local function Apl()
       if AR.Cast(S.FelRush) then return ""; end
     end
     -- demons_bite
-    if S.DemonsBite:IsCastable(S.DemonsBite) and (true) then
+    if S.DemonsBite:IsCastable(S.DemonsBite) and IsInMeleeRange() and (true) then
       if AR.Cast(S.DemonsBite) then return ""; end
     end
     -- throw_glaive,if=buff.out_of_range.up
