@@ -188,6 +188,40 @@ class Variable(LuaNamed, Castable):
         return f'{self.lua_name()}'
 
 
+class CancelBuff(LuaNamed, Castable):
+    """
+    The class to handle a variable action; this creates a new variable as a
+    local function to compute a value used afterwards.
+    """
+
+    def __init__(self, action, simc):
+        super().__init__(simc)
+        self.action = action
+        self.buff = Spell(action, simc, type_=BUFF)
+
+    def print_conditions(self):
+        return ''
+
+    def cast_method(self):
+        """
+        The method to call when executing the action.
+        """
+        return Method('AR.Cancel')
+
+    def cast_template(self):
+        """
+        The template of the code to execute the action; {} will be replaced by
+        the result of self.cast().print_lua().
+        """
+        return '-- if {} then return ""; end'
+
+    def print_lua(self):
+        """
+        Print the lua expression for the buff to cancel.
+        """
+        return self.buff.print_lua()
+
+
 class Spell(LuaNamed, Castable):
     """
     Represents a spell; it can be either a spell, a buff or a debuff.

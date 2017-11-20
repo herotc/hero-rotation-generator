@@ -8,9 +8,9 @@ Define the objects representing simc actions.
 from .lua import LuaNamed
 from .helpers import indent
 from .conditions import ConditionExpression
-from .executions import (Spell, Item, Potion, Variable,
+from .executions import (Spell, Item, Potion, Variable, CancelBuff,
                          RunActionList, CallActionList)
-from .constants import (SPELL, ITEM, POTION, VARIABLE,
+from .constants import (SPELL, ITEM, POTION, VARIABLE, CANCEL_BUFF,
                         RUN_ACTION_LIST, CALL_ACTION_LIST,
                         ITEM_ACTIONS)
 
@@ -202,6 +202,9 @@ class Execution:
         elif self.execution == VARIABLE:
             variable_name = self.action.properties()['name']
             type_, object_ = VARIABLE, Variable(self.action, variable_name)
+        elif self.execution == CANCEL_BUFF:
+            buff_name = self.action.properties()['name']
+            type_, object_ = CANCEL_BUFF, CancelBuff(self.action, buff_name)
         elif self.execution == RUN_ACTION_LIST:
             action_list_name = self.action.properties()['name']
             type_, object_ = (RUN_ACTION_LIST,
