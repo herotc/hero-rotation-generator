@@ -98,6 +98,20 @@ class PlayerSpec(LuaNamed):
     The player spec.
     """
 
+    DEFAULT_POTIONS = {
+        'deathknight': {
+            'blood': 'prolonged_power',
+            'frost': 'prolonged_power',
+            'unholy': 'prolonged_power',
+        },
+        'demonhunter': {
+            'havoc': 'prolonged_power',
+        },
+        'mage': {
+            'arcane': 'deadly_grace',
+        },
+    }
+
     def __init__(self, player, simc):
         try:
             assert simc in CLASS_SPECS[player.class_.simc]
@@ -110,8 +124,4 @@ class PlayerSpec(LuaNamed):
         """
         Return the potion used by a Death Knight.
         """
-        if self.player.class_.simc in ['deathknight', 'demonhunter']:
-            potion = 'prolonged_power'
-        elif self.player.class_.simc in ['mage']:
-            potion = 'deadly_grace'
-        return potion
+        return self.DEFAULT_POTIONS[self.player.class_.simc][self.simc]

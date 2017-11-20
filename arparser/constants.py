@@ -23,6 +23,8 @@ WORD_REPLACEMENTS = {
     'And': 'and',
     'Blooddrinker': 'BloodDrinker',
     'Of': 'of',
+    'Deathknight': 'DeathKnight',
+    'Demonhunter': 'DemonHunter',
 }
 
 # Define specific categories for skills

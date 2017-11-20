@@ -24,6 +24,7 @@ class ActionList:
     def __init__(self, apl, simc, name='APL'):
         self.player = apl.player
         self.target = apl.target
+        self.context = apl.context
         self.show_comments = apl.show_comments
         self.simc = simc
         self.name = LuaNamed(name)
@@ -69,6 +70,7 @@ class Action:
         self.action_list = action_list
         self.player = action_list.player
         self.target = action_list.target
+        self.context = action_list.context
         self.show_comments = action_list.show_comments
         self.simc = simc
 

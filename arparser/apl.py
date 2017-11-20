@@ -8,6 +8,7 @@ Define the APL class to represent and parse a simc profile.
 from collections import OrderedDict
 from .actions import ActionList
 from .units import Player, Target
+from .context import Context
 from .helpers import indent
 from .constants import (CLASS_SPECS, IGNORED_ACTION_LISTS)
 
@@ -27,6 +28,7 @@ class APL:
         self.apl_simc = ''
         self.show_comments = True
         self.action_lists_simc = OrderedDict()
+        self.context = Context()
 
     def hide_simc_comments(self):
         """
@@ -150,6 +152,7 @@ class APL:
         Set a player as the main actor of the APL.
         """
         self.player = Player(simc)
+        self.context.set_player(self.player)
 
     def set_target(self, simc):
         """
@@ -171,7 +174,10 @@ class APL:
         function_name = self.main_action_list().name.lua_name()
         action_lists = self.print_action_lists_lua()
         main_actions = self.main_action_list().print_actions_lua()
-        return (f'local function {function_name}()\n'
+        context = self.context.print_lua()
+        return (f'{context}'
+                f'--- ======= ACTION LISTS =======\n'
+                f'local function {function_name}()\n'
                 f'{action_lists}\n'
                 f'{main_actions}\n'
                 f'end')

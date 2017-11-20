@@ -97,6 +97,7 @@ class Item(LuaNamed, Castable):
     def __init__(self, action, simc):
         super().__init__(simc)
         self.action = action
+        self.action.context.add_item(self)
 
     def condition_method(self):
         return Method('IsReady')
@@ -186,10 +187,20 @@ class Spell(LuaNamed, Castable):
     Represents a spell; it can be either a spell, a buff or a debuff.
     """
 
+    TYPE_SUFFIX = {
+        SPELL: '',
+        BUFF: 'Buff',
+        DEBUFF: 'Debuff',
+    }
+
     def __init__(self, action, simc, type_=SPELL):
         super().__init__(simc)
         self.action = action
         self.type_ = type_
+        self.action.context.add_spell(self)
+    
+    def lua_name(self):
+        return f'{super().lua_name()}{self.TYPE_SUFFIX[self.type_]}'
 
     def condition_method(self):
         if self.simc in USABLE_SKILLS:
@@ -199,7 +210,7 @@ class Spell(LuaNamed, Castable):
     def condition_args(self):
         if self.simc in MELEE_SKILLS:
             return [Literal('"melee"')]
-        return []
+        return [self]
 
     def additional_conditions(self):
         if self.simc in INTERRUPT_SKILLS:
@@ -234,8 +245,4 @@ class Spell(LuaNamed, Castable):
         """
         Print the lua expression for the spell.
         """
-        if self.type_ == BUFF:
-            return f'S.{self.lua_name()}Buff'
-        elif self.type_ == DEBUFF:
-            return f'S.{self.lua_name()}Debuff'
         return f'S.{self.lua_name()}'
