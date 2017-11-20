@@ -71,6 +71,12 @@ class Expression:
         """
         return GCD(self)
 
+    def time(self):
+        """
+        Return the condition when the prefix is time.
+        """
+        return Time(self)
+
     def runic_power(self):
         """
         Return the condition when the prefix is runic_power.
@@ -199,6 +205,30 @@ class GCD(LuaExpression):
         """
         object_ = self.condition.parent_action.player
         method = Method('GCD')
+        args = []
+        return object_, method, args
+
+
+class Time(LuaExpression):
+    """
+    Represent the expression for a time. condition.
+    """
+
+    def __init__(self, condition):
+        self.condition = condition
+        if len(condition.condition_list()) > 1:
+            call = condition.condition_list()[1]
+        else:
+            call = 'value'
+        object_, method, args = getattr(self, call)()
+        super().__init__(object_, method, args)
+    
+    def value(self):
+        """
+        Return the arguments for the expression time.
+        """
+        object_ = None
+        method = Method('AC.CombatTime')
         args = []
         return object_, method, args
 
