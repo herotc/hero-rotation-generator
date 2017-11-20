@@ -161,7 +161,7 @@ local function Apl()
       if AR.Cast(S.Felblade) then return ""; end
     end
     -- eye_beam,if=spell_targets.eye_beam_tick>desired_targets|!buff.metamorphosis.extended_by_demonic|(set_bonus.tier21_4pc&buff.metamorphosis.remains>8)
-    if S.EyeBeam:IsCastable(S.EyeBeam) and (spell_targets.eye_beam_tick > desired_targets or not buff.metamorphosis.extended_by_demonic or (set_bonus.tier21_4pc and Player:BuffRemainsP(S.MetamorphosisBuff) > 8)) then
+    if S.EyeBeam:IsCastable(S.EyeBeam) and (spell_targets.eye_beam_tick > desired_targets or not buff.metamorphosis.extended_by_demonic or (AC.Tier21_4Pc and Player:BuffRemainsP(S.MetamorphosisBuff) > 8)) then
       if AR.Cast(S.EyeBeam) then return ""; end
     end
     -- annihilation,if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance
@@ -251,7 +251,7 @@ local function Apl()
       if AR.Cast(S.Felblade) then return ""; end
     end
     -- eye_beam,if=spell_targets.eye_beam_tick>desired_targets|(spell_targets.eye_beam_tick>=3&raid_event.adds.in>cooldown)|(talent.blind_fury.enabled&fury.deficit>=35)|set_bonus.tier21_2pc
-    if S.EyeBeam:IsCastable(S.EyeBeam) and (spell_targets.eye_beam_tick > desired_targets or (spell_targets.eye_beam_tick >= 3 and raid_event.adds.in > S.EyeBeam:CooldownRemainsP()) or (S.BlindFury:IsAvailable() and Player:FuryDeficit() >= 35) or set_bonus.tier21_2pc) then
+    if S.EyeBeam:IsCastable(S.EyeBeam) and (spell_targets.eye_beam_tick > desired_targets or (spell_targets.eye_beam_tick >= 3 and raid_event.adds.in > S.EyeBeam:CooldownRemainsP()) or (S.BlindFury:IsAvailable() and Player:FuryDeficit() >= 35) or AC.Tier21_2Pc) then
       if AR.Cast(S.EyeBeam) then return ""; end
     end
     -- annihilation,if=(talent.demon_blades.enabled|!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance
@@ -317,7 +317,7 @@ local function Apl()
   end
   -- variable,name=blade_dance,value=talent.first_blood.enabled|set_bonus.tier20_4pc|spell_targets.blade_dance1>=3+(talent.chaos_cleave.enabled*3)
   if (true) then
-    BladeDance = S.FirstBlood:IsAvailable() or set_bonus.tier20_4pc or spell_targets.blade_dance1 >= 3 + (S.ChaosCleave:IsAvailable() * 3)
+    BladeDance = S.FirstBlood:IsAvailable() or AC.Tier20_4Pc or spell_targets.blade_dance1 >= 3 + (S.ChaosCleave:IsAvailable() * 3)
   end
   -- variable,name=pooling_for_blade_dance,value=variable.blade_dance&(fury<75-talent.first_blood.enabled*20)
   if (true) then

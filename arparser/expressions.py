@@ -53,6 +53,12 @@ class Expression:
         """
         return ActionExpression(self, to_self)
 
+    def set_bonus(self):
+        """
+        Return the condition when the prefix is set_bonus.
+        """
+        return SetBonus(self)
+
     def cooldown(self):
         """
         Return the condition when the prefix is cooldown.
@@ -185,6 +191,24 @@ class ActionExpression(LuaExpression):
         return object_, method, args
 
 
+class SetBonus(Literal):
+    """
+    Represent the expression for a set_bonus. condition.
+    """
+
+    def __init__(self, condition):
+        lua_tier = f'AC.{self.lua_tier_name(condition)}'
+        super().__init__(lua_tier)
+
+    def lua_tier_name(self, condition):
+        """
+        Parse the lua name for the tier variable name holding whether a tier set
+        is equipped or not.
+        """
+        simc = condition.condition_list()[1]
+        return '_'.join(word.title() for word in simc.split('_'))
+
+
 class GCD(LuaExpression):
     """
     Represent the expression for a gcd. condition.
@@ -201,7 +225,7 @@ class GCD(LuaExpression):
 
     def remains(self):
         """
-        Return the arguments for the expression gcd.deficit.
+        Return the arguments for the expression gcd.remains.
         """
         object_ = self.condition.parent_action.player
         method = Method('GCDRemains')
