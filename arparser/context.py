@@ -35,6 +35,7 @@ class Context:
     def __init__(self):
         self.spells = {}
         self.items = {}
+        self.variables = {}
         self.custom_code = []
         self.player = None
 
@@ -51,6 +52,13 @@ class Context:
         """
         if item.simc not in self.items:
             self.items[item.simc] = item
+
+    def add_variable(self, variable):
+        """
+        Add an variable to the context.
+        """
+        if variable.simc not in self.variables:
+            self.variables[variable.simc] = variable
 
     def set_player(self, player):
         """
@@ -100,6 +108,15 @@ class Context:
             f'local I = Item.{class_}.{spec};\n')
         return lua_items
 
+    def print_variables(self):
+        """
+        Print the variables object in lua context.
+        """
+        lua_variables = '-- Variables\n'
+        for variable in self.variables.values():
+            lua_variables += f'local {variable.lua_name()};\n'
+        return lua_variables
+
     def print_custom_code(self):
         """
         Print the custom code.
@@ -138,4 +155,5 @@ class Context:
             f'{self.print_spells()}\n'
             f'{self.print_items()}\n'
             f'{self.print_settings()}\n'
+            f'{self.print_variables()}\n'
             f'{self.print_custom_code()}{newline}')

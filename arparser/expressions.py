@@ -118,8 +118,8 @@ class Expression:
         """
         Return the condition when the prefix is variable.
         """
-        lua_method = LuaNamed(self.condition_list()[1]).lua_name()
-        return LuaExpression(None, Method(lua_method), [])
+        lua_varname = LuaNamed(self.condition_list()[1]).lua_name()
+        return Literal(lua_varname)
 
 
 class ActionExpression(LuaExpression):

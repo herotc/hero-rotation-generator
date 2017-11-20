@@ -166,7 +166,7 @@ class CallActionList(LuaNamed, Castable):
                 'if ShouldReturn then return ShouldReturn; end')
 
 
-class Variable(LuaNamed):
+class Variable(LuaNamed, Castable):
     """
     The class to handle a variable action; this creates a new variable as a
     local function to compute a value used afterwards.
@@ -175,11 +175,12 @@ class Variable(LuaNamed):
     def __init__(self, action, simc):
         super().__init__(simc)
         self.action = action
+        self.action.context.add_variable(self)
 
-    def print_lua(self):
-        """
-        Print the lua name of a variable.
-        """
+    def print_conditions(self):
+        return ''
+
+    def print_cast(self):
         return f'{self.lua_name()}'
 
 

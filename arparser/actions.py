@@ -102,7 +102,7 @@ class Action:
         execution_string = self.split_simc()[0]
         return Execution(self, execution_string)
 
-    def get_expression(self, key):
+    def get_expression(self, key, **kwargs):
         """
         Return an expression from the name of the key to parse.
         """
@@ -110,7 +110,7 @@ class Action:
             condition_expression = self.properties()[key]
         else:
             condition_expression = ''
-        return ConditionExpression(self, condition_expression)
+        return ConditionExpression(self, condition_expression, **kwargs)
 
     def condition_expression(self):
         """
@@ -123,7 +123,7 @@ class Action:
         """
         Return the value expression of the action (for a variable).
         """
-        return self.get_expression('value')
+        return self.get_expression('value', null_cond='')
 
     def condition_tree(self):
         """
@@ -146,20 +146,15 @@ class Action:
         lua_string = ''
         if self.show_comments:
             lua_string += f'-- {self.simc}\n'
-        if self.execution().type_() == VARIABLE:
-            fun_name = self.execution().object_().print_lua()
-            var_value = self.value_tree().print_lua()
-            lua_string += (f'local function {fun_name}()\n'
-                           f'  return {var_value};\n'
-                           f'end')
-        else:
-            exec_cond = self.execution().object_().print_conditions()
-            cond_link = ' and ' if exec_cond != '' else ''
-            if_cond = self.condition_tree().print_lua()
-            exec_cast = self.execution().object_().print_cast()
-            lua_string += (f'if {exec_cond}{cond_link}({if_cond}) then\n'
-                           f'  {exec_cast}\n'
-                           f'end')
+        exec_cond = self.execution().object_().print_conditions()
+        cond_link = ' and ' if exec_cond != '' else ''
+        if_cond = self.condition_tree().print_lua()
+        exec_cast = self.execution().object_().print_cast()
+        exec_value = self.value_tree().print_lua()
+        exec_link = ' = ' if exec_value != '' else ''
+        lua_string += (f'if {exec_cond}{cond_link}({if_cond}) then\n'
+                       f'  {exec_cast}{exec_link}{exec_value}\n'
+                       f'end')
         return lua_string
 
 

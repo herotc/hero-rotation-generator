@@ -65,6 +65,9 @@ local Settings = {
   Blood = AR.GUISettings.APL.DeathKnight.Blood,
 };
 
+-- Variables
+local WaitingForNemesis;
+
 --- ======= ACTION LISTS =======
 local function Apl()
   local function Standard()
@@ -126,8 +129,8 @@ local function Apl()
     end
   end
   -- variable,name=waiting_for_nemesis,value=!(!talent.nemesis.enabled|cooldown.nemesis.ready|cooldown.nemesis.remains>target.time_to_die|cooldown.nemesis.remains>60)
-  local function WaitingForNemesis()
-    return not (not S.Nemesis:IsAvailable() or S.Nemesis:IsReady() or S.Nemesis:CooldownRemainsP() > Target:TimeToDie() or S.Nemesis:CooldownRemainsP() > 60);
+  if (true) then
+    WaitingForNemesis = not (not S.Nemesis:IsAvailable() or S.Nemesis:IsReady() or S.Nemesis:CooldownRemainsP() > Target:TimeToDie() or S.Nemesis:CooldownRemainsP() > 60)
   end
   -- mind_freeze
   if S.MindFreeze:IsCastable(S.MindFreeze) and Settings.General.InterruptEnabled and Target:IsInterruptible() and (true) then

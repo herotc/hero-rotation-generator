@@ -47,9 +47,10 @@ class ConditionExpression:
     profile.
     """
 
-    def __init__(self, action, simc, exps=None):
+    def __init__(self, action, simc, exps=None, null_cond='true'):
         expressions = exps.copy() if exps is not None else []
         self.action = action
+        self.null_cond = null_cond
         self.parse_parentheses(simc, expressions)
 
     def parse_parentheses(self, simc, expressions):
@@ -168,7 +169,7 @@ class ConditionExpression:
                 ConditionExpression(
                     self.action, self.expressions[0]))
         elif self.simc == '':
-            tree = ConditionLeaf(self, 'true')
+            tree = ConditionLeaf(self, self.null_cond)
         else:
             tree = ConditionLeaf(self, self.simc)
         return tree
