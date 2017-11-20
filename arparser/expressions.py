@@ -175,6 +175,15 @@ class ActionExpression(LuaExpression):
         args = []
         return object_, method, args
 
+    def usable_in(self):
+        """
+        Return the arguments for the expression action.spell.usable_in.
+        """
+        object_ = self.action_object()
+        method = Method('UsableInP')
+        args = []
+        return object_, method, args
+
 
 class GCD(LuaExpression):
     """
