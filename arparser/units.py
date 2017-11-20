@@ -112,4 +112,6 @@ class PlayerSpec(LuaNamed):
         """
         if self.player.class_.simc in ['deathknight', 'demonhunter']:
             potion = 'prolonged_power'
+        elif self.player.class_.simc in ['mage']:
+            potion = 'deadly_grace'
         return potion

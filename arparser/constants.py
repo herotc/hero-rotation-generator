@@ -98,6 +98,7 @@ FUNCTION_OPERATORS = ['abs', 'floor', 'ceil']
 CLASS_SPECS = {
     'deathknight': ['blood', 'frost', 'unholy'],
     'demonhunter': ['havoc'],
+    'mage': ['arcane'],
 }
 
 RACES = [
