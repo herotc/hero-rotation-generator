@@ -217,6 +217,15 @@ class ActionExpression(LuaExpression):
         args = []
         return object_, method, args
 
+    def cooldown(self):
+        """
+        Return the arguments for the expression action.spell.charges.
+        """
+        object_ = self.action_object()
+        method = Method('Cooldown')
+        args = []
+        return object_, method, args
+
     def usable_in(self):
         """
         Return the arguments for the expression action.spell.usable_in.
@@ -316,7 +325,7 @@ class Time(LuaExpression):
             call = 'value'
         object_, method, args = getattr(self, call)()
         super().__init__(object_, method, args)
-    
+
     def value(self):
         """
         Return the arguments for the expression time.
@@ -631,12 +640,19 @@ class Cooldown(LuaExpression):
         """
         Return the arguments for the expression cooldown.spell.remains.
         """
-        if len(self.condition.condition_list()) > 1:
-            object_ = Spell(self.condition.parent_action,
-                            self.condition.condition_list()[1])
-        else:
-            object_ = self.condition.parent_action.execution().object_()
+        object_ = Spell(self.condition.parent_action,
+                        self.condition.condition_list()[1])
         method = Method('CooldownRemainsP')
+        args = []
+        return object_, method, args
+
+    def charges(self):
+        """
+        Return the arguments for the expression cooldown.spell.charges.
+        """
+        object_ = Spell(self.condition.parent_action,
+                        self.condition.condition_list()[1])
+        method = Method('ChargesP')
         args = []
         return object_, method, args
 

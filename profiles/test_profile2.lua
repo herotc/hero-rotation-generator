@@ -161,7 +161,7 @@ local function Apl()
       if AR.Cast(S.BladeDance) then return ""; end
     end
     -- throw_glaive,if=talent.bloodlet.enabled&spell_targets>=2&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&(spell_targets>=3|raid_event.adds.in>recharge_time+cooldown)
-    if S.ThrowGlaive:IsCastable() and (S.Bloodlet:IsAvailable() and spell_targets >= 2 and (not S.MasterofTheGlaive:IsAvailable() or not S.Momentum:IsAvailable() or Player:Buff(S.MomentumBuff)) and (spell_targets >= 3 or raid_event.adds.in > S.ThrowGlaive:RechargeP() + S.ThrowGlaive:CooldownRemainsP())) then
+    if S.ThrowGlaive:IsCastable() and (S.Bloodlet:IsAvailable() and spell_targets >= 2 and (not S.MasterofTheGlaive:IsAvailable() or not S.Momentum:IsAvailable() or Player:Buff(S.MomentumBuff)) and (spell_targets >= 3 or raid_event.adds.in > S.ThrowGlaive:RechargeP() + S.ThrowGlaive:Cooldown())) then
       if AR.Cast(S.ThrowGlaive) then return ""; end
     end
     -- felblade,if=fury.deficit>=30
@@ -177,7 +177,7 @@ local function Apl()
       if AR.Cast(S.Annihilation) then return ""; end
     end
     -- throw_glaive,if=talent.bloodlet.enabled&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&raid_event.adds.in>recharge_time+cooldown
-    if S.ThrowGlaive:IsCastable() and (S.Bloodlet:IsAvailable() and (not S.MasterofTheGlaive:IsAvailable() or not S.Momentum:IsAvailable() or Player:Buff(S.MomentumBuff)) and raid_event.adds.in > S.ThrowGlaive:RechargeP() + S.ThrowGlaive:CooldownRemainsP()) then
+    if S.ThrowGlaive:IsCastable() and (S.Bloodlet:IsAvailable() and (not S.MasterofTheGlaive:IsAvailable() or not S.Momentum:IsAvailable() or Player:Buff(S.MomentumBuff)) and raid_event.adds.in > S.ThrowGlaive:RechargeP() + S.ThrowGlaive:Cooldown()) then
       if AR.Cast(S.ThrowGlaive) then return ""; end
     end
     -- chaos_strike,if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8)&!variable.pooling_for_chaos_strike&!variable.pooling_for_meta&!variable.pooling_for_blade_dance
@@ -251,7 +251,7 @@ local function Apl()
       if AR.Cast(S.BladeDance) then return ""; end
     end
     -- throw_glaive,if=talent.bloodlet.enabled&spell_targets>=2&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&(spell_targets>=3|raid_event.adds.in>recharge_time+cooldown)
-    if S.ThrowGlaive:IsCastable() and (S.Bloodlet:IsAvailable() and spell_targets >= 2 and (not S.MasterofTheGlaive:IsAvailable() or not S.Momentum:IsAvailable() or Player:Buff(S.MomentumBuff)) and (spell_targets >= 3 or raid_event.adds.in > S.ThrowGlaive:RechargeP() + S.ThrowGlaive:CooldownRemainsP())) then
+    if S.ThrowGlaive:IsCastable() and (S.Bloodlet:IsAvailable() and spell_targets >= 2 and (not S.MasterofTheGlaive:IsAvailable() or not S.Momentum:IsAvailable() or Player:Buff(S.MomentumBuff)) and (spell_targets >= 3 or raid_event.adds.in > S.ThrowGlaive:RechargeP() + S.ThrowGlaive:Cooldown())) then
       if AR.Cast(S.ThrowGlaive) then return ""; end
     end
     -- felblade,if=fury.deficit>=30+buff.prepared.up*8
@@ -259,7 +259,7 @@ local function Apl()
       if AR.Cast(S.Felblade) then return ""; end
     end
     -- eye_beam,if=spell_targets.eye_beam_tick>desired_targets|(spell_targets.eye_beam_tick>=3&raid_event.adds.in>cooldown)|(talent.blind_fury.enabled&fury.deficit>=35)|set_bonus.tier21_2pc
-    if S.EyeBeam:IsCastable() and (spell_targets.eye_beam_tick > desired_targets or (spell_targets.eye_beam_tick >= 3 and raid_event.adds.in > S.EyeBeam:CooldownRemainsP()) or (S.BlindFury:IsAvailable() and Player:FuryDeficit() >= 35) or AC.Tier21_2Pc) then
+    if S.EyeBeam:IsCastable() and (spell_targets.eye_beam_tick > desired_targets or (spell_targets.eye_beam_tick >= 3 and raid_event.adds.in > S.EyeBeam:Cooldown()) or (S.BlindFury:IsAvailable() and Player:FuryDeficit() >= 35) or AC.Tier21_2Pc) then
       if AR.Cast(S.EyeBeam) then return ""; end
     end
     -- annihilation,if=(talent.demon_blades.enabled|!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance
@@ -267,7 +267,7 @@ local function Apl()
       if AR.Cast(S.Annihilation) then return ""; end
     end
     -- throw_glaive,if=talent.bloodlet.enabled&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&raid_event.adds.in>recharge_time+cooldown
-    if S.ThrowGlaive:IsCastable() and (S.Bloodlet:IsAvailable() and (not S.MasterofTheGlaive:IsAvailable() or not S.Momentum:IsAvailable() or Player:Buff(S.MomentumBuff)) and raid_event.adds.in > S.ThrowGlaive:RechargeP() + S.ThrowGlaive:CooldownRemainsP()) then
+    if S.ThrowGlaive:IsCastable() and (S.Bloodlet:IsAvailable() and (not S.MasterofTheGlaive:IsAvailable() or not S.Momentum:IsAvailable() or Player:Buff(S.MomentumBuff)) and raid_event.adds.in > S.ThrowGlaive:RechargeP() + S.ThrowGlaive:Cooldown()) then
       if AR.Cast(S.ThrowGlaive) then return ""; end
     end
     -- throw_glaive,if=!talent.bloodlet.enabled&buff.metamorphosis.down&spell_targets>=3
