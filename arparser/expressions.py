@@ -95,6 +95,18 @@ class Expression:
         """
         return RunicPower(self)
 
+    def fury(self):
+        """
+        Return the condition when the prefix is fury.
+        """
+        return Fury(self)
+
+    def mana(self):
+        """
+        Return the condition when the prefix is mana.
+        """
+        return Mana(self)
+
     def talent(self):
         """
         Return the condition when the prefix is talent.
@@ -119,12 +131,6 @@ class Expression:
         Return the condition when the prefix is target.
         """
         return TargetExpression(self)
-
-    def fury(self):
-        """
-        Return the condition when the prefix is fury.
-        """
-        return Fury(self)
 
     def variable(self):
         """
@@ -347,6 +353,15 @@ class RunicPower(LuaExpression):
         args = []
         return object_, method, args
 
+    def pct(self):
+        """
+        Return the arguments for the expression runic_power.pct.
+        """
+        object_ = self.condition.parent_action.player
+        method = Method('RunicPowerPercentage')
+        args = []
+        return object_, method, args
+
 
 class Fury(LuaExpression):
     """
@@ -377,6 +392,57 @@ class Fury(LuaExpression):
         """
         object_ = self.condition.parent_action.player
         method = Method('Fury')
+        args = []
+        return object_, method, args
+
+    def pct(self):
+        """
+        Return the arguments for the expression fury.pct.
+        """
+        object_ = self.condition.parent_action.player
+        method = Method('FuryPercentage')
+        args = []
+        return object_, method, args
+
+
+class Mana(LuaExpression):
+    """
+    Represent the expression for a mana. condition.
+    """
+
+    def __init__(self, condition):
+        self.condition = condition
+        if len(condition.condition_list()) > 1:
+            call = condition.condition_list()[1]
+        else:
+            call = 'value'
+        object_, method, args = getattr(self, call)()
+        super().__init__(object_, method, args)
+
+    def deficit(self):
+        """
+        Return the arguments for the expression mana.deficit.
+        """
+        object_ = self.condition.parent_action.player
+        method = Method('ManaDeficit')
+        args = []
+        return object_, method, args
+
+    def value(self):
+        """
+        Return the arguments for the expression mana.
+        """
+        object_ = self.condition.parent_action.player
+        method = Method('Mana')
+        args = []
+        return object_, method, args
+
+    def pct(self):
+        """
+        Return the arguments for the expression mana.pct.
+        """
+        object_ = self.condition.parent_action.player
+        method = Method('ManaPercentage')
         args = []
         return object_, method, args
 
