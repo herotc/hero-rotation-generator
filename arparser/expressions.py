@@ -6,7 +6,7 @@ Define the objects representing simc expressions.
 """
 
 from .lua import LuaNamed, LuaExpression, Method, Literal
-from .executions import Spell
+from .executions import Spell, Item
 from .constants import SPELL, BUFF, DEBUFF, BOOL
 
 
@@ -58,6 +58,12 @@ class Expression:
         Return the condition when the prefix is set_bonus.
         """
         return SetBonus(self)
+
+    def equipped(self):
+        """
+        Return the condition when the prefix is equipped.
+        """
+        return Equipped(self)
 
     def cooldown(self):
         """
@@ -252,6 +258,28 @@ class SetBonus(Literal):
         """
         simc = condition.condition_list()[1]
         return '_'.join(word.title() for word in simc.split('_'))
+
+
+class Equipped(LuaExpression):
+    """
+    Represent the expression for a equipped. condition.
+    """
+
+    def __init__(self, condition):
+        self.condition = condition
+        call = 'value'
+        object_, method, args = getattr(self, call)()
+        super().__init__(object_, method, args)
+    
+    def  value(self):
+        """
+        Return the arguments for the expression equipped.
+        """
+        object_ = Item(self.condition.parent_action,
+                       self.condition.condition_list()[1])
+        method = Method('IsEquipped', type_=BOOL)
+        args = []
+        return object_, method, args
 
 
 class PrevGCD(LuaExpression):
