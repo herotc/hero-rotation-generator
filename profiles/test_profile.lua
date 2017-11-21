@@ -96,11 +96,11 @@ local function Apl()
       if AR.Cast(S.Marrowrend) then return ""; end
     end
     -- blood_boil,if=charges_fractional>=1.8&buff.haemostasis.stack<5&(buff.haemostasis.stack<3|!buff.dancing_rune_weapon.up)
-    if S.BloodBoil:IsCastable() and (S.BloodBoil:ChargesFractional() >= 1.8 and Player:BuffStack(S.HaemostasisBuff) < 5 and (Player:BuffStack(S.HaemostasisBuff) < 3 or not Player:Buff(S.DancingRuneWeaponBuff))) then
+    if S.BloodBoil:IsCastable() and (S.BloodBoil:ChargesFractional() >= 1.8 and Player:BuffStackP(S.HaemostasisBuff) < 5 and (Player:BuffStackP(S.HaemostasisBuff) < 3 or not Player:Buff(S.DancingRuneWeaponBuff))) then
       if AR.Cast(S.BloodBoil) then return ""; end
     end
     -- marrowrend,if=(buff.bone_shield.stack<5&talent.ossuary.enabled)|buff.bone_shield.remains<gcd*3
-    if S.Marrowrend:IsCastable() and ((Player:BuffStack(S.BoneShieldBuff) < 5 and S.Ossuary:IsAvailable()) or Player:BuffRemainsP(S.BoneShieldBuff) < Player:GCD() * 3) then
+    if S.Marrowrend:IsCastable() and ((Player:BuffStackP(S.BoneShieldBuff) < 5 and S.Ossuary:IsAvailable()) or Player:BuffRemainsP(S.BoneShieldBuff) < Player:GCD() * 3) then
       if AR.Cast(S.Marrowrend) then return ""; end
     end
     -- bonestorm,if=runic_power>=100&spell_targets.bonestorm>=3
@@ -124,7 +124,7 @@ local function Apl()
       if AR.Cast(S.DeathandDecay) then return ""; end
     end
     -- blood_boil,if=buff.haemostasis.stack<5&(buff.haemostasis.stack<3|!buff.dancing_rune_weapon.up)
-    if S.BloodBoil:IsCastable() and (Player:BuffStack(S.HaemostasisBuff) < 5 and (Player:BuffStack(S.HaemostasisBuff) < 3 or not Player:Buff(S.DancingRuneWeaponBuff))) then
+    if S.BloodBoil:IsCastable() and (Player:BuffStackP(S.HaemostasisBuff) < 5 and (Player:BuffStackP(S.HaemostasisBuff) < 3 or not Player:Buff(S.DancingRuneWeaponBuff))) then
       if AR.Cast(S.BloodBoil) then return ""; end
     end
     -- death_and_decay
@@ -132,7 +132,7 @@ local function Apl()
       if AR.Cast(S.DeathandDecay) then return ""; end
     end
     -- heart_strike,if=rune.time_to_3<gcd|buff.bone_shield.stack>6
-    if S.HeartStrike:IsCastable() and (Player:RuneTimeToX(3) < Player:GCD() or Player:BuffStack(S.BoneShieldBuff) > 6) then
+    if S.HeartStrike:IsCastable() and (Player:RuneTimeToX(3) < Player:GCD() or Player:BuffStackP(S.BoneShieldBuff) > 6) then
       if AR.Cast(S.HeartStrike) then return ""; end
     end
   end
