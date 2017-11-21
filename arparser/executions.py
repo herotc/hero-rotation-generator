@@ -245,7 +245,7 @@ class Spell(LuaNamed, Castable):
     def condition_method(self):
         if self.simc in USABLE_SKILLS:
             return Method('IsUsable')
-        return Method('IsCastable')
+        return Method('IsCastableP')
 
     @class_specific_conditions
     def additional_conditions(self):

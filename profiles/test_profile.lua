@@ -88,23 +88,23 @@ local function Apl()
       if AR.Cast(S.DeathandDecay) then return ""; end
     end
     -- blooddrinker,if=!buff.dancing_rune_weapon.up
-    if S.BloodDrinker:IsCastable() and (not Player:BuffP(S.DancingRuneWeaponBuff)) then
+    if S.BloodDrinker:IsCastableP() and (not Player:BuffP(S.DancingRuneWeaponBuff)) then
       if AR.Cast(S.BloodDrinker) then return ""; end
     end
     -- marrowrend,if=buff.bone_shield.remains<=gcd*2
-    if S.Marrowrend:IsCastable() and (Player:BuffRemainsP(S.BoneShieldBuff) <= Player:GCD() * 2) then
+    if S.Marrowrend:IsCastableP() and (Player:BuffRemainsP(S.BoneShieldBuff) <= Player:GCD() * 2) then
       if AR.Cast(S.Marrowrend) then return ""; end
     end
     -- blood_boil,if=charges_fractional>=1.8&buff.haemostasis.stack<5&(buff.haemostasis.stack<3|!buff.dancing_rune_weapon.up)
-    if S.BloodBoil:IsCastable() and (S.BloodBoil:ChargesFractional() >= 1.8 and Player:BuffStackP(S.HaemostasisBuff) < 5 and (Player:BuffStackP(S.HaemostasisBuff) < 3 or not Player:BuffP(S.DancingRuneWeaponBuff))) then
+    if S.BloodBoil:IsCastableP() and (S.BloodBoil:ChargesFractional() >= 1.8 and Player:BuffStackP(S.HaemostasisBuff) < 5 and (Player:BuffStackP(S.HaemostasisBuff) < 3 or not Player:BuffP(S.DancingRuneWeaponBuff))) then
       if AR.Cast(S.BloodBoil) then return ""; end
     end
     -- marrowrend,if=(buff.bone_shield.stack<5&talent.ossuary.enabled)|buff.bone_shield.remains<gcd*3
-    if S.Marrowrend:IsCastable() and ((Player:BuffStackP(S.BoneShieldBuff) < 5 and S.Ossuary:IsAvailable()) or Player:BuffRemainsP(S.BoneShieldBuff) < Player:GCD() * 3) then
+    if S.Marrowrend:IsCastableP() and ((Player:BuffStackP(S.BoneShieldBuff) < 5 and S.Ossuary:IsAvailable()) or Player:BuffRemainsP(S.BoneShieldBuff) < Player:GCD() * 3) then
       if AR.Cast(S.Marrowrend) then return ""; end
     end
     -- bonestorm,if=runic_power>=100&spell_targets.bonestorm>=3
-    if S.Bonestorm:IsCastable() and (Player:RunicPower() >= 100 and spell_targets.bonestorm >= 3) then
+    if S.Bonestorm:IsCastableP() and (Player:RunicPower() >= 100 and spell_targets.bonestorm >= 3) then
       if AR.Cast(S.Bonestorm) then return ""; end
     end
     -- death_strike,if=buff.blood_shield.up|(runic_power.deficit<15&(runic_power.deficit<25|!buff.dancing_rune_weapon.up))
@@ -112,11 +112,11 @@ local function Apl()
       if AR.Cast(S.DeathStrike) then return ""; end
     end
     -- consumption
-    if S.Consumption:IsCastable() and (true) then
+    if S.Consumption:IsCastableP() and (true) then
       if AR.Cast(S.Consumption) then return ""; end
     end
     -- heart_strike,if=buff.dancing_rune_weapon.up
-    if S.HeartStrike:IsCastable() and (Player:BuffP(S.DancingRuneWeaponBuff)) then
+    if S.HeartStrike:IsCastableP() and (Player:BuffP(S.DancingRuneWeaponBuff)) then
       if AR.Cast(S.HeartStrike) then return ""; end
     end
     -- death_and_decay,if=buff.crimson_scourge.up
@@ -124,7 +124,7 @@ local function Apl()
       if AR.Cast(S.DeathandDecay) then return ""; end
     end
     -- blood_boil,if=buff.haemostasis.stack<5&(buff.haemostasis.stack<3|!buff.dancing_rune_weapon.up)
-    if S.BloodBoil:IsCastable() and (Player:BuffStackP(S.HaemostasisBuff) < 5 and (Player:BuffStackP(S.HaemostasisBuff) < 3 or not Player:BuffP(S.DancingRuneWeaponBuff))) then
+    if S.BloodBoil:IsCastableP() and (Player:BuffStackP(S.HaemostasisBuff) < 5 and (Player:BuffStackP(S.HaemostasisBuff) < 3 or not Player:BuffP(S.DancingRuneWeaponBuff))) then
       if AR.Cast(S.BloodBoil) then return ""; end
     end
     -- death_and_decay
@@ -132,7 +132,7 @@ local function Apl()
       if AR.Cast(S.DeathandDecay) then return ""; end
     end
     -- heart_strike,if=rune.time_to_3<gcd|buff.bone_shield.stack>6
-    if S.HeartStrike:IsCastable() and (Player:RuneTimeToX(3) < Player:GCD() or Player:BuffStackP(S.BoneShieldBuff) > 6) then
+    if S.HeartStrike:IsCastableP() and (Player:RuneTimeToX(3) < Player:GCD() or Player:BuffStackP(S.BoneShieldBuff) > 6) then
       if AR.Cast(S.HeartStrike) then return ""; end
     end
   end
@@ -141,23 +141,23 @@ local function Apl()
     WaitingForNemesis = num(not (not S.Nemesis:IsAvailable() or S.Nemesis:CooldownUpP() or S.Nemesis:CooldownRemainsP() > Target:TimeToDie() or S.Nemesis:CooldownRemainsP() > 60))
   end
   -- mind_freeze
-  if S.MindFreeze:IsCastable() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (true) then
+  if S.MindFreeze:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (true) then
     if AR.CastAnnotated(S.MindFreeze, false, "Interrupt") then return ""; end
   end
   -- arcane_torrent,if=runic_power.deficit>20
-  if S.ArcaneTorrent:IsCastable() and (Player:RunicPowerDeficit() > 20) then
+  if S.ArcaneTorrent:IsCastableP() and (Player:RunicPowerDeficit() > 20) then
     if AR.Cast(S.ArcaneTorrent, Settings.Blood.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
   end
   -- blood_fury
-  if S.BloodFury:IsCastable() and (true) then
+  if S.BloodFury:IsCastableP() and (true) then
     if AR.Cast(S.BloodFury, Settings.Blood.OffGCDasOffGCD.BloodFury) then return ""; end
   end
   -- berserking,if=buff.dancing_rune_weapon.up
-  if S.Berserking:IsCastable() and (Player:BuffP(S.DancingRuneWeaponBuff)) then
+  if S.Berserking:IsCastableP() and (Player:BuffP(S.DancingRuneWeaponBuff)) then
     if AR.Cast(S.Berserking, Settings.Blood.OffGCDasOffGCD.Berserking) then return ""; end
   end
   -- use_items
-  if S.UseItems:IsCastable() and (true) then
+  if S.UseItems:IsCastableP() and (true) then
     if AR.Cast(S.UseItems) then return ""; end
   end
   -- potion,if=buff.dancing_rune_weapon.up
@@ -165,11 +165,11 @@ local function Apl()
     if AR.CastSuggested(I.ProlongedPower) then return ""; end
   end
   -- dancing_rune_weapon,if=(!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready)&!cooldown.death_and_decay.ready
-  if S.DancingRuneWeapon:IsCastable() and ((not S.BloodDrinker:IsAvailable() or not S.BloodDrinker:CooldownUpP()) and not S.DeathandDecay:CooldownUpP()) then
+  if S.DancingRuneWeapon:IsCastableP() and ((not S.BloodDrinker:IsAvailable() or not S.BloodDrinker:CooldownUpP()) and not S.DeathandDecay:CooldownUpP()) then
     if AR.Cast(S.DancingRuneWeapon, Settings.Blood.OffGCDasOffGCD.DancingRuneWeapon) then return ""; end
   end
   -- vampiric_blood
-  if S.VampiricBlood:IsCastable() and (true) then
+  if S.VampiricBlood:IsCastableP() and (true) then
     if AR.Cast(S.VampiricBlood) then return ""; end
   end
   -- call_action_list,name=standard
