@@ -247,9 +247,6 @@ class Spell(LuaNamed, Castable):
             return Method('IsUsable')
         return Method('IsCastable')
 
-    def condition_args(self):
-        return [self]
-
     @class_specific_conditions
     def additional_conditions(self):
         if self.simc in INTERRUPT_SKILLS:
