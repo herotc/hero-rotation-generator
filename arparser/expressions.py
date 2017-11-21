@@ -7,7 +7,7 @@ Define the objects representing simc expressions.
 
 from .lua import LuaNamed, LuaExpression, Method, Literal
 from .executions import Spell
-from .constants import BUFF, DEBUFF, BOOL
+from .constants import SPELL, BUFF, DEBUFF, BOOL
 
 
 class Expression:
@@ -379,139 +379,85 @@ class Talent(LuaExpression):
         return object_, method, args
 
 
-class RunicPower(LuaExpression):
+class Resource(LuaExpression):
+    """
+    Represent the expression for resource (mana, runic_power, etc) condition.
+    """
+
+    def __init__(self, condition, simc):
+        self.condition = condition
+        self.simc = LuaNamed(simc)
+        if len(condition.condition_list()) > 1:
+            call = condition.condition_list()[1]
+        else:
+            call = 'value'
+        object_, method, args = getattr(self, call)()
+        super().__init__(object_, method, args)
+
+    def value(self):
+        """
+        Return the arguments for the expression {resource}.
+        """
+        object_ = self.condition.parent_action.player
+        method = Method(f'{self.simc.lua_name()}')
+        args = []
+        return object_, method, args
+    
+    def deficit(self):
+        """
+        Return the arguments for the expression {resource}.deficit.
+        """
+        object_ = self.condition.parent_action.player
+        method = Method(f'{self.simc.lua_name()}Deficit')
+        args = []
+        return object_, method, args
+
+    def pct(self):
+        """
+        Return the arguments for the expression {resource}.pct.
+        """
+        object_ = self.condition.parent_action.player
+        method = Method(f'{self.simc.lua_name()}Percentage')
+        args = []
+        return object_, method, args
+
+
+class RunicPower(Resource):
     """
     Represent the expression for a runic_power. condition.
     """
 
     def __init__(self, condition):
-        self.condition = condition
-        if len(condition.condition_list()) > 1:
-            call = condition.condition_list()[1]
-        else:
-            call = 'value'
-        object_, method, args = getattr(self, call)()
-        super().__init__(object_, method, args)
-
-    def deficit(self):
-        """
-        Return the arguments for the expression runic_power.deficit.
-        """
-        object_ = self.condition.parent_action.player
-        method = Method('RunicPowerDeficit')
-        args = []
-        return object_, method, args
-
-    def value(self):
-        """
-        Return the arguments for the expression runic_power.
-        """
-        object_ = self.condition.parent_action.player
-        method = Method('RunicPower')
-        args = []
-        return object_, method, args
-
-    def pct(self):
-        """
-        Return the arguments for the expression runic_power.pct.
-        """
-        object_ = self.condition.parent_action.player
-        method = Method('RunicPowerPercentage')
-        args = []
-        return object_, method, args
+        super().__init__(condition, 'runic_power')
 
 
-class Fury(LuaExpression):
+class Fury(Resource):
     """
     Represent the expression for a fury. condition.
     """
 
     def __init__(self, condition):
-        self.condition = condition
-        if len(condition.condition_list()) > 1:
-            call = condition.condition_list()[1]
-        else:
-            call = 'value'
-        object_, method, args = getattr(self, call)()
-        super().__init__(object_, method, args)
-
-    def deficit(self):
-        """
-        Return the arguments for the expression fury.deficit.
-        """
-        object_ = self.condition.parent_action.player
-        method = Method('FuryDeficit')
-        args = []
-        return object_, method, args
-
-    def value(self):
-        """
-        Return the arguments for the expression fury.
-        """
-        object_ = self.condition.parent_action.player
-        method = Method('Fury')
-        args = []
-        return object_, method, args
-
-    def pct(self):
-        """
-        Return the arguments for the expression fury.pct.
-        """
-        object_ = self.condition.parent_action.player
-        method = Method('FuryPercentage')
-        args = []
-        return object_, method, args
+        super().__init__(condition, 'fury')
 
 
-class Mana(LuaExpression):
+class Mana(Resource):
     """
     Represent the expression for a mana. condition.
     """
 
     def __init__(self, condition):
-        self.condition = condition
-        if len(condition.condition_list()) > 1:
-            call = condition.condition_list()[1]
-        else:
-            call = 'value'
-        object_, method, args = getattr(self, call)()
-        super().__init__(object_, method, args)
-
-    def deficit(self):
-        """
-        Return the arguments for the expression mana.deficit.
-        """
-        object_ = self.condition.parent_action.player
-        method = Method('ManaDeficit')
-        args = []
-        return object_, method, args
-
-    def value(self):
-        """
-        Return the arguments for the expression mana.
-        """
-        object_ = self.condition.parent_action.player
-        method = Method('Mana')
-        args = []
-        return object_, method, args
-
-    def pct(self):
-        """
-        Return the arguments for the expression mana.pct.
-        """
-        object_ = self.condition.parent_action.player
-        method = Method('ManaPercentage')
-        args = []
-        return object_, method, args
+        super().__init__(condition, 'mana')
 
 
-class Debuff(LuaExpression):
+class Expires(LuaExpression):
     """
-    Represent the expression for a debuff. condition.
+    Represent the expression for conditions with expiration times.
     """
 
-    def __init__(self, condition):
+    def __init__(self, condition, simc, ready_simc):
         self.condition = condition
+        self.simc = LuaNamed(simc)
+        self.ready_simc = LuaNamed(ready_simc)
         call = condition.condition_list()[2]
         call = 'ready' if call == 'up' else call
         object_, method, args = getattr(self, call)()
@@ -519,132 +465,103 @@ class Debuff(LuaExpression):
 
     def ready(self):
         """
-        Return the arguments for the expression debuff.spell.up.
+        Return the arguments for the expression {expires}.spell.up.
         """
-        object_ = self.condition.parent_action.player
-        method = Method('Debuff', type_=BOOL)
-        args = [Spell(self.condition.parent_action,
-                      self.condition.condition_list()[1], DEBUFF)]
-        return object_, method, args
-
-    def down(self):
-        """
-        Return the arguments for the expression debuff.spell.down.
-        """
-        object_ = self.condition.parent_action.player
-        method = Method('DebuffDown', type_=BOOL)
-        args = [Spell(self.condition.parent_action,
-                      self.condition.condition_list()[1], DEBUFF)]
-        return object_, method, args
-
-    def stack(self):
-        """
-        Return the arguments for the expression debuff.spell.stack.
-        """
-        object_ = self.condition.parent_action.player
-        method = Method('DebuffStack')
-        args = [Spell(self.condition.parent_action,
-                      self.condition.condition_list()[1], DEBUFF)]
+        object_ = Spell(self.condition.parent_action,
+                        self.condition.condition_list()[1])
+        method = Method(f'{self.ready_simc.lua_name()}P', type_=BOOL)
+        args = []
         return object_, method, args
 
     def remains(self):
         """
         Return the arguments for the expression debuff.spell.remains.
         """
-        object_ = self.condition.parent_action.player
-        method = Method('DebuffRemainsP')
-        args = [Spell(self.condition.parent_action,
-                      self.condition.condition_list()[1], DEBUFF)]
+        object_ = Spell(self.condition.parent_action,
+                        self.condition.condition_list()[1])
+        method = Method(f'{self.simc.lua_name()}RemainsP')
+        args = []
         return object_, method, args
 
 
-class Buff(LuaExpression):
+class Aura(Expires):
+    """
+    Represent the expression for auras (buffs and debuffs).
+    """
+
+    def __init__(self, condition, simc, object_, spell_type=SPELL):
+        self.object_ = object_
+        self.spell_type = spell_type
+        super().__init__(condition, simc, simc)
+
+    def ready(self):
+        """
+        Return the arguments for the expression {expires}.spell.up.
+        """
+        object_ = self.object_
+        method = Method(f'{self.ready_simc.lua_name()}P', type_=BOOL)
+        args = [Spell(self.condition.parent_action,
+                      self.condition.condition_list()[1], self.spell_type)]
+        return object_, method, args
+
+    def remains(self):
+        """
+        Return the arguments for the expression debuff.spell.remains.
+        """
+        object_ = self.object_
+        method = Method(f'{self.simc.lua_name()}RemainsP')
+        args = [Spell(self.condition.parent_action,
+                      self.condition.condition_list()[1], self.spell_type)]
+        return object_, method, args
+
+    def down(self):
+        """
+        Return the arguments for the expression debuff.spell.down.
+        """
+        object_ = self.object_
+        method = Method(f'{self.simc.lua_name()}DownP', type_=BOOL)
+        args = [Spell(self.condition.parent_action,
+                      self.condition.condition_list()[1], self.spell_type)]
+        return object_, method, args
+
+    def stack(self):
+        """
+        Return the arguments for the expression debuff.spell.stack.
+        """
+        object_ = self.object_
+        method = Method(f'{self.simc.lua_name()}StackP')
+        args = [Spell(self.condition.parent_action,
+                      self.condition.condition_list()[1], self.spell_type)]
+        return object_, method, args
+
+
+class Debuff(Aura):
+    """
+    Represent the expression for a debuff. condition.
+    """
+
+    def __init__(self, condition):
+        object_ = condition.parent_action.target
+        super().__init__(condition, 'debuff', object_, spell_type=DEBUFF)
+
+
+class Buff(Aura):
     """
     Represent the expression for a buff. condition.
     """
 
     def __init__(self, condition):
-        self.condition = condition
-        call = condition.condition_list()[2]
-        call = 'ready' if call == 'up' else call
-        object_, method, args = getattr(self, call)()
-        super().__init__(object_, method, args)
-
-    def ready(self):
-        """
-        Return the arguments for the expression buff.spell.up.
-        """
-        object_ = self.condition.parent_action.player
-        method = Method('Buff', type_=BOOL)
-        args = [Spell(self.condition.parent_action,
-                      self.condition.condition_list()[1], BUFF)]
-        return object_, method, args
-
-    def down(self):
-        """
-        Return the arguments for the expression buff.spell.down.
-        """
-        object_ = self.condition.parent_action.player
-        method = Method('BuffDown', type_=BOOL)
-        args = [Spell(self.condition.parent_action,
-                      self.condition.condition_list()[1], BUFF)]
-        return object_, method, args
-
-    def stack(self):
-        """
-        Return the arguments for the expression buff.spell.stack.
-        """
-        object_ = self.condition.parent_action.player
-        method = Method('BuffStackP')
-        args = [Spell(self.condition.parent_action,
-                      self.condition.condition_list()[1], BUFF)]
-        return object_, method, args
-
-    def remains(self):
-        """
-        Return the arguments for the expression buff.spell.remains.
-        """
-        object_ = self.condition.parent_action.player
-        method = Method('BuffRemainsP')
-        args = [Spell(self.condition.parent_action,
-                      self.condition.condition_list()[1], BUFF)]
-        return object_, method, args
+        object_ = condition.parent_action.player
+        super().__init__(condition, 'buff', object_, spell_type=BUFF)
 
 
-class Cooldown(LuaExpression):
+class Cooldown(Expires):
     """
     Represent the expression for a cooldown. condition.
     """
 
     def __init__(self, condition):
-        self.condition = condition
-        if len(condition.condition_list()) > 2:
-            call = condition.condition_list()[2]
-        else:
-            call = 'remains'
-        call = 'ready' if call == 'up' else call
-        object_, method, args = getattr(self, call)()
-        super().__init__(object_, method, args)
-
-    def ready(self):
-        """
-        Return the arguments for the expression cooldown.spell.ready.
-        """
-        object_ = Spell(self.condition.parent_action,
-                        self.condition.condition_list()[1])
-        method = Method('IsReady', type_=BOOL)
-        args = []
-        return object_, method, args
-
-    def remains(self):
-        """
-        Return the arguments for the expression cooldown.spell.remains.
-        """
-        object_ = Spell(self.condition.parent_action,
-                        self.condition.condition_list()[1])
-        method = Method('CooldownRemainsP')
-        args = []
-        return object_, method, args
+        super().__init__(condition, 'cooldown', 'cooldown_up')
 
     def charges(self):
         """
