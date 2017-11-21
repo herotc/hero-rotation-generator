@@ -580,7 +580,7 @@ class Buff(LuaExpression):
         Return the arguments for the expression buff.spell.stack.
         """
         object_ = self.condition.parent_action.player
-        method = Method('BuffStack')
+        method = Method('BuffStackP')
         args = [Spell(self.condition.parent_action,
                       self.condition.condition_list()[1], BUFF)]
         return object_, method, args
