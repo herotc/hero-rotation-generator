@@ -270,7 +270,7 @@ class PrevGCD(LuaExpression):
         Return the arguments for the expression prev_gcd.
         """
         object_ = self.condition.parent_action.player
-        method = Method('PrevGCD', type_=BOOL)
+        method = Method('PrevGCDP', type_=BOOL)
         args = [
             Literal(self.condition.condition_list()[1]),
             Spell(self.condition.parent_action,
