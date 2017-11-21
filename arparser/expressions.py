@@ -7,7 +7,7 @@ Define the objects representing simc expressions.
 
 from .lua import LuaNamed, LuaExpression, Method, Literal
 from .executions import Spell
-from .constants import BUFF, DEBUFF, BOOL, NUM
+from .constants import BUFF, DEBUFF, BOOL
 
 
 class Expression:
@@ -166,12 +166,30 @@ class ActionExpression(LuaExpression):
             return Spell(self.condition.parent_action,
                          self.condition.condition_list()[1])
 
+    def execute_time(self):
+        """
+        Return the arguments for the expression action.spell.execute_time.
+        """
+        object_ = self.action_object()
+        method = Method('ExecuteTime')
+        args = []
+        return object_, method, args
+
     def recharge_time(self):
         """
         Return the arguments for the expression action.spell.recharge_time.
         """
         object_ = self.action_object()
         method = Method('RechargeP')
+        args = []
+        return object_, method, args
+
+    def full_recharge_time(self):
+        """
+        Return the arguments for the expression action.spell.full_recharge_time.
+        """
+        object_ = self.action_object()
+        method = Method('FullRechargeTimeP')
         args = []
         return object_, method, args
 
@@ -219,6 +237,31 @@ class SetBonus(Literal):
         """
         simc = condition.condition_list()[1]
         return '_'.join(word.title() for word in simc.split('_'))
+
+
+class PrevGCD(LuaExpression):
+    """
+    Represent the expression for a prev_gcd. condition.
+    """
+
+    def __init__(self, condition):
+        self.condition = condition
+        call = 'value'
+        object_, method, args = getattr(self, call)()
+        super().__init__(object_, method, args)
+
+    def value(self):
+        """
+        Return the arguments for the expression prev_gcd.
+        """
+        object_ = self.condition.parent_action.player
+        method = Method('PrevGCD')
+        args = [
+            Literal(self.condition.condition_list()[1]),
+            Spell(self.condition.parent_action,
+                  self.condition.condition_list()[2])
+        ]
+        return object_, method, args
 
 
 class GCD(LuaExpression):
