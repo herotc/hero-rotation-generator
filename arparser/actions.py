@@ -164,6 +164,10 @@ class Action:
             exec_cast = self.execution().object_().print_cast()
             exec_value = convert_type(self.value_tree(), NUM)
             return f'{exec_cast} = math.min({exec_cast}, {exec_value})'
+        elif operation == 'add':
+            exec_cast = self.execution().object_().print_cast()
+            exec_value = convert_type(self.value_tree(), NUM)
+            return f'{exec_cast} = {exec_cast} + {exec_value}'
 
     def print_lua(self):
         """
