@@ -56,6 +56,8 @@ GCD_AS_OFF_GCD = [
 OFF_GCD_AS_OFF_GCD = [
     'dancing_rune_weapon',
     'arcane_torrent',
+    'berserking',
+    'blood_fury',
 ]
 
 # Skills for which to call IsUsable instead of IsCastable
