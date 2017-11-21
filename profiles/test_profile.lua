@@ -150,11 +150,11 @@ local function Apl()
   end
   -- blood_fury
   if S.BloodFury:IsCastable() and (true) then
-    if AR.Cast(S.BloodFury) then return ""; end
+    if AR.Cast(S.BloodFury, Settings.Blood.OffGCDasOffGCD.BloodFury) then return ""; end
   end
   -- berserking,if=buff.dancing_rune_weapon.up
   if S.Berserking:IsCastable() and (Player:BuffP(S.DancingRuneWeaponBuff)) then
-    if AR.Cast(S.Berserking) then return ""; end
+    if AR.Cast(S.Berserking, Settings.Blood.OffGCDasOffGCD.Berserking) then return ""; end
   end
   -- use_items
   if S.UseItems:IsCastable() and (true) then
