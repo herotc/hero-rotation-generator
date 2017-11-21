@@ -5,6 +5,23 @@ Initialize the arparser package.
 @author: skasch
 """
 
+# String constants
+# ================
+
+SPELL = 'spell'
+ITEM = 'item'
+BUFF = 'buff'
+DEBUFF = 'debuff'
+POTION = 'potion'
+VARIABLE = 'variable'
+CANCEL_BUFF = 'cancel_buff'
+RUN_ACTION_LIST = 'run_action_list'
+CALL_ACTION_LIST = 'call_action_list'
+BOOL = 'bool'
+NUM = 'num'
+TRUE = 'true'
+FALSE = 'false'
+
 # Miscellaneous
 # =============
 
@@ -92,10 +109,22 @@ BINARY_OPERATORS = {
     # TODO Handle the in/not_in cases
 }
 
+LOGIC_OPERATORS = ['&', '|', '!']
 COMPARISON_OPERATORS = ['!=', '<=', '>=', '=', '<', '>']
 ADDITION_OPERATORS = ['+', '-']
 MULTIPLIACTION_OPERATORS = ['*', '%']
 FUNCTION_OPERATORS = ['abs', 'floor', 'ceil']
+
+TYPE_CONVERSION = {
+    NUM: {
+        NUM: '{}',
+        BOOL: 'bool({})',
+    },
+    BOOL: {
+        NUM: 'num({})',
+        BOOL: '{}',
+    },
+}
 
 # Unit specific constants
 # =======================
@@ -121,16 +150,3 @@ RACES = [
     'undead',
     'worgen',
 ]
-
-# String constants
-# ================
-
-SPELL = 'spell'
-ITEM = 'item'
-BUFF = 'buff'
-DEBUFF = 'debuff'
-POTION = 'potion'
-VARIABLE = 'variable'
-CANCEL_BUFF = 'cancel_buff'
-RUN_ACTION_LIST = 'run_action_list'
-CALL_ACTION_LIST = 'call_action_list'

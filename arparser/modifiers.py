@@ -45,7 +45,7 @@ def class_specific_context(fun):
                 '    return false\n'
                 '  end\n'
                 '  return Target:IsInRange("Melee")\n'
-                'end')
+                'end\n')
             self.apl.context.add_code(is_in_melee_range)
         fun(self, spec)
     

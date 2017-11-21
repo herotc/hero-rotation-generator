@@ -6,13 +6,13 @@ Define the objects representing simc actions.
 """
 
 from .lua import LuaNamed
-from .helpers import indent
 from .conditions import ConditionExpression
 from .executions import (Spell, Item, Potion, Variable, CancelBuff,
                          RunActionList, CallActionList)
+from .helpers import indent, convert_type
 from .constants import (SPELL, ITEM, POTION, VARIABLE, CANCEL_BUFF,
                         RUN_ACTION_LIST, CALL_ACTION_LIST,
-                        ITEM_ACTIONS)
+                        ITEM_ACTIONS, BOOL, NUM)
 
 
 class ActionList:
@@ -149,7 +149,7 @@ class Action:
             operation = 'set'
         if operation == 'set':
             exec_cast = self.execution().object_().print_cast()
-            exec_value = self.value_tree().print_lua()
+            exec_value = convert_type(self.value_tree(), NUM)
             exec_link = ' = ' if exec_value != '' else ''
             return f'{exec_cast}{exec_link}{exec_value}'
         elif operation == 'reset':
@@ -158,11 +158,11 @@ class Action:
             return f'{exec_cast} = {exec_default}'
         elif operation == 'max':
             exec_cast = self.execution().object_().print_cast()
-            exec_value = self.value_tree().print_lua()
+            exec_value = convert_type(self.value_tree(), NUM)
             return f'{exec_cast} = math.max({exec_cast}, {exec_value})'
         elif operation == 'min':
             exec_cast = self.execution().object_().print_cast()
-            exec_value = self.value_tree().print_lua()
+            exec_value = convert_type(self.value_tree(), NUM)
             return f'{exec_cast} = math.min({exec_cast}, {exec_value})'
 
     def print_lua(self):
@@ -174,7 +174,7 @@ class Action:
             lua_string += f'-- {self.simc}\n'
         exec_cond = self.execution().object_().print_conditions()
         cond_link = ' and ' if exec_cond != '' else ''
-        if_cond = self.condition_tree().print_lua()
+        if_cond = convert_type(self.condition_tree(), BOOL)
         lua_string += (f'if {exec_cond}{cond_link}({if_cond}) then\n'
                        f'  {self.print_exec()}\n'
                        f'end')

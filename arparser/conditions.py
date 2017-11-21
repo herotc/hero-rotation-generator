@@ -6,9 +6,12 @@ Define the objects representing simc conditions.
 """
 
 from .expressions import Expression
-from .constants import (BINARY_OPERATORS, UNARY_OPERATORS,
-                        COMPARISON_OPERATORS, ADDITION_OPERATORS,
-                        MULTIPLIACTION_OPERATORS, FUNCTION_OPERATORS)
+from .helpers import convert_type
+from .constants import (BOOL, NUM,
+                        BINARY_OPERATORS, UNARY_OPERATORS,
+                        LOGIC_OPERATORS, COMPARISON_OPERATORS,
+                        ADDITION_OPERATORS, MULTIPLIACTION_OPERATORS,
+                        FUNCTION_OPERATORS)
 
 
 class BinaryOperator:
@@ -25,6 +28,24 @@ class BinaryOperator:
         """
         return BINARY_OPERATORS[self.symbol]
 
+    def expected_type(self):
+        """
+        Return the expected type of both sides of the operator.
+        """
+        if self.symbol in LOGIC_OPERATORS:
+            return BOOL, BOOL
+        else:
+            return NUM, NUM
+    
+    def lua_type(self):
+        """
+        Return the returned type of the operator.
+        """
+        if self.symbol in LOGIC_OPERATORS + COMPARISON_OPERATORS:
+            return BOOL
+        else:
+            return NUM
+
 
 class UnaryOperator:
     """
@@ -39,6 +60,24 @@ class UnaryOperator:
         Print the lua expression for the binary operator.
         """
         return UNARY_OPERATORS[self.symbol]
+
+    def expected_type(self):
+        """
+        Return the expected type of both sides of the operator
+        """
+        if self.symbol in LOGIC_OPERATORS:
+            return BOOL
+        else:
+            return NUM
+
+    def lua_type(self):
+        """
+        Return the returned type of the operator.
+        """
+        if self.symbol in LOGIC_OPERATORS + COMPARISON_OPERATORS:
+            return BOOL
+        else:
+            return NUM
 
 
 class ConditionExpression:
@@ -191,6 +230,12 @@ class ConditionNode:
         """
         pass
 
+    def lua_type(self):
+        """
+        Print the type for the tree representation fo a condition expression.
+        """
+        pass
+
 
 class ConditionBinaryNode(ConditionNode):
     """
@@ -205,8 +250,14 @@ class ConditionBinaryNode(ConditionNode):
         self.right_tree = right_expression.grow()
 
     def print_lua(self):
-        return (f'{self.left_tree.print_lua()} {self.operator.print_lua()} '
-                f'{self.right_tree.print_lua()}')
+        left_exp = convert_type(self.left_tree,
+                                self.operator.expected_type()[0])
+        right_exp = convert_type(self.right_tree,
+                                 self.operator.expected_type()[1])
+        return f'{left_exp} {self.operator.print_lua()} {right_exp}'
+
+    def lua_type(self):
+        return self.operator.lua_type()
 
 
 class ConditionUnaryNode(ConditionNode):
@@ -220,7 +271,11 @@ class ConditionUnaryNode(ConditionNode):
         self.sub_tree = sub_expression.grow()
 
     def print_lua(self):
-        return f'{self.operator.print_lua()} {self.sub_tree.print_lua()}'
+        sub_exp = convert_type(self.sub_tree, self.operator.expected_type())
+        return f'{self.operator.print_lua()} {sub_exp}'
+
+    def lua_type(self):
+        return self.operator.lua_type()
 
 
 class ConditionParenthesesNode(ConditionNode):
@@ -235,6 +290,9 @@ class ConditionParenthesesNode(ConditionNode):
     def print_lua(self):
         return f'({self.sub_tree.print_lua()})'
 
+    def lua_type(self):
+        return self.sub_tree.lua_type()
+
 
 class ConditionLeaf(ConditionNode):
     """
@@ -248,3 +306,6 @@ class ConditionLeaf(ConditionNode):
 
     def print_lua(self):
         return f'{self.condition.expression().print_lua()}'
+
+    def lua_type(self):
+        return self.condition.expression().lua_type()

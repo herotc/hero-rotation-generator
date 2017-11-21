@@ -7,7 +7,7 @@ Define the objects representing simc expressions.
 
 from .lua import LuaNamed, LuaExpression, Method, Literal
 from .executions import Spell
-from .constants import BUFF, DEBUFF
+from .constants import BUFF, DEBUFF, BOOL, NUM
 
 
 class Expression:
@@ -70,6 +70,12 @@ class Expression:
         Return the condition when the prefix is buff.
         """
         return Buff(self)
+
+    def debuff(self):
+        """
+        Return the condition when the prefix is buff.
+        """
+        return Debuff(self)
 
     def gcd(self):
         """
@@ -198,7 +204,7 @@ class SetBonus(Literal):
 
     def __init__(self, condition):
         lua_tier = f'AC.{self.lua_tier_name(condition)}'
-        super().__init__(lua_tier)
+        super().__init__(lua_tier, type_=BOOL)
 
     def lua_tier_name(self, condition):
         """
@@ -304,7 +310,7 @@ class Talent(LuaExpression):
         """
         object_ = Spell(self.condition.parent_action,
                         self.condition.condition_list()[1])
-        method = Method('IsAvailable')
+        method = Method('IsAvailable', type_=BOOL)
         args = []
         return object_, method, args
 
@@ -392,7 +398,7 @@ class Debuff(LuaExpression):
         Return the arguments for the expression debuff.spell.up.
         """
         object_ = self.condition.parent_action.player
-        method = Method('Debuff')
+        method = Method('Debuff', type_=BOOL)
         args = [Spell(self.condition.parent_action,
                       self.condition.condition_list()[1], DEBUFF)]
         return object_, method, args
@@ -402,7 +408,7 @@ class Debuff(LuaExpression):
         Return the arguments for the expression debuff.spell.down.
         """
         object_ = self.condition.parent_action.player
-        method = Method('DebuffDown')
+        method = Method('DebuffDown', type_=BOOL)
         args = [Spell(self.condition.parent_action,
                       self.condition.condition_list()[1], DEBUFF)]
         return object_, method, args
@@ -445,7 +451,7 @@ class Buff(LuaExpression):
         Return the arguments for the expression buff.spell.up.
         """
         object_ = self.condition.parent_action.player
-        method = Method('Buff')
+        method = Method('Buff', type_=BOOL)
         args = [Spell(self.condition.parent_action,
                       self.condition.condition_list()[1], BUFF)]
         return object_, method, args
@@ -455,7 +461,7 @@ class Buff(LuaExpression):
         Return the arguments for the expression buff.spell.down.
         """
         object_ = self.condition.parent_action.player
-        method = Method('BuffDown')
+        method = Method('BuffDown', type_=BOOL)
         args = [Spell(self.condition.parent_action,
                       self.condition.condition_list()[1], BUFF)]
         return object_, method, args
@@ -502,7 +508,7 @@ class Cooldown(LuaExpression):
         """
         object_ = Spell(self.condition.parent_action,
                         self.condition.condition_list()[1])
-        method = Method('IsReady')
+        method = Method('IsReady', type_=BOOL)
         args = []
         return object_, method, args
 

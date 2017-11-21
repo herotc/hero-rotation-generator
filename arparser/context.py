@@ -31,12 +31,22 @@ class Context:
         '--- ============================ CONTENT ===========================\n'
         '--- ======= APL LOCALS =======\n'
         '-- luacheck: max_line_length 9999\n')
+    
+    NUM_FUNCTION = (
+        'local function num(val)\n'
+        '  if val then return 1 else return 0 end\n'
+        'end\n')
+    
+    BOOL_FUNCTION = (
+        'local function bool(val)\n'
+        '  return val ~= 0\n'
+        'end\n')
 
     def __init__(self):
         self.spells = {}
         self.items = {}
         self.variables = {}
-        self.custom_code = []
+        self.custom_code = [self.NUM_FUNCTION, self.BOOL_FUNCTION]
         self.player = None
 
     def add_spell(self, spell):
@@ -121,10 +131,7 @@ class Context:
         """
         Print the custom code.
         """
-        lua_code = ''
-        for code in self.custom_code:
-            lua_code += f'{code}\n'
-        return lua_code
+        return '\n'.join(self.custom_code)
 
     def print_settings(self):
         """

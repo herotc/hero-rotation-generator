@@ -68,6 +68,14 @@ local Settings = {
 -- Variables
 local WaitingForNemesis = 0;
 
+local function num(val)
+  if val then return 1 else return 0 end
+end
+
+local function bool(val)
+  return val ~= 0
+end
+
 --- ======= ACTION LISTS =======
 local function Apl()
   local function Standard()
@@ -130,7 +138,7 @@ local function Apl()
   end
   -- variable,name=waiting_for_nemesis,value=!(!talent.nemesis.enabled|cooldown.nemesis.ready|cooldown.nemesis.remains>target.time_to_die|cooldown.nemesis.remains>60)
   if (true) then
-    WaitingForNemesis = not (not S.Nemesis:IsAvailable() or S.Nemesis:IsReady() or S.Nemesis:CooldownRemainsP() > Target:TimeToDie() or S.Nemesis:CooldownRemainsP() > 60)
+    WaitingForNemesis = num(not (not S.Nemesis:IsAvailable() or S.Nemesis:IsReady() or S.Nemesis:CooldownRemainsP() > Target:TimeToDie() or S.Nemesis:CooldownRemainsP() > 60))
   end
   -- mind_freeze
   if S.MindFreeze:IsCastable(S.MindFreeze) and Settings.General.InterruptEnabled and Target:IsInterruptible() and (true) then
