@@ -601,6 +601,17 @@ class Cooldown(Expires):
         args = []
         return object_, method, args
 
+    def recharge_time(self):
+        """
+        Return the arguments for the expression cooldown.spell.recharge_time.
+        """
+        object_ = Spell(self.condition.parent_action,
+                        self.condition.condition_list()[1])
+        method = Method('RechargeP')
+        args = []
+        return object_, method, args
+
+
 
 class TargetExpression(LuaExpression):
     """
