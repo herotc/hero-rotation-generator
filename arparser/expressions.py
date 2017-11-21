@@ -77,6 +77,12 @@ class Expression:
         """
         return Debuff(self)
 
+    def prev_gcd(self):
+        """
+        Return the condition when the prefix is prev_gcd.
+        """
+        return PrevGCD(self)
+
     def gcd(self):
         """
         Return the condition when the prefix is gcd.
