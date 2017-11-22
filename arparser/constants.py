@@ -13,10 +13,14 @@ ITEM = 'item'
 BUFF = 'buff'
 DEBUFF = 'debuff'
 POTION = 'potion'
+
 VARIABLE = 'variable'
 CANCEL_BUFF = 'cancel_buff'
 RUN_ACTION_LIST = 'run_action_list'
 CALL_ACTION_LIST = 'call_action_list'
+
+BLOODLUST = 'bloodlust'
+
 BOOL = 'bool'
 NUM = 'num'
 TRUE = 'true'
