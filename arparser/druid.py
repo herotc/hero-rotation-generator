@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Mage specific constants and functions.
+Druid specific constants and functions.
 
 @author: skasch
 """
