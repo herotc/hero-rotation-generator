@@ -19,6 +19,11 @@ CANCEL_BUFF = 'cancel_buff'
 RUN_ACTION_LIST = 'run_action_list'
 CALL_ACTION_LIST = 'call_action_list'
 
+<<<<<<< HEAD
+=======
+BLOODLUST = 'bloodlust'
+
+>>>>>>> 71924f26a98fbeb5e5ac349e6792f66f04e74894
 BOOL = 'bool'
 NUM = 'num'
 TRUE = 'true'
@@ -99,3 +104,32 @@ TYPE_CONVERSION = {
         BOOL: '{}',
     },
 }
+<<<<<<< HEAD
+=======
+
+# Unit specific constants
+# =======================
+
+CLASS_SPECS = {
+    'deathknight': ['blood', 'frost', 'unholy'],
+    'demonhunter': ['havoc'],
+    'mage': ['arcane'],
+    'druid': ['balance'],
+}
+
+RACES = [
+    'blood_elf',
+    'draenei',
+    'dwarf',
+    'gnome',
+    'goblin',
+    'human',
+    'night_elf',
+    'orc',
+    'pandaren',
+    'tauren',
+    'troll',
+    'undead',
+    'worgen',
+]
+>>>>>>> 71924f26a98fbeb5e5ac349e6792f66f04e74894
