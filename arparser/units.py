@@ -40,7 +40,7 @@ class Player:
         Returns the spell book of the player.
         """
         spells = SPELL_INFO[DEFAULT].copy()
-        spells.update(SPELL_INFO[self.class_.simc])
+        spells.update(SPELL_INFO.get(self.class_.simc, {}))
         return spells
 
     def spell_property(self, spell, key, default=False):
