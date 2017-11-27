@@ -53,6 +53,13 @@ class Expression:
         """
         return ActionExpression(self, to_self)
 
+    def spell_haste(self):
+        """
+        Return the condition when the prefix is spell_haste.
+        """
+        return LuaExpression(self.parent_action.player,
+                             Method('SpellHaste'), [])
+
     def set_bonus(self):
         """
         Return the condition when the prefix is set_bonus.
@@ -311,6 +318,7 @@ class GCD(LuaExpression):
     """
     Represent the expression for a gcd. condition.
     """
+    # TODO update GCD to take into account current execution.
 
     def __init__(self, condition):
         self.condition = condition
@@ -327,6 +335,15 @@ class GCD(LuaExpression):
         """
         object_ = self.condition.parent_action.player
         method = Method('GCDRemains')
+        args = []
+        return object_, method, args
+
+    def max(self):
+        """
+        Return the arguments for the expression gcd.max.
+        """
+        object_ = self.condition.parent_action.player
+        method = Method('GCD')
         args = []
         return object_, method, args
 
