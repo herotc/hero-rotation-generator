@@ -113,6 +113,9 @@ class PlayerSpec(LuaNamed):
         'mage': {
             'arcane': 'deadly_grace',
         },
+        'druid': {
+            'balance': 'prolonged_power',
+        },
     }
 
     def __init__(self, player, simc):

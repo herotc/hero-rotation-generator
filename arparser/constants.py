@@ -139,6 +139,7 @@ CLASS_SPECS = {
     'deathknight': ['blood', 'frost', 'unholy'],
     'demonhunter': ['havoc'],
     'mage': ['arcane'],
+    'druid': ['balance'],
 }
 
 RACES = [
