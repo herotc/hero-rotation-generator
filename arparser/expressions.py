@@ -7,6 +7,7 @@ Define the objects representing simc expressions.
 
 from .lua import LuaNamed, LuaExpression, Method, Literal
 from .executions import Spell, Item
+from .druid import balance_astral_power_value
 from .constants import SPELL, BUFF, DEBUFF, BOOL, BLOODLUST
 
 
@@ -465,6 +466,19 @@ class Resource(LuaExpression):
         method = Method(f'{self.simc.lua_name()}Percentage')
         args = []
         return object_, method, args
+
+
+class AstralPower(Resource):
+    """
+    Represent the expression for a astral_power. condition.
+    """
+
+    def __init__(self, condition):
+        super().__init__(condition, 'astral_power')
+    
+    @balance_astral_power_value
+    def value(self):
+        return super().value()
 
 
 class RunicPower(Resource):

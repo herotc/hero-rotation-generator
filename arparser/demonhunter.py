@@ -5,6 +5,8 @@ Demon Hunter specific constants and functions.
 @author: skasch
 """
 
+import os
+
 from .lua import LuaExpression
 from .expressions import Method
 from .constants import MELEE, SPELL, BUFF
@@ -83,7 +85,7 @@ def havoc_melee_condition(fun):
 
 def havoc_is_in_melee_range(fun):
     """
-    Defines class-specific functions in the context.
+    Adds melee range prediction with movement skills for Havoc.
     """
 
     def set_spec(self, spec):
@@ -91,15 +93,11 @@ def havoc_is_in_melee_range(fun):
         Sets the spec of the player.
         """
         if spec == HAVOC:
-            is_in_melee_range = (
-                'local function IsInMeleeRange()\n'
-                '  if S.Felblade:TimeSinceLastCast() <= Player:GCD() then\n'
-                '    return true\n'
-                '  elseif S.VengefulRetreat:TimeSinceLastCast() < 1.0 then\n'
-                '    return false\n'
-                '  end\n'
-                '  return Target:IsInRange("Melee")\n'
-                'end\n')
+            is_in_melee_range = ''
+            lua_file_path = os.path.join(os.path.dirname(__file__),
+                                         'luafunctions', 'IsInMeleeRange.lua')
+            with open(lua_file_path) as lua_file:
+                is_in_melee_range = ''.join(lua_file.readlines())
             self.apl.context.add_code(is_in_melee_range)
         fun(self, spec)
 

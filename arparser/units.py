@@ -7,6 +7,7 @@ Define the objects representing simc units.
 
 from .lua import LuaNamed
 from .demonhunter import havoc_is_in_melee_range
+from .druid import balance_future_astral_power
 from .database import (CLASS_SPECS, RACES, SPELL_INFO, DEFAULT, DEFAULT_POTION)
 
 
@@ -29,6 +30,7 @@ class Player:
         return self.spec.potion()
 
     @havoc_is_in_melee_range
+    @balance_future_astral_power
     def set_spec(self, spec):
         """
         Sets the spec of the player.
