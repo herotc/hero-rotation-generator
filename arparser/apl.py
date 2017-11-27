@@ -10,7 +10,8 @@ from .actions import ActionList
 from .units import Player, Target
 from .context import Context
 from .helpers import indent
-from .constants import (CLASS_SPECS, IGNORED_ACTION_LISTS)
+from .constants import IGNORED_ACTION_LISTS
+from .database import CLASS_SPECS
 
 
 class APL:

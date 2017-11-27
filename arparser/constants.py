@@ -13,14 +13,23 @@ ITEM = 'item'
 BUFF = 'buff'
 DEBUFF = 'debuff'
 POTION = 'potion'
+
 VARIABLE = 'variable'
 CANCEL_BUFF = 'cancel_buff'
 RUN_ACTION_LIST = 'run_action_list'
 CALL_ACTION_LIST = 'call_action_list'
+
 BOOL = 'bool'
 NUM = 'num'
 TRUE = 'true'
 FALSE = 'false'
+
+GCDAOGCD = 'GCDasOffGCD'
+OGCDAOGCD = 'OffGCDasOffGCD'
+USABLE = 'usable'
+INTERRUPT = 'interrupt'
+MELEE = 'melee'
+CD = 'cd'
 
 # Miscellaneous
 # =============
@@ -40,47 +49,10 @@ WORD_REPLACEMENTS = {
     'And': 'and',
     'Blooddrinker': 'BloodDrinker',
     'Of': 'of',
+    'The': 'the',
     'Deathknight': 'DeathKnight',
     'Demonhunter': 'DemonHunter',
 }
-
-# Define specific categories for skills
-# =====================================
-
-# GCDs to use as OffGCD according to AethysRotation settings
-GCD_AS_OFF_GCD = [
-    'blood_drinker',
-]
-
-# OffGCDs to use as OffGCD according to AethysRotation settings
-OFF_GCD_AS_OFF_GCD = [
-    'dancing_rune_weapon',
-    'arcane_torrent',
-    'berserking',
-    'blood_fury',
-]
-
-# Skills for which to call IsUsable instead of IsCastable
-USABLE_SKILLS = [
-    'death_strike',
-    'death_and_decay',
-]
-
-INTERRUPT_SKILLS = [
-    'mind_freeze',
-]
-
-# Skills for which "melee" must be specified as an argument of IsCastable
-MELEE_SKILLS = [
-    'mind_freeze',
-    'annihilation',
-    'chaos_strike',
-    'demons_bite',
-]
-
-CD_SKILLS = [
-    'dancing_rune_weapon',
-]
 
 # Expressions operators
 # =====================
@@ -127,28 +99,3 @@ TYPE_CONVERSION = {
         BOOL: '{}',
     },
 }
-
-# Unit specific constants
-# =======================
-
-CLASS_SPECS = {
-    'deathknight': ['blood', 'frost', 'unholy'],
-    'demonhunter': ['havoc'],
-    'mage': ['arcane'],
-}
-
-RACES = [
-    'blood_elf',
-    'draenei',
-    'dwarf',
-    'gnome',
-    'goblin',
-    'human',
-    'night_elf',
-    'orc',
-    'pandaren',
-    'tauren',
-    'troll',
-    'undead',
-    'worgen',
-]

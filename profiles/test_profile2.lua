@@ -20,40 +20,37 @@ local AR=AethysRotation
 -- Spells
 if not Spell.DemonHunter then Spell.DemonHunter={} end
 Spell.DemonHunter.Havoc={
-  Metamorphosis                 = Spell(),
-  Demonic                       = Spell(),
-  Nemesis                       = Spell(),
-  ChaosBladesBuff               = Spell(),
+  Metamorphosis                 = Spell(191427),
+  Demonic                       = Spell(213410),
+  Nemesis                       = Spell(206491),
+  ChaosBladesBuff               = Spell(247938),
   PickUpFragment                = Spell(),
-  EyeBeam                       = Spell(),
-  VengefulRetreat               = Spell(),
-  Prepared                      = Spell(),
-  Momentum                      = Spell(),
-  FelRush                       = Spell(),
-  FelMastery                    = Spell(),
-  ThrowGlaive                   = Spell(),
-  Bloodlet                      = Spell(),
-  DeathSweep                    = Spell(),
-  FelEruption                   = Spell(),
-  FuryofTheIllidari             = Spell(),
-  BladeDance                    = Spell(),
-  MasterofTheGlaive             = Spell(),
-  Felblade                      = Spell(),
-  Annihilation                  = Spell(),
-  ChaosStrike                   = Spell(),
-  DemonBlades                   = Spell(),
-  DemonsBite                    = Spell(),
+  EyeBeam                       = Spell(198013),
+  VengefulRetreat               = Spell(198793),
+  Prepared                      = Spell(203551),
+  Momentum                      = Spell(206476),
+  FelRush                       = Spell(195072),
+  FelMastery                    = Spell(192939),
+  ThrowGlaive                   = Spell(185123),
+  Bloodlet                      = Spell(206473),
+  DeathSweep                    = Spell(210152),
+  FelEruption                   = Spell(211881),
+  FuryoftheIllidari             = Spell(201467),
+  BladeDance                    = Spell(188499),
+  MasteroftheGlaive             = Spell(203556),
+  Felblade                      = Spell(232893),
+  Annihilation                  = Spell(201427),
+  ChaosStrike                   = Spell(162794),
+  DemonBlades                   = Spell(203555),
+  DemonsBite                    = Spell(162243),
   OutofRangeBuff                = Spell(),
-  DemonicAppetite               = Spell(),
-  FelBarrage                    = Spell(),
-  BlindFury                     = Spell(),
+  DemonicAppetite               = Spell(206478),
+  FelBarrage                    = Spell(211053),
+  BlindFury                     = Spell(203550),
   AutoAttack                    = Spell(),
-  FirstBlood                    = Spell(),
-  ChaosCleave                   = Spell(),
-  ConsumeMagic                  = Spell(),
-  -- Misc
-  PoolEnergy                    = Spell(9999000010),
-};
+  FirstBlood                    = Spell(206416),
+  ChaosCleave                   = Spell(206475),
+  ConsumeMagic                  = Spell(183752),
 local S = Spell.DemonHunter.Havoc;
 
 -- Items
@@ -153,15 +150,15 @@ local function Apl()
       if AR.Cast(S.FelEruption) then return ""; end
     end
     -- fury_of_the_illidari,if=(active_enemies>desired_targets)|(raid_event.adds.in>55&(!talent.momentum.enabled|buff.momentum.up))
-    if S.FuryofTheIllidari:IsCastableP() and ((active_enemies > desired_targets) or (raid_event.adds.in > 55 and (not S.Momentum:IsAvailable() or Player:BuffP(S.MomentumBuff)))) then
-      if AR.Cast(S.FuryofTheIllidari) then return ""; end
+    if S.FuryoftheIllidari:IsCastableP() and ((active_enemies > desired_targets) or (raid_event.adds.in > 55 and (not S.Momentum:IsAvailable() or Player:BuffP(S.MomentumBuff)))) then
+      if AR.Cast(S.FuryoftheIllidari) then return ""; end
     end
     -- blade_dance,if=variable.blade_dance&cooldown.eye_beam.remains>5&!cooldown.metamorphosis.ready
     if S.BladeDance:IsCastableP() and (bool(BladeDance) and S.EyeBeam:CooldownRemainsP() > 5 and not S.Metamorphosis:CooldownUpP()) then
       if AR.Cast(S.BladeDance) then return ""; end
     end
     -- throw_glaive,if=talent.bloodlet.enabled&spell_targets>=2&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&(spell_targets>=3|raid_event.adds.in>recharge_time+cooldown)
-    if S.ThrowGlaive:IsCastableP() and (S.Bloodlet:IsAvailable() and spell_targets >= 2 and (not S.MasterofTheGlaive:IsAvailable() or not S.Momentum:IsAvailable() or Player:BuffP(S.MomentumBuff)) and (spell_targets >= 3 or raid_event.adds.in > S.ThrowGlaive:RechargeP() + S.ThrowGlaive:Cooldown())) then
+    if S.ThrowGlaive:IsCastableP() and (S.Bloodlet:IsAvailable() and spell_targets >= 2 and (not S.MasteroftheGlaive:IsAvailable() or not S.Momentum:IsAvailable() or Player:BuffP(S.MomentumBuff)) and (spell_targets >= 3 or raid_event.adds.in > S.ThrowGlaive:RechargeP() + S.ThrowGlaive:Cooldown())) then
       if AR.Cast(S.ThrowGlaive) then return ""; end
     end
     -- felblade,if=fury.deficit>=30
@@ -177,7 +174,7 @@ local function Apl()
       if AR.Cast(S.Annihilation) then return ""; end
     end
     -- throw_glaive,if=talent.bloodlet.enabled&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&raid_event.adds.in>recharge_time+cooldown
-    if S.ThrowGlaive:IsCastableP() and (S.Bloodlet:IsAvailable() and (not S.MasterofTheGlaive:IsAvailable() or not S.Momentum:IsAvailable() or Player:BuffP(S.MomentumBuff)) and raid_event.adds.in > S.ThrowGlaive:RechargeP() + S.ThrowGlaive:Cooldown()) then
+    if S.ThrowGlaive:IsCastableP() and (S.Bloodlet:IsAvailable() and (not S.MasteroftheGlaive:IsAvailable() or not S.Momentum:IsAvailable() or Player:BuffP(S.MomentumBuff)) and raid_event.adds.in > S.ThrowGlaive:RechargeP() + S.ThrowGlaive:Cooldown()) then
       if AR.Cast(S.ThrowGlaive) then return ""; end
     end
     -- chaos_strike,if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8)&!variable.pooling_for_chaos_strike&!variable.pooling_for_meta&!variable.pooling_for_blade_dance
@@ -243,15 +240,15 @@ local function Apl()
       if AR.Cast(S.FelEruption) then return ""; end
     end
     -- fury_of_the_illidari,if=(active_enemies>desired_targets)|(raid_event.adds.in>55&(!talent.momentum.enabled|buff.momentum.up)&(!talent.chaos_blades.enabled|buff.chaos_blades.up|cooldown.chaos_blades.remains>30|target.time_to_die<cooldown.chaos_blades.remains))
-    if S.FuryofTheIllidari:IsCastableP() and ((active_enemies > desired_targets) or (raid_event.adds.in > 55 and (not S.Momentum:IsAvailable() or Player:BuffP(S.MomentumBuff)) and (not S.ChaosBlades:IsAvailable() or Player:BuffP(S.ChaosBladesBuff) or S.ChaosBlades:CooldownRemainsP() > 30 or Target:TimeToDie() < S.ChaosBlades:CooldownRemainsP()))) then
-      if AR.Cast(S.FuryofTheIllidari) then return ""; end
+    if S.FuryoftheIllidari:IsCastableP() and ((active_enemies > desired_targets) or (raid_event.adds.in > 55 and (not S.Momentum:IsAvailable() or Player:BuffP(S.MomentumBuff)) and (not S.ChaosBlades:IsAvailable() or Player:BuffP(S.ChaosBladesBuff) or S.ChaosBlades:CooldownRemainsP() > 30 or Target:TimeToDie() < S.ChaosBlades:CooldownRemainsP()))) then
+      if AR.Cast(S.FuryoftheIllidari) then return ""; end
     end
     -- blade_dance,if=variable.blade_dance
     if S.BladeDance:IsCastableP() and (bool(BladeDance)) then
       if AR.Cast(S.BladeDance) then return ""; end
     end
     -- throw_glaive,if=talent.bloodlet.enabled&spell_targets>=2&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&(spell_targets>=3|raid_event.adds.in>recharge_time+cooldown)
-    if S.ThrowGlaive:IsCastableP() and (S.Bloodlet:IsAvailable() and spell_targets >= 2 and (not S.MasterofTheGlaive:IsAvailable() or not S.Momentum:IsAvailable() or Player:BuffP(S.MomentumBuff)) and (spell_targets >= 3 or raid_event.adds.in > S.ThrowGlaive:RechargeP() + S.ThrowGlaive:Cooldown())) then
+    if S.ThrowGlaive:IsCastableP() and (S.Bloodlet:IsAvailable() and spell_targets >= 2 and (not S.MasteroftheGlaive:IsAvailable() or not S.Momentum:IsAvailable() or Player:BuffP(S.MomentumBuff)) and (spell_targets >= 3 or raid_event.adds.in > S.ThrowGlaive:RechargeP() + S.ThrowGlaive:Cooldown())) then
       if AR.Cast(S.ThrowGlaive) then return ""; end
     end
     -- felblade,if=fury.deficit>=30+buff.prepared.up*8
@@ -267,7 +264,7 @@ local function Apl()
       if AR.Cast(S.Annihilation) then return ""; end
     end
     -- throw_glaive,if=talent.bloodlet.enabled&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&raid_event.adds.in>recharge_time+cooldown
-    if S.ThrowGlaive:IsCastableP() and (S.Bloodlet:IsAvailable() and (not S.MasterofTheGlaive:IsAvailable() or not S.Momentum:IsAvailable() or Player:BuffP(S.MomentumBuff)) and raid_event.adds.in > S.ThrowGlaive:RechargeP() + S.ThrowGlaive:Cooldown()) then
+    if S.ThrowGlaive:IsCastableP() and (S.Bloodlet:IsAvailable() and (not S.MasteroftheGlaive:IsAvailable() or not S.Momentum:IsAvailable() or Player:BuffP(S.MomentumBuff)) and raid_event.adds.in > S.ThrowGlaive:RechargeP() + S.ThrowGlaive:Cooldown()) then
       if AR.Cast(S.ThrowGlaive) then return ""; end
     end
     -- throw_glaive,if=!talent.bloodlet.enabled&buff.metamorphosis.down&spell_targets>=3

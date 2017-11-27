@@ -20,31 +20,27 @@ local AR=AethysRotation
 -- Spells
 if not Spell.DeathKnight then Spell.DeathKnight={} end
 Spell.DeathKnight.Blood={
-  DeathStrike                   = Spell(),
-  DeathandDecay                 = Spell(),
-  RapidDecomposition            = Spell(),
-  DancingRuneWeaponBuff         = Spell(),
-  BloodDrinker                  = Spell(),
-  Marrowrend                    = Spell(),
-  BoneShieldBuff                = Spell(),
-  BloodBoil                     = Spell(),
-  HaemostasisBuff               = Spell(),
-  Ossuary                       = Spell(),
-  Bonestorm                     = Spell(),
-  BloodShieldBuff               = Spell(),
-  Consumption                   = Spell(),
-  HeartStrike                   = Spell(),
-  CrimsonScourgeBuff            = Spell(),
-  Nemesis                       = Spell(),
-  MindFreeze                    = Spell(),
-  ArcaneTorrent                 = Spell(),
-  BloodFury                     = Spell(),
-  Berserking                    = Spell(),
+  DeathStrike                   = Spell(49998),
+  DeathandDecay                 = Spell(43265),
+  RapidDecomposition            = Spell(194662),
+  DancingRuneWeaponBuff         = Spell(81256),
+  BloodDrinker                  = Spell(206931),
+  Marrowrend                    = Spell(195182),
+  BoneShieldBuff                = Spell(195181),
+  BloodBoil                     = Spell(50842),
+  HaemostasisBuff               = Spell(235558),
+  Ossuary                       = Spell(219786),
+  Bonestorm                     = Spell(194844),
+  BloodShieldBuff               = Spell(77535),
+  Consumption                   = Spell(205223),
+  HeartStrike                   = Spell(206930),
+  CrimsonScourgeBuff            = Spell(81141),
+  MindFreeze                    = Spell(47528),
+  ArcaneTorrent                 = Spell(50613),
+  BloodFury                     = Spell(20572),
+  Berserking                    = Spell(26297),
   UseItems                      = Spell(),
-  VampiricBlood                 = Spell(),
-  -- Misc
-  PoolEnergy                    = Spell(9999000010),
-};
+  VampiricBlood                 = Spell(55233),
 local S = Spell.DeathKnight.Blood;
 
 -- Items
@@ -66,7 +62,6 @@ local Settings = {
 };
 
 -- Variables
-local WaitingForNemesis = 0;
 
 local function num(val)
   if val then return 1 else return 0 end
@@ -89,7 +84,7 @@ local function Apl()
     end
     -- blooddrinker,if=!buff.dancing_rune_weapon.up
     if S.BloodDrinker:IsCastableP() and (not Player:BuffP(S.DancingRuneWeaponBuff)) then
-      if AR.Cast(S.BloodDrinker) then return ""; end
+      if AR.Cast(S.BloodDrinker, Settings.Blood.GCDasOffGCD.BloodDrinker) then return ""; end
     end
     -- marrowrend,if=buff.bone_shield.remains<=gcd*2
     if S.Marrowrend:IsCastableP() and (Player:BuffRemainsP(S.BoneShieldBuff) <= Player:GCD() * 2) then
@@ -135,10 +130,6 @@ local function Apl()
     if S.HeartStrike:IsCastableP() and (Player:RuneTimeToX(3) < Player:GCD() or Player:BuffStackP(S.BoneShieldBuff) > 6) then
       if AR.Cast(S.HeartStrike) then return ""; end
     end
-  end
-  -- variable,name=waiting_for_nemesis,value=!(!talent.nemesis.enabled|cooldown.nemesis.ready|cooldown.nemesis.remains>target.time_to_die|cooldown.nemesis.remains>60)
-  if (true) then
-    WaitingForNemesis = num(not (not S.Nemesis:IsAvailable() or S.Nemesis:CooldownUpP() or S.Nemesis:CooldownRemainsP() > Target:TimeToDie() or S.Nemesis:CooldownRemainsP() > 60))
   end
   -- mind_freeze
   if S.MindFreeze:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (true) then

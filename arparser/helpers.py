@@ -15,6 +15,7 @@ def indent(string, length=2):
     indent_string = '\n' + ' ' * length
     return ' ' * length + string.replace('\n', indent_string)
 
+
 def convert_type(expr, expected_type):
     """
     Print an expression with type conversion.

@@ -93,12 +93,9 @@ class Context:
             f'if not Spell.{class_} then Spell.{class_}={{}} end\n'
             f'Spell.{class_}.{spec}={{\n')
         for spell in self.spells.values():
-            lua_spells += f'  {spell.lua_name():30}= Spell(),\n'
-        lua_spells += (
-            '  -- Misc\n'
-            '  PoolEnergy                    = Spell(9999000010),\n'
-            '};\n'
-            f'local S = Spell.{class_}.{spec};\n')
+            spell_id = str(self.player.spell_property(spell, spell.type_, ''))
+            lua_spells += f'  {spell.lua_name():30}= Spell({spell_id}),\n'
+        lua_spells += f'local S = Spell.{class_}.{spec};\n'
         return lua_spells
 
     def print_items(self):

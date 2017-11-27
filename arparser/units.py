@@ -6,8 +6,8 @@ Define the objects representing simc units.
 """
 
 from .lua import LuaNamed
-from .modifiers import class_specific_context
-from .constants import (CLASS_SPECS, RACES)
+from .demonhunter import havoc_is_in_melee_range
+from .database import (CLASS_SPECS, RACES, SPELL_INFO, DEFAULT)
 
 
 class Player:
@@ -28,12 +28,28 @@ class Player:
         """
         return self.spec.potion()
 
-    @class_specific_context
+    @havoc_is_in_melee_range
     def set_spec(self, spec):
         """
         Sets the spec of the player.
         """
         self.spec = PlayerSpec(self, spec)
+    
+    def spell_book(self):
+        """
+        Returns the spell book of the player.
+        """
+        spells = SPELL_INFO[DEFAULT].copy()
+        spells.update(SPELL_INFO[self.class_.simc])
+        return spells
+
+    def spell_property(self, spell, key, default=False):
+        """
+        Return the requested spell property from the spell book of the player.
+        """
+        spell_name = spell.simc if type(spell).__name__ == 'Spell' else spell
+        spells = self.spell_book()
+        return spells.get(spell_name, {}).get(key, default)
 
     def set_race(self, race):
         """

@@ -6,10 +6,9 @@ Define the objects representing simc executions.
 """
 
 from .lua import LuaNamed, LuaExpression, Literal, Method
-from .modifiers import class_specific_conditions
+from .demonhunter import havoc_melee_condition
 from .constants import (SPELL, BUFF, DEBUFF,
-                        USABLE_SKILLS, INTERRUPT_SKILLS,
-                        GCD_AS_OFF_GCD, OFF_GCD_AS_OFF_GCD)
+                        USABLE, INTERRUPT, GCDAOGCD, OGCDAOGCD)
 
 
 class Castable:
@@ -243,36 +242,36 @@ class Spell(LuaNamed, Castable):
         return f'{super().lua_name()}{self.TYPE_SUFFIX[self.type_]}'
 
     def condition_method(self):
-        if self.simc in USABLE_SKILLS:
+        if self.action.player.spell_property(self, USABLE):
             return Method('IsUsable')
         return Method('IsCastableP')
 
-    @class_specific_conditions
+    @havoc_melee_condition
     def additional_conditions(self):
-        if self.simc in INTERRUPT_SKILLS:
+        if self.action.player.spell_property(self, INTERRUPT):
             return [Literal('Settings.General.InterruptEnabled'),
                     LuaExpression(self.action.target,
                                   Method('IsInterruptible'), [])]
         return []
 
     def cast_method(self):
-        if self.simc in INTERRUPT_SKILLS:
+        if self.action.player.spell_property(self, INTERRUPT):
             return Method('AR.CastAnnotated')
         return Method('AR.Cast')
 
     def cast_args(self):
         args = [self]
-        if self.simc in GCD_AS_OFF_GCD:
+        if self.action.player.spell_property(self, GCDAOGCD):
             args.append(Literal('Settings.'
                                 f'{self.action.player.spec.lua_name()}.'
                                 'GCDasOffGCD.'
                                 f'{self.lua_name()}'))
-        if self.simc in OFF_GCD_AS_OFF_GCD:
+        if self.action.player.spell_property(self, OGCDAOGCD):
             args.append(Literal('Settings.'
                                 f'{self.action.player.spec.lua_name()}.'
                                 'OffGCDasOffGCD.'
                                 f'{self.lua_name()}'))
-        if self.simc in INTERRUPT_SKILLS:
+        if self.action.player.spell_property(self, INTERRUPT):
             args.append(Literal('false'))
             args.append(Literal('"Interrupt"'))
         return args
