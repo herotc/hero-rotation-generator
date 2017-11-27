@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='arparser',
-      version='0.1.1',
+      version='0.1.2',
       description='An AethysRotation simc profile parser',
       url='http://github.com/simcminmax/arparser',
       author='Skasch',
