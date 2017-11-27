@@ -109,6 +109,12 @@ class Expression:
         """
         return Time(self)
 
+    def astral_power(self):
+        """
+        Return the condition when the prefix is astral_power.
+        """
+        return AstralPower(self)
+
     def runic_power(self):
         """
         Return the condition when the prefix is runic_power.
