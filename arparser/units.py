@@ -7,7 +7,7 @@ Define the objects representing simc units.
 
 from .lua import LuaNamed
 from .demonhunter import havoc_is_in_melee_range
-from .database import (CLASS_SPECS, RACES, SPELL_INFO, DEFAULT)
+from .database import (CLASS_SPECS, RACES, SPELL_INFO, DEFAULT, DEFAULT_POTION)
 
 
 class Player:
@@ -117,23 +117,6 @@ class PlayerSpec(LuaNamed):
     The player spec.
     """
 
-    DEFAULT_POTIONS = {
-        'deathknight': {
-            'blood': 'prolonged_power',
-            'frost': 'prolonged_power',
-            'unholy': 'prolonged_power',
-        },
-        'demonhunter': {
-            'havoc': 'prolonged_power',
-        },
-        'mage': {
-            'arcane': 'deadly_grace',
-        },
-        'druid': {
-            'balance': 'prolonged_power',
-        },
-    }
-
     def __init__(self, player, simc):
         try:
             assert simc in CLASS_SPECS[player.class_.simc]
@@ -146,4 +129,4 @@ class PlayerSpec(LuaNamed):
         """
         Return the potion used by a Death Knight.
         """
-        return self.DEFAULT_POTIONS[self.player.class_.simc][self.simc]
+        return DEFAULT_POTION[self.player.class_.simc][self.simc]

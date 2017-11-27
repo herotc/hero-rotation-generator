@@ -8,6 +8,8 @@ Initialize the arparser package.
 from .constants import SPELL, OGCDAOGCD
 from .deathknight import DK_SPECS, DK_POTION, DK_SPELL_INFO
 from .demonhunter import DH_SPECS, DH_POTION, DH_SPELL_INFO
+from .druid import DR_SPECS, DR_POTION
+from .mage import MG_SPECS, MG_POTION
 
 DEFAULT = 'default'
 
@@ -17,6 +19,8 @@ CLASS_SPECS = {
 }
 CLASS_SPECS.update(DK_SPECS)
 CLASS_SPECS.update(DH_SPECS)
+CLASS_SPECS.update(DR_SPECS)
+CLASS_SPECS.update(MG_SPECS)
 
 RACES = [
     'blood_elf',
@@ -37,6 +41,8 @@ RACES = [
 DEFAULT_POTION = {}
 DEFAULT_POTION.update(DK_POTION)
 DEFAULT_POTION.update(DH_POTION)
+DEFAULT_POTION.update(DR_POTION)
+DEFAULT_POTION.update(MG_POTION)
 
 SPELL_INFO = {
     DEFAULT: {
