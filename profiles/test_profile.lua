@@ -136,15 +136,15 @@ local function Apl()
     if AR.CastAnnotated(S.MindFreeze, false, "Interrupt") then return ""; end
   end
   -- arcane_torrent,if=runic_power.deficit>20
-  if S.ArcaneTorrent:IsCastableP() and (Player:RunicPowerDeficit() > 20) then
+  if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (Player:RunicPowerDeficit() > 20) then
     if AR.Cast(S.ArcaneTorrent, Settings.Blood.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
   end
   -- blood_fury
-  if S.BloodFury:IsCastableP() and (true) then
+  if S.BloodFury:IsCastableP() and AR.CDsON() and (true) then
     if AR.Cast(S.BloodFury, Settings.Blood.OffGCDasOffGCD.BloodFury) then return ""; end
   end
   -- berserking,if=buff.dancing_rune_weapon.up
-  if S.Berserking:IsCastableP() and (Player:BuffP(S.DancingRuneWeaponBuff)) then
+  if S.Berserking:IsCastableP() and AR.CDsON() and (Player:BuffP(S.DancingRuneWeaponBuff)) then
     if AR.Cast(S.Berserking, Settings.Blood.OffGCDasOffGCD.Berserking) then return ""; end
   end
   -- use_items
@@ -156,7 +156,7 @@ local function Apl()
     if AR.CastSuggested(I.ProlongedPower) then return ""; end
   end
   -- dancing_rune_weapon,if=(!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready)&!cooldown.death_and_decay.ready
-  if S.DancingRuneWeapon:IsCastableP() and ((not S.BloodDrinker:IsAvailable() or not S.BloodDrinker:CooldownUpP()) and not S.DeathandDecay:CooldownUpP()) then
+  if S.DancingRuneWeapon:IsCastableP() and AR.CDsON() and ((not S.BloodDrinker:IsAvailable() or not S.BloodDrinker:CooldownUpP()) and not S.DeathandDecay:CooldownUpP()) then
     if AR.Cast(S.DancingRuneWeapon, Settings.Blood.OffGCDasOffGCD.DancingRuneWeapon) then return ""; end
   end
   -- vampiric_blood

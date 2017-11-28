@@ -5,7 +5,7 @@ Initialize the arparser package.
 @author: skasch
 """
 
-from .constants import SPELL, OGCDAOGCD
+from .constants import SPELL, OGCDAOGCD, CD
 from .deathknight import DK_SPECS, DK_POTION, DK_SPELL_INFO
 from .demonhunter import DH_SPECS, DH_POTION, DH_SPELL_INFO
 from .druid import DR_SPECS, DR_POTION
@@ -47,11 +47,14 @@ DEFAULT_POTION.update(MG_POTION)
 SPELL_INFO = {
     DEFAULT: {
         'arcane_torrent':       {SPELL:     50613,
-                                 OGCDAOGCD: True},
+                                 OGCDAOGCD: True,
+                                 CD:        True},
         'berserking':           {SPELL:     26297,
-                                 OGCDAOGCD: True},
+                                 OGCDAOGCD: True,
+                                 CD:        True},
         'blood_fury':           {SPELL:     20572,
-                                 OGCDAOGCD: True},
+                                 OGCDAOGCD: True,
+                                 CD:        True},
         'gift_of_the_naaru':    {SPELL:     59547},
         'shadowmeld':           {SPELL:     58984},
         'pool_resource':        {SPELL:     9999000010},

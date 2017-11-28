@@ -437,15 +437,15 @@ local function Apl()
     if AR.Cast(S.BlessingofElune) then return ""; end
   end
   -- blood_fury,if=buff.celestial_alignment.up|buff.incarnation.up
-  if S.BloodFury:IsCastableP() and (Player:BuffP(S.CelestialAlignmentBuff) or Player:BuffP(S.IncarnationBuff)) then
+  if S.BloodFury:IsCastableP() and AR.CDsON() and (Player:BuffP(S.CelestialAlignmentBuff) or Player:BuffP(S.IncarnationBuff)) then
     if AR.Cast(S.BloodFury, Settings.Balance.OffGCDasOffGCD.BloodFury) then return ""; end
   end
   -- berserking,if=buff.celestial_alignment.up|buff.incarnation.up
-  if S.Berserking:IsCastableP() and (Player:BuffP(S.CelestialAlignmentBuff) or Player:BuffP(S.IncarnationBuff)) then
+  if S.Berserking:IsCastableP() and AR.CDsON() and (Player:BuffP(S.CelestialAlignmentBuff) or Player:BuffP(S.IncarnationBuff)) then
     if AR.Cast(S.Berserking, Settings.Balance.OffGCDasOffGCD.Berserking) then return ""; end
   end
   -- arcane_torrent,if=buff.celestial_alignment.up|buff.incarnation.up
-  if S.ArcaneTorrent:IsCastableP() and (Player:BuffP(S.CelestialAlignmentBuff) or Player:BuffP(S.IncarnationBuff)) then
+  if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (Player:BuffP(S.CelestialAlignmentBuff) or Player:BuffP(S.IncarnationBuff)) then
     if AR.Cast(S.ArcaneTorrent, Settings.Balance.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
   end
   -- use_items

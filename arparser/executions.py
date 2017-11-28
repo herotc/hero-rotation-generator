@@ -8,7 +8,7 @@ Define the objects representing simc executions.
 from .lua import LuaNamed, LuaExpression, Literal, Method
 from .demonhunter import havoc_melee_condition
 from .constants import (SPELL, BUFF, DEBUFF,
-                        USABLE, INTERRUPT, GCDAOGCD, OGCDAOGCD)
+                        USABLE, INTERRUPT, CD, GCDAOGCD, OGCDAOGCD)
 
 
 class Castable:
@@ -248,11 +248,14 @@ class Spell(LuaNamed, Castable):
 
     @havoc_melee_condition
     def additional_conditions(self):
+        conditions = []
+        if self.action.player.spell_property(self, CD):
+            conditions.append(LuaExpression(None, Method('AR.CDsON'), []))
         if self.action.player.spell_property(self, INTERRUPT):
-            return [Literal('Settings.General.InterruptEnabled'),
-                    LuaExpression(self.action.target,
-                                  Method('IsInterruptible'), [])]
-        return []
+            conditions.append(Literal('Settings.General.InterruptEnabled'))
+            conditions.append(LuaExpression(self.action.target,
+                                            Method('IsInterruptible'), []))
+        return conditions
 
     def cast_method(self):
         if self.action.player.spell_property(self, INTERRUPT):
