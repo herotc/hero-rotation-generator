@@ -40,13 +40,14 @@ Spell.DeathKnight.Blood={
   BloodFury                     = Spell(20572),
   Berserking                    = Spell(26297),
   UseItems                      = Spell(),
+  DancingRuneWeapon             = Spell(49028),
   VampiricBlood                 = Spell(55233),
 local S = Spell.DeathKnight.Blood;
 
 -- Items
 if not Item.DeathKnight then Item.DeathKnight={} end
 Item.DeathKnight.Blood={
-  ProlongedPower                = Item(),
+  ProlongedPower                = Item(142117),
 };
 local I = Item.DeathKnight.Blood;
 

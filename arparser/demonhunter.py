@@ -9,7 +9,7 @@ import os
 
 from .lua import LuaExpression
 from .expressions import Method
-from .constants import MELEE, SPELL, BUFF, COMMON
+from .constants import MELEE, SPELL, BUFF, DEBUFF, COMMON
 
 DEMONHUNTER = 'demonhunter'
 HAVOC = 'havoc'
@@ -44,7 +44,8 @@ DH_SPELL_INFO = {
             'vengeful_retreat':     {SPELL:     198793},
             'blind_fury':           {SPELL:     203550},
             'bloodlet':             {SPELL:     206473},
-            'chaos_blades':         {BUFF:      247938},
+            'chaos_blades':         {SPELL:     247938,
+                                     BUFF:      247938},
             'chaos_cleave':         {SPELL:     206475},
             'demon_blades':         {SPELL:     203555},
             'demonic':              {SPELL:     213410},
@@ -58,7 +59,8 @@ DH_SPELL_INFO = {
             'master_of_the_glaive': {SPELL:     203556},
             'momentum':             {SPELL:     206476,
                                      BUFF:      208628},
-            'nemesis':              {SPELL:     206491},
+            'nemesis':              {SPELL:     206491,
+                                     DEBUFF:    206491},
             'prepared':             {SPELL:     203551,
                                      BUFF:      203650},
             'fury_of_the_illidari': {SPELL:     201467},
@@ -68,14 +70,17 @@ DH_SPELL_INFO = {
             'sigil_of_flame':       {SPELL:     204596},
             'soul_cleave':          {SPELL:     228477},
             'soul_carver':          {SPELL:     207407},
+            'demon_spikes':         {SPELL:     203720,
+                                     BUFF:      203819},
+            'infernal_strike':      {SPELL:     189110},
         },
         HAVOC: {
             'throw_glaive':         {SPELL:     185123},
         },
         VENGEANCE: {
             'throw_glaive':         {SPELL:     204157},
-        }
-    }
+        },
+    },
 }
 
 DH_ITEM_INFO = {}

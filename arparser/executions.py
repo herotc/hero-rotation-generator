@@ -7,6 +7,7 @@ Define the objects representing simc executions.
 
 from .lua import LuaNamed, LuaExpression, Literal, Method
 from .demonhunter import havoc_melee_condition
+from .druid import guardian_swipe_thrash_value
 from .constants import (SPELL, BUFF, DEBUFF,
                         USABLE, INTERRUPT, CD, GCDAOGCD, OGCDAOGCD)
 
@@ -279,6 +280,7 @@ class Spell(LuaNamed, Castable):
             args.append(Literal('"Interrupt"'))
         return args
 
+    @guardian_swipe_thrash_value
     def print_lua(self):
         """
         Print the lua expression for the spell.

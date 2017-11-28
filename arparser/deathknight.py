@@ -125,8 +125,8 @@ DK_SPELL_INFO = {
             'seal_of_necrofantasia':            {SPELL:     212216},
             'toravons_whiteout_bindings':       {SPELL:     205628},
             'instructors_fourth_lesson':        {SPELL:     208713},
-        }
-    }
+        },
+    },
 }
 
 DK_ITEM_INFO = {}

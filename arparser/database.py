@@ -5,7 +5,7 @@ Initialize the arparser package.
 @author: skasch
 """
 
-from .constants import SPELL, OGCDAOGCD, CD, COMMON
+from .constants import SPELL, BUFF, OGCDAOGCD, CD, COMMON
 from .deathknight import    DK_SPECS, DK_POTION, DK_SPELL_INFO, DK_ITEM_INFO
 from .demonhunter import    DH_SPECS, DH_POTION, DH_SPELL_INFO, DH_ITEM_INFO
 from .druid import          DR_SPECS, DR_POTION, DR_SPELL_INFO, DR_ITEM_INFO
@@ -65,18 +65,19 @@ DEFAULT_POTION.update(WR_POTION)
 
 SPELL_INFO = {
     COMMON: {
-        'arcane_torrent':       {SPELL:     50613,
-                                 OGCDAOGCD: True,
-                                 CD:        True},
-        'berserking':           {SPELL:     26297,
-                                 OGCDAOGCD: True,
-                                 CD:        True},
-        'blood_fury':           {SPELL:     20572,
-                                 OGCDAOGCD: True,
-                                 CD:        True},
-        'gift_of_the_naaru':    {SPELL:     59547},
-        'shadowmeld':           {SPELL:     58984},
-        'pool_resource':        {SPELL:     9999000010},
+        'arcane_torrent':               {SPELL:     50613,
+                                         OGCDAOGCD: True,
+                                         CD:        True},
+        'berserking':                   {SPELL:     26297,
+                                         OGCDAOGCD: True,
+                                         CD:        True},
+        'blood_fury':                   {SPELL:     20572,
+                                         OGCDAOGCD: True,
+                                         CD:        True},
+        'gift_of_the_naaru':            {SPELL:     59547},
+        'shadowmeld':                   {SPELL:     58984},
+        'potion_of_prolonged_power':    {BUFF:      229206},
+        'pool_resource':                {SPELL:     9999000010},
     }
 }
 SPELL_INFO.update(DK_SPELL_INFO)

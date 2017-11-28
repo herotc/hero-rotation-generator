@@ -22,13 +22,18 @@ if not Spell.DemonHunter then Spell.DemonHunter={} end
 Spell.DemonHunter.Havoc={
   Metamorphosis                 = Spell(191427),
   Demonic                       = Spell(213410),
+  MetamorphosisBuff             = Spell(162264),
   Nemesis                       = Spell(206491),
+  NemesisDebuff                 = Spell(206491),
   ChaosBladesBuff               = Spell(247938),
+  ChaosBlades                   = Spell(247938),
   PickUpFragment                = Spell(),
   EyeBeam                       = Spell(198013),
   VengefulRetreat               = Spell(198793),
   Prepared                      = Spell(203551),
   Momentum                      = Spell(206476),
+  PreparedBuff                  = Spell(203650),
+  MomentumBuff                  = Spell(208628),
   FelRush                       = Spell(195072),
   FelMastery                    = Spell(192939),
   ThrowGlaive                   = Spell(185123),
@@ -56,7 +61,7 @@ local S = Spell.DemonHunter.Havoc;
 -- Items
 if not Item.DemonHunter then Item.DemonHunter={} end
 Item.DemonHunter.Havoc={
-  ProlongedPower                = Item(),
+  ProlongedPower                = Item(142117),
 };
 local I = Item.DemonHunter.Havoc;
 

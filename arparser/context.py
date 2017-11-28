@@ -5,6 +5,9 @@ Context of an APL.
 @author: skasch
 """
 
+from .database import ITEM_INFO
+from .druid import guardian_print_swipe_thrash
+
 class Context:
     """
     Defines the context of an APL, used to print everything outside the Apl
@@ -49,12 +52,13 @@ class Context:
         self.custom_code = [self.NUM_FUNCTION, self.BOOL_FUNCTION]
         self.player = None
 
+    @guardian_print_swipe_thrash
     def add_spell(self, spell):
         """
         Add a spell to the context.
         """
-        if spell.simc not in self.spells:
-            self.spells[spell.simc] = spell
+        if (spell.simc, spell.type_) not in self.spells:
+            self.spells[(spell.simc, spell.type_)] = spell
 
     def add_item(self, item):
         """
@@ -109,7 +113,8 @@ class Context:
             f'if not Item.{class_} then Item.{class_}={{}} end\n'
             f'Item.{class_}.{spec}={{\n')
         for item in self.items.values():
-            lua_items += f'  {item.lua_name():30}= Item(),\n'
+            item_id = str(ITEM_INFO.get(item.simc, ''))
+            lua_items += f'  {item.lua_name():30}= Item({item_id}),\n'
         lua_items += (
             '};\n'
             f'local I = Item.{class_}.{spec};\n')

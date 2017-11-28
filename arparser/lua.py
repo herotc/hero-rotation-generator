@@ -25,7 +25,10 @@ class LuaNamed:
         ar_words = [WORD_REPLACEMENTS[ar_word]
                     if ar_word in WORD_REPLACEMENTS else ar_word
                     for ar_word in ar_words]
-        return ''.join(ar_words)
+        ar_string = ''.join(ar_words)
+        # Recapitalize first letter if lowered
+        ar_string = ar_string[0].upper() + ar_string[1:]
+        return ar_string
 
 
 class LuaTyped:
