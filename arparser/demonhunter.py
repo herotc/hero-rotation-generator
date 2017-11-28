@@ -63,6 +63,8 @@ DH_SPELL_INFO = {
     }
 }
 
+DH_ITEM_INFO = {}
+
 
 def havoc_melee_condition(fun):
     """

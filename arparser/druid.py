@@ -10,14 +10,24 @@ from .expressions import Method
 
 DRUID = 'druid'
 BALANCE = 'balance'
+FERAL = 'feral'
+GUARDIAN = 'guardian'
 
-DR_SPECS = {DRUID: [BALANCE]}
+DR_SPECS = {DRUID: [BALANCE, FERAL, GUARDIAN]}
 
 DR_POTION = {
     DRUID: {
         BALANCE: 'prolonged_power',
+        FERAL: 'old_war',
+        GUARDIAN: 'prolonged_power',
     }
 }
+
+DR_SPELL_INFO = {
+    DRUID: {}
+}
+
+DR_ITEM_INFO = {}
 
 
 def balance_future_astral_power(fun):

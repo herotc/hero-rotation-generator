@@ -126,3 +126,5 @@ DK_SPELL_INFO = {
         'instructors_fourth_lesson':        {SPELL:     208713},
     }
 }
+
+DK_ITEM_INFO = {}
