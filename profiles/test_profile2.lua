@@ -121,7 +121,7 @@ local function Apl()
       if AR.Cast(S.Nemesis) then return ""; end
     end
     -- chaos_blades,if=buff.metamorphosis.up|cooldown.metamorphosis.adjusted_remains>60|target.time_to_die<=duration
-    if S.ChaosBlades:IsCastableP() and (Player:BuffP(S.MetamorphosisBuff) or cooldown.metamorphosis.adjusted_remains > 60 or Target:TimeToDie() <= duration) then
+    if S.ChaosBlades:IsCastableP() and (Player:BuffP(S.MetamorphosisBuff) or cooldown.metamorphosis.adjusted_remains > 60 or Target:TimeToDie() <= S.ChaosBlades:BaseDuration()) then
       if AR.Cast(S.ChaosBlades) then return ""; end
     end
     -- potion,if=buff.metamorphosis.remains>25|target.time_to_die<30

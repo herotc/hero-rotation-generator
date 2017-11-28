@@ -8,7 +8,7 @@ Define the objects representing simc executions.
 from .lua import LuaNamed, LuaExpression, Literal, Method
 from .demonhunter import havoc_melee_condition
 from .druid import guardian_swipe_thrash_value
-from .constants import (SPELL, BUFF, DEBUFF,
+from .constants import (BLOODLUST, SPELL, BUFF, DEBUFF,
                         USABLE, INTERRUPT, CD, GCDAOGCD, OGCDAOGCD)
 
 
@@ -237,7 +237,8 @@ class Spell(LuaNamed, Castable):
         super().__init__(simc)
         self.action = action
         self.type_ = type_
-        self.action.context.add_spell(self)
+        if simc != BLOODLUST:
+            self.action.context.add_spell(self)
     
     def lua_name(self):
         return f'{super().lua_name()}{self.TYPE_SUFFIX[self.type_]}'

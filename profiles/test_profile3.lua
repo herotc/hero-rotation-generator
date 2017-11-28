@@ -201,15 +201,15 @@ local function Apl()
       if AR.Cast(S.Starsurge) then return ""; end
     end
     -- stellar_flare,cycle_targets=1,max_cycle_targets=4,if=active_enemies<4&remains<7.2
-    if S.StellarFlare:IsCastableP() and (active_enemies < 4 and remains < 7.2) then
+    if S.StellarFlare:IsCastableP() and (active_enemies < 4 and Player:BuffRemainsP(S.StellarFlare) < 7.2) then
       if AR.Cast(S.StellarFlare) then return ""; end
     end
     -- moonfire,if=((talent.natures_balance.enabled&remains<3)|(remains<6.6&!talent.natures_balance.enabled))&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)
-    if S.Moonfire:IsCastableP() and (((S.NaturesBalance:IsAvailable() and remains < 3) or (remains < 6.6 and not S.NaturesBalance:IsAvailable())) and (Player:BuffRemainsP(S.TheEmeraldDreamcatcherBuff) > Player:GCD() or not Player:BuffP(S.TheEmeraldDreamcatcherBuff))) then
+    if S.Moonfire:IsCastableP() and (((S.NaturesBalance:IsAvailable() and Target:DebuffRemainsP(S.Moonfire) < 3) or (Target:DebuffRemainsP(S.Moonfire) < 6.6 and not S.NaturesBalance:IsAvailable())) and (Player:BuffRemainsP(S.TheEmeraldDreamcatcherBuff) > Player:GCD() or not Player:BuffP(S.TheEmeraldDreamcatcherBuff))) then
       if AR.Cast(S.Moonfire) then return ""; end
     end
     -- sunfire,if=((talent.natures_balance.enabled&remains<3)|(remains<5.4&!talent.natures_balance.enabled))&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)
-    if S.Sunfire:IsCastableP() and (((S.NaturesBalance:IsAvailable() and remains < 3) or (remains < 5.4 and not S.NaturesBalance:IsAvailable())) and (Player:BuffRemainsP(S.TheEmeraldDreamcatcherBuff) > Player:GCD() or not Player:BuffP(S.TheEmeraldDreamcatcherBuff))) then
+    if S.Sunfire:IsCastableP() and (((S.NaturesBalance:IsAvailable() and Target:DebuffRemainsP(S.Sunfire) < 3) or (Target:DebuffRemainsP(S.Sunfire) < 5.4 and not S.NaturesBalance:IsAvailable())) and (Player:BuffRemainsP(S.TheEmeraldDreamcatcherBuff) > Player:GCD() or not Player:BuffP(S.TheEmeraldDreamcatcherBuff))) then
       if AR.Cast(S.Sunfire) then return ""; end
     end
     -- force_of_nature,if=buff.the_emerald_dreamcatcher.remains>execute_time
@@ -331,15 +331,15 @@ local function Apl()
       if AR.Cast(S.FullMoon) then return ""; end
     end
     -- moonfire,if=buff.fury_of_elune.down&remains<=6.6
-    if S.Moonfire:IsCastableP() and (Player:BuffDownP(S.FuryofEluneBuff) and remains <= 6.6) then
+    if S.Moonfire:IsCastableP() and (Player:BuffDownP(S.FuryofEluneBuff) and Target:DebuffRemainsP(S.Moonfire) <= 6.6) then
       if AR.Cast(S.Moonfire) then return ""; end
     end
     -- sunfire,if=buff.fury_of_elune.down&remains<5.4
-    if S.Sunfire:IsCastableP() and (Player:BuffDownP(S.FuryofEluneBuff) and remains < 5.4) then
+    if S.Sunfire:IsCastableP() and (Player:BuffDownP(S.FuryofEluneBuff) and Target:DebuffRemainsP(S.Sunfire) < 5.4) then
       if AR.Cast(S.Sunfire) then return ""; end
     end
     -- stellar_flare,if=remains<7.2&active_enemies=1
-    if S.StellarFlare:IsCastableP() and (remains < 7.2 and active_enemies == 1) then
+    if S.StellarFlare:IsCastableP() and (Player:BuffRemainsP(S.StellarFlare) < 7.2 and active_enemies == 1) then
       if AR.Cast(S.StellarFlare) then return ""; end
     end
     -- starfall,if=(active_enemies>=2&talent.stellar_flare.enabled|active_enemies>=3)&buff.fury_of_elune.down&cooldown.fury_of_elune.remains>10
@@ -377,11 +377,11 @@ local function Apl()
       if AR.Cast(S.StellarFlare) then return ""; end
     end
     -- moonfire,if=((talent.natures_balance.enabled&remains<3)|remains<6.6)&astral_power.deficit>7&target.time_to_die>8
-    if S.Moonfire:IsCastableP() and (((S.NaturesBalance:IsAvailable() and remains < 3) or remains < 6.6) and Player:AstralPowerDeficit() > 7 and Target:TimeToDie() > 8) then
+    if S.Moonfire:IsCastableP() and (((S.NaturesBalance:IsAvailable() and Target:DebuffRemainsP(S.Moonfire) < 3) or Target:DebuffRemainsP(S.Moonfire) < 6.6) and Player:AstralPowerDeficit() > 7 and Target:TimeToDie() > 8) then
       if AR.Cast(S.Moonfire) then return ""; end
     end
     -- sunfire,if=((talent.natures_balance.enabled&remains<3)|remains<5.4)&astral_power.deficit>7&target.time_to_die>8
-    if S.Sunfire:IsCastableP() and (((S.NaturesBalance:IsAvailable() and remains < 3) or remains < 5.4) and Player:AstralPowerDeficit() > 7 and Target:TimeToDie() > 8) then
+    if S.Sunfire:IsCastableP() and (((S.NaturesBalance:IsAvailable() and Target:DebuffRemainsP(S.Sunfire) < 3) or Target:DebuffRemainsP(S.Sunfire) < 5.4) and Player:AstralPowerDeficit() > 7 and Target:TimeToDie() > 8) then
       if AR.Cast(S.Sunfire) then return ""; end
     end
     -- starfall,if=buff.oneths_overconfidence.react&(!buff.astral_acceleration.up|buff.astral_acceleration.remains>5|astral_power.deficit<44)
