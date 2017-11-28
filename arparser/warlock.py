@@ -5,6 +5,8 @@ Warlock specific constants and functions.
 @author: skasch
 """
 
+from .constants import COMMON
+
 WARLOCK = 'warlock'
 AFFLICTION = 'affliction'
 DEMONOLOGY = 'demonology'
@@ -21,7 +23,9 @@ WL_POTION = {
 }
 
 WL_SPELL_INFO = {
-    WARLOCK: {}
+    WARLOCK: {
+        COMMON: {}
+    }
 }
 
 WL_ITEM_INFO = {}

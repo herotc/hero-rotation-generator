@@ -5,6 +5,8 @@ Mage specific constants and functions.
 @author: skasch
 """
 
+from .constants import COMMON
+
 MAGE = 'mage'
 ARCANE = 'arcane'
 FIRE = 'fire'
@@ -21,7 +23,9 @@ MG_POTION = {
 }
 
 MG_SPELL_INFO = {
-    MAGE: {}
+    MAGE: {
+        COMMON: {}
+    }
 }
 
 MG_ITEM_INFO = {}

@@ -5,6 +5,8 @@ Shaman specific constants and functions.
 @author: skasch
 """
 
+from .constants import COMMON
+
 SHAMAN = 'shaman'
 ELEMENTAL = 'elemental'
 ENHANCEMENT = 'enhancement'
@@ -19,7 +21,9 @@ SH_POTION = {
 }
 
 SH_SPELL_INFO = {
-    SHAMAN: {}
+    SHAMAN: {
+        COMMON: {}
+    }
 }
 
 SH_ITEM_INFO = {}

@@ -5,6 +5,8 @@ Priest specific constants and functions.
 @author: skasch
 """
 
+from .constants import COMMON
+
 PRIEST = 'priest'
 SHADOW = 'shadow'
 
@@ -17,7 +19,9 @@ PR_POTION = {
 }
 
 PR_SPELL_INFO = {
-    PRIEST: {}
+    PRIEST: {
+        COMMON: {}
+    }
 }
 
 PR_ITEM_INFO = {}

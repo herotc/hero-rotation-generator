@@ -5,6 +5,8 @@ Warrior specific constants and functions.
 @author: skasch
 """
 
+from .constants import COMMON
+
 WARRIOR = 'warrior'
 ARMS = 'arms'
 FURY = 'fury'
@@ -19,7 +21,9 @@ WR_POTION = {
 }
 
 WR_SPELL_INFO = {
-    WARRIOR: {}
+    WARRIOR: {
+        COMMON: {}
+    }
 }
 
 WR_ITEM_INFO = {}

@@ -7,6 +7,7 @@ Druid specific constants and functions.
 import os
 
 from .expressions import Method
+from .constants import COMMON
 
 DRUID = 'druid'
 BALANCE = 'balance'
@@ -24,7 +25,9 @@ DR_POTION = {
 }
 
 DR_SPELL_INFO = {
-    DRUID: {}
+    DRUID: {
+        COMMON: {}
+    }
 }
 
 DR_ITEM_INFO = {}

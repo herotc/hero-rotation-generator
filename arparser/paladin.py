@@ -5,6 +5,8 @@ Paladin specific constants and functions.
 @author: skasch
 """
 
+from .constants import COMMON
+
 PALADIN = 'paladin'
 PROTECTION = 'protection'
 RETRIBUTION = 'retribution'
@@ -19,7 +21,9 @@ PL_POTION = {
 }
 
 PL_SPELL_INFO = {
-    PALADIN: {}
+    PALADIN: {
+        COMMON: {}
+    }
 }
 
 PL_ITEM_INFO = {}

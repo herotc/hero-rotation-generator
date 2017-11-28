@@ -5,7 +5,7 @@ Initialize the arparser package.
 @author: skasch
 """
 
-from .constants import SPELL, OGCDAOGCD, CD
+from .constants import SPELL, OGCDAOGCD, CD, COMMON
 from .deathknight import    DK_SPECS, DK_POTION, DK_SPELL_INFO, DK_ITEM_INFO
 from .demonhunter import    DH_SPECS, DH_POTION, DH_SPELL_INFO, DH_ITEM_INFO
 from .druid import          DR_SPECS, DR_POTION, DR_SPELL_INFO, DR_ITEM_INFO
@@ -18,8 +18,6 @@ from .rogue import          RG_SPECS, RG_POTION, RG_SPELL_INFO, RG_ITEM_INFO
 from .shaman import         SH_SPECS, SH_POTION, SH_SPELL_INFO, SH_ITEM_INFO
 from .warlock import        WL_SPECS, WL_POTION, WL_SPELL_INFO, WL_ITEM_INFO
 from .warrior import        WR_SPECS, WR_POTION, WR_SPELL_INFO, WR_ITEM_INFO
-
-DEFAULT = 'default'
 
 CLASS_SPECS = {}
 CLASS_SPECS.update(DK_SPECS)
@@ -66,7 +64,7 @@ DEFAULT_POTION.update(WL_POTION)
 DEFAULT_POTION.update(WR_POTION)
 
 SPELL_INFO = {
-    DEFAULT: {
+    COMMON: {
         'arcane_torrent':       {SPELL:     50613,
                                  OGCDAOGCD: True,
                                  CD:        True},

@@ -8,7 +8,7 @@ Define the objects representing simc units.
 from .lua import LuaNamed
 from .demonhunter import havoc_is_in_melee_range
 from .druid import balance_future_astral_power
-from .database import (CLASS_SPECS, RACES, SPELL_INFO, DEFAULT, DEFAULT_POTION)
+from .database import (CLASS_SPECS, RACES, SPELL_INFO, COMMON, DEFAULT_POTION)
 
 
 class Player:
@@ -22,6 +22,7 @@ class Player:
         self.level = 110
         self.race = None
         self.apl = apl
+        self.spells = None
 
     def potion(self):
         """
@@ -36,14 +37,19 @@ class Player:
         Sets the spec of the player.
         """
         self.spec = PlayerSpec(self, spec)
-    
+
     def spell_book(self):
         """
         Returns the spell book of the player.
         """
-        spells = SPELL_INFO[DEFAULT].copy()
-        spells.update(SPELL_INFO.get(self.class_.simc, {}))
-        return spells
+        if not self.spells:
+            class_simc = self.class_.simc
+            spec_simc = self.spec.simc
+            spells = SPELL_INFO.get(COMMON, {}).copy()
+            spells.update(SPELL_INFO.get(class_simc, {}).get(COMMON, {}))
+            spells.update(SPELL_INFO.get(class_simc, {}).get(spec_simc, {}))
+            self.spells = spells
+        return self.spells
 
     def spell_property(self, spell, key, default=False):
         """
@@ -129,6 +135,7 @@ class PlayerSpec(LuaNamed):
 
     def potion(self):
         """
-        Return the potion used by a Death Knight.
+        Return the potion used by a the spec.
         """
-        return DEFAULT_POTION[self.player.class_.simc][self.simc]
+        return DEFAULT_POTION.get(
+                        self.player.class_.simc, {}).get(self.simc, None)

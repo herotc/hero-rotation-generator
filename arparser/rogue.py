@@ -5,6 +5,8 @@ Rogue specific constants and functions.
 @author: skasch
 """
 
+from .constants import COMMON
+
 ROGUE = 'rogue'
 ASSASSINATION = 'assassination'
 OUTLAW = 'outlaw'
@@ -21,7 +23,9 @@ RG_POTION = {
 }
 
 RG_SPELL_INFO = {
-    ROGUE: {}
+    ROGUE: {
+        COMMON: {}
+    }
 }
 
 RG_ITEM_INFO = {}

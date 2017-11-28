@@ -5,6 +5,8 @@ Hunter specific constants and functions.
 @author: skasch
 """
 
+from .constants import COMMON
+
 HUNTER = 'hunter'
 BEAST_MASTERY = 'beast_mastery'
 MARKSMANSHIP = 'marksmanship'
@@ -21,7 +23,9 @@ HT_POTION = {
 }
 
 HT_SPELL_INFO = {
-    HUNTER: {}
+    HUNTER: {
+        COMMON: {}
+    }
 }
 
 HT_ITEM_INFO = {}

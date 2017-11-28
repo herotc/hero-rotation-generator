@@ -5,6 +5,8 @@ Monk specific constants and functions.
 @author: skasch
 """
 
+from .constants import COMMON
+
 MONK = 'monk'
 WINDWALKER = 'windwalker'
 
@@ -17,7 +19,9 @@ MK_POTION = {
 }
 
 MK_SPELL_INFO = {
-    MONK: {}
+    MONK: {
+        COMMON: {}
+    }
 }
 
 MK_ITEM_INFO = {}

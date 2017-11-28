@@ -32,6 +32,7 @@ USABLE = 'usable'
 INTERRUPT = 'interrupt'
 MELEE = 'melee'
 CD = 'cd'
+COMMON = 'common'
 
 # Miscellaneous
 # =============
