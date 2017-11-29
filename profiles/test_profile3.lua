@@ -3,23 +3,23 @@
 - - Addon
 local addonName, addonTable=...
 -- AethysCore
-local AC=AethysCore
-local Cache=AethysCache
-local Unit=AC.Unit
-local Player=Unit.Player
-local Target=Unit.Target
-local Spell=AC.Spell
-local Item=AC.Item
+local AC =     AethysCore
+local Cache =  AethysCache
+local Unit =   AC.Unit
+local Player = Unit.Player
+local Target = Unit.Target
+local Spell =  AC.Spell
+local Item =   AC.Item
 -- AethysRotation
-local AR=AethysRotation
+local AR =     AethysRotation
 
 --- ============================ CONTENT ===========================
 --- ======= APL LOCALS =======
 -- luacheck: max_line_length 9999
 
 -- Spells
-if not Spell.Druid then Spell.Druid={} end
-Spell.Druid.Balance={
+if not Spell.Druid then Spell.Druid = {} end
+Spell.Druid.Balance = {
   Starfall                      = Spell(191034),
   StellarEmpowermentDebuff      = Spell(197637),
   CelestialAlignmentBuff        = Spell(194223),
@@ -46,6 +46,8 @@ Spell.Druid.Balance={
   CelestialAlignment            = Spell(194223),
   NaturesBalance                = Spell(202430),
   OnethsOverconfidenceBuff      = Spell(209407),
+  MoonfireDebuff                = Spell(164812),
+  SunfireDebuff                 = Spell(164815),
   FuryofElune                   = Spell(202770),
   FuryofEluneBuff               = Spell(202770),
   WarriorofElune                = Spell(202425),
@@ -58,16 +60,17 @@ Spell.Druid.Balance={
   Berserking                    = Spell(26297),
   ArcaneTorrent                 = Spell(50613),
   UseItems                      = Spell(),
-  StellarDrift                  = Spell(202354),
+  StellarDrift                  = Spell(202354)
+};
 local S = Spell.Druid.Balance;
 
 -- Items
-if not Item.Druid then Item.Druid={} end
-Item.Druid.Balance={
+if not Item.Druid then Item.Druid = {} end
+Item.Druid.Balance = {
   LadyandtheChild               = Item(144295),
   RadiantMoonlight              = Item(151800),
   ProlongedPower                = Item(142117),
-  TheEmeraldDreamcatcher        = Item(137062),
+  TheEmeraldDreamcatcher        = Item(137062)
 };
 local I = Item.Druid.Balance;
 
@@ -237,7 +240,7 @@ local function Apl()
       if AR.Cast(S.LunarStrike) then return ""; end
     end
     -- solar_wrath,if=buff.solar_empowerment.stack>1&buff.the_emerald_dreamcatcher.remains>2*execute_time&astral_power>=6&(dot.moonfire.remains>5|(dot.sunfire.remains<5.4&dot.moonfire.remains>6.6))&(!(buff.celestial_alignment.up|buff.incarnation.up)&astral_power.deficit>=10|(buff.celestial_alignment.up|buff.incarnation.up)&astral_power.deficit>=15)
-    if S.SolarWrath:IsCastableP() and (Player:BuffStackP(S.SolarEmpowermentBuff) > 1 and Player:BuffRemainsP(S.TheEmeraldDreamcatcherBuff) > 2 * S.SolarWrath:ExecuteTime() and FutureAstralPower() >= 6 and (dot.moonfire.remains > 5 or (dot.sunfire.remains < 5.4 and dot.moonfire.remains > 6.6)) and (not (Player:BuffP(S.CelestialAlignmentBuff) or Player:BuffP(S.IncarnationBuff)) and Player:AstralPowerDeficit() >= 10 or (Player:BuffP(S.CelestialAlignmentBuff) or Player:BuffP(S.IncarnationBuff)) and Player:AstralPowerDeficit() >= 15)) then
+    if S.SolarWrath:IsCastableP() and (Player:BuffStackP(S.SolarEmpowermentBuff) > 1 and Player:BuffRemainsP(S.TheEmeraldDreamcatcherBuff) > 2 * S.SolarWrath:ExecuteTime() and FutureAstralPower() >= 6 and (Target:DebuffRemainsP(S.MoonfireDebuff) > 5 or (Target:DebuffRemainsP(S.SunfireDebuff) < 5.4 and Target:DebuffRemainsP(S.MoonfireDebuff) > 6.6)) and (not (Player:BuffP(S.CelestialAlignmentBuff) or Player:BuffP(S.IncarnationBuff)) and Player:AstralPowerDeficit() >= 10 or (Player:BuffP(S.CelestialAlignmentBuff) or Player:BuffP(S.IncarnationBuff)) and Player:AstralPowerDeficit() >= 15)) then
       if AR.Cast(S.SolarWrath) then return ""; end
     end
     -- lunar_strike,if=buff.lunar_empowerment.up&buff.the_emerald_dreamcatcher.remains>execute_time&astral_power>=11&(!(buff.celestial_alignment.up|buff.incarnation.up)&astral_power.deficit>=15|(buff.celestial_alignment.up|buff.incarnation.up)&astral_power.deficit>=22.5)

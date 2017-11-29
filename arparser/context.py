@@ -20,15 +20,15 @@ class Context:
         '- - Addon\n'
         'local addonName, addonTable=...\n'
         '-- AethysCore\n'
-        'local AC=AethysCore\n'
-        'local Cache=AethysCache\n'
-        'local Unit=AC.Unit\n'
-        'local Player=Unit.Player\n'
-        'local Target=Unit.Target\n'
-        'local Spell=AC.Spell\n'
-        'local Item=AC.Item\n'
+        'local AC =     AethysCore\n'
+        'local Cache =  AethysCache\n'
+        'local Unit =   AC.Unit\n'
+        'local Player = Unit.Player\n'
+        'local Target = Unit.Target\n'
+        'local Spell =  AC.Spell\n'
+        'local Item =   AC.Item\n'
         '-- AethysRotation\n'
-        'local AR=AethysRotation\n')
+        'local AR =     AethysRotation\n')
 
     CONTENT_HEADER = (
         '--- ============================ CONTENT ===========================\n'
@@ -94,12 +94,15 @@ class Context:
         spec = self.player.spec.lua_name()
         lua_spells = (
             '-- Spells\n'
-            f'if not Spell.{class_} then Spell.{class_}={{}} end\n'
-            f'Spell.{class_}.{spec}={{\n')
-        for spell in self.spells.values():
+            f'if not Spell.{class_} then Spell.{class_} = {{}} end\n'
+            f'Spell.{class_}.{spec} = {{\n')
+        for i, spell in enumerate(self.spells.values()):
             spell_id = str(self.player.spell_property(spell, spell.type_, ''))
-            lua_spells += f'  {spell.lua_name():30}= Spell({spell_id}),\n'
-        lua_spells += f'local S = Spell.{class_}.{spec};\n'
+            lua_spells += f'  {spell.lua_name():30}= Spell({spell_id})'
+            lua_spells += ',\n' if i < len(self.spells)-1 else '\n'
+        lua_spells += (
+            '};\n'
+            f'local S = Spell.{class_}.{spec};\n')
         return lua_spells
 
     def print_items(self):
@@ -110,11 +113,12 @@ class Context:
         spec = self.player.spec.lua_name()
         lua_items = (
             '-- Items\n'
-            f'if not Item.{class_} then Item.{class_}={{}} end\n'
-            f'Item.{class_}.{spec}={{\n')
-        for item in self.items.values():
+            f'if not Item.{class_} then Item.{class_} = {{}} end\n'
+            f'Item.{class_}.{spec} = {{\n')
+        for i, item in enumerate(self.items.values()):
             item_id = str(ITEM_INFO.get(item.simc, ''))
-            lua_items += f'  {item.lua_name():30}= Item({item_id}),\n'
+            lua_items += f'  {item.lua_name():30}= Item({item_id})'
+            lua_items += ',\n' if i < len(self.items)-1 else '\n'
         lua_items += (
             '};\n'
             f'local I = Item.{class_}.{spec};\n')

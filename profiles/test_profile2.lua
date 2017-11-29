@@ -3,23 +3,23 @@
 - - Addon
 local addonName, addonTable=...
 -- AethysCore
-local AC=AethysCore
-local Cache=AethysCache
-local Unit=AC.Unit
-local Player=Unit.Player
-local Target=Unit.Target
-local Spell=AC.Spell
-local Item=AC.Item
+local AC =     AethysCore
+local Cache =  AethysCache
+local Unit =   AC.Unit
+local Player = Unit.Player
+local Target = Unit.Target
+local Spell =  AC.Spell
+local Item =   AC.Item
 -- AethysRotation
-local AR=AethysRotation
+local AR =     AethysRotation
 
 --- ============================ CONTENT ===========================
 --- ======= APL LOCALS =======
 -- luacheck: max_line_length 9999
 
 -- Spells
-if not Spell.DemonHunter then Spell.DemonHunter={} end
-Spell.DemonHunter.Havoc={
+if not Spell.DemonHunter then Spell.DemonHunter = {} end
+Spell.DemonHunter.Havoc = {
   Metamorphosis                 = Spell(191427),
   Demonic                       = Spell(213410),
   MetamorphosisBuff             = Spell(162264),
@@ -55,13 +55,14 @@ Spell.DemonHunter.Havoc={
   AutoAttack                    = Spell(),
   FirstBlood                    = Spell(206416),
   ChaosCleave                   = Spell(206475),
-  ConsumeMagic                  = Spell(183752),
+  ConsumeMagic                  = Spell(183752)
+};
 local S = Spell.DemonHunter.Havoc;
 
 -- Items
-if not Item.DemonHunter then Item.DemonHunter={} end
-Item.DemonHunter.Havoc={
-  ProlongedPower                = Item(142117),
+if not Item.DemonHunter then Item.DemonHunter = {} end
+Item.DemonHunter.Havoc = {
+  ProlongedPower                = Item(142117)
 };
 local I = Item.DemonHunter.Havoc;
 

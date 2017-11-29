@@ -3,23 +3,23 @@
 - - Addon
 local addonName, addonTable=...
 -- AethysCore
-local AC=AethysCore
-local Cache=AethysCache
-local Unit=AC.Unit
-local Player=Unit.Player
-local Target=Unit.Target
-local Spell=AC.Spell
-local Item=AC.Item
+local AC =     AethysCore
+local Cache =  AethysCache
+local Unit =   AC.Unit
+local Player = Unit.Player
+local Target = Unit.Target
+local Spell =  AC.Spell
+local Item =   AC.Item
 -- AethysRotation
-local AR=AethysRotation
+local AR =     AethysRotation
 
 --- ============================ CONTENT ===========================
 --- ======= APL LOCALS =======
 -- luacheck: max_line_length 9999
 
 -- Spells
-if not Spell.Druid then Spell.Druid={} end
-Spell.Druid.Guardian={
+if not Spell.Druid then Spell.Druid = {} end
+Spell.Druid.Guardian = {
   AutoAttack                    = Spell(),
   BloodFury                     = Spell(20572),
   Berserking                    = Spell(26297),
@@ -35,18 +35,22 @@ Spell.Druid.Guardian={
   GoryFurBuff                   = Spell(201671),
   Moonfire                      = Spell(8921),
   IncarnationBuff               = Spell(102558),
+  MoonfireDebuff                = Spell(164812),
   ThrashBear                    = Spell(77758),
+  ThrashCatDebuff               = Spell(),
+  ThrashBearDebuff              = Spell(192090),
   Mangle                        = Spell(33917),
   Pulverize                     = Spell(80313),
   PulverizeBuff                 = Spell(158792),
   GalacticGuardianBuff          = Spell(213708),
   SwipeCat                      = Spell(106785),
-  SwipeBear                     = Spell(213771),
+  SwipeBear                     = Spell(213771)
+};
 local S = Spell.Druid.Guardian;
 
 -- Items
-if not Item.Druid then Item.Druid={} end
-Item.Druid.Guardian={
+if not Item.Druid then Item.Druid = {} end
+Item.Druid.Guardian = {
 };
 local I = Item.Druid.Guardian;
 
@@ -135,11 +139,11 @@ local function Apl()
     if AR.Cast(S.Ironfur) then return ""; end
   end
   -- moonfire,if=buff.incarnation.up=1&dot.moonfire.remains<=4.8
-  if S.Moonfire:IsCastableP() and (num(Player:BuffP(S.IncarnationBuff)) == 1 and dot.moonfire.remains <= 4.8) then
+  if S.Moonfire:IsCastableP() and (num(Player:BuffP(S.IncarnationBuff)) == 1 and Target:DebuffRemainsP(S.MoonfireDebuff) <= 4.8) then
     if AR.Cast(S.Moonfire) then return ""; end
   end
   -- thrash_bear,if=buff.incarnation.up=1&dot.thrash.remains<=4.5
-  if S.ThrashBear:IsCastableP() and (num(Player:BuffP(S.IncarnationBuff)) == 1 and dot.thrash.remains <= 4.5) then
+  if S.ThrashBear:IsCastableP() and (num(Player:BuffP(S.IncarnationBuff)) == 1 and Target:DebuffRemainsP(ThrashDebuff()) <= 4.5) then
     if AR.Cast(S.ThrashBear) then return ""; end
   end
   -- mangle
@@ -155,7 +159,7 @@ local function Apl()
     if AR.Cast(S.Pulverize) then return ""; end
   end
   -- moonfire,if=buff.galactic_guardian.up=1&(!ticking|dot.moonfire.remains<=4.8)
-  if S.Moonfire:IsCastableP() and (num(Player:BuffP(S.GalacticGuardianBuff)) == 1 and (not bool(ticking) or dot.moonfire.remains <= 4.8)) then
+  if S.Moonfire:IsCastableP() and (num(Player:BuffP(S.GalacticGuardianBuff)) == 1 and (not bool(ticking) or Target:DebuffRemainsP(S.MoonfireDebuff) <= 4.8)) then
     if AR.Cast(S.Moonfire) then return ""; end
   end
   -- moonfire,if=buff.galactic_guardian.up=1
@@ -163,7 +167,7 @@ local function Apl()
     if AR.Cast(S.Moonfire) then return ""; end
   end
   -- moonfire,if=dot.moonfire.remains<=4.8
-  if S.Moonfire:IsCastableP() and (dot.moonfire.remains <= 4.8) then
+  if S.Moonfire:IsCastableP() and (Target:DebuffRemainsP(S.MoonfireDebuff) <= 4.8) then
     if AR.Cast(S.Moonfire) then return ""; end
   end
   -- swipe

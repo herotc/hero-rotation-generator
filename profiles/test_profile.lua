@@ -3,23 +3,23 @@
 - - Addon
 local addonName, addonTable=...
 -- AethysCore
-local AC=AethysCore
-local Cache=AethysCache
-local Unit=AC.Unit
-local Player=Unit.Player
-local Target=Unit.Target
-local Spell=AC.Spell
-local Item=AC.Item
+local AC =     AethysCore
+local Cache =  AethysCache
+local Unit =   AC.Unit
+local Player = Unit.Player
+local Target = Unit.Target
+local Spell =  AC.Spell
+local Item =   AC.Item
 -- AethysRotation
-local AR=AethysRotation
+local AR =     AethysRotation
 
 --- ============================ CONTENT ===========================
 --- ======= APL LOCALS =======
 -- luacheck: max_line_length 9999
 
 -- Spells
-if not Spell.DeathKnight then Spell.DeathKnight={} end
-Spell.DeathKnight.Blood={
+if not Spell.DeathKnight then Spell.DeathKnight = {} end
+Spell.DeathKnight.Blood = {
   DeathStrike                   = Spell(49998),
   DeathandDecay                 = Spell(43265),
   RapidDecomposition            = Spell(194662),
@@ -41,13 +41,14 @@ Spell.DeathKnight.Blood={
   Berserking                    = Spell(26297),
   UseItems                      = Spell(),
   DancingRuneWeapon             = Spell(49028),
-  VampiricBlood                 = Spell(55233),
+  VampiricBlood                 = Spell(55233)
+};
 local S = Spell.DeathKnight.Blood;
 
 -- Items
-if not Item.DeathKnight then Item.DeathKnight={} end
-Item.DeathKnight.Blood={
-  ProlongedPower                = Item(142117),
+if not Item.DeathKnight then Item.DeathKnight = {} end
+Item.DeathKnight.Blood = {
+  ProlongedPower                = Item(142117)
 };
 local I = Item.DeathKnight.Blood;
 

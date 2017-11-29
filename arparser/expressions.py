@@ -87,9 +87,15 @@ class Expression:
 
     def debuff(self):
         """
-        Return the condition when the prefix is buff.
+        Return the condition when the prefix is debuff.
         """
         return Debuff(self)
+
+    def dot(self):
+        """
+        Return the condition when the prefix is dot.
+        """
+        return Dot(self)
 
     def prev_gcd(self):
         """
@@ -164,6 +170,17 @@ class Expression:
         """
         lua_varname = LuaNamed(self.condition_list()[1]).lua_name()
         return Literal(lua_varname)
+
+
+class BuildExpression(LuaExpression):
+    """
+    Build an expression from a call.
+    """
+
+    def __init__(self, call):
+        call = 'ready' if call == 'up' else call
+        object_, method, args = getattr(self, call)()
+        super().__init__(object_, method, args)
 
 
 class Expires:
@@ -264,7 +281,7 @@ class Aura(Expires):
         return object_, method, args
 
 
-class ActionExpression(LuaExpression):
+class ActionExpression(BuildExpression):
     """
     Represent the expression for a action. condition.
     """
@@ -276,9 +293,7 @@ class ActionExpression(LuaExpression):
             call = condition.condition_list()[0]
         else:
             call = condition.condition_list()[2]
-        call = 'ready' if call == 'up' else call
-        object_, method, args = getattr(self, call)()
-        super().__init__(object_, method, args)
+        super().__init__(call)
 
     def action_object(self):
         """
@@ -423,7 +438,7 @@ class SetBonus(Literal):
         return '_'.join(word.title() for word in simc.split('_'))
 
 
-class Equipped(LuaExpression):
+class Equipped(BuildExpression):
     """
     Represent the expression for a equipped. condition.
     """
@@ -431,9 +446,8 @@ class Equipped(LuaExpression):
     def __init__(self, condition):
         self.condition = condition
         call = 'value'
-        object_, method, args = getattr(self, call)()
-        super().__init__(object_, method, args)
-    
+        super().__init__(call)
+
     def  value(self):
         """
         Return the arguments for the expression equipped.
@@ -445,7 +459,7 @@ class Equipped(LuaExpression):
         return object_, method, args
 
 
-class PrevGCD(LuaExpression):
+class PrevGCD(BuildExpression):
     """
     Represent the expression for a prev_gcd. condition.
     """
@@ -453,8 +467,7 @@ class PrevGCD(LuaExpression):
     def __init__(self, condition):
         self.condition = condition
         call = 'value'
-        object_, method, args = getattr(self, call)()
-        super().__init__(object_, method, args)
+        super().__init__(call)
 
     def value(self):
         """
@@ -470,7 +483,7 @@ class PrevGCD(LuaExpression):
         return object_, method, args
 
 
-class GCD(LuaExpression):
+class GCD(BuildExpression):
     """
     Represent the expression for a gcd. condition.
     """
@@ -482,8 +495,7 @@ class GCD(LuaExpression):
             call = condition.condition_list()[1]
         else:
             call = 'value'
-        object_, method, args = getattr(self, call)()
-        super().__init__(object_, method, args)
+        super().__init__(call)
 
     def remains(self):
         """
@@ -513,7 +525,7 @@ class GCD(LuaExpression):
         return object_, method, args
 
 
-class Time(LuaExpression):
+class Time(BuildExpression):
     """
     Represent the expression for a time. condition.
     """
@@ -524,8 +536,7 @@ class Time(LuaExpression):
             call = condition.condition_list()[1]
         else:
             call = 'value'
-        object_, method, args = getattr(self, call)()
-        super().__init__(object_, method, args)
+        super().__init__(call)
 
     def value(self):
         """
@@ -537,7 +548,7 @@ class Time(LuaExpression):
         return object_, method, args
 
 
-class Rune(LuaExpression):
+class Rune(BuildExpression):
     """
     Represent the expression for a rune. condition.
     """
@@ -545,8 +556,7 @@ class Rune(LuaExpression):
     def __init__(self, condition):
         self.condition = condition
         call = condition.condition_list()[1]
-        object_, method, args = getattr(self, call)()
-        super().__init__(object_, method, args)
+        super().__init__(call)
 
     def time_to_3(self):
         """
@@ -558,7 +568,7 @@ class Rune(LuaExpression):
         return object_, method, args
 
 
-class Talent(LuaExpression):
+class Talent(BuildExpression):
     """
     Represent the expression for a talent. condition.
     """
@@ -566,8 +576,7 @@ class Talent(LuaExpression):
     def __init__(self, condition):
         self.condition = condition
         call = condition.condition_list()[2]
-        object_, method, args = getattr(self, call)()
-        super().__init__(object_, method, args)
+        super().__init__(call)
 
     def enabled(self):
         """
@@ -580,7 +589,7 @@ class Talent(LuaExpression):
         return object_, method, args
 
 
-class Resource(LuaExpression):
+class Resource(BuildExpression):
     """
     Represent the expression for resource (mana, runic_power, etc) condition.
     """
@@ -592,8 +601,7 @@ class Resource(LuaExpression):
             call = condition.condition_list()[1]
         else:
             call = 'value'
-        object_, method, args = getattr(self, call)()
-        super().__init__(object_, method, args)
+        super().__init__(call)
 
     def value(self):
         """
@@ -603,7 +611,7 @@ class Resource(LuaExpression):
         method = Method(f'{self.simc.lua_name()}')
         args = []
         return object_, method, args
-    
+
     def deficit(self):
         """
         Return the arguments for the expression {resource}.deficit.
@@ -630,7 +638,7 @@ class AstralPower(Resource):
 
     def __init__(self, condition):
         super().__init__(condition, 'astral_power')
-    
+
     @balance_astral_power_value
     def value(self):
         return super().value()
@@ -663,7 +671,7 @@ class Mana(Resource):
         super().__init__(condition, 'mana')
 
 
-class Debuff(LuaExpression, Aura):
+class Debuff(BuildExpression, Aura):
     """
     Represent the expression for a debuff. condition.
     """
@@ -672,12 +680,16 @@ class Debuff(LuaExpression, Aura):
         object_ = condition.parent_action.target
         Aura.__init__(self, condition, DEBUFF, object_, spell_type=DEBUFF)
         call = condition.condition_list()[2]
-        call = 'ready' if call == 'up' else call
-        object_, method, args = getattr(self, call)()
-        super().__init__(object_, method, args)
+        super().__init__(call)
 
 
-class Buff(LuaExpression, Aura):
+class Dot(Debuff):
+    """
+    Represent the expression for a debuff. condition.
+    """
+
+
+class Buff(BuildExpression, Aura):
     """
     Represent the expression for a buff. condition.
     """
@@ -686,9 +698,7 @@ class Buff(LuaExpression, Aura):
         object_ = condition.parent_action.player
         Aura.__init__(self, condition, BUFF, object_, spell_type=BUFF)
         call = condition.condition_list()[2]
-        call = 'ready' if call == 'up' else call
-        object_, method, args = getattr(self, call)()
-        super().__init__(object_, method, args)
+        super().__init__(call)
 
     def ready(self):
         if self.condition.condition_list()[1] == BLOODLUST:
@@ -723,7 +733,7 @@ class Buff(LuaExpression, Aura):
         return super().remains()
 
 
-class Cooldown(LuaExpression, Expires):
+class Cooldown(BuildExpression, Expires):
     """
     Represent the expression for a cooldown. condition.
     """
@@ -731,9 +741,7 @@ class Cooldown(LuaExpression, Expires):
     def __init__(self, condition):
         Expires.__init__(self, condition, 'cooldown', 'cooldown_up')
         call = condition.condition_list()[2]
-        call = 'ready' if call == 'up' else call
-        object_, method, args = getattr(self, call)()
-        super().__init__(object_, method, args)
+        super().__init__(call)
 
     def charges(self):
         """
@@ -757,7 +765,7 @@ class Cooldown(LuaExpression, Expires):
 
 
 
-class TargetExpression(LuaExpression):
+class TargetExpression(BuildExpression):
     """
     Represent the expression for a target. condition.
     """
@@ -765,8 +773,7 @@ class TargetExpression(LuaExpression):
     def __init__(self, condition):
         self.condition = condition
         call = condition.condition_list()[1]
-        object_, method, args = getattr(self, call)()
-        super().__init__(object_, method, args)
+        super().__init__(call)
 
     def time_to_die(self):
         """
