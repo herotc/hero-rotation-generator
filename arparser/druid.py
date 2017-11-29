@@ -19,9 +19,9 @@ DR_SPECS = {DRUID: [BALANCE, FERAL, GUARDIAN]}
 
 DR_POTION = {
     DRUID: {
-        BALANCE: 'prolonged_power',
-        FERAL: 'old_war',
-        GUARDIAN: 'prolonged_power',
+        BALANCE:    'prolonged_power',
+        FERAL:      'old_war',
+        GUARDIAN:   'prolonged_power',
     }
 }
 

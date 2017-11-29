@@ -20,8 +20,12 @@ PR_POTION = {
 
 PR_SPELL_INFO = {
     PRIEST: {
-        COMMON: {}
-    }
+        COMMON: {
+        },
+        SHADOW: {
+        },
+    },
 }
 
-PR_ITEM_INFO = {}
+PR_ITEM_INFO = {
+}

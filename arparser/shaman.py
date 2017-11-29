@@ -15,15 +15,21 @@ SH_SPECS = {SHAMAN: [ELEMENTAL, ENHANCEMENT]}
 
 SH_POTION = {
     SHAMAN: {
-        ELEMENTAL: 'prolonged_power',
-        ENHANCEMENT: 'prolonged_power',
+        ELEMENTAL:      'prolonged_power',
+        ENHANCEMENT:    'prolonged_power',
     }
 }
 
 SH_SPELL_INFO = {
     SHAMAN: {
-        COMMON: {}
-    }
+        COMMON: {
+        },
+        ELEMENTAL: {
+        },
+        ENHANCEMENT: {
+        },
+    },
 }
 
-SH_ITEM_INFO = {}
+SH_ITEM_INFO = {
+}

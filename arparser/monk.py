@@ -20,8 +20,12 @@ MK_POTION = {
 
 MK_SPELL_INFO = {
     MONK: {
-        COMMON: {}
-    }
+        COMMON: {
+        },
+        WINDWALKER: {
+        },
+    },
 }
 
-MK_ITEM_INFO = {}
+MK_ITEM_INFO = {
+}

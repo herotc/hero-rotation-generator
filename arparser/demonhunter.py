@@ -19,8 +19,8 @@ DH_SPECS = {DEMONHUNTER: [HAVOC, VENGEANCE]}
 
 DH_POTION = {
     DEMONHUNTER: {
-        HAVOC: 'prolonged_power',
-        VENGEANCE: 'prolonged_power',
+        HAVOC:      'prolonged_power',
+        VENGEANCE:  'prolonged_power',
     }
 }
 
@@ -83,7 +83,8 @@ DH_SPELL_INFO = {
     },
 }
 
-DH_ITEM_INFO = {}
+DH_ITEM_INFO = {
+}
 
 
 def havoc_melee_condition(fun):

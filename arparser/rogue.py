@@ -16,16 +16,24 @@ RG_SPECS = {ROGUE: [ASSASSINATION, OUTLAW, SUBTLETY]}
 
 RG_POTION = {
     ROGUE: {
-        ASSASSINATION: 'prolonged_power',
-        OUTLAW: 'prolonged_power',
-        SUBTLETY: 'prolonged_power',
+        ASSASSINATION:  'prolonged_power',
+        OUTLAW:         'prolonged_power',
+        SUBTLETY:       'prolonged_power',
     }
 }
 
 RG_SPELL_INFO = {
     ROGUE: {
-        COMMON: {}
-    }
+        COMMON: {
+        },
+        ASSASSINATION: {
+        },
+        OUTLAW: {
+        },
+        SUBTLETY: {
+        },
+    },
 }
 
-RG_ITEM_INFO = {}
+RG_ITEM_INFO = {
+}

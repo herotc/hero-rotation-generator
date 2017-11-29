@@ -17,8 +17,8 @@ DK_SPECS = {DEATHKNIGHT: [BLOOD, FROST, UNHOLY]}
 
 DK_POTION = {
     DEATHKNIGHT: {
-        BLOOD: 'prolonged_power',
-        FROST: 'prolonged_power',
+        BLOOD:  'prolonged_power',
+        FROST:  'prolonged_power',
         UNHOLY: 'prolonged_power',
     }
 }
@@ -126,7 +126,14 @@ DK_SPELL_INFO = {
             'toravons_whiteout_bindings':       {SPELL:     205628},
             'instructors_fourth_lesson':        {SPELL:     208713},
         },
+        BLOOD: {
+        },
+        FROST: {
+        },
+        UNHOLY: {
+        },
     },
 }
 
-DK_ITEM_INFO = {}
+DK_ITEM_INFO = {
+}

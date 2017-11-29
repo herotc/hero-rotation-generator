@@ -16,16 +16,24 @@ HT_SPECS = {HUNTER: [BEAST_MASTERY, MARKSMANSHIP, SURVIVAL]}
 
 HT_POTION = {
     HUNTER: {
-        BEAST_MASTERY: 'prolonged_power',
-        MARKSMANSHIP: 'prolonged_power',
-        SURVIVAL: 'prolonged_power',
+        BEAST_MASTERY:  'prolonged_power',
+        MARKSMANSHIP:   'prolonged_power',
+        SURVIVAL:       'prolonged_power',
     }
 }
 
 HT_SPELL_INFO = {
     HUNTER: {
-        COMMON: {}
-    }
+        COMMON: {
+        },
+        BEAST_MASTERY: {
+        },
+        MARKSMANSHIP: {
+        },
+        SURVIVAL: {
+        },
+    },
 }
 
-HT_ITEM_INFO = {}
+HT_ITEM_INFO = {
+}

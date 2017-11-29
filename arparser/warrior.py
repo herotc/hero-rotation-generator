@@ -22,8 +22,14 @@ WR_POTION = {
 
 WR_SPELL_INFO = {
     WARRIOR: {
-        COMMON: {}
-    }
+        COMMON: {
+        },
+        ARMS: {
+        },
+        FURY: {
+        },
+    },
 }
 
-WR_ITEM_INFO = {}
+WR_ITEM_INFO = {
+}
