@@ -238,8 +238,10 @@ def balance_astral_power_value(fun):
         Return the arguments for the expression astral_power.
         """
         if self.condition.parent_action.player.spec.simc == BALANCE:
-            return None, Method('FutureAstralPower'), []
-        return fun(self)
+            self.object_ = None
+            self.method = Method('FutureAstralPower')
+        else:
+            fun(self)
 
     return value
 

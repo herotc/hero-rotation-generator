@@ -12,28 +12,6 @@ from .units import Pet
 from .constants import SPELL, BUFF, DEBUFF, BOOL, PET, BLOODLUST
 
 
-def auto_expression(fun):
-    """
-    Auto complete an expression builder with object_, method and args properties
-    of the object if they are None.
-    """
-
-    def express(self):
-        """
-        Return the object_, method and args to build the LuaExpression.
-        """
-        object_, method, args = fun(self)
-        if object_ is None:
-            object_ = self.object_
-        if method is None:
-            method = self.method
-        if args is None:
-            args = self.args
-        return object_, method, args
-
-    return express
-
-
 class Expression:
     """
     Represent a singleton condition (i.e. without any operator).
@@ -45,6 +23,8 @@ class Expression:
         self.simc = simc
         self.pet_caster = None
         self.condition_list = self.build_condition_list()
+        self.player_unit = condition_expression.action.player
+        self.target_unit = condition_expression.action.target
 
     def build_condition_list(self):
         """
@@ -69,18 +49,18 @@ class Expression:
         The caster of the spell; default is player, is pet if the spell is cast
         by a pet.
         """
-        if self.parent_action.player.spell_property(spell, PET):
-            return Pet(self.parent_action.player)
+        if self.player_unit.spell_property(spell, PET):
+            return Pet(self.player_unit)
         if self.pet_caster:
             return self.pet_caster
-        return self.parent_action.player
+        return self.player_unit
 
     def pet(self):
         """
         Return the condition for a pet.{name}.{condition} expression.
         """
         pet_name = self.condition_list[1]
-        self.pet_caster = Pet(self.parent_action.player, pet_name)
+        self.pet_caster = Pet(self.player_unit, pet_name)
         self.condition_list = self.condition_list[2:]
         return self.expression()
 
@@ -103,8 +83,7 @@ class Expression:
         """
         Return the condition when the prefix is spell_haste.
         """
-        return LuaExpression(self.parent_action.player,
-                             Method('SpellHaste'), [])
+        return LuaExpression(self.player_unit, Method('SpellHaste'), [])
 
     def set_bonus(self):
         """
@@ -224,13 +203,13 @@ class BuildExpression(LuaExpression):
 
     def __init__(self, call):
         call = 'ready' if call == 'up' else call
-        object_, method, args = getattr(self, call)()
-        super().__init__(object_, method, args)
+        getattr(self, call)()
+        super().__init__(self.object_, self.method, self.args)
 
 
 class Expires:
     """
-    Represent the expression for conditions with expiration times.
+    Available expressions for conditions with expiration times.
     """
 
     def __init__(self, condition, simc, ready_simc, spell_type=SPELL,
@@ -248,100 +227,91 @@ class Expires:
         else:
             self.spell = spell
         self.object_ = self.spell
+        self.method = None
         self.args = []
 
-    @auto_expression
     def ready(self):
         """
         Return the arguments for the expression {expires}.spell.up.
         """
         if self.spell.simc == BLOODLUST:
-            method = Method('HasHeroism', type_=BOOL)
-            args = []
+            self.method = Method('HasHeroism', type_=BOOL)
+            # Required when called from Aura
+            self.args = []
         else:
-            method = Method(f'{self.ready_simc.lua_name()}P', type_=BOOL)
-            args = self.args
-        return None, method, args
+            self.method = Method(f'{self.ready_simc.lua_name()}P', type_=BOOL)
 
-    @auto_expression
     def remains(self):
         """
         Return the arguments for the expression {expires}.spell.remains.
         """
         if self.spell.simc == BLOODLUST:
-            method = Method('HasHeroism', type_=BOOL)
-            args = []
+            self.method = Method('HasHeroism', type_=BOOL)
+            # Required when called from Aura
+            self.args = []
         else:
-            method = Method(f'{self.simc.lua_name()}RemainsP')
-            args = self.args
-        return None, method, args
+            self.method = Method(f'{self.simc.lua_name()}RemainsP')
 
-    @auto_expression
     def duration(self):
         """
         Return the arguments for the expression {aura}.spell.duration.
         """
-        method = Method('BaseDuration')
-        return None, method, None
+        self.method = Method('BaseDuration')
 
 
 class Aura(Expires):
     """
-    Represent the expression for auras (buffs and debuffs).
+    Available expressions for auras (buffs and debuffs).
     """
 
     def __init__(self, condition, simc, object_, spell_type=SPELL, spell=None):
         super().__init__(condition, simc, simc, spell_type=spell_type,
                          spell=spell)
+        # Overrides values from Expires
         self.object_ = object_
+        self.method = None
         self.args = [self.spell]
 
-    @auto_expression
     def down(self):
         """
         Return the arguments for the expression {aura}.spell.down.
         """
         if self.spell.simc == BLOODLUST:
-            method = Method('HasNotHeroism', type_=BOOL)
-            args = []
+            self.method = Method('HasNotHeroism', type_=BOOL)
+            self.args = []
         else:
-            method = Method(f'{self.simc.lua_name()}DownP', type_=BOOL)
-            args = self.args
-        return None, method, args
+            self.method = Method(f'{self.simc.lua_name()}DownP', type_=BOOL)
 
-    @auto_expression
     def stack(self):
         """
         Return the arguments for the expression {aura}.spell.stack.
         """
         if self.spell.simc == BLOODLUST:
-            method = Method('HasHeroism', type_=BOOL)
-            args = []
+            self.method = Method('HasHeroism', type_=BOOL)
+            self.args = []
         else:
-            method = Method(f'{self.simc.lua_name()}StackP')
-            args = self.args
-        return None, method, args
+            self.method = Method(f'{self.simc.lua_name()}StackP')
 
     def react(self):
         """
         Return the arguments for the expression {aura}.spell.stack.
         """
-        return self.stack()
+        self.stack()
 
-    @auto_expression
     def duration(self):
         """
         Return the arguments for the expression {aura}.spell.duration.
         """
-        object_ = self.spell
-        method = Method('BaseDuration')
-        args = []
-        return object_, method, args
+        # Override as buff.spell.duration refers to the Expires form.
+        self.object_ = self.spell
+        self.method = Method('BaseDuration')
+        self.args = []
 
 
 class ActionExpression(BuildExpression):
     """
-    Represent the expression for a action. condition.
+    Represent the expression for a action. condition. Also works for expressions
+    implicitly referring to the execution of the condition.
     """
 
     def __init__(self, condition, to_self=False):
@@ -353,12 +323,13 @@ class ActionExpression(BuildExpression):
             call = condition.condition_list[2]
         self.object_ = self.action_object()
         self.args = []
+        self.aura_model = self.build_aura()
         super().__init__(call)
 
     def action_object(self):
         """
-        The object of the action, depending on whether the action is applied to
-        self (i.e. the execution) or not.
+        The object of the action expression, depending on whether the action is
+        applied to self (i.e. the execution) or not.
         """
         if self.to_self:
             return self.condition.parent_action.execution().object_()
@@ -366,111 +337,111 @@ class ActionExpression(BuildExpression):
             return Spell(self.condition.parent_action,
                          self.condition.condition_list[1])
 
-    def action_aura(self):
+    def build_aura(self):
         """
         The action aura when referring to the action as a buff or debuff.
         """
-        if self.condition.parent_action.player.spell_property(
+        if self.condition.player_unit.spell_property(
                 self.action_object(), DEBUFF):
             aura_type = DEBUFF
-            aura_object = self.condition.parent_action.target
+            aura_object = self.condition.target_unit
         else:
             aura_type = BUFF
-            aura_object = self.condition.parent_action.player
+            aura_object = self.condition.player_unit
         return Aura(self.condition, aura_type, aura_object,
                     spell=self.action_object())
 
-    @auto_expression
+    def from_aura(self):
+        """
+        Get attributes from the aura corresponding to the action object.
+        """
+        self.object_ = self.aura_model.object_
+        self.method = self.aura_model.method
+        self.args = self.aura_model.args
+
     def execute_time(self):
         """
         Return the arguments for the expression action.spell.execute_time.
         """
-        method = Method('ExecuteTime')
-        return None, method, None
+        self.method = Method('ExecuteTime')
 
-    @auto_expression
     def recharge_time(self):
         """
         Return the arguments for the expression action.spell.recharge_time.
         """
-        method = Method('RechargeP')
-        return None, method, None
+        self.method = Method('RechargeP')
 
-    @auto_expression
     def full_recharge_time(self):
         """
         Return the arguments for the expression action.spell.full_recharge_time.
         """
-        method = Method('FullRechargeTimeP')
-        return None, method, None
+        self.method = Method('FullRechargeTimeP')
 
-    @auto_expression
     def cast_time(self):
         """
         Return the arguments for the expression action.spell.cast_time.
         """
-        method = Method('CastTime')
-        return None, method, None
+        self.method = Method('CastTime')
 
-    @auto_expression
     def charges(self):
         """
         Return the arguments for the expression action.spell.charges.
         """
-        method = Method('ChargesP')
-        return None, method, None
+        self.method = Method('ChargesP')
 
-    @auto_expression
     def cooldown(self):
         """
         Return the arguments for the expression action.spell.charges.
         """
-        method = Method('Cooldown')
-        return None, method, None
+        self.method = Method('Cooldown')
 
-    @auto_expression
     def usable_in(self):
         """
         Return the arguments for the expression action.spell.usable_in.
         """
-        method = Method('UsableInP')
-        return None, method, None
+        self.method = Method('UsableInP')
 
     def ready(self):
         """
         Return the arguments for the expression action.spell.ready.
         """
-        return self.action_aura().ready()
+        self.aura_model.ready()
+        self.from_aura()
 
     def remains(self):
         """
         Return the arguments for the expression action.spell.remains.
         """
-        return self.action_aura().remains()
+        self.aura_model.remains()
+        self.from_aura()
 
     def down(self):
         """
         Return the arguments for the expression action.spell.down.
         """
-        return self.action_aura().down()
+        self.aura_model.down()
+        self.from_aura()
 
     def stack(self):
         """
         Return the arguments for the expression action.spell.stack.
         """
-        return self.action_aura().stack()
+        self.aura_model.stack()
+        self.from_aura()
 
     def react(self):
         """
         Return the arguments for the expression action.spell.react.
         """
-        return self.action_aura().react()
+        self.aura_model.react()
+        self.from_aura()
 
     def duration(self):
         """
         Return the arguments for the expression action.spell.duration.
         """
-        return self.action_aura().duration()
+        self.aura_model.duration()
+        self.from_aura()
 
 
 class SetBonus(Literal):
@@ -504,13 +475,11 @@ class Equipped(BuildExpression):
         self.args = []
         super().__init__(call)
 
-    @auto_expression
     def  value(self):
         """
         Return the arguments for the expression equipped.
         """
-        method = Method('IsEquipped', type_=BOOL)
-        return None, method, None
+        self.method = Method('IsEquipped', type_=BOOL)
 
 
 class PrevGCD(BuildExpression):
@@ -527,13 +496,11 @@ class PrevGCD(BuildExpression):
                            condition.condition_list[2])]
         super().__init__(call)
 
-    @auto_expression
     def value(self):
         """
         Return the arguments for the expression prev_gcd.
         """
-        method = Method('PrevGCDP', type_=BOOL)
-        return None, method, None
+        self.method = Method('PrevGCDP', type_=BOOL)
 
 
 class GCD(BuildExpression):
@@ -548,17 +515,15 @@ class GCD(BuildExpression):
             call = condition.condition_list[1]
         else:
             call = 'value'
-        self.object_ = condition.parent_action.player
+        self.object_ = condition.player_unit
         self.args = []
         super().__init__(call)
 
-    @auto_expression
     def remains(self):
         """
         Return the arguments for the expression gcd.remains.
         """
-        method = Method('GCDRemains')
-        return None, method, None
+        self.method = Method('GCDRemains')
 
     def max(self):
         """
@@ -566,13 +531,11 @@ class GCD(BuildExpression):
         """
         return self.value()
 
-    @auto_expression
     def value(self):
         """
         Return the arguments for the expression gcd.
         """
-        method = Method('GCD')
-        return None, method, None
+        self.method = Method('GCD')
 
 
 class Time(BuildExpression):
@@ -590,13 +553,11 @@ class Time(BuildExpression):
         self.args = []
         super().__init__(call)
 
-    @auto_expression
     def value(self):
         """
         Return the arguments for the expression time.
         """
-        method = Method('AC.CombatTime')
-        return None, method, None
+        self.method = Method('AC.CombatTime')
 
 
 class Rune(BuildExpression):
@@ -607,17 +568,15 @@ class Rune(BuildExpression):
     def __init__(self, condition):
         self.condition = condition
         call = condition.condition_list[1]
-        self.object_ = condition.parent_action.player
+        self.object_ = condition.player_unit
         super().__init__(call)
 
-    @auto_expression
     def time_to_3(self):
         """
         Return the arguments for the expression rune.time_to_3.
         """
-        method = Method('RuneTimeToX')
-        args = [Literal('3')]
-        return None, method, args
+        self.method = Method('RuneTimeToX')
+        self.args = [Literal('3')]
 
 
 class Talent(BuildExpression):
@@ -633,13 +592,11 @@ class Talent(BuildExpression):
         self.args = []
         super().__init__(call)
 
-    @auto_expression
     def enabled(self):
         """
         Return the arguments for the expression talent.spell.enabled.
         """
-        method = Method('IsAvailable', type_=BOOL)
-        return None, method, None
+        self.method = Method('IsAvailable', type_=BOOL)
 
 
 class Resource(BuildExpression):
@@ -654,33 +611,27 @@ class Resource(BuildExpression):
             call = condition.condition_list[1]
         else:
             call = 'value'
-        self.object_ = condition.parent_action.player
+        self.object_ = condition.player_unit
         self.args = []
         super().__init__(call)
 
-    @auto_expression
     def value(self):
         """
         Return the arguments for the expression {resource}.
         """
-        method = Method(f'{self.simc.lua_name()}')
-        return None, method, None
+        self.method = Method(f'{self.simc.lua_name()}')
 
-    @auto_expression
     def deficit(self):
         """
         Return the arguments for the expression {resource}.deficit.
         """
-        method = Method(f'{self.simc.lua_name()}Deficit')
-        return None, method, None
+        self.method = Method(f'{self.simc.lua_name()}Deficit')
 
-    @auto_expression
     def pct(self):
         """
         Return the arguments for the expression {resource}.pct.
         """
-        method = Method(f'{self.simc.lua_name()}Percentage')
-        return None, method, None
+        self.method = Method(f'{self.simc.lua_name()}Percentage')
 
 
 class AstralPower(Resource):
@@ -729,7 +680,7 @@ class Debuff(BuildExpression, Aura):
     """
 
     def __init__(self, condition):
-        object_ = condition.parent_action.target
+        object_ = condition.target_unit
         Aura.__init__(self, condition, DEBUFF, object_, spell_type=DEBUFF)
         call = condition.condition_list[2]
         super().__init__(call)
@@ -763,21 +714,17 @@ class Cooldown(BuildExpression, Expires):
         call = condition.condition_list[2]
         super().__init__(call)
 
-    @auto_expression
     def charges(self):
         """
         Return the arguments for the expression cooldown.spell.charges.
         """
-        method = Method('ChargesP')
-        return None, method, None
+        self.method = Method('ChargesP')
 
-    @auto_expression
     def recharge_time(self):
         """
         Return the arguments for the expression cooldown.spell.recharge_time.
         """
-        method = Method('RechargeP')
-        return None, method, None
+        self.method = Method('RechargeP')
 
 
 
@@ -789,14 +736,12 @@ class TargetExpression(BuildExpression):
     def __init__(self, condition):
         self.condition = condition
         call = condition.condition_list[1]
-        self.object_ = self.condition.parent_action.target
+        self.object_ = self.condition.target_unit
         self.args = []
         super().__init__(call)
 
-    @auto_expression
     def time_to_die(self):
         """
         Return the arguments for the expression cooldown.spell.ready.
         """
-        method = Method('TimeToDie')
-        return None, method, None
+        self.method = Method('TimeToDie')
