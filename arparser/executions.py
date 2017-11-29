@@ -237,8 +237,7 @@ class Spell(LuaNamed, Castable):
         super().__init__(simc)
         self.action = action
         self.type_ = type_
-        if simc != BLOODLUST:
-            self.action.context.add_spell(self)
+        self.action.context.add_spell(self)
     
     def lua_name(self):
         return f'{super().lua_name()}{self.TYPE_SUFFIX[self.type_]}'

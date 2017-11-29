@@ -172,14 +172,14 @@ class Literal(LuaTyped):
     Represent a literal expression (a value) as a string.
     """
 
-    def __init__(self, value, type_=None):
-        self.value = value
+    def __init__(self, simc, type_=None):
+        self.simc = simc
         if not type_:
-            type_ = BOOL if value in (TRUE, FALSE) else NUM
+            type_ = BOOL if simc in (TRUE, FALSE) else NUM
         super().__init__(type_)
 
     def print_lua(self):
         """
         Print the literal value.
         """
-        return self.value
+        return self.simc
