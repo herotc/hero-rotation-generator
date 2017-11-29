@@ -8,7 +8,8 @@ Define the objects representing simc expressions.
 from .lua import LuaNamed, LuaExpression, Method, Literal
 from .executions import Spell, Item
 from .druid import balance_astral_power_value
-from .constants import SPELL, BUFF, DEBUFF, BOOL, BLOODLUST
+from .units import Pet
+from .constants import SPELL, BUFF, DEBUFF, BOOL, PET, BLOODLUST
 
 
 def auto_expression(fun):
@@ -42,18 +43,46 @@ class Expression:
         self.condition_expression = condition_expression
         self.parent_action = condition_expression.action
         self.simc = simc
+        self.pet_caster = None
+        self.condition_list = self.build_condition_list()
+
+    def build_condition_list(self):
+        """
+        Return the splitted structure of the condition.
+        """
+        return self.simc.split('.')
 
     def expression(self):
         """
         Return the expression of the condition.
         """
-        if (self.condition_list()[0] in self.actions_to_self()
-                and len(self.condition_list()) == 1):
+        if (self.condition_list[0] in self.actions_to_self()
+                and len(self.condition_list) == 1):
             return self.action(to_self=True)
         try:
-            return getattr(self, self.condition_list()[0])()
+            return getattr(self, self.condition_list[0])()
         except AttributeError:
             return Literal(self.simc)
+
+    def caster(self, spell=None):
+        """
+        The caster of the spell; default is player, is pet if the spell is cast
+        by a pet.
+        """
+        if self.parent_action.player.spell_property(spell, PET):
+            return Pet(self.parent_action.player)
+        if self.pet_caster:
+            return self.pet_caster
+        return self.parent_action.player
+
+    def pet(self):
+        """
+        Return the condition for a pet.{name}.{condition} expression.
+        """
+        pet_name = self.condition_list[1]
+        self.pet_caster = Pet(self.parent_action.player, pet_name)
+        self.condition_list = self.condition_list[2:]
+        return self.expression()
 
     def actions_to_self(self):
         """
@@ -63,12 +92,6 @@ class Expression:
         return [method for method in dir(ActionExpression)
                 if callable(getattr(ActionExpression, method))
                 and not method.startswith('__') and not method == 'print_lua']
-
-    def condition_list(self):
-        """
-        Return the splitted structure of the condition.
-        """
-        return self.simc.split('.')
 
     def action(self, to_self=False):
         """
@@ -190,7 +213,7 @@ class Expression:
         """
         Return the condition when the prefix is variable.
         """
-        lua_varname = LuaNamed(self.condition_list()[1]).lua_name()
+        lua_varname = LuaNamed(self.condition_list[1]).lua_name()
         return Literal(lua_varname)
 
 
@@ -216,7 +239,7 @@ class Expires:
         self.simc = LuaNamed(simc)
         self.ready_simc = LuaNamed(ready_simc)
         if not spell:
-            spell_simc = condition.condition_list()[1]
+            spell_simc = condition.condition_list[1]
             if spell_simc == BLOODLUST:
                 self.spell = Literal(BLOODLUST)
             else:
@@ -325,9 +348,9 @@ class ActionExpression(BuildExpression):
         self.condition = condition
         self.to_self = to_self
         if to_self:
-            call = condition.condition_list()[0]
+            call = condition.condition_list[0]
         else:
-            call = condition.condition_list()[2]
+            call = condition.condition_list[2]
         self.object_ = self.action_object()
         self.args = []
         super().__init__(call)
@@ -341,7 +364,7 @@ class ActionExpression(BuildExpression):
             return self.condition.parent_action.execution().object_()
         else:
             return Spell(self.condition.parent_action,
-                         self.condition.condition_list()[1])
+                         self.condition.condition_list[1])
 
     def action_aura(self):
         """
@@ -464,7 +487,7 @@ class SetBonus(Literal):
         Parse the lua name for the tier variable name holding whether a tier set
         is equipped or not.
         """
-        simc = condition.condition_list()[1]
+        simc = condition.condition_list[1]
         return '_'.join(word.title() for word in simc.split('_'))
 
 
@@ -476,8 +499,8 @@ class Equipped(BuildExpression):
     def __init__(self, condition):
         self.condition = condition
         call = 'value'
-        self.object_ = Item(self.condition.parent_action,
-                            self.condition.condition_list()[1])
+        self.object_ = Item(condition.parent_action,
+                            condition.condition_list[1])
         self.args = []
         super().__init__(call)
 
@@ -498,10 +521,10 @@ class PrevGCD(BuildExpression):
     def __init__(self, condition):
         self.condition = condition
         call = 'value'
-        self.object_ = self.condition.parent_action.player
-        self.args = [Literal(self.condition.condition_list()[1]),
-                     Spell(self.condition.parent_action,
-                           self.condition.condition_list()[2])]
+        self.object_ = condition.caster(condition.condition_list[2])
+        self.args = [Literal(condition.condition_list[1]),
+                     Spell(condition.parent_action,
+                           condition.condition_list[2])]
         super().__init__(call)
 
     @auto_expression
@@ -521,11 +544,11 @@ class GCD(BuildExpression):
 
     def __init__(self, condition):
         self.condition = condition
-        if len(condition.condition_list()) > 1:
-            call = condition.condition_list()[1]
+        if len(condition.condition_list) > 1:
+            call = condition.condition_list[1]
         else:
             call = 'value'
-        self.object_ = self.condition.parent_action.player
+        self.object_ = condition.parent_action.player
         self.args = []
         super().__init__(call)
 
@@ -559,8 +582,8 @@ class Time(BuildExpression):
 
     def __init__(self, condition):
         self.condition = condition
-        if len(condition.condition_list()) > 1:
-            call = condition.condition_list()[1]
+        if len(condition.condition_list) > 1:
+            call = condition.condition_list[1]
         else:
             call = 'value'
         self.object_ = None
@@ -583,8 +606,8 @@ class Rune(BuildExpression):
 
     def __init__(self, condition):
         self.condition = condition
-        call = condition.condition_list()[1]
-        self.object_ = self.condition.parent_action.player
+        call = condition.condition_list[1]
+        self.object_ = condition.parent_action.player
         super().__init__(call)
 
     @auto_expression
@@ -604,9 +627,9 @@ class Talent(BuildExpression):
 
     def __init__(self, condition):
         self.condition = condition
-        call = condition.condition_list()[2]
-        self.object_ = Spell(self.condition.parent_action,
-                             self.condition.condition_list()[1])
+        call = condition.condition_list[2]
+        self.object_ = Spell(condition.parent_action,
+                             condition.condition_list[1])
         self.args = []
         super().__init__(call)
 
@@ -627,11 +650,11 @@ class Resource(BuildExpression):
     def __init__(self, condition, simc):
         self.condition = condition
         self.simc = LuaNamed(simc)
-        if len(condition.condition_list()) > 1:
-            call = condition.condition_list()[1]
+        if len(condition.condition_list) > 1:
+            call = condition.condition_list[1]
         else:
             call = 'value'
-        self.object_ = self.condition.parent_action.player
+        self.object_ = condition.parent_action.player
         self.args = []
         super().__init__(call)
 
@@ -708,7 +731,7 @@ class Debuff(BuildExpression, Aura):
     def __init__(self, condition):
         object_ = condition.parent_action.target
         Aura.__init__(self, condition, DEBUFF, object_, spell_type=DEBUFF)
-        call = condition.condition_list()[2]
+        call = condition.condition_list[2]
         super().__init__(call)
 
 
@@ -724,9 +747,9 @@ class Buff(BuildExpression, Aura):
     """
 
     def __init__(self, condition):
-        object_ = condition.parent_action.player
+        object_ = condition.caster()
         Aura.__init__(self, condition, BUFF, object_, spell_type=BUFF)
-        call = condition.condition_list()[2]
+        call = condition.condition_list[2]
         super().__init__(call)
 
 
@@ -737,7 +760,7 @@ class Cooldown(BuildExpression, Expires):
 
     def __init__(self, condition):
         Expires.__init__(self, condition, 'cooldown', 'cooldown_up')
-        call = condition.condition_list()[2]
+        call = condition.condition_list[2]
         super().__init__(call)
 
     @auto_expression
@@ -765,7 +788,7 @@ class TargetExpression(BuildExpression):
 
     def __init__(self, condition):
         self.condition = condition
-        call = condition.condition_list()[1]
+        call = condition.condition_list[1]
         self.object_ = self.condition.parent_action.target
         self.args = []
         super().__init__(call)

@@ -5,6 +5,7 @@ Context of an APL.
 @author: skasch
 """
 
+from .constants import PET
 from .database import ITEM_INFO
 from .druid import guardian_print_swipe_thrash
 
@@ -25,6 +26,7 @@ class Context:
         'local Unit =   AC.Unit\n'
         'local Player = Unit.Player\n'
         'local Target = Unit.Target\n'
+        'local Pet =    Unit.Pet\n'
         'local Spell =  AC.Spell\n'
         'local Item =   AC.Item\n'
         '-- AethysRotation\n'
@@ -98,7 +100,10 @@ class Context:
             f'Spell.{class_}.{spec} = {{\n')
         for i, spell in enumerate(self.spells.values()):
             spell_id = str(self.player.spell_property(spell, spell.type_, ''))
-            lua_spells += f'  {spell.lua_name():30}= Spell({spell_id})'
+            pet_str = ''
+            if self.player.spell_property(spell, PET):
+                pet_str = f', "{PET}"'
+            lua_spells += f'  {spell.lua_name():30}= Spell({spell_id}{pet_str})'
             lua_spells += ',\n' if i < len(self.spells)-1 else '\n'
         lua_spells += (
             '};\n'

@@ -94,6 +94,22 @@ class Target:
         return 'Target'
 
 
+class Pet:
+    """
+    Define a pet of the main actor of a simulation.
+    """
+
+    def __init__(self, owner, name='pet'):
+        self.owner = owner
+        self.name = name
+
+    def print_lua(self):
+        """
+        Print the lua expression for the pet.
+        """
+        return 'Pet'
+
+
 class PlayerClass(LuaNamed):
     """
     The player class.

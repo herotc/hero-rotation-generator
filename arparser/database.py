@@ -77,6 +77,7 @@ SPELL_INFO = {
         'gift_of_the_naaru':            {SPELL:     59547},
         'shadowmeld':                   {SPELL:     58984},
         'potion_of_prolonged_power':    {BUFF:      229206},
+        'potion_of_deadly_grace':       {BUFF:      188027},
         'pool_resource':                {SPELL:     9999000010},
     }
 }

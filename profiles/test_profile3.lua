@@ -8,6 +8,7 @@ local Cache =  AethysCache
 local Unit =   AC.Unit
 local Player = Unit.Player
 local Target = Unit.Target
+local Pet =    Unit.Pet
 local Spell =  AC.Spell
 local Item =   AC.Item
 -- AethysRotation
