@@ -74,7 +74,7 @@ local Everyone = AR.Commons.Everyone;
 local Settings = {
   General = AR.GUISettings.General,
   Commons = AR.GUISettings.APL.DemonHunter.Commons,
-  Havoc = AR.GUISettings.APL.DemonHunter.Havoc,
+  Havoc = AR.GUISettings.APL.DemonHunter.Havoc
 };
 
 -- Variables

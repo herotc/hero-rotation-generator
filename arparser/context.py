@@ -154,7 +154,7 @@ class Context:
             'local Settings = {\n'
             '  General = AR.GUISettings.General,\n'
             f'  Commons = AR.GUISettings.APL.{class_}.Commons,\n'
-            f'  {spec} = AR.GUISettings.APL.{class_}.{spec},\n'
+            f'  {spec} = AR.GUISettings.APL.{class_}.{spec}\n'
             '};\n')
 
     def print_lua(self):

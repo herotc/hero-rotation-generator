@@ -82,7 +82,7 @@ local Everyone = AR.Commons.Everyone;
 local Settings = {
   General = AR.GUISettings.General,
   Commons = AR.GUISettings.APL.Druid.Commons,
-  Balance = AR.GUISettings.APL.Druid.Balance,
+  Balance = AR.GUISettings.APL.Druid.Balance
 };
 
 -- Variables

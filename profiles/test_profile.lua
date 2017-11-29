@@ -60,7 +60,7 @@ local Everyone = AR.Commons.Everyone;
 local Settings = {
   General = AR.GUISettings.General,
   Commons = AR.GUISettings.APL.DeathKnight.Commons,
-  Blood = AR.GUISettings.APL.DeathKnight.Blood,
+  Blood = AR.GUISettings.APL.DeathKnight.Blood
 };
 
 -- Variables

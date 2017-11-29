@@ -62,7 +62,7 @@ local Everyone = AR.Commons.Everyone;
 local Settings = {
   General = AR.GUISettings.General,
   Commons = AR.GUISettings.APL.Druid.Commons,
-  Guardian = AR.GUISettings.APL.Druid.Guardian,
+  Guardian = AR.GUISettings.APL.Druid.Guardian
 };
 
 -- Variables
