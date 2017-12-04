@@ -49,7 +49,7 @@ actions+=/celestial_alignment,if=astral_power>=40
 actions+=/call_action_list,name=AoE,if=(spell_targets.starfall>=2&talent.stellar_drift.enabled)|spell_targets.starfall>=3
 actions+=/call_action_list,name=single_target
 
-actions.AoE=starfall,if=debuff.stellar_empowerment.remains<gcd.max*2|astral_power.deficit<22.5|((buff.celestial_alignment.remains>8|buff.incarnation.remains>8))|target.time_to_die<8
+actions.AoE=starfall,if=debuff.stellar_empowerment.remains<gcd.max*2|astral_power.deficit<22.5|(buff.celestial_alignment.remains>8|buff.incarnation.remains>8)|target.time_to_die<8
 actions.AoE+=/stellar_flare,target_if=refreshable,if=target.time_to_die>10
 actions.AoE+=/sunfire,target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4
 actions.AoE+=/moonfire,target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4
@@ -61,7 +61,7 @@ actions.AoE+=/full_moon,if=astral_power.deficit>44
 actions.AoE+=/lunar_strike,if=buff.warrior_of_elune.up
 actions.AoE+=/solar_wrath,if=buff.solar_empowerment.up
 actions.AoE+=/lunar_strike,if=buff.lunar_empowerment.up
-actions.AoE+=/moonfire,if=equipped.lady_and_the_child&talent.soul_of_the_forest.enabled&(active_enemies<3|(active_enemies<4&!set_bonus.tier20_4pc)|(equipped.radiant_moonlight&active_enemies<7&!set_bonus.tier20_4pc))&spell_haste>0.4&!buff.celestial_alignment.up&(!buff.incarnation.up|active_enemies>3)
+actions.AoE+=/moonfire,if=equipped.lady_and_the_child&talent.soul_of_the_forest.enabled&(active_enemies<3|(active_enemies<4&!set_bonus.tier20_4pc)|(equipped.radiant_moonlight&active_enemies<7&!set_bonus.tier20_4pc))&spell_haste>0.4&!buff.celestial_alignment.up&!buff.incarnation.up
 actions.AoE+=/lunar_strike,if=spell_targets.lunar_strike>=4|spell_haste<0.45
 actions.AoE+=/solar_wrath
 

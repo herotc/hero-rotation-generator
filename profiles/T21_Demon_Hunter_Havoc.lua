@@ -21,42 +21,42 @@ local AR =     AethysRotation
 -- Spells
 if not Spell.DemonHunter then Spell.DemonHunter = {} end
 Spell.DemonHunter.Havoc = {
-  Metamorphosis                 = Spell(191427),
-  Demonic                       = Spell(213410),
-  MetamorphosisBuff             = Spell(162264),
-  Nemesis                       = Spell(206491),
-  NemesisDebuff                 = Spell(206491),
-  ChaosBladesBuff               = Spell(247938),
-  ChaosBlades                   = Spell(247938),
-  PickUpFragment                = Spell(),
-  EyeBeam                       = Spell(198013),
-  VengefulRetreat               = Spell(198793),
-  Prepared                      = Spell(203551),
-  Momentum                      = Spell(206476),
-  PreparedBuff                  = Spell(203650),
-  MomentumBuff                  = Spell(208628),
-  FelRush                       = Spell(195072),
-  FelMastery                    = Spell(192939),
-  ThrowGlaive                   = Spell(185123),
-  Bloodlet                      = Spell(206473),
-  DeathSweep                    = Spell(210152),
-  FelEruption                   = Spell(211881),
-  FuryoftheIllidari             = Spell(201467),
-  BladeDance                    = Spell(188499),
-  MasteroftheGlaive             = Spell(203556),
-  Felblade                      = Spell(232893),
-  Annihilation                  = Spell(201427),
-  ChaosStrike                   = Spell(162794),
-  DemonBlades                   = Spell(203555),
-  DemonsBite                    = Spell(162243),
-  OutofRangeBuff                = Spell(),
-  DemonicAppetite               = Spell(206478),
-  FelBarrage                    = Spell(211053),
-  BlindFury                     = Spell(203550),
-  AutoAttack                    = Spell(),
-  FirstBlood                    = Spell(206416),
-  ChaosCleave                   = Spell(206475),
-  ConsumeMagic                  = Spell(183752)
+  Metamorphosis                         = Spell(191427),
+  Demonic                               = Spell(213410),
+  MetamorphosisBuff                     = Spell(162264),
+  Nemesis                               = Spell(206491),
+  NemesisDebuff                         = Spell(206491),
+  ChaosBladesBuff                       = Spell(247938),
+  ChaosBlades                           = Spell(247938),
+  PickUpFragment                        = Spell(),
+  EyeBeam                               = Spell(198013),
+  VengefulRetreat                       = Spell(198793),
+  Prepared                              = Spell(203551),
+  Momentum                              = Spell(206476),
+  PreparedBuff                          = Spell(203650),
+  MomentumBuff                          = Spell(208628),
+  FelRush                               = Spell(195072),
+  FelMastery                            = Spell(192939),
+  ThrowGlaive                           = Spell(185123),
+  Bloodlet                              = Spell(206473),
+  DeathSweep                            = Spell(210152),
+  FelEruption                           = Spell(211881),
+  FuryoftheIllidari                     = Spell(201467),
+  BladeDance                            = Spell(188499),
+  MasteroftheGlaive                     = Spell(203556),
+  Felblade                              = Spell(232893),
+  Annihilation                          = Spell(201427),
+  ChaosStrike                           = Spell(162794),
+  DemonBlades                           = Spell(203555),
+  DemonsBite                            = Spell(162243),
+  OutofRangeBuff                        = Spell(),
+  DemonicAppetite                       = Spell(206478),
+  FelBarrage                            = Spell(211053),
+  BlindFury                             = Spell(203550),
+  AutoAttack                            = Spell(),
+  FirstBlood                            = Spell(206416),
+  ChaosCleave                           = Spell(206475),
+  ConsumeMagic                          = Spell(183752)
 };
 local S = Spell.DemonHunter.Havoc;
 
@@ -168,12 +168,12 @@ local function Apl()
     if S.ThrowGlaive:IsCastableP() and (S.Bloodlet:IsAvailable() and spell_targets >= 2 and (not S.MasteroftheGlaive:IsAvailable() or not S.Momentum:IsAvailable() or Player:BuffP(S.MomentumBuff)) and (spell_targets >= 3 or raid_event.adds.in > S.ThrowGlaive:RechargeP() + S.ThrowGlaive:Cooldown())) then
       if AR.Cast(S.ThrowGlaive) then return ""; end
     end
-    -- felblade,if=fury.deficit>=30
-    if S.Felblade:IsCastableP() and (Player:FuryDeficit() >= 30) then
+    -- felblade,if=fury.deficit>=30&(fury<40|buff.metamorphosis.down)
+    if S.Felblade:IsCastableP() and (Player:FuryDeficit() >= 30 and (Player:Fury() < 40 or Player:BuffDownP(S.MetamorphosisBuff))) then
       if AR.Cast(S.Felblade) then return ""; end
     end
-    -- eye_beam,if=spell_targets.eye_beam_tick>desired_targets|!buff.metamorphosis.extended_by_demonic|(set_bonus.tier21_4pc&buff.metamorphosis.remains>8)
-    if S.EyeBeam:IsCastableP() and (spell_targets.eye_beam_tick > desired_targets or not bool(buff.metamorphosis.extended_by_demonic) or (AC.Tier21_4Pc and Player:BuffRemainsP(S.MetamorphosisBuff) > 8)) then
+    -- eye_beam,if=spell_targets.eye_beam_tick>desired_targets|!buff.metamorphosis.extended_by_demonic|(set_bonus.tier21_4pc&buff.metamorphosis.remains>16)
+    if S.EyeBeam:IsCastableP() and (spell_targets.eye_beam_tick > desired_targets or not bool(buff.metamorphosis.extended_by_demonic) or (AC.Tier21_4Pc and Player:BuffRemainsP(S.MetamorphosisBuff) > 16)) then
       if AR.Cast(S.EyeBeam) then return ""; end
     end
     -- annihilation,if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance
@@ -188,8 +188,8 @@ local function Apl()
     if S.ChaosStrike:IsCastableP() and IsInMeleeRange() and ((not S.Momentum:IsAvailable() or Player:BuffP(S.MomentumBuff) or Player:FuryDeficit() < 30 + num(Player:BuffP(S.PreparedBuff)) * 8) and not bool(PoolingForChaosStrike) and not bool(PoolingForMeta) and not bool(PoolingForBladeDance)) then
       if AR.Cast(S.ChaosStrike) then return ""; end
     end
-    -- fel_rush,if=!talent.momentum.enabled&(buff.metamorphosis.down|talent.demon_blades.enabled)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
-    if S.FelRush:IsCastableP() and (not S.Momentum:IsAvailable() and (Player:BuffDownP(S.MetamorphosisBuff) or S.DemonBlades:IsAvailable()) and (S.FelRush:ChargesP() == 2 or (raid_event.movement.in > 10 and raid_event.adds.in > 10))) then
+    -- fel_rush,if=!talent.momentum.enabled&!cooldown.eye_beam.ready&(buff.metamorphosis.down|talent.demon_blades.enabled)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
+    if S.FelRush:IsCastableP() and (not S.Momentum:IsAvailable() and not S.EyeBeam:CooldownUpP() and (Player:BuffDownP(S.MetamorphosisBuff) or S.DemonBlades:IsAvailable()) and (S.FelRush:ChargesP() == 2 or (raid_event.movement.in > 10 and raid_event.adds.in > 10))) then
       if AR.Cast(S.FelRush) then return ""; end
     end
     -- demons_bite

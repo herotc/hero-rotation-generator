@@ -103,7 +103,7 @@ class Context:
             pet_str = ''
             if self.player.spell_property(spell, PET):
                 pet_str = f', "{PET}"'
-            lua_spells += f'  {spell.lua_name():30}= Spell({spell_id}{pet_str})'
+            lua_spells += f'  {spell.lua_name():38}= Spell({spell_id}{pet_str})'
             lua_spells += ',\n' if i < len(self.spells)-1 else '\n'
         lua_spells += (
             '};\n'

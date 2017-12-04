@@ -21,47 +21,47 @@ local AR =     AethysRotation
 -- Spells
 if not Spell.Druid then Spell.Druid = {} end
 Spell.Druid.Balance = {
-  Starfall                      = Spell(191034),
-  StellarEmpowermentDebuff      = Spell(197637),
-  CelestialAlignmentBuff        = Spell(194223),
-  IncarnationBuff               = Spell(102560),
-  StellarFlare                  = Spell(202347),
-  Sunfire                       = Spell(93402),
-  Moonfire                      = Spell(8921),
-  ForceofNature                 = Spell(205636),
-  Starsurge                     = Spell(78674),
-  OnethsIntuitionBuff           = Spell(209406),
-  AstralAccelerationBuff        = Spell(242232),
-  NewMoon                       = Spell(202767),
-  HalfMoon                      = Spell(202768),
-  FullMoon                      = Spell(202771),
-  LunarStrike                   = Spell(194153),
-  WarriorofEluneBuff            = Spell(202425),
-  SolarWrath                    = Spell(190984),
-  SolarEmpowermentBuff          = Spell(164545),
-  LunarEmpowermentBuff          = Spell(164547),
-  SouloftheForest               = Spell(114107),
-  AstralCommunion               = Spell(202359),
-  TheEmeraldDreamcatcherBuff    = Spell(208190),
-  Incarnation                   = Spell(102560),
-  CelestialAlignment            = Spell(194223),
-  NaturesBalance                = Spell(202430),
-  OnethsOverconfidenceBuff      = Spell(209407),
-  MoonfireDebuff                = Spell(164812),
-  SunfireDebuff                 = Spell(164815),
-  FuryofElune                   = Spell(202770),
-  FuryofEluneBuff               = Spell(202770),
-  WarriorofElune                = Spell(202425),
-  SolarSolsticeBuff             = Spell(252767),
-  BlessingofElune               = Spell(202737),
-  BlessingoftheAncients         = Spell(202360),
-  BlessingofEluneBuff           = Spell(202737),
-  BlessingofAnsheBuff           = Spell(202739),
-  BloodFury                     = Spell(20572),
-  Berserking                    = Spell(26297),
-  ArcaneTorrent                 = Spell(50613),
-  UseItems                      = Spell(),
-  StellarDrift                  = Spell(202354)
+  Starfall                              = Spell(191034),
+  StellarEmpowermentDebuff              = Spell(197637),
+  CelestialAlignmentBuff                = Spell(194223),
+  IncarnationBuff                       = Spell(102560),
+  StellarFlare                          = Spell(202347),
+  Sunfire                               = Spell(93402),
+  Moonfire                              = Spell(8921),
+  ForceofNature                         = Spell(205636),
+  Starsurge                             = Spell(78674),
+  OnethsIntuitionBuff                   = Spell(209406),
+  AstralAccelerationBuff                = Spell(242232),
+  NewMoon                               = Spell(202767),
+  HalfMoon                              = Spell(202768),
+  FullMoon                              = Spell(202771),
+  LunarStrike                           = Spell(194153),
+  WarriorofEluneBuff                    = Spell(202425),
+  SolarWrath                            = Spell(190984),
+  SolarEmpowermentBuff                  = Spell(164545),
+  LunarEmpowermentBuff                  = Spell(164547),
+  SouloftheForest                       = Spell(114107),
+  AstralCommunion                       = Spell(202359),
+  TheEmeraldDreamcatcherBuff            = Spell(208190),
+  Incarnation                           = Spell(102560),
+  CelestialAlignment                    = Spell(194223),
+  NaturesBalance                        = Spell(202430),
+  OnethsOverconfidenceBuff              = Spell(209407),
+  MoonfireDebuff                        = Spell(164812),
+  SunfireDebuff                         = Spell(164815),
+  FuryofElune                           = Spell(202770),
+  FuryofEluneBuff                       = Spell(202770),
+  WarriorofElune                        = Spell(202425),
+  SolarSolsticeBuff                     = Spell(252767),
+  BlessingofElune                       = Spell(202737),
+  BlessingoftheAncients                 = Spell(202360),
+  BlessingofEluneBuff                   = Spell(202737),
+  BlessingofAnsheBuff                   = Spell(202739),
+  BloodFury                             = Spell(20572),
+  Berserking                            = Spell(26297),
+  ArcaneTorrent                         = Spell(50613),
+  UseItems                              = Spell(),
+  StellarDrift                          = Spell(202354)
 };
 local S = Spell.Druid.Balance;
 
@@ -126,8 +126,8 @@ end
 --- ======= ACTION LISTS =======
 local function Apl()
   local function Aoe()
-    -- starfall,if=debuff.stellar_empowerment.remains<gcd.max*2|astral_power.deficit<22.5|((buff.celestial_alignment.remains>8|buff.incarnation.remains>8))|target.time_to_die<8
-    if S.Starfall:IsCastableP() and (Target:DebuffRemainsP(S.StellarEmpowermentDebuff) < Player:GCD() * 2 or Player:AstralPowerDeficit() < 22.5 or ((Player:BuffRemainsP(S.CelestialAlignmentBuff) > 8 or Player:BuffRemainsP(S.IncarnationBuff) > 8)) or Target:TimeToDie() < 8) then
+    -- starfall,if=debuff.stellar_empowerment.remains<gcd.max*2|astral_power.deficit<22.5|(buff.celestial_alignment.remains>8|buff.incarnation.remains>8)|target.time_to_die<8
+    if S.Starfall:IsCastableP() and (Target:DebuffRemainsP(S.StellarEmpowermentDebuff) < Player:GCD() * 2 or Player:AstralPowerDeficit() < 22.5 or (Player:BuffRemainsP(S.CelestialAlignmentBuff) > 8 or Player:BuffRemainsP(S.IncarnationBuff) > 8) or Target:TimeToDie() < 8) then
       if AR.Cast(S.Starfall) then return ""; end
     end
     -- stellar_flare,target_if=refreshable,if=target.time_to_die>10
@@ -174,8 +174,8 @@ local function Apl()
     if S.LunarStrike:IsCastableP() and (Player:BuffP(S.LunarEmpowermentBuff)) then
       if AR.Cast(S.LunarStrike) then return ""; end
     end
-    -- moonfire,if=equipped.lady_and_the_child&talent.soul_of_the_forest.enabled&(active_enemies<3|(active_enemies<4&!set_bonus.tier20_4pc)|(equipped.radiant_moonlight&active_enemies<7&!set_bonus.tier20_4pc))&spell_haste>0.4&!buff.celestial_alignment.up&(!buff.incarnation.up|active_enemies>3)
-    if S.Moonfire:IsCastableP() and (I.LadyandtheChild:IsEquipped() and S.SouloftheForest:IsAvailable() and (active_enemies < 3 or (active_enemies < 4 and not AC.Tier20_4Pc) or (I.RadiantMoonlight:IsEquipped() and active_enemies < 7 and not AC.Tier20_4Pc)) and Player:SpellHaste() > 0.4 and not Player:BuffP(S.CelestialAlignmentBuff) and (not Player:BuffP(S.IncarnationBuff) or active_enemies > 3)) then
+    -- moonfire,if=equipped.lady_and_the_child&talent.soul_of_the_forest.enabled&(active_enemies<3|(active_enemies<4&!set_bonus.tier20_4pc)|(equipped.radiant_moonlight&active_enemies<7&!set_bonus.tier20_4pc))&spell_haste>0.4&!buff.celestial_alignment.up&!buff.incarnation.up
+    if S.Moonfire:IsCastableP() and (I.LadyandtheChild:IsEquipped() and S.SouloftheForest:IsAvailable() and (active_enemies < 3 or (active_enemies < 4 and not AC.Tier20_4Pc) or (I.RadiantMoonlight:IsEquipped() and active_enemies < 7 and not AC.Tier20_4Pc)) and Player:SpellHaste() > 0.4 and not Player:BuffP(S.CelestialAlignmentBuff) and not Player:BuffP(S.IncarnationBuff)) then
       if AR.Cast(S.Moonfire) then return ""; end
     end
     -- lunar_strike,if=spell_targets.lunar_strike>=4|spell_haste<0.45

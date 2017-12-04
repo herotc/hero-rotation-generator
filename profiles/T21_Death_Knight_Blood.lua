@@ -36,20 +36,25 @@ Spell.DeathKnight.Blood = {
   Consumption                           = Spell(205223),
   HeartStrike                           = Spell(206930),
   CrimsonScourgeBuff                    = Spell(81141),
+  AutoAttack                            = Spell(),
   MindFreeze                            = Spell(47528),
   ArcaneTorrent                         = Spell(50613),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
   UseItems                              = Spell(),
+  UseItem                               = Spell(),
+  VampiricBloodBuff                     = Spell(55233),
   DancingRuneWeapon                     = Spell(49028),
-  VampiricBlood                         = Spell(55233)
+  VampiricBlood                         = Spell(55233),
+  Trinket                               = Spell()
 };
 local S = Spell.DeathKnight.Blood;
 
 -- Items
 if not Item.DeathKnight then Item.DeathKnight = {} end
 Item.DeathKnight.Blood = {
-  ProlongedPower                = Item(142117)
+  ProlongedPower                = Item(142117),
+  ArchimondesHatredReborn       = Item(144249)
 };
 local I = Item.DeathKnight.Blood;
 
@@ -134,6 +139,10 @@ local function Apl()
       if AR.Cast(S.HeartStrike) then return ""; end
     end
   end
+  -- auto_attack
+  if S.AutoAttack:IsCastableP() and (true) then
+    if AR.Cast(S.AutoAttack) then return ""; end
+  end
   -- mind_freeze
   if S.MindFreeze:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (true) then
     if AR.CastAnnotated(S.MindFreeze, false, "Interrupt") then return ""; end
@@ -154,6 +163,10 @@ local function Apl()
   if S.UseItems:IsCastableP() and (true) then
     if AR.Cast(S.UseItems) then return ""; end
   end
+  -- use_item,name=archimondes_hatred_reborn,if=buff.vampiric_blood.up
+  if S.UseItem:IsCastableP() and (Player:BuffP(S.VampiricBloodBuff)) then
+    if AR.Cast(S.UseItem) then return ""; end
+  end
   -- potion,if=buff.dancing_rune_weapon.up
   if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.DancingRuneWeaponBuff)) then
     if AR.CastSuggested(I.ProlongedPower) then return ""; end
@@ -162,8 +175,8 @@ local function Apl()
   if S.DancingRuneWeapon:IsCastableP() and AR.CDsON() and ((not S.BloodDrinker:IsAvailable() or not S.BloodDrinker:CooldownUpP()) and not S.DeathandDecay:CooldownUpP()) then
     if AR.Cast(S.DancingRuneWeapon, Settings.Blood.OffGCDasOffGCD.DancingRuneWeapon) then return ""; end
   end
-  -- vampiric_blood
-  if S.VampiricBlood:IsCastableP() and (true) then
+  -- vampiric_blood,if=!equipped.archimondes_hatred_reborn|cooldown.trinket.ready
+  if S.VampiricBlood:IsCastableP() and (not I.ArchimondesHatredReborn:IsEquipped() or S.Trinket:CooldownUpP()) then
     if AR.Cast(S.VampiricBlood) then return ""; end
   end
   -- call_action_list,name=standard

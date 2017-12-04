@@ -173,6 +173,7 @@ class Expression:
         """
         Return the condition when the prefix is charges_fractional.
         """
+        # TODO: fix charges fractional for other classes
         return LuaExpression(Spell(self.parent_action, 'blood_boil'),
                              Method('ChargesFractional'), [])
 
@@ -186,6 +187,8 @@ class Expression:
         """
         Return the condition when the prefix is target.
         """
+        if len(self.condition_list) <= 1:
+            return Literal('target')
         return TargetExpression(self)
 
     def variable(self):
@@ -560,25 +563,6 @@ class Time(BuildExpression):
         self.method = Method('AC.CombatTime')
 
 
-class Rune(BuildExpression):
-    """
-    Represent the expression for a rune. condition.
-    """
-
-    def __init__(self, condition):
-        self.condition = condition
-        call = condition.condition_list[1]
-        self.object_ = condition.player_unit
-        super().__init__(call)
-
-    def time_to_3(self):
-        """
-        Return the arguments for the expression rune.time_to_3.
-        """
-        self.method = Method('RuneTimeToX')
-        self.args = [Literal('3')]
-
-
 class Talent(BuildExpression):
     """
     Represent the expression for a talent. condition.
@@ -632,6 +616,26 @@ class Resource(BuildExpression):
         Return the arguments for the expression {resource}.pct.
         """
         self.method = Method(f'{self.simc.lua_name()}Percentage')
+
+
+class Rune(Resource):
+    """
+    Represent the expression for a rune. condition.
+    """
+
+    def __init__(self, condition):
+        if (len(condition.condition_list) > 1
+                and condition.condition_list[1][:-1] == 'time_to_'):
+            condition.condition_list.append(condition.condition_list[1][-1])
+            condition.condition_list[1] = 'time_to'
+        super().__init__(condition, 'rune')
+
+    def time_to(self):
+        """
+        Return the arguments for the expression rune.time_to_X.
+        """
+        self.method = Method('RuneTimeToX')
+        self.args = [Literal(self.condition.condition_list[2])]
 
 
 class AstralPower(Resource):
