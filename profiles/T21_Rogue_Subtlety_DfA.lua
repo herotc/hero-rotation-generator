@@ -21,47 +21,47 @@ local AR =     AethysRotation
 -- Spells
 if not Spell.Rogue then Spell.Rogue = {} end
 Spell.Rogue.Subtlety = {
-  ShurikenStorm                         = Spell(),
-  TheFirstoftheDeadBuff                 = Spell(),
-  Gloomblade                            = Spell(),
-  Backstab                              = Spell(),
-  VanishBuff                            = Spell(),
-  ShadowBladesBuff                      = Spell(),
-  ShadowBlades                          = Spell(),
+  ShurikenStorm                         = Spell(197835),
+  TheFirstoftheDeadBuff                 = Spell(248110),
+  Gloomblade                            = Spell(200758),
+  Backstab                              = Spell(53),
+  VanishBuff                            = Spell(1856),
+  ShadowBladesBuff                      = Spell(121471),
+  ShadowBlades                          = Spell(121471),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
   ArcaneTorrent                         = Spell(50613),
-  SymbolsofDeath                        = Spell(),
-  DeathFromAbove                        = Spell(),
-  NightbladeDebuff                      = Spell(),
-  MarkedForDeath                        = Spell(),
-  GoremawsBite                          = Spell(),
-  ShadowDance                           = Spell(),
-  Vigor                                 = Spell(),
+  SymbolsofDeath                        = Spell(212283),
+  DeathFromAbove                        = Spell(152150),
+  NightbladeDebuff                      = Spell(195452),
+  MarkedForDeath                        = Spell(137619),
+  GoremawsBite                          = Spell(209782),
+  ShadowDance                           = Spell(185313),
+  Vigor                                 = Spell(14983),
   PoolResource                          = Spell(9999000010),
-  Vanish                                = Spell(),
-  ShadowFocus                           = Spell(),
-  SymbolsofDeathBuff                    = Spell(),
-  ShadowDanceBuff                       = Spell(),
-  StealthBuff                           = Spell(),
-  Subterfuge                            = Spell(),
-  Nightblade                            = Spell(),
-  DarkShadow                            = Spell(),
-  FinalityNightbladeBuff                = Spell(),
-  FinalityEviscerateBuff                = Spell(),
-  Eviscerate                            = Spell(),
-  FeedingFrenzyBuff                     = Spell(),
+  Vanish                                = Spell(1856),
+  ShadowFocus                           = Spell(108209),
+  SymbolsofDeathBuff                    = Spell(212283),
+  ShadowDanceBuff                       = Spell(185313),
+  StealthBuff                           = Spell(1784),
+  Subterfuge                            = Spell(108208),
+  Nightblade                            = Spell(195452),
+  DarkShadow                            = Spell(245687),
+  FinalityNightbladeBuff                = Spell(197498),
+  FinalityEviscerateBuff                = Spell(197496),
+  Eviscerate                            = Spell(196819),
+  FeedingFrenzyBuff                     = Spell(238140),
   Shadowmeld                            = Spell(58984),
   BloodBoil                             = Spell(),
-  Shadowstrike                          = Spell(),
-  DeeperStratagem                       = Spell(),
+  Shadowstrike                          = Spell(185438),
+  DeeperStratagem                       = Spell(193531),
   ShadowmeldBuff                        = Spell(58984),
-  TheDreadlordsDeceitBuff               = Spell(),
-  SubterfugeBuff                        = Spell(),
-  DeathFromAboveBuff                    = Spell(),
+  TheDreadlordsDeceitBuff               = Spell(208692),
+  SubterfugeBuff                        = Spell(108208),
+  DeathFromAboveBuff                    = Spell(163786),
   Wait                                  = Spell(),
-  EnvelopingShadows                     = Spell(),
-  Anticipation                          = Spell()
+  EnvelopingShadows                     = Spell(238104),
+  Anticipation                          = Spell(114015)
 };
 local S = Spell.Rogue.Subtlety;
 
@@ -69,11 +69,11 @@ local S = Spell.Rogue.Subtlety;
 if not Item.Rogue then Item.Rogue = {} end
 Item.Rogue.Subtlety = {
   ProlongedPower                = Item(142117),
-  TheFirstoftheDead             = Item(),
-  MantleoftheMasterAssassin     = Item(),
-  ShadowSatyrsWalk              = Item(),
-  InsigniaofRavenholdt          = Item(),
-  DenialoftheHalfgiants         = Item()
+  TheFirstoftheDead             = Item(151818),
+  MantleoftheMasterAssassin     = Item(144236),
+  ShadowSatyrsWalk              = Item(137032),
+  InsigniaofRavenholdt          = Item(137049),
+  DenialoftheHalfgiants         = Item(137100)
 };
 local I = Item.Rogue.Subtlety;
 
@@ -171,15 +171,15 @@ local function Apl()
   end
   local function Finish()
     -- nightblade,if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&(mantle_duration=0|remains<=mantle_duration)&((refreshable&(!finality|buff.finality_nightblade.up|variable.dsh_dfa))|remains<tick_time*2)&(spell_targets.shuriken_storm<4&!variable.dsh_dfa|!buff.symbols_of_death.up)
-    if S.Nightblade:IsCastableP() and ((not S.DarkShadow:IsAvailable() or not Player:BuffP(S.ShadowDanceBuff)) and Target:TimeToDie() - Player:BuffRemainsP(S.Nightblade) > 6 and (mantle_duration == 0 or Player:BuffRemainsP(S.Nightblade) <= mantle_duration) and ((bool(refreshable) and (not bool(finality) or Player:BuffP(S.FinalityNightbladeBuff) or bool(DshDfa))) or Player:BuffRemainsP(S.Nightblade) < tick_time * 2) and (spell_targets.shuriken_storm < 4 and not bool(DshDfa) or not Player:BuffP(S.SymbolsofDeathBuff))) then
+    if S.Nightblade:IsCastableP() and ((not S.DarkShadow:IsAvailable() or not Player:BuffP(S.ShadowDanceBuff)) and Target:TimeToDie() - Target:DebuffRemainsP(S.Nightblade) > 6 and (mantle_duration == 0 or Target:DebuffRemainsP(S.Nightblade) <= mantle_duration) and ((bool(refreshable) and (not bool(finality) or Player:BuffP(S.FinalityNightbladeBuff) or bool(DshDfa))) or Target:DebuffRemainsP(S.Nightblade) < tick_time * 2) and (spell_targets.shuriken_storm < 4 and not bool(DshDfa) or not Player:BuffP(S.SymbolsofDeathBuff))) then
       if AR.Cast(S.Nightblade) then return ""; end
     end
     -- nightblade,cycle_targets=1,if=(!talent.death_from_above.enabled|set_bonus.tier19_2pc)&(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>12&mantle_duration=0&((refreshable&(!finality|buff.finality_nightblade.up|variable.dsh_dfa))|remains<tick_time*2)&(spell_targets.shuriken_storm<4&!variable.dsh_dfa|!buff.symbols_of_death.up)
-    if S.Nightblade:IsCastableP() and ((not S.DeathFromAbove:IsAvailable() or AC.Tier19_2Pc) and (not S.DarkShadow:IsAvailable() or not Player:BuffP(S.ShadowDanceBuff)) and Target:TimeToDie() - Player:BuffRemainsP(S.Nightblade) > 12 and mantle_duration == 0 and ((bool(refreshable) and (not bool(finality) or Player:BuffP(S.FinalityNightbladeBuff) or bool(DshDfa))) or Player:BuffRemainsP(S.Nightblade) < tick_time * 2) and (spell_targets.shuriken_storm < 4 and not bool(DshDfa) or not Player:BuffP(S.SymbolsofDeathBuff))) then
+    if S.Nightblade:IsCastableP() and ((not S.DeathFromAbove:IsAvailable() or AC.Tier19_2Pc) and (not S.DarkShadow:IsAvailable() or not Player:BuffP(S.ShadowDanceBuff)) and Target:TimeToDie() - Target:DebuffRemainsP(S.Nightblade) > 12 and mantle_duration == 0 and ((bool(refreshable) and (not bool(finality) or Player:BuffP(S.FinalityNightbladeBuff) or bool(DshDfa))) or Target:DebuffRemainsP(S.Nightblade) < tick_time * 2) and (spell_targets.shuriken_storm < 4 and not bool(DshDfa) or not Player:BuffP(S.SymbolsofDeathBuff))) then
       if AR.Cast(S.Nightblade) then return ""; end
     end
     -- nightblade,if=remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5+(combo_points=6)&target.time_to_die-remains>cooldown.symbols_of_death.remains+5
-    if S.Nightblade:IsCastableP() and (Player:BuffRemainsP(S.Nightblade) < S.SymbolsofDeath:CooldownRemainsP() + 10 and S.SymbolsofDeath:CooldownRemainsP() <= 5 + num((combo_points == 6)) and Target:TimeToDie() - Player:BuffRemainsP(S.Nightblade) > S.SymbolsofDeath:CooldownRemainsP() + 5) then
+    if S.Nightblade:IsCastableP() and (Target:DebuffRemainsP(S.Nightblade) < S.SymbolsofDeath:CooldownRemainsP() + 10 and S.SymbolsofDeath:CooldownRemainsP() <= 5 + num((combo_points == 6)) and Target:TimeToDie() - Target:DebuffRemainsP(S.Nightblade) > S.SymbolsofDeath:CooldownRemainsP() + 5) then
       if AR.Cast(S.Nightblade) then return ""; end
     end
     -- death_from_above,if=!talent.dark_shadow.enabled|(!buff.shadow_dance.up|spell_targets>=4)&(buff.symbols_of_death.up|cooldown.symbols_of_death.remains>=10+set_bonus.tier20_4pc*5)&buff.the_first_of_the_dead.remains<1&(buff.finality_eviscerate.up|spell_targets.shuriken_storm<4)
@@ -278,7 +278,7 @@ local function Apl()
     return Stealthed();
   end
   -- nightblade,if=target.time_to_die>6&remains<gcd.max&combo_points>=4-(time<10)*2
-  if S.Nightblade:IsCastableP() and (Target:TimeToDie() > 6 and Player:BuffRemainsP(S.Nightblade) < Player:GCD() and combo_points >= 4 - num((AC.CombatTime() < 10)) * 2) then
+  if S.Nightblade:IsCastableP() and (Target:TimeToDie() > 6 and Target:DebuffRemainsP(S.Nightblade) < Player:GCD() and combo_points >= 4 - num((AC.CombatTime() < 10)) * 2) then
     if AR.Cast(S.Nightblade) then return ""; end
   end
   -- call_action_list,name=stealth_als,if=talent.dark_shadow.enabled&combo_points.deficit>=2+buff.shadow_blades.up&(dot.nightblade.remains>4+talent.subterfuge.enabled|cooldown.shadow_dance.charges_fractional>=1.9&(!equipped.denial_of_the_halfgiants|time>10))

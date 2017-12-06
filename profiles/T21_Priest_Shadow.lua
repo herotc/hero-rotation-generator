@@ -21,50 +21,50 @@ local AR =     AethysRotation
 -- Spells
 if not Spell.Priest then Spell.Priest = {} end
 Spell.Priest.Shadow = {
-  SurrenderToMadness                    = Spell(),
-  ShadowWordDeath                       = Spell(),
-  ZeksExterminatusBuff                  = Spell(),
-  ShadowWordPain                        = Spell(),
-  Misery                                = Spell(),
-  ShadowWordPainDebuff                  = Spell(),
-  VampiricTouch                         = Spell(),
-  VampiricTouchDebuff                   = Spell(),
-  VoidEruption                          = Spell(),
-  Mindbender                            = Spell(),
-  ShadowCrash                           = Spell(),
-  ReaperofSouls                         = Spell(),
-  MindBlast                             = Spell(),
-  LegacyoftheVoid                       = Spell(),
-  FortressoftheMind                     = Spell(),
-  AuspiciousSpirits                     = Spell(),
-  ShadowyInsight                        = Spell(),
-  ShadowWordVoid                        = Spell(),
-  MindFlay                              = Spell(),
-  Silence                               = Spell(),
-  BuffSephuzsSecret                     = Spell(),
-  SephuzsSecretBuff                     = Spell(),
-  VoidBolt                              = Spell(),
+  SurrenderToMadness                    = Spell(193223),
+  ShadowWordDeath                       = Spell(32379),
+  ZeksExterminatusBuff                  = Spell(236546),
+  ShadowWordPain                        = Spell(589),
+  Misery                                = Spell(238558),
+  ShadowWordPainDebuff                  = Spell(589),
+  VampiricTouch                         = Spell(34914),
+  VampiricTouchDebuff                   = Spell(34914),
+  VoidEruption                          = Spell(228260),
+  Mindbender                            = Spell(200174),
+  ShadowCrash                           = Spell(205385),
+  ReaperofSouls                         = Spell(199853),
+  MindBlast                             = Spell(8092),
+  LegacyoftheVoid                       = Spell(193225),
+  FortressoftheMind                     = Spell(193195),
+  AuspiciousSpirits                     = Spell(155271),
+  ShadowyInsight                        = Spell(162452),
+  ShadowWordVoid                        = Spell(205351),
+  MindFlay                              = Spell(15407),
+  Silence                               = Spell(15487),
+  BuffSephuzsSecret                     = Spell(208051),
+  SephuzsSecretBuff                     = Spell(208051),
+  VoidBolt                              = Spell(231688),
   InsanityDrainStacksBuff               = Spell(),
-  MindBomb                              = Spell(),
-  VoidformBuff                          = Spell(),
-  VoidTorrent                           = Spell(),
-  PowerInfusionBuff                     = Spell(),
+  MindBomb                              = Spell(205369),
+  VoidformBuff                          = Spell(194249),
+  VoidTorrent                           = Spell(205065),
+  PowerInfusionBuff                     = Spell(10060),
   Berserking                            = Spell(26297),
-  PowerInfusion                         = Spell(),
+  PowerInfusion                         = Spell(10060),
   Wait                                  = Spell(),
-  Dispersion                            = Spell(),
-  Shadowfiend                           = Spell(),
-  Sanlayn                               = Spell(),
-  ShadowyInsightBuff                    = Spell(),
-  SurrenderToMadnessBuff                = Spell()
+  Dispersion                            = Spell(47585),
+  Shadowfiend                           = Spell(34433),
+  Sanlayn                               = Spell(199855),
+  ShadowyInsightBuff                    = Spell(124430),
+  SurrenderToMadnessBuff                = Spell(193223)
 };
 local S = Spell.Priest.Shadow;
 
 -- Items
 if not Item.Priest then Item.Priest = {} end
 Item.Priest.Shadow = {
-  ZeksExterminatus              = Item(),
-  MangazasMadness               = Item(),
+  ZeksExterminatus              = Item(144438),
+  MangazasMadness               = Item(132864),
   SephuzsSecret                 = Item(132452),
   ProlongedPower                = Item(142117)
 };
@@ -189,8 +189,8 @@ local function Apl()
   end
   local function S2M()
     -- silence,if=equipped.sephuzs_secret&(target.is_add|target.debuff.casting.react)&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up,cycle_targets=1
-    if S.Silence:IsCastableP() and (I.SephuzsSecret:IsEquipped() and (bool(target.is_add) or bool(target.debuff.casting.react)) and S.BuffSephuzsSecret:CooldownUpP() and not Player:BuffP(S.SephuzsSecretBuff)) then
-      if AR.Cast(S.Silence) then return ""; end
+    if S.Silence:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (I.SephuzsSecret:IsEquipped() and (bool(target.is_add) or bool(target.debuff.casting.react)) and S.BuffSephuzsSecret:CooldownUpP() and not Player:BuffP(S.SephuzsSecretBuff)) then
+      if AR.CastAnnotated(S.Silence, false, "Interrupt") then return ""; end
     end
     -- void_bolt,if=buff.insanity_drain_stacks.value<6&set_bonus.tier19_4pc
     if S.VoidBolt:IsCastableP() and (buff.insanity_drain_stacks.value < 6 and AC.Tier19_4Pc) then
@@ -299,8 +299,8 @@ local function Apl()
       if AR.Cast(S.SurrenderToMadness) then return ""; end
     end
     -- silence,if=equipped.sephuzs_secret&(target.is_add|target.debuff.casting.react)&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up&buff.insanity_drain_stacks.value>10,cycle_targets=1
-    if S.Silence:IsCastableP() and (I.SephuzsSecret:IsEquipped() and (bool(target.is_add) or bool(target.debuff.casting.react)) and S.BuffSephuzsSecret:CooldownUpP() and not Player:BuffP(S.SephuzsSecretBuff) and buff.insanity_drain_stacks.value > 10) then
-      if AR.Cast(S.Silence) then return ""; end
+    if S.Silence:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (I.SephuzsSecret:IsEquipped() and (bool(target.is_add) or bool(target.debuff.casting.react)) and S.BuffSephuzsSecret:CooldownUpP() and not Player:BuffP(S.SephuzsSecretBuff) and buff.insanity_drain_stacks.value > 10) then
+      if AR.CastAnnotated(S.Silence, false, "Interrupt") then return ""; end
     end
     -- void_bolt
     if S.VoidBolt:IsCastableP() and (true) then

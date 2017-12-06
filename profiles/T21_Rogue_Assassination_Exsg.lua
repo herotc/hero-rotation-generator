@@ -21,51 +21,51 @@ local AR =     AethysRotation
 -- Spells
 if not Spell.Rogue then Spell.Rogue = {} end
 Spell.Rogue.Assassination = {
-  Hemorrhage                            = Spell(),
-  RuptureDebuff                         = Spell(),
-  FanofKnives                           = Spell(),
-  TheDreadlordsDeceitBuff               = Spell(),
-  Mutilate                              = Spell(),
-  DeadlyPoisonDotDebuff                 = Spell(),
-  VendettaDebuff                        = Spell(),
-  Vanish                                = Spell(),
+  Hemorrhage                            = Spell(16511),
+  RuptureDebuff                         = Spell(1943),
+  FanofKnives                           = Spell(51723),
+  TheDreadlordsDeceitBuff               = Spell(208692),
+  Mutilate                              = Spell(1329),
+  DeadlyPoisonDotDebuff                 = Spell(177918),
+  VendettaDebuff                        = Spell(79140),
+  Vanish                                = Spell(1856),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
   ArcaneTorrent                         = Spell(50613),
-  KingsbaneDebuff                       = Spell(),
-  EnvenomBuff                           = Spell(),
-  MarkedForDeath                        = Spell(),
-  Vendetta                              = Spell(),
-  Exsanguinate                          = Spell(),
-  Rupture                               = Spell(),
-  GarroteDebuff                         = Spell(),
-  SubterfugeBuff                        = Spell(),
-  Nightstalker                          = Spell(),
-  Subterfuge                            = Spell(),
-  ShadowFocus                           = Spell(),
-  ToxicBlade                            = Spell(),
-  DeathFromAbove                        = Spell(),
-  Envenom                               = Spell(),
-  DeeperStratagem                       = Spell(),
-  SurgeofToxinsDebuff                   = Spell(),
-  ElaboratePlanning                     = Spell(),
-  ElaboratePlanningBuff                 = Spell(),
-  Kingsbane                             = Spell(),
-  Garrote                               = Spell(),
-  ToxicBladeDebuff                      = Spell(),
+  KingsbaneDebuff                       = Spell(192759),
+  EnvenomBuff                           = Spell(32645),
+  MarkedForDeath                        = Spell(137619),
+  Vendetta                              = Spell(79140),
+  Exsanguinate                          = Spell(200806),
+  Rupture                               = Spell(1943),
+  GarroteDebuff                         = Spell(703),
+  SubterfugeBuff                        = Spell(108208),
+  Nightstalker                          = Spell(14062),
+  Subterfuge                            = Spell(108208),
+  ShadowFocus                           = Spell(108209),
+  ToxicBlade                            = Spell(245388),
+  DeathFromAbove                        = Spell(152150),
+  Envenom                               = Spell(32645),
+  DeeperStratagem                       = Spell(193531),
+  SurgeofToxinsDebuff                   = Spell(192424),
+  ElaboratePlanning                     = Spell(193640),
+  ElaboratePlanningBuff                 = Spell(193641),
+  Kingsbane                             = Spell(192759),
+  Garrote                               = Spell(703),
+  ToxicBladeDebuff                      = Spell(245389),
   Exanguinate                           = Spell(),
   PoolResource                          = Spell(9999000010),
-  VenomRush                             = Spell()
+  VenomRush                             = Spell(152152)
 };
 local S = Spell.Rogue.Assassination;
 
 -- Items
 if not Item.Rogue then Item.Rogue = {} end
 Item.Rogue.Assassination = {
-  InsigniaofRavenholdt          = Item(),
+  InsigniaofRavenholdt          = Item(137049),
   ProlongedPower                = Item(142117),
-  MantleoftheMasterAssassin     = Item(),
-  DuskwalkersFootpads           = Item(),
+  MantleoftheMasterAssassin     = Item(144236),
+  DuskwalkersFootpads           = Item(137030),
   ConvergenceofFates            = Item(140806)
 };
 local I = Item.Rogue.Assassination;
@@ -201,7 +201,7 @@ local function Apl()
   end
   local function Maintain()
     -- rupture,if=talent.nightstalker.enabled&stealthed.rogue&(!equipped.mantle_of_the_master_assassin|!set_bonus.tier19_4pc)&(talent.exsanguinate.enabled|target.time_to_die-remains>4)
-    if S.Rupture:IsCastableP() and (S.Nightstalker:IsAvailable() and bool(stealthed.rogue) and (not I.MantleoftheMasterAssassin:IsEquipped() or not AC.Tier19_4Pc) and (S.Exsanguinate:IsAvailable() or Target:TimeToDie() - Player:BuffRemainsP(S.Rupture) > 4)) then
+    if S.Rupture:IsCastableP() and (S.Nightstalker:IsAvailable() and bool(stealthed.rogue) and (not I.MantleoftheMasterAssassin:IsEquipped() or not AC.Tier19_4Pc) and (S.Exsanguinate:IsAvailable() or Target:TimeToDie() - Target:DebuffRemainsP(S.Rupture) > 4)) then
       if AR.Cast(S.Rupture) then return ""; end
     end
     -- garrote,cycle_targets=1,if=talent.subterfuge.enabled&stealthed.rogue&combo_points.deficit>=1&set_bonus.tier20_4pc&((dot.garrote.remains<=13&!debuff.toxic_blade.up)|pmultiplier<=1)&!exsanguinated
@@ -209,11 +209,11 @@ local function Apl()
       if AR.Cast(S.Garrote) then return ""; end
     end
     -- garrote,cycle_targets=1,if=talent.subterfuge.enabled&stealthed.rogue&combo_points.deficit>=1&!set_bonus.tier20_4pc&refreshable&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>2
-    if S.Garrote:IsCastableP() and (S.Subterfuge:IsAvailable() and bool(stealthed.rogue) and combo_points.deficit >= 1 and not AC.Tier20_4Pc and bool(refreshable) and (not bool(exsanguinated) or Player:BuffRemainsP(S.Garrote) <= tick_time * 2) and Target:TimeToDie() - Player:BuffRemainsP(S.Garrote) > 2) then
+    if S.Garrote:IsCastableP() and (S.Subterfuge:IsAvailable() and bool(stealthed.rogue) and combo_points.deficit >= 1 and not AC.Tier20_4Pc and bool(refreshable) and (not bool(exsanguinated) or Target:DebuffRemainsP(S.Garrote) <= tick_time * 2) and Target:TimeToDie() - Target:DebuffRemainsP(S.Garrote) > 2) then
       if AR.Cast(S.Garrote) then return ""; end
     end
     -- garrote,cycle_targets=1,if=talent.subterfuge.enabled&stealthed.rogue&combo_points.deficit>=1&!set_bonus.tier20_4pc&remains<=10&pmultiplier<=1&!exsanguinated&target.time_to_die-remains>2
-    if S.Garrote:IsCastableP() and (S.Subterfuge:IsAvailable() and bool(stealthed.rogue) and combo_points.deficit >= 1 and not AC.Tier20_4Pc and Player:BuffRemainsP(S.Garrote) <= 10 and pmultiplier <= 1 and not bool(exsanguinated) and Target:TimeToDie() - Player:BuffRemainsP(S.Garrote) > 2) then
+    if S.Garrote:IsCastableP() and (S.Subterfuge:IsAvailable() and bool(stealthed.rogue) and combo_points.deficit >= 1 and not AC.Tier20_4Pc and Target:DebuffRemainsP(S.Garrote) <= 10 and pmultiplier <= 1 and not bool(exsanguinated) and Target:TimeToDie() - Target:DebuffRemainsP(S.Garrote) > 2) then
       if AR.Cast(S.Garrote) then return ""; end
     end
     -- rupture,if=!talent.exsanguinate.enabled&combo_points>=3&!ticking&mantle_duration<=0.2&target.time_to_die>6
@@ -225,7 +225,7 @@ local function Apl()
       if AR.Cast(S.Rupture) then return ""; end
     end
     -- rupture,cycle_targets=1,if=combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>6
-    if S.Rupture:IsCastableP() and (combo_points >= 4 and bool(refreshable) and (pmultiplier <= 1 or Player:BuffRemainsP(S.Rupture) <= tick_time) and (not bool(exsanguinated) or Player:BuffRemainsP(S.Rupture) <= tick_time * 2) and Target:TimeToDie() - Player:BuffRemainsP(S.Rupture) > 6) then
+    if S.Rupture:IsCastableP() and (combo_points >= 4 and bool(refreshable) and (pmultiplier <= 1 or Target:DebuffRemainsP(S.Rupture) <= tick_time) and (not bool(exsanguinated) or Target:DebuffRemainsP(S.Rupture) <= tick_time * 2) and Target:TimeToDie() - Target:DebuffRemainsP(S.Rupture) > 6) then
       if AR.Cast(S.Rupture) then return ""; end
     end
     -- call_action_list,name=kb,if=combo_points.deficit>=1+(mantle_duration>=0.2)&(!talent.exsanguinate.enabled|!cooldown.exanguinate.up|time>9)
@@ -237,7 +237,7 @@ local function Apl()
       if AR.Cast(S.PoolResource) then return ""; end
     end
     -- garrote,cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>4
-    if S.Garrote:IsCastableP() and ((not S.Subterfuge:IsAvailable() or not (S.Vanish:CooldownUpP() and S.Vendetta:CooldownRemainsP() <= 4)) and combo_points.deficit >= 1 and bool(refreshable) and (pmultiplier <= 1 or Player:BuffRemainsP(S.Garrote) <= tick_time) and (not bool(exsanguinated) or Player:BuffRemainsP(S.Garrote) <= tick_time * 2) and Target:TimeToDie() - Player:BuffRemainsP(S.Garrote) > 4) then
+    if S.Garrote:IsCastableP() and ((not S.Subterfuge:IsAvailable() or not (S.Vanish:CooldownUpP() and S.Vendetta:CooldownRemainsP() <= 4)) and combo_points.deficit >= 1 and bool(refreshable) and (pmultiplier <= 1 or Target:DebuffRemainsP(S.Garrote) <= tick_time) and (not bool(exsanguinated) or Target:DebuffRemainsP(S.Garrote) <= tick_time * 2) and Target:TimeToDie() - Target:DebuffRemainsP(S.Garrote) > 4) then
       if AR.Cast(S.Garrote) then return ""; end
     end
     -- garrote,if=set_bonus.tier20_4pc&talent.exsanguinate.enabled&prev_gcd.1.rupture&cooldown.exsanguinate.remains<1&(!cooldown.vanish.up|time>12)

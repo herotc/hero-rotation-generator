@@ -79,6 +79,7 @@ SPELL_INFO = {
         'gift_of_the_naaru':            {SPELL:     59547},
         'shadowmeld':                   {SPELL:     58984,
                                          BUFF:      58984},
+        'darkflight':                   {SPELL:     68992},
         'stoneform':                    {SPELL:     20594},
         'exhaustion':                   {BUFF:      57723},
         'potion_of_prolonged_power':    {BUFF:      229206},
