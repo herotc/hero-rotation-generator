@@ -460,6 +460,13 @@ class ActionExpression(BuildExpression):
         self.aura_model.duration()
         self.from_aura()
 
+    def tick_time(self):
+        """
+        Return the arguments for the expression action.spell.duration.
+        """
+        self.aura_model.tick_time()
+        self.from_aura()
+
 
 class SetBonus(Literal):
     """
