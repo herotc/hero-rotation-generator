@@ -310,6 +310,14 @@ class Aura(Expires):
         self.method = Method('BaseDuration')
         self.args = []
 
+    def tick_time(self):
+        """
+        Return the arguments for the expression {aura}.spell.tick_time.
+        """
+        self.object_ = self.spell
+        self.method = Method('TickTime')
+        self.args = []
+
 
 class ActionExpression(BuildExpression):
     """
@@ -403,6 +411,12 @@ class ActionExpression(BuildExpression):
         Return the arguments for the expression action.spell.usable_in.
         """
         self.method = Method('UsableInP')
+
+    def travel_time(self):
+        """
+        Return the arguments for the expression action.spell.travel_time.
+        """
+        self.method = Method('TravelTime')
 
     def ready(self):
         """
@@ -746,6 +760,13 @@ class TargetExpression(BuildExpression):
 
     def time_to_die(self):
         """
-        Return the arguments for the expression cooldown.spell.ready.
+        Return the arguments for the expression target.time_to_die.
         """
         self.method = Method('TimeToDie')
+
+    def health(self):
+        """
+        Return the argument for the expressions target.health.{something}.
+        """
+        if self.condition.condition_list[2] == 'pct':
+            self.method = Method('HealthPercentage')
