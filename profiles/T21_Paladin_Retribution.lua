@@ -205,7 +205,7 @@ local function Apl()
       if AR.Cast(S.Consecration) then return ""; end
     end
     -- hammer_of_justice,if=equipped.137065&target.health.pct>=75&holy_power<=4
-    if S.HammerofJustice:IsCastableP() and (Item(137065):IsEquipped() and target.health.pct >= 75 and holy_power <= 4) then
+    if S.HammerofJustice:IsCastableP() and (Item(137065):IsEquipped() and Target:HealthPercentage() >= 75 and holy_power <= 4) then
       if AR.Cast(S.HammerofJustice) then return ""; end
     end
     -- call_action_list,name=finishers

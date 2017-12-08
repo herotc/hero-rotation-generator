@@ -127,7 +127,7 @@ local function Apl()
       if AR.Cast(S.Rampage) then return ""; end
     end
     -- bloodthirst,if=target.health.pct<20&buff.enrage.remains<1
-    if S.Bloodthirst:IsCastableP() and (target.health.pct < 20 and Player:BuffRemainsP(S.EnrageBuff) < 1) then
+    if S.Bloodthirst:IsCastableP() and (Target:HealthPercentage() < 20 and Player:BuffRemainsP(S.EnrageBuff) < 1) then
       if AR.Cast(S.Bloodthirst) then return ""; end
     end
     -- execute
@@ -233,7 +233,7 @@ local function Apl()
       if AR.Cast(S.RagingBlow) then return ""; end
     end
     -- rampage,if=target.health.pct>21&(rage>=100|!talent.frothing_berserker.enabled)&(((cooldown.battle_cry.remains>5|cooldown.bloodbath.remains>5)&!talent.carnage.enabled)|((cooldown.battle_cry.remains>3|cooldown.bloodbath.remains>3)&talent.carnage.enabled))|buff.massacre.react
-    if S.Rampage:IsCastableP() and (target.health.pct > 21 and (rage >= 100 or not S.FrothingBerserker:IsAvailable()) and (((S.BattleCry:CooldownRemainsP() > 5 or S.Bloodbath:CooldownRemainsP() > 5) and not S.Carnage:IsAvailable()) or ((S.BattleCry:CooldownRemainsP() > 3 or S.Bloodbath:CooldownRemainsP() > 3) and S.Carnage:IsAvailable())) or bool(Player:BuffStackP(S.MassacreBuff))) then
+    if S.Rampage:IsCastableP() and (Target:HealthPercentage() > 21 and (rage >= 100 or not S.FrothingBerserker:IsAvailable()) and (((S.BattleCry:CooldownRemainsP() > 5 or S.Bloodbath:CooldownRemainsP() > 5) and not S.Carnage:IsAvailable()) or ((S.BattleCry:CooldownRemainsP() > 3 or S.Bloodbath:CooldownRemainsP() > 3) and S.Carnage:IsAvailable())) or bool(Player:BuffStackP(S.MassacreBuff))) then
       if AR.Cast(S.Rampage) then return ""; end
     end
     -- execute,if=buff.stone_heart.react&((talent.inner_rage.enabled&cooldown.raging_blow.remains>1)|buff.enrage.up)
@@ -308,7 +308,7 @@ local function Apl()
     if AR.Cast(S.DragonRoar) then return ""; end
   end
   -- rampage,if=cooldown.battle_cry.remains<1&cooldown.bloodbath.remains<1&target.health.pct>20
-  if S.Rampage:IsCastableP() and (S.BattleCry:CooldownRemainsP() < 1 and S.Bloodbath:CooldownRemainsP() < 1 and target.health.pct > 20) then
+  if S.Rampage:IsCastableP() and (S.BattleCry:CooldownRemainsP() < 1 and S.Bloodbath:CooldownRemainsP() < 1 and Target:HealthPercentage() > 20) then
     if AR.Cast(S.Rampage) then return ""; end
   end
   -- furious_slash,if=talent.frenzy.enabled&(buff.frenzy.stack<3|buff.frenzy.remains<3|(cooldown.battle_cry.remains<1&buff.frenzy.remains<9))
@@ -364,7 +364,7 @@ local function Apl()
     return Cooldowns();
   end
   -- run_action_list,name=three_targets,if=target.health.pct>20&(spell_targets.whirlwind=3|spell_targets.whirlwind=4)
-  if (target.health.pct > 20 and (spell_targets.whirlwind == 3 or spell_targets.whirlwind == 4)) then
+  if (Target:HealthPercentage() > 20 and (spell_targets.whirlwind == 3 or spell_targets.whirlwind == 4)) then
     return ThreeTargets();
   end
   -- run_action_list,name=aoe,if=spell_targets.whirlwind>4
@@ -372,11 +372,11 @@ local function Apl()
     return Aoe();
   end
   -- run_action_list,name=execute,if=target.health.pct<20
-  if (target.health.pct < 20) then
+  if (Target:HealthPercentage() < 20) then
     return Execute();
   end
   -- run_action_list,name=single_target,if=target.health.pct>20
-  if (target.health.pct > 20) then
+  if (Target:HealthPercentage() > 20) then
     return SingleTarget();
   end
 end

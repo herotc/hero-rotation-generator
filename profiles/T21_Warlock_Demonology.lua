@@ -109,7 +109,7 @@ local function Apl()
     if AR.Cast(S.Implosion) then return ""; end
   end
   -- shadowflame,if=(debuff.shadowflame.stack>0&remains<action.shadow_bolt.cast_time+travel_time)&spell_targets.demonwrath<5
-  if S.Shadowflame:IsCastableP() and ((Target:DebuffStackP(S.ShadowflameDebuff) > 0 and Player:BuffRemainsP(S.Shadowflame) < S.ShadowBolt:CastTime() + travel_time) and spell_targets.demonwrath < 5) then
+  if S.Shadowflame:IsCastableP() and ((Target:DebuffStackP(S.ShadowflameDebuff) > 0 and Player:BuffRemainsP(S.Shadowflame) < S.ShadowBolt:CastTime() + S.Shadowflame:TravelTime()) and spell_targets.demonwrath < 5) then
     if AR.Cast(S.Shadowflame) then return ""; end
   end
   -- summon_infernal,if=(!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>2)&equipped.132369
@@ -137,7 +137,7 @@ local function Apl()
     if AR.Cast(S.ServicePet) then return ""; end
   end
   -- summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<=2&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)
-  if S.SummonDoomguard:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and spell_targets.infernal_awakening <= 2 and (Target:TimeToDie() > 180 or target.health.pct <= 20 or Target:TimeToDie() < 30)) then
+  if S.SummonDoomguard:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and spell_targets.infernal_awakening <= 2 and (Target:TimeToDie() > 180 or Target:HealthPercentage() <= 20 or Target:TimeToDie() < 30)) then
     if AR.Cast(S.SummonDoomguard) then return ""; end
   end
   -- summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>2

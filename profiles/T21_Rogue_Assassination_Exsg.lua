@@ -209,7 +209,7 @@ local function Apl()
       if AR.Cast(S.Garrote) then return ""; end
     end
     -- garrote,cycle_targets=1,if=talent.subterfuge.enabled&stealthed.rogue&combo_points.deficit>=1&!set_bonus.tier20_4pc&refreshable&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>2
-    if S.Garrote:IsCastableP() and (S.Subterfuge:IsAvailable() and bool(stealthed.rogue) and combo_points.deficit >= 1 and not AC.Tier20_4Pc and bool(refreshable) and (not bool(exsanguinated) or Target:DebuffRemainsP(S.Garrote) <= tick_time * 2) and Target:TimeToDie() - Target:DebuffRemainsP(S.Garrote) > 2) then
+    if S.Garrote:IsCastableP() and (S.Subterfuge:IsAvailable() and bool(stealthed.rogue) and combo_points.deficit >= 1 and not AC.Tier20_4Pc and bool(refreshable) and (not bool(exsanguinated) or Target:DebuffRemainsP(S.Garrote) <= S.Garrote:TickTime() * 2) and Target:TimeToDie() - Target:DebuffRemainsP(S.Garrote) > 2) then
       if AR.Cast(S.Garrote) then return ""; end
     end
     -- garrote,cycle_targets=1,if=talent.subterfuge.enabled&stealthed.rogue&combo_points.deficit>=1&!set_bonus.tier20_4pc&remains<=10&pmultiplier<=1&!exsanguinated&target.time_to_die-remains>2
@@ -225,7 +225,7 @@ local function Apl()
       if AR.Cast(S.Rupture) then return ""; end
     end
     -- rupture,cycle_targets=1,if=combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>6
-    if S.Rupture:IsCastableP() and (combo_points >= 4 and bool(refreshable) and (pmultiplier <= 1 or Target:DebuffRemainsP(S.Rupture) <= tick_time) and (not bool(exsanguinated) or Target:DebuffRemainsP(S.Rupture) <= tick_time * 2) and Target:TimeToDie() - Target:DebuffRemainsP(S.Rupture) > 6) then
+    if S.Rupture:IsCastableP() and (combo_points >= 4 and bool(refreshable) and (pmultiplier <= 1 or Target:DebuffRemainsP(S.Rupture) <= S.Rupture:TickTime()) and (not bool(exsanguinated) or Target:DebuffRemainsP(S.Rupture) <= S.Rupture:TickTime() * 2) and Target:TimeToDie() - Target:DebuffRemainsP(S.Rupture) > 6) then
       if AR.Cast(S.Rupture) then return ""; end
     end
     -- call_action_list,name=kb,if=combo_points.deficit>=1+(mantle_duration>=0.2)&(!talent.exsanguinate.enabled|!cooldown.exanguinate.up|time>9)
@@ -237,7 +237,7 @@ local function Apl()
       if AR.Cast(S.PoolResource) then return ""; end
     end
     -- garrote,cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>4
-    if S.Garrote:IsCastableP() and ((not S.Subterfuge:IsAvailable() or not (S.Vanish:CooldownUpP() and S.Vendetta:CooldownRemainsP() <= 4)) and combo_points.deficit >= 1 and bool(refreshable) and (pmultiplier <= 1 or Target:DebuffRemainsP(S.Garrote) <= tick_time) and (not bool(exsanguinated) or Target:DebuffRemainsP(S.Garrote) <= tick_time * 2) and Target:TimeToDie() - Target:DebuffRemainsP(S.Garrote) > 4) then
+    if S.Garrote:IsCastableP() and ((not S.Subterfuge:IsAvailable() or not (S.Vanish:CooldownUpP() and S.Vendetta:CooldownRemainsP() <= 4)) and combo_points.deficit >= 1 and bool(refreshable) and (pmultiplier <= 1 or Target:DebuffRemainsP(S.Garrote) <= S.Garrote:TickTime()) and (not bool(exsanguinated) or Target:DebuffRemainsP(S.Garrote) <= S.Garrote:TickTime() * 2) and Target:TimeToDie() - Target:DebuffRemainsP(S.Garrote) > 4) then
       if AR.Cast(S.Garrote) then return ""; end
     end
     -- garrote,if=set_bonus.tier20_4pc&talent.exsanguinate.enabled&prev_gcd.1.rupture&cooldown.exsanguinate.remains<1&(!cooldown.vanish.up|time>12)

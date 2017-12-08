@@ -393,7 +393,7 @@ local function Apl()
     end
   end
   -- bloodlust,if=target.health.pct<25|time>0.500
-  if S.Bloodlust:IsCastableP() and (target.health.pct < 25 or AC.CombatTime() > 0.500) then
+  if S.Bloodlust:IsCastableP() and (Target:HealthPercentage() < 25 or AC.CombatTime() > 0.500) then
     if AR.Cast(S.Bloodlust) then return ""; end
   end
   -- potion,if=cooldown.fire_elemental.remains>280|target.time_to_die<=60

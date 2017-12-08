@@ -349,7 +349,7 @@ local function Apl()
     return Cleave();
   end
   -- run_action_list,name=single,if=target.health.pct>20
-  if (target.health.pct > 20) then
+  if (Target:HealthPercentage() > 20) then
     return Single();
   end
 end

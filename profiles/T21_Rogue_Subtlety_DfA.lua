@@ -61,7 +61,8 @@ Spell.Rogue.Subtlety = {
   DeathFromAboveBuff                    = Spell(163786),
   Wait                                  = Spell(),
   EnvelopingShadows                     = Spell(238104),
-  Anticipation                          = Spell(114015)
+  Anticipation                          = Spell(114015),
+  ShadowGesturesBuff                    = Spell()
 };
 local S = Spell.Rogue.Subtlety;
 
@@ -171,11 +172,11 @@ local function Apl()
   end
   local function Finish()
     -- nightblade,if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&(mantle_duration=0|remains<=mantle_duration)&((refreshable&(!finality|buff.finality_nightblade.up|variable.dsh_dfa))|remains<tick_time*2)&(spell_targets.shuriken_storm<4&!variable.dsh_dfa|!buff.symbols_of_death.up)
-    if S.Nightblade:IsCastableP() and ((not S.DarkShadow:IsAvailable() or not Player:BuffP(S.ShadowDanceBuff)) and Target:TimeToDie() - Target:DebuffRemainsP(S.Nightblade) > 6 and (mantle_duration == 0 or Target:DebuffRemainsP(S.Nightblade) <= mantle_duration) and ((bool(refreshable) and (not bool(finality) or Player:BuffP(S.FinalityNightbladeBuff) or bool(DshDfa))) or Target:DebuffRemainsP(S.Nightblade) < tick_time * 2) and (spell_targets.shuriken_storm < 4 and not bool(DshDfa) or not Player:BuffP(S.SymbolsofDeathBuff))) then
+    if S.Nightblade:IsCastableP() and ((not S.DarkShadow:IsAvailable() or not Player:BuffP(S.ShadowDanceBuff)) and Target:TimeToDie() - Target:DebuffRemainsP(S.Nightblade) > 6 and (mantle_duration == 0 or Target:DebuffRemainsP(S.Nightblade) <= mantle_duration) and ((bool(refreshable) and (not bool(finality) or Player:BuffP(S.FinalityNightbladeBuff) or bool(DshDfa))) or Target:DebuffRemainsP(S.Nightblade) < S.Nightblade:TickTime() * 2) and (spell_targets.shuriken_storm < 4 and not bool(DshDfa) or not Player:BuffP(S.SymbolsofDeathBuff))) then
       if AR.Cast(S.Nightblade) then return ""; end
     end
     -- nightblade,cycle_targets=1,if=(!talent.death_from_above.enabled|set_bonus.tier19_2pc)&(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>12&mantle_duration=0&((refreshable&(!finality|buff.finality_nightblade.up|variable.dsh_dfa))|remains<tick_time*2)&(spell_targets.shuriken_storm<4&!variable.dsh_dfa|!buff.symbols_of_death.up)
-    if S.Nightblade:IsCastableP() and ((not S.DeathFromAbove:IsAvailable() or AC.Tier19_2Pc) and (not S.DarkShadow:IsAvailable() or not Player:BuffP(S.ShadowDanceBuff)) and Target:TimeToDie() - Target:DebuffRemainsP(S.Nightblade) > 12 and mantle_duration == 0 and ((bool(refreshable) and (not bool(finality) or Player:BuffP(S.FinalityNightbladeBuff) or bool(DshDfa))) or Target:DebuffRemainsP(S.Nightblade) < tick_time * 2) and (spell_targets.shuriken_storm < 4 and not bool(DshDfa) or not Player:BuffP(S.SymbolsofDeathBuff))) then
+    if S.Nightblade:IsCastableP() and ((not S.DeathFromAbove:IsAvailable() or AC.Tier19_2Pc) and (not S.DarkShadow:IsAvailable() or not Player:BuffP(S.ShadowDanceBuff)) and Target:TimeToDie() - Target:DebuffRemainsP(S.Nightblade) > 12 and mantle_duration == 0 and ((bool(refreshable) and (not bool(finality) or Player:BuffP(S.FinalityNightbladeBuff) or bool(DshDfa))) or Target:DebuffRemainsP(S.Nightblade) < S.Nightblade:TickTime() * 2) and (spell_targets.shuriken_storm < 4 and not bool(DshDfa) or not Player:BuffP(S.SymbolsofDeathBuff))) then
       if AR.Cast(S.Nightblade) then return ""; end
     end
     -- nightblade,if=remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5+(combo_points=6)&target.time_to_die-remains>cooldown.symbols_of_death.remains+5
@@ -293,8 +294,8 @@ local function Apl()
   if (combo_points >= 5 + 3 * num((Player:BuffP(S.TheFirstoftheDeadBuff) and S.Anticipation:IsAvailable())) + num((S.DeeperStratagem:IsAvailable() and not Player:BuffP(S.ShadowBladesBuff) and (mantle_duration == 0 or AC.Tier20_4Pc) and (not Player:BuffP(S.TheFirstoftheDeadBuff) or bool(DshDfa)))) or (combo_points >= 4 and combo_points.deficit <= 2 and spell_targets.shuriken_storm >= 3 and spell_targets.shuriken_storm <= 4) or (Target:TimeToDie() <= 1 and combo_points >= 3)) then
     local ShouldReturn = Finish(); if ShouldReturn then return ShouldReturn; end
   end
-  -- call_action_list,name=finish,if=buff.the_first_of_the_dead.remains>1&combo_points>=3&spell_targets.shuriken_storm<2
-  if (Player:BuffRemainsP(S.TheFirstoftheDeadBuff) > 1 and combo_points >= 3 and spell_targets.shuriken_storm < 2) then
+  -- call_action_list,name=finish,if=buff.the_first_of_the_dead.remains>1&combo_points>=3&spell_targets.shuriken_storm<2&!buff.shadow_gestures.up
+  if (Player:BuffRemainsP(S.TheFirstoftheDeadBuff) > 1 and combo_points >= 3 and spell_targets.shuriken_storm < 2 and not Player:BuffP(S.ShadowGesturesBuff)) then
     local ShouldReturn = Finish(); if ShouldReturn then return ShouldReturn; end
   end
   -- wait,sec=time_to_sht.4,if=combo_points=5&time_to_sht.4<=1&energy.deficit>=30

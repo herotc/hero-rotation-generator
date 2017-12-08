@@ -49,6 +49,7 @@ Spell.Druid.Feral = {
   PredatorySwiftnessBuff                = Spell(69369),
   RipDebuff                             = Spell(1079),
   ApexPredatorBuff                      = Spell(252752),
+  MomentofClarity                       = Spell(),
   PoolResource                          = Spell(9999000010),
   SavageRoar                            = Spell(52610),
   SavageRoarBuff                        = Spell(52610),
@@ -174,8 +175,8 @@ local function Apl()
     if S.Regrowth:IsCastableP() and (combo_points > 3 and S.Bloodtalons:IsAvailable() and Player:BuffP(S.PredatorySwiftnessBuff) and Player:BuffP(S.ApexPredatorBuff) and Player:BuffDownP(S.IncarnationBuff)) then
       if AR.Cast(S.Regrowth) then return ""; end
     end
-    -- ferocious_bite,if=buff.apex_predator.up
-    if S.FerociousBite:IsCastableP() and (Player:BuffP(S.ApexPredatorBuff)) then
+    -- ferocious_bite,if=buff.apex_predator.up&((combo_points>4&(buff.incarnation.up|talent.moment_of_clarity.enabled))|(talent.bloodtalons.enabled&buff.bloodtalons.up&combo_points>3))
+    if S.FerociousBite:IsCastableP() and (Player:BuffP(S.ApexPredatorBuff) and ((combo_points > 4 and (Player:BuffP(S.IncarnationBuff) or S.MomentofClarity:IsAvailable())) or (S.Bloodtalons:IsAvailable() and Player:BuffP(S.BloodtalonsBuff) and combo_points > 3))) then
       if AR.Cast(S.FerociousBite) then return ""; end
     end
     -- run_action_list,name=st_finishers,if=combo_points>4

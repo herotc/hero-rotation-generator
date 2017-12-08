@@ -107,11 +107,11 @@ local function Apl()
     if AR.Cast(S.Cataclysm) then return ""; end
   end
   -- immolate,if=(active_enemies<5|!talent.fire_and_brimstone.enabled)&remains<=tick_time
-  if S.Immolate:IsCastableP() and ((active_enemies < 5 or not S.FireandBrimstone:IsAvailable()) and Player:BuffRemainsP(S.Immolate) <= tick_time) then
+  if S.Immolate:IsCastableP() and ((active_enemies < 5 or not S.FireandBrimstone:IsAvailable()) and Player:BuffRemainsP(S.Immolate) <= S.Immolate:TickTime()) then
     if AR.Cast(S.Immolate) then return ""; end
   end
   -- immolate,cycle_targets=1,if=(active_enemies<5|!talent.fire_and_brimstone.enabled)&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>=action.immolate.cast_time*active_enemies)&active_enemies>1&remains<=tick_time&(!talent.roaring_blaze.enabled|(!debuff.roaring_blaze.remains&action.conflagrate.charges<2+set_bonus.tier19_4pc))
-  if S.Immolate:IsCastableP() and ((active_enemies < 5 or not S.FireandBrimstone:IsAvailable()) and (not S.Cataclysm:IsAvailable() or S.Cataclysm:CooldownRemainsP() >= S.Immolate:CastTime() * active_enemies) and active_enemies > 1 and Player:BuffRemainsP(S.Immolate) <= tick_time and (not S.RoaringBlaze:IsAvailable() or (not bool(Target:DebuffRemainsP(S.RoaringBlazeDebuff)) and S.Conflagrate:ChargesP() < 2 + num(AC.Tier19_4Pc)))) then
+  if S.Immolate:IsCastableP() and ((active_enemies < 5 or not S.FireandBrimstone:IsAvailable()) and (not S.Cataclysm:IsAvailable() or S.Cataclysm:CooldownRemainsP() >= S.Immolate:CastTime() * active_enemies) and active_enemies > 1 and Player:BuffRemainsP(S.Immolate) <= S.Immolate:TickTime() and (not S.RoaringBlaze:IsAvailable() or (not bool(Target:DebuffRemainsP(S.RoaringBlazeDebuff)) and S.Conflagrate:ChargesP() < 2 + num(AC.Tier19_4Pc)))) then
     if AR.Cast(S.Immolate) then return ""; end
   end
   -- immolate,if=talent.roaring_blaze.enabled&remains<=duration&!debuff.roaring_blaze.remains&target.time_to_die>10&(action.conflagrate.charges=2+set_bonus.tier19_4pc|(action.conflagrate.charges>=1+set_bonus.tier19_4pc&action.conflagrate.recharge_time<cast_time+gcd)|target.time_to_die<24)
@@ -171,7 +171,7 @@ local function Apl()
     if AR.Cast(S.SummonInfernal) then return ""; end
   end
   -- summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<=2&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)
-  if S.SummonDoomguard:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and spell_targets.infernal_awakening <= 2 and (Target:TimeToDie() > 180 or target.health.pct <= 20 or Target:TimeToDie() < 30)) then
+  if S.SummonDoomguard:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and spell_targets.infernal_awakening <= 2 and (Target:TimeToDie() > 180 or Target:HealthPercentage() <= 20 or Target:TimeToDie() < 30)) then
     if AR.Cast(S.SummonDoomguard) then return ""; end
   end
   -- summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>2

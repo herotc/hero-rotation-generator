@@ -380,11 +380,11 @@ local function Apl()
     if S.StellarFlare:IsCastableP() and (Target:TimeToDie() > 10) then
       if AR.Cast(S.StellarFlare) then return ""; end
     end
-    -- moonfire,if=((talent.natures_balance.enabled&remains<3)|remains<6.6)&astral_power.deficit>7&target.time_to_die>8
+    -- moonfire,target_if=refreshable,if=((talent.natures_balance.enabled&remains<3)|remains<6.6)&astral_power.deficit>7&target.time_to_die>8
     if S.Moonfire:IsCastableP() and (((S.NaturesBalance:IsAvailable() and Target:DebuffRemainsP(S.Moonfire) < 3) or Target:DebuffRemainsP(S.Moonfire) < 6.6) and Player:AstralPowerDeficit() > 7 and Target:TimeToDie() > 8) then
       if AR.Cast(S.Moonfire) then return ""; end
     end
-    -- sunfire,if=((talent.natures_balance.enabled&remains<3)|remains<5.4)&astral_power.deficit>7&target.time_to_die>8
+    -- sunfire,target_if=refreshable,if=((talent.natures_balance.enabled&remains<3)|remains<5.4)&astral_power.deficit>7&target.time_to_die>8
     if S.Sunfire:IsCastableP() and (((S.NaturesBalance:IsAvailable() and Target:DebuffRemainsP(S.Sunfire) < 3) or Target:DebuffRemainsP(S.Sunfire) < 5.4) and Player:AstralPowerDeficit() > 7 and Target:TimeToDie() > 8) then
       if AR.Cast(S.Sunfire) then return ""; end
     end

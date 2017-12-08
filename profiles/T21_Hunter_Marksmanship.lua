@@ -156,7 +156,7 @@ local function Apl()
       if AR.Cast(S.BlackArrow) then return ""; end
     end
     -- a_murder_of_crows,if=target.time_to_die>=cooldown+duration|target.health.pct<20
-    if S.AMurderofCrows:IsCastableP() and (Target:TimeToDie() >= S.AMurderofCrows:Cooldown() + S.AMurderofCrows:BaseDuration() or target.health.pct < 20) then
+    if S.AMurderofCrows:IsCastableP() and (Target:TimeToDie() >= S.AMurderofCrows:Cooldown() + S.AMurderofCrows:BaseDuration() or Target:HealthPercentage() < 20) then
       if AR.Cast(S.AMurderofCrows) then return ""; end
     end
     -- windburst
@@ -164,7 +164,7 @@ local function Apl()
       if AR.Cast(S.Windburst) then return ""; end
     end
     -- barrage,if=spell_targets>2|(target.health.pct<20&buff.bullseye.stack<25)
-    if S.Barrage:IsCastableP() and (spell_targets > 2 or (target.health.pct < 20 and Player:BuffStackP(S.BullseyeBuff) < 25)) then
+    if S.Barrage:IsCastableP() and (spell_targets > 2 or (Target:HealthPercentage() < 20 and Player:BuffStackP(S.BullseyeBuff) < 25)) then
       if AR.Cast(S.Barrage) then return ""; end
     end
     -- marked_shot,if=buff.marking_targets.up|buff.trueshot.up
@@ -250,11 +250,11 @@ local function Apl()
       if AR.Cast(S.BlackArrow) then return ""; end
     end
     -- a_murder_of_crows,if=(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)&(target.time_to_die>=cooldown+duration|target.health.pct<20|target.time_to_die<16)&variable.vuln_aim_casts=0
-    if S.AMurderofCrows:IsCastableP() and ((not bool(PoolingForPiercing) or lowest_vuln_within.5 > Player:GCD()) and (Target:TimeToDie() >= S.AMurderofCrows:Cooldown() + S.AMurderofCrows:BaseDuration() or target.health.pct < 20 or Target:TimeToDie() < 16) and VulnAimCasts == 0) then
+    if S.AMurderofCrows:IsCastableP() and ((not bool(PoolingForPiercing) or lowest_vuln_within.5 > Player:GCD()) and (Target:TimeToDie() >= S.AMurderofCrows:Cooldown() + S.AMurderofCrows:BaseDuration() or Target:HealthPercentage() < 20 or Target:TimeToDie() < 16) and VulnAimCasts == 0) then
       if AR.Cast(S.AMurderofCrows) then return ""; end
     end
     -- barrage,if=spell_targets>2|(target.health.pct<20&buff.bullseye.stack<25)
-    if S.Barrage:IsCastableP() and (spell_targets > 2 or (target.health.pct < 20 and Player:BuffStackP(S.BullseyeBuff) < 25)) then
+    if S.Barrage:IsCastableP() and (spell_targets > 2 or (Target:HealthPercentage() < 20 and Player:BuffStackP(S.BullseyeBuff) < 25)) then
       if AR.Cast(S.Barrage) then return ""; end
     end
     -- aimed_shot,if=action.windburst.in_flight&focus+action.arcane_shot.cast_regen+cast_regen>focus.max

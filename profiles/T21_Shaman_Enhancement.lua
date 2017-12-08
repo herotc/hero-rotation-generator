@@ -46,12 +46,15 @@ Spell.Shaman.Enhancement = {
   CrashLightningBuff                    = Spell(),
   Windsong                              = Spell(),
   CrashingStorm                         = Spell(),
+  ForceoftheMountainBuff                = Spell(),
+  BloodBoil                             = Spell(),
   Stormstrike                           = Spell(),
   StormbringerBuff                      = Spell(),
-  ForceoftheMountainBuff                = Spell(),
   LightningBolt                         = Spell(),
   Overcharge                            = Spell(),
   LavaLash                              = Spell(),
+  ExposedElementsDebuff                 = Spell(),
+  LashingFlamesDebuff                   = Spell(),
   HotHandBuff                           = Spell(),
   Sundering                             = Spell(),
   WindShear                             = Spell(),
@@ -150,7 +153,7 @@ local function Apl()
   end
   local function Cds()
     -- bloodlust,if=target.health.pct<25|time>0.500
-    if S.Bloodlust:IsCastableP() and (target.health.pct < 25 or AC.CombatTime() > 0.500) then
+    if S.Bloodlust:IsCastableP() and (Target:HealthPercentage() < 25 or AC.CombatTime() > 0.500) then
       if AR.Cast(S.Bloodlust) then return ""; end
     end
     -- berserking,if=buff.ascendance.up|(cooldown.doom_winds.up)|level<100
@@ -199,6 +202,10 @@ local function Apl()
     if S.Windstrike:IsCastableP() and (true) then
       if AR.Cast(S.Windstrike) then return ""; end
     end
+    -- rockbiter,if=buff.force_of_the_mountain.up&charges_fractional>1.7&active_enemies<=4
+    if S.Rockbiter:IsCastableP() and (Player:BuffP(S.ForceoftheMountainBuff) and S.BloodBoil:ChargesFractional() > 1.7 and active_enemies <= 4) then
+      if AR.Cast(S.Rockbiter) then return ""; end
+    end
     -- stormstrike,if=buff.stormbringer.up&variable.furyCheck25
     if S.Stormstrike:IsCastableP() and (Player:BuffP(S.StormbringerBuff) and bool(Furycheck25)) then
       if AR.Cast(S.Stormstrike) then return ""; end
@@ -215,6 +222,10 @@ local function Apl()
     if S.LightningBolt:IsCastableP() and (S.Overcharge:IsAvailable() and bool(Furycheck45) and maelstrom >= 40) then
       if AR.Cast(S.LightningBolt) then return ""; end
     end
+    -- lava_lash,if=(maelstrom>=50&variable.OCPool70&variable.furyCheck80&debuff.exposed_elements.up&debuff.lashing_flames.stack>90)|(buff.hot_hand.react&((variable.akainuEquipped&buff.frostbrand.up)|(!variable.akainuEquipped)))
+    if S.LavaLash:IsCastableP() and ((maelstrom >= 50 and bool(Ocpool70) and bool(Furycheck80) and Target:DebuffP(S.ExposedElementsDebuff) and Target:DebuffStackP(S.LashingFlamesDebuff) > 90) or (bool(Player:BuffStackP(S.HotHandBuff)) and ((bool(Akainuequipped) and Player:BuffP(S.FrostbrandBuff)) or (not bool(Akainuequipped))))) then
+      if AR.Cast(S.LavaLash) then return ""; end
+    end
     -- stormstrike,if=(!talent.overcharge.enabled&variable.furyCheck45)|(talent.overcharge.enabled&variable.furyCheck80)
     if S.Stormstrike:IsCastableP() and ((not S.Overcharge:IsAvailable() and bool(Furycheck45)) or (S.Overcharge:IsAvailable() and bool(Furycheck80))) then
       if AR.Cast(S.Stormstrike) then return ""; end
@@ -222,10 +233,6 @@ local function Apl()
     -- frostbrand,if=variable.akainuAS
     if S.Frostbrand:IsCastableP() and (bool(Akainuas)) then
       if AR.Cast(S.Frostbrand) then return ""; end
-    end
-    -- lava_lash,if=buff.hot_hand.react&((variable.akainuEquipped&buff.frostbrand.up)|!variable.akainuEquipped)
-    if S.LavaLash:IsCastableP() and (bool(Player:BuffStackP(S.HotHandBuff)) and ((bool(Akainuequipped) and Player:BuffP(S.FrostbrandBuff)) or not bool(Akainuequipped))) then
-      if AR.Cast(S.LavaLash) then return ""; end
     end
     -- sundering,if=active_enemies>=3
     if S.Sundering:IsCastableP() and (active_enemies >= 3) then
@@ -237,8 +244,8 @@ local function Apl()
     end
   end
   local function Filler()
-    -- rockbiter,if=maelstrom<120
-    if S.Rockbiter:IsCastableP() and (maelstrom < 120) then
+    -- rockbiter,if=maelstrom<120&charges_fractional>1.7
+    if S.Rockbiter:IsCastableP() and (maelstrom < 120 and S.BloodBoil:ChargesFractional() > 1.7) then
       if AR.Cast(S.Rockbiter) then return ""; end
     end
     -- flametongue,if=buff.flametongue.remains<4.8

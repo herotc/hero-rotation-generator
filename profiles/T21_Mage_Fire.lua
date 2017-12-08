@@ -170,7 +170,7 @@ local function Apl()
       if AR.Cast(S.DragonsBreath) then return ""; end
     end
     -- scorch,if=target.health.pct<=30&equipped.132454
-    if S.Scorch:IsCastableP() and (target.health.pct <= 30 and Item(132454):IsEquipped()) then
+    if S.Scorch:IsCastableP() and (Target:HealthPercentage() <= 30 and Item(132454):IsEquipped()) then
       if AR.Cast(S.Scorch) then return ""; end
     end
   end
@@ -212,7 +212,7 @@ local function Apl()
       if AR.Cast(S.PhoenixsFlames) then return ""; end
     end
     -- scorch,if=target.health.pct<=30&equipped.132454
-    if S.Scorch:IsCastableP() and (target.health.pct <= 30 and Item(132454):IsEquipped()) then
+    if S.Scorch:IsCastableP() and (Target:HealthPercentage() <= 30 and Item(132454):IsEquipped()) then
       if AR.Cast(S.Scorch) then return ""; end
     end
     -- dragons_breath,if=active_enemies>2
@@ -250,7 +250,7 @@ local function Apl()
       if AR.Cast(S.Pyroblast) then return ""; end
     end
     -- pyroblast,if=buff.hot_streak.react&target.health.pct<=30&equipped.132454
-    if S.Pyroblast:IsCastableP() and (bool(Player:BuffStackP(S.HotStreakBuff)) and target.health.pct <= 30 and Item(132454):IsEquipped()) then
+    if S.Pyroblast:IsCastableP() and (bool(Player:BuffStackP(S.HotStreakBuff)) and Target:HealthPercentage() <= 30 and Item(132454):IsEquipped()) then
       if AR.Cast(S.Pyroblast) then return ""; end
     end
     -- pyroblast,if=buff.kaelthas_ultimate_ability.react&execute_time<buff.kaelthas_ultimate_ability.remains
@@ -286,7 +286,7 @@ local function Apl()
       if AR.Cast(S.Flamestrike) then return ""; end
     end
     -- scorch,if=target.health.pct<=30&equipped.132454
-    if S.Scorch:IsCastableP() and (target.health.pct <= 30 and Item(132454):IsEquipped()) then
+    if S.Scorch:IsCastableP() and (Target:HealthPercentage() <= 30 and Item(132454):IsEquipped()) then
       if AR.Cast(S.Scorch) then return ""; end
     end
     -- fireball

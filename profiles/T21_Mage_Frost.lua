@@ -121,7 +121,7 @@ local function Apl()
       if AR.Cast(S.Flurry) then return ""; end
     end
     -- frost_bomb,if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react
-    if S.FrostBomb:IsCastableP() and (Target:DebuffRemainsP(S.FrostBombDebuff) < action.ice_lance.travel_time and bool(Player:BuffStackP(S.FingersofFrostBuff))) then
+    if S.FrostBomb:IsCastableP() and (Target:DebuffRemainsP(S.FrostBombDebuff) < S.IceLance:TravelTime() and bool(Player:BuffStackP(S.FingersofFrostBuff))) then
       if AR.Cast(S.FrostBomb) then return ""; end
     end
     -- ice_lance,if=buff.fingers_of_frost.react
@@ -223,7 +223,7 @@ local function Apl()
       if AR.Cast(S.Blizzard) then return ""; end
     end
     -- frost_bomb,if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react
-    if S.FrostBomb:IsCastableP() and (Target:DebuffRemainsP(S.FrostBombDebuff) < action.ice_lance.travel_time and bool(Player:BuffStackP(S.FingersofFrostBuff))) then
+    if S.FrostBomb:IsCastableP() and (Target:DebuffRemainsP(S.FrostBombDebuff) < S.IceLance:TravelTime() and bool(Player:BuffStackP(S.FingersofFrostBuff))) then
       if AR.Cast(S.FrostBomb) then return ""; end
     end
     -- ice_lance,if=buff.fingers_of_frost.react
@@ -251,7 +251,7 @@ local function Apl()
       if AR.Cast(S.Blizzard) then return ""; end
     end
     -- frostbolt,if=buff.frozen_mass.remains>execute_time+action.glacial_spike.execute_time+action.glacial_spike.travel_time&!buff.brain_freeze.react&talent.glacial_spike.enabled
-    if S.Frostbolt:IsCastableP() and (Player:BuffRemainsP(S.FrozenMassBuff) > S.Frostbolt:ExecuteTime() + S.GlacialSpike:ExecuteTime() + action.glacial_spike.travel_time and not bool(Player:BuffStackP(S.BrainFreezeBuff)) and S.GlacialSpike:IsAvailable()) then
+    if S.Frostbolt:IsCastableP() and (Player:BuffRemainsP(S.FrozenMassBuff) > S.Frostbolt:ExecuteTime() + S.GlacialSpike:ExecuteTime() + S.GlacialSpike:TravelTime() and not bool(Player:BuffStackP(S.BrainFreezeBuff)) and S.GlacialSpike:IsAvailable()) then
       if AR.Cast(S.Frostbolt) then return ""; end
     end
     -- glacial_spike,if=cooldown.frozen_orb.remains>10|!set_bonus.tier20_2pc

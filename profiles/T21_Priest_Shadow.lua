@@ -396,7 +396,7 @@ local function Apl()
     end
   end
   -- potion,if=buff.bloodlust.react|target.time_to_die<=80|(target.health.pct<35&cooldown.power_infusion.remains<30)
-  if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:HasHeroism() or Target:TimeToDie() <= 80 or (target.health.pct < 35 and S.PowerInfusion:CooldownRemainsP() < 30)) then
+  if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:HasHeroism() or Target:TimeToDie() <= 80 or (Target:HealthPercentage() < 35 and S.PowerInfusion:CooldownRemainsP() < 30)) then
     if AR.CastSuggested(I.ProlongedPower) then return ""; end
   end
   -- call_action_list,name=check,if=talent.surrender_to_madness.enabled&!buff.surrender_to_madness.up
