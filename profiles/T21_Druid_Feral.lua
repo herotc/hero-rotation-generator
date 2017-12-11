@@ -108,11 +108,11 @@ local function Apl()
       if AR.Cast(S.Prowl) then return ""; end
     end
     -- berserk,if=energy>=30&(cooldown.tigers_fury.remains>5|buff.tigers_fury.up)
-    if S.Berserk:IsCastableP() and (energy >= 30 and (S.TigersFury:CooldownRemainsP() > 5 or Player:BuffP(S.TigersFuryBuff))) then
+    if S.Berserk:IsCastableP() and (Player:Energy() >= 30 and (S.TigersFury:CooldownRemainsP() > 5 or Player:BuffP(S.TigersFuryBuff))) then
       if AR.Cast(S.Berserk) then return ""; end
     end
     -- tigers_fury,if=energy.deficit>=60
-    if S.TigersFury:IsCastableP() and (energy.deficit >= 60) then
+    if S.TigersFury:IsCastableP() and (Player:EnergyDeficit() >= 60) then
       if AR.Cast(S.TigersFury) then return ""; end
     end
     -- berserking
@@ -120,23 +120,23 @@ local function Apl()
       if AR.Cast(S.Berserking, Settings.Feral.OffGCDasOffGCD.Berserking) then return ""; end
     end
     -- elunes_guidance,if=combo_points=0&energy>=50
-    if S.ElunesGuidance:IsCastableP() and (combo_points == 0 and energy >= 50) then
+    if S.ElunesGuidance:IsCastableP() and (Player:ComboPoints() == 0 and Player:Energy() >= 50) then
       if AR.Cast(S.ElunesGuidance) then return ""; end
     end
     -- incarnation,if=energy>=30&(cooldown.tigers_fury.remains>15|buff.tigers_fury.up)
-    if S.Incarnation:IsCastableP() and (energy >= 30 and (S.TigersFury:CooldownRemainsP() > 15 or Player:BuffP(S.TigersFuryBuff))) then
+    if S.Incarnation:IsCastableP() and (Player:Energy() >= 30 and (S.TigersFury:CooldownRemainsP() > 15 or Player:BuffP(S.TigersFuryBuff))) then
       if AR.Cast(S.Incarnation) then return ""; end
     end
     -- potion,name=prolonged_power,if=target.time_to_die<65|(time_to_die<180&(buff.berserk.up|buff.incarnation.up))
-    if I.OldWar:IsReady() and Settings.Commons.UsePotions and (Target:TimeToDie() < 65 or (time_to_die < 180 and (Player:BuffP(S.BerserkBuff) or Player:BuffP(S.IncarnationBuff)))) then
+    if I.OldWar:IsReady() and Settings.Commons.UsePotions and (Target:TimeToDie() < 65 or (Target:TimeToDie() < 180 and (Player:BuffP(S.BerserkBuff) or Player:BuffP(S.IncarnationBuff)))) then
       if AR.CastSuggested(I.OldWar) then return ""; end
     end
     -- ashamanes_frenzy,if=combo_points>=2&(!talent.bloodtalons.enabled|buff.bloodtalons.up)
-    if S.AshamanesFrenzy:IsCastableP() and (combo_points >= 2 and (not S.Bloodtalons:IsAvailable() or Player:BuffP(S.BloodtalonsBuff))) then
+    if S.AshamanesFrenzy:IsCastableP() and (Player:ComboPoints() >= 2 and (not S.Bloodtalons:IsAvailable() or Player:BuffP(S.BloodtalonsBuff))) then
       if AR.Cast(S.AshamanesFrenzy) then return ""; end
     end
     -- shadowmeld,if=combo_points<5&energy>=action.rake.cost&dot.rake.pmultiplier<2.1&buff.tigers_fury.up&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>18)&!buff.incarnation.up
-    if S.Shadowmeld:IsCastableP() and (combo_points < 5 and energy >= action.rake.cost and dot.rake.pmultiplier < 2.1 and Player:BuffP(S.TigersFuryBuff) and (Player:BuffP(S.BloodtalonsBuff) or not S.Bloodtalons:IsAvailable()) and (not S.Incarnation:IsAvailable() or S.Incarnation:CooldownRemainsP() > 18) and not Player:BuffP(S.IncarnationBuff)) then
+    if S.Shadowmeld:IsCastableP() and (Player:ComboPoints() < 5 and Player:Energy() >= action.rake.cost and dot.rake.pmultiplier < 2.1 and Player:BuffP(S.TigersFuryBuff) and (Player:BuffP(S.BloodtalonsBuff) or not S.Bloodtalons:IsAvailable()) and (not S.Incarnation:IsAvailable() or S.Incarnation:CooldownRemainsP() > 18) and not Player:BuffP(S.IncarnationBuff)) then
       if AR.Cast(S.Shadowmeld) then return ""; end
     end
     -- use_items
@@ -163,19 +163,19 @@ local function Apl()
       if AR.Cast(S.FerociousBite) then return ""; end
     end
     -- regrowth,if=combo_points=5&buff.predatory_swiftness.up&talent.bloodtalons.enabled&buff.bloodtalons.down&(!buff.incarnation.up|dot.rip.remains<8)
-    if S.Regrowth:IsCastableP() and (combo_points == 5 and Player:BuffP(S.PredatorySwiftnessBuff) and S.Bloodtalons:IsAvailable() and Player:BuffDownP(S.BloodtalonsBuff) and (not Player:BuffP(S.IncarnationBuff) or Target:DebuffRemainsP(S.RipDebuff) < 8)) then
+    if S.Regrowth:IsCastableP() and (Player:ComboPoints() == 5 and Player:BuffP(S.PredatorySwiftnessBuff) and S.Bloodtalons:IsAvailable() and Player:BuffDownP(S.BloodtalonsBuff) and (not Player:BuffP(S.IncarnationBuff) or Target:DebuffRemainsP(S.RipDebuff) < 8)) then
       if AR.Cast(S.Regrowth) then return ""; end
     end
     -- regrowth,if=combo_points>3&talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.apex_predator.up&buff.incarnation.down
-    if S.Regrowth:IsCastableP() and (combo_points > 3 and S.Bloodtalons:IsAvailable() and Player:BuffP(S.PredatorySwiftnessBuff) and Player:BuffP(S.ApexPredatorBuff) and Player:BuffDownP(S.IncarnationBuff)) then
+    if S.Regrowth:IsCastableP() and (Player:ComboPoints() > 3 and S.Bloodtalons:IsAvailable() and Player:BuffP(S.PredatorySwiftnessBuff) and Player:BuffP(S.ApexPredatorBuff) and Player:BuffDownP(S.IncarnationBuff)) then
       if AR.Cast(S.Regrowth) then return ""; end
     end
     -- ferocious_bite,if=buff.apex_predator.up&((combo_points>4&(buff.incarnation.up|talent.moment_of_clarity.enabled))|(talent.bloodtalons.enabled&buff.bloodtalons.up&combo_points>3))
-    if S.FerociousBite:IsCastableP() and (Player:BuffP(S.ApexPredatorBuff) and ((combo_points > 4 and (Player:BuffP(S.IncarnationBuff) or S.MomentofClarity:IsAvailable())) or (S.Bloodtalons:IsAvailable() and Player:BuffP(S.BloodtalonsBuff) and combo_points > 3))) then
+    if S.FerociousBite:IsCastableP() and (Player:BuffP(S.ApexPredatorBuff) and ((Player:ComboPoints() > 4 and (Player:BuffP(S.IncarnationBuff) or S.MomentofClarity:IsAvailable())) or (S.Bloodtalons:IsAvailable() and Player:BuffP(S.BloodtalonsBuff) and Player:ComboPoints() > 3))) then
       if AR.Cast(S.FerociousBite) then return ""; end
     end
     -- run_action_list,name=st_finishers,if=combo_points>4
-    if (combo_points > 4) then
+    if (Player:ComboPoints() > 4) then
       return StFinishers();
     end
     -- run_action_list,name=st_generators
@@ -219,11 +219,11 @@ local function Apl()
   end
   local function StGenerators()
     -- regrowth,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.bloodtalons.down&combo_points>=2&cooldown.ashamanes_frenzy.remains<gcd
-    if S.Regrowth:IsCastableP() and (S.Bloodtalons:IsAvailable() and Player:BuffP(S.PredatorySwiftnessBuff) and Player:BuffDownP(S.BloodtalonsBuff) and combo_points >= 2 and S.AshamanesFrenzy:CooldownRemainsP() < Player:GCD()) then
+    if S.Regrowth:IsCastableP() and (S.Bloodtalons:IsAvailable() and Player:BuffP(S.PredatorySwiftnessBuff) and Player:BuffDownP(S.BloodtalonsBuff) and Player:ComboPoints() >= 2 and S.AshamanesFrenzy:CooldownRemainsP() < Player:GCD()) then
       if AR.Cast(S.Regrowth) then return ""; end
     end
     -- regrowth,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.bloodtalons.down&combo_points=4&dot.rake.remains<4
-    if S.Regrowth:IsCastableP() and (S.Bloodtalons:IsAvailable() and Player:BuffP(S.PredatorySwiftnessBuff) and Player:BuffDownP(S.BloodtalonsBuff) and combo_points == 4 and Target:DebuffRemainsP(S.RakeDebuff) < 4) then
+    if S.Regrowth:IsCastableP() and (S.Bloodtalons:IsAvailable() and Player:BuffP(S.PredatorySwiftnessBuff) and Player:BuffDownP(S.BloodtalonsBuff) and Player:ComboPoints() == 4 and Target:DebuffRemainsP(S.RakeDebuff) < 4) then
       if AR.Cast(S.Regrowth) then return ""; end
     end
     -- regrowth,if=equipped.ailuro_pouncers&talent.bloodtalons.enabled&(buff.predatory_swiftness.stack>2|(buff.predatory_swiftness.stack>1&dot.rake.remains<3))&buff.bloodtalons.down
@@ -267,7 +267,7 @@ local function Apl()
       if AR.Cast(S.Rake) then return ""; end
     end
     -- brutal_slash,if=(buff.tigers_fury.up&(raid_event.adds.in>(1+max_charges-charges_fractional)*recharge_time))
-    if S.BrutalSlash:IsCastableP() and ((Player:BuffP(S.TigersFuryBuff) and (raid_event.adds.in > (1 + max_charges - S.BrutalSlash:ChargesFractional()) * S.BrutalSlash:RechargeP()))) then
+    if S.BrutalSlash:IsCastableP() and ((Player:BuffP(S.TigersFuryBuff) and (raid_event.adds.in > (1 + S.BrutalSlash:MaxCharges() - S.BrutalSlash:ChargesFractional()) * S.BrutalSlash:RechargeP()))) then
       if AR.Cast(S.BrutalSlash) then return ""; end
     end
     -- moonfire_cat,target_if=refreshable
@@ -295,7 +295,7 @@ local function Apl()
       if AR.Cast(S.SwipeCat) then return ""; end
     end
     -- shred,if=dot.rake.remains>(action.shred.cost+action.rake.cost-energy)%energy.regen|buff.clearcasting.react
-    if S.Shred:IsCastableP() and (Target:DebuffRemainsP(S.RakeDebuff) > (action.shred.cost + action.rake.cost - energy) / energy.regen or bool(Player:BuffStackP(S.ClearcastingBuff))) then
+    if S.Shred:IsCastableP() and (Target:DebuffRemainsP(S.RakeDebuff) > (action.shred.cost + action.rake.cost - Player:Energy()) / Player:EnergyRegen() or bool(Player:BuffStackP(S.ClearcastingBuff))) then
       if AR.Cast(S.Shred) then return ""; end
     end
   end
@@ -304,7 +304,7 @@ local function Apl()
     return SingleTarget();
   end
   -- rake,if=!ticking|buff.prowl.up
-  if S.Rake:IsCastableP() and (not bool(ticking) or Player:BuffP(S.ProwlBuff)) then
+  if S.Rake:IsCastableP() and (not Target:DebuffP(S.Rake) or Player:BuffP(S.ProwlBuff)) then
     if AR.Cast(S.Rake) then return ""; end
   end
   -- dash,if=!buff.cat_form.up
@@ -313,7 +313,7 @@ local function Apl()
   end
   -- auto_attack
   -- moonfire_cat,if=talent.lunar_inspiration.enabled&!ticking
-  if S.MoonfireCat:IsCastableP() and (S.LunarInspiration:IsAvailable() and not bool(ticking)) then
+  if S.MoonfireCat:IsCastableP() and (S.LunarInspiration:IsAvailable() and not Target:DebuffP(S.MoonfireCat)) then
     if AR.Cast(S.MoonfireCat) then return ""; end
   end
   -- savage_roar,if=!buff.savage_roar.up
@@ -337,15 +337,15 @@ local function Apl()
     if AR.Cast(S.AshamanesFrenzy) then return ""; end
   end
   -- regrowth,if=(talent.sabertooth.enabled|buff.predatory_swiftness.up)&talent.bloodtalons.enabled&buff.bloodtalons.down&combo_points=5
-  if S.Regrowth:IsCastableP() and ((S.Sabertooth:IsAvailable() or Player:BuffP(S.PredatorySwiftnessBuff)) and S.Bloodtalons:IsAvailable() and Player:BuffDownP(S.BloodtalonsBuff) and combo_points == 5) then
+  if S.Regrowth:IsCastableP() and ((S.Sabertooth:IsAvailable() or Player:BuffP(S.PredatorySwiftnessBuff)) and S.Bloodtalons:IsAvailable() and Player:BuffDownP(S.BloodtalonsBuff) and Player:ComboPoints() == 5) then
     if AR.Cast(S.Regrowth) then return ""; end
   end
   -- rip,if=combo_points=5
-  if S.Rip:IsCastableP() and (combo_points == 5) then
+  if S.Rip:IsCastableP() and (Player:ComboPoints() == 5) then
     if AR.Cast(S.Rip) then return ""; end
   end
   -- thrash_cat,if=!ticking&variable.use_thrash>0
-  if S.ThrashCat:IsCastableP() and (not bool(ticking) and UseThrash > 0) then
+  if S.ThrashCat:IsCastableP() and (not Target:DebuffP(S.ThrashCat) and UseThrash > 0) then
     if AR.Cast(S.ThrashCat) then return ""; end
   end
   -- shred

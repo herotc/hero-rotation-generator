@@ -42,6 +42,7 @@ Spell.Paladin.Retribution = {
   ScarletInquisitorsExpurgationBuff     = Spell(248103),
   WakeofAshesDebuff                     = Spell(205273),
   LiadrinsFuryUnleashedBuff             = Spell(208408),
+  AshesToAshes                          = Spell(),
   WakeofAshes                           = Spell(205273),
   WhisperoftheNathrezimBuff             = Spell(207633),
   ExecutionSentenceDebuff               = Spell(213757),
@@ -104,7 +105,7 @@ local function Apl()
       if AR.Cast(S.Berserking, Settings.Retribution.OffGCDasOffGCD.Berserking) then return ""; end
     end
     -- arcane_torrent,if=(buff.crusade.up|buff.avenging_wrath.up)&holy_power=2&(cooldown.blade_of_justice.remains>gcd|cooldown.divine_hammer.remains>gcd)
-    if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and ((Player:BuffP(S.CrusadeBuff) or Player:BuffP(S.AvengingWrathBuff)) and holy_power == 2 and (S.BladeofJustice:CooldownRemainsP() > Player:GCD() or S.DivineHammer:CooldownRemainsP() > Player:GCD())) then
+    if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and ((Player:BuffP(S.CrusadeBuff) or Player:BuffP(S.AvengingWrathBuff)) and Player:HolyPower() == 2 and (S.BladeofJustice:CooldownRemainsP() > Player:GCD() or S.DivineHammer:CooldownRemainsP() > Player:GCD())) then
       if AR.Cast(S.ArcaneTorrent, Settings.Retribution.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
     end
     -- holy_wrath
@@ -120,7 +121,7 @@ local function Apl()
       if AR.Cast(S.AvengingWrath) then return ""; end
     end
     -- crusade,if=holy_power>=3|((equipped.137048|race.blood_elf)&holy_power>=2)
-    if S.Crusade:IsCastableP() and (holy_power >= 3 or ((I.Item137048:IsEquipped() or Player:IsRace("BloodElf")) and holy_power >= 2)) then
+    if S.Crusade:IsCastableP() and (Player:HolyPower() >= 3 or ((I.Item137048:IsEquipped() or Player:IsRace("BloodElf")) and Player:HolyPower() >= 2)) then
       if AR.Cast(S.Crusade) then return ""; end
     end
   end
@@ -156,7 +157,7 @@ local function Apl()
       DsCastable = num(Cache.EnemiesCount[8] >= 2 or (Player:BuffStackP(S.ScarletInquisitorsExpurgationBuff) >= 29 and (I.Item144358:IsEquipped() and (Target:DebuffP(S.WakeofAshesDebuff) and AC.CombatTime() > 10 or Target:DebuffRemainsP(S.WakeofAshesDebuff) < Player:GCD())) or (Player:BuffStackP(S.ScarletInquisitorsExpurgationBuff) >= 29 and (Player:BuffP(S.AvengingWrathBuff) or Player:BuffP(S.CrusadeBuff) and Player:BuffStackP(S.CrusadeBuff) >= 15 or S.Crusade:CooldownRemainsP() > 15 and not Player:BuffP(S.CrusadeBuff)) or S.AvengingWrath:CooldownRemainsP() > 15) and not I.Item144358:IsEquipped()))
     end
     -- call_action_list,name=finishers,if=(buff.crusade.up&buff.crusade.stack<15|buff.liadrins_fury_unleashed.up)|(artifact.ashes_to_ashes.enabled&cooldown.wake_of_ashes.remains<gcd*2)
-    if ((Player:BuffP(S.CrusadeBuff) and Player:BuffStackP(S.CrusadeBuff) < 15 or Player:BuffP(S.LiadrinsFuryUnleashedBuff)) or (bool(artifact.ashes_to_ashes.enabled) and S.WakeofAshes:CooldownRemainsP() < Player:GCD() * 2)) then
+    if ((Player:BuffP(S.CrusadeBuff) and Player:BuffStackP(S.CrusadeBuff) < 15 or Player:BuffP(S.LiadrinsFuryUnleashedBuff)) or (S.AshesToAshes:ArtifactEnabled() and S.WakeofAshes:CooldownRemainsP() < Player:GCD() * 2)) then
       local ShouldReturn = Finishers(); if ShouldReturn then return ShouldReturn; end
     end
     -- call_action_list,name=finishers,if=talent.execution_sentence.enabled&(cooldown.judgment.remains<gcd*4.25|debuff.judgment.remains>gcd*4.25)&cooldown.execution_sentence.up|buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains<gcd*1.5
@@ -168,23 +169,23 @@ local function Apl()
       if AR.Cast(S.Judgment) then return ""; end
     end
     -- blade_of_justice,if=holy_power<=2&(set_bonus.tier20_2pc|set_bonus.tier20_4pc)
-    if S.BladeofJustice:IsCastableP() and (holy_power <= 2 and (AC.Tier20_2Pc or AC.Tier20_4Pc)) then
+    if S.BladeofJustice:IsCastableP() and (Player:HolyPower() <= 2 and (AC.Tier20_2Pc or AC.Tier20_4Pc)) then
       if AR.Cast(S.BladeofJustice) then return ""; end
     end
     -- divine_hammer,if=holy_power<=2&(set_bonus.tier20_2pc|set_bonus.tier20_4pc)
-    if S.DivineHammer:IsCastableP() and (holy_power <= 2 and (AC.Tier20_2Pc or AC.Tier20_4Pc)) then
+    if S.DivineHammer:IsCastableP() and (Player:HolyPower() <= 2 and (AC.Tier20_2Pc or AC.Tier20_4Pc)) then
       if AR.Cast(S.DivineHammer) then return ""; end
     end
     -- wake_of_ashes,if=(!raid_event.adds.exists|raid_event.adds.in>15)&(holy_power<=0|holy_power=1&(cooldown.blade_of_justice.remains>gcd|cooldown.divine_hammer.remains>gcd)|holy_power=2&((cooldown.zeal.charges_fractional<=0.65|cooldown.crusader_strike.charges_fractional<=0.65)))
-    if S.WakeofAshes:IsCastableP() and ((not bool(raid_event.adds.exists) or raid_event.adds.in > 15) and (holy_power <= 0 or holy_power == 1 and (S.BladeofJustice:CooldownRemainsP() > Player:GCD() or S.DivineHammer:CooldownRemainsP() > Player:GCD()) or holy_power == 2 and ((S.Zeal:ChargesFractional() <= 0.65 or S.CrusaderStrike:ChargesFractional() <= 0.65)))) then
+    if S.WakeofAshes:IsCastableP() and ((not bool(raid_event.adds.exists) or raid_event.adds.in > 15) and (Player:HolyPower() <= 0 or Player:HolyPower() == 1 and (S.BladeofJustice:CooldownRemainsP() > Player:GCD() or S.DivineHammer:CooldownRemainsP() > Player:GCD()) or Player:HolyPower() == 2 and ((S.Zeal:ChargesFractional() <= 0.65 or S.CrusaderStrike:ChargesFractional() <= 0.65)))) then
       if AR.Cast(S.WakeofAshes) then return ""; end
     end
     -- blade_of_justice,if=holy_power<=3&!set_bonus.tier20_4pc
-    if S.BladeofJustice:IsCastableP() and (holy_power <= 3 and not AC.Tier20_4Pc) then
+    if S.BladeofJustice:IsCastableP() and (Player:HolyPower() <= 3 and not AC.Tier20_4Pc) then
       if AR.Cast(S.BladeofJustice) then return ""; end
     end
     -- divine_hammer,if=holy_power<=3&!set_bonus.tier20_4pc
-    if S.DivineHammer:IsCastableP() and (holy_power <= 3 and not AC.Tier20_4Pc) then
+    if S.DivineHammer:IsCastableP() and (Player:HolyPower() <= 3 and not AC.Tier20_4Pc) then
       if AR.Cast(S.DivineHammer) then return ""; end
     end
     -- judgment
@@ -196,11 +197,11 @@ local function Apl()
       local ShouldReturn = Finishers(); if ShouldReturn then return ShouldReturn; end
     end
     -- zeal,if=cooldown.zeal.charges_fractional>=1.65&holy_power<=4&(cooldown.blade_of_justice.remains>gcd*2|cooldown.divine_hammer.remains>gcd*2)&debuff.judgment.remains>gcd
-    if S.Zeal:IsCastableP() and (S.Zeal:ChargesFractional() >= 1.65 and holy_power <= 4 and (S.BladeofJustice:CooldownRemainsP() > Player:GCD() * 2 or S.DivineHammer:CooldownRemainsP() > Player:GCD() * 2) and Target:DebuffRemainsP(S.JudgmentDebuff) > Player:GCD()) then
+    if S.Zeal:IsCastableP() and (S.Zeal:ChargesFractional() >= 1.65 and Player:HolyPower() <= 4 and (S.BladeofJustice:CooldownRemainsP() > Player:GCD() * 2 or S.DivineHammer:CooldownRemainsP() > Player:GCD() * 2) and Target:DebuffRemainsP(S.JudgmentDebuff) > Player:GCD()) then
       if AR.Cast(S.Zeal) then return ""; end
     end
     -- crusader_strike,if=cooldown.crusader_strike.charges_fractional>=1.65&holy_power<=4&(cooldown.blade_of_justice.remains>gcd*2|cooldown.divine_hammer.remains>gcd*2)&debuff.judgment.remains>gcd&(talent.greater_judgment.enabled|!set_bonus.tier20_4pc&talent.the_fires_of_justice.enabled)
-    if S.CrusaderStrike:IsCastableP() and (S.CrusaderStrike:ChargesFractional() >= 1.65 and holy_power <= 4 and (S.BladeofJustice:CooldownRemainsP() > Player:GCD() * 2 or S.DivineHammer:CooldownRemainsP() > Player:GCD() * 2) and Target:DebuffRemainsP(S.JudgmentDebuff) > Player:GCD() and (S.GreaterJudgment:IsAvailable() or not AC.Tier20_4Pc and S.TheFiresofJustice:IsAvailable())) then
+    if S.CrusaderStrike:IsCastableP() and (S.CrusaderStrike:ChargesFractional() >= 1.65 and Player:HolyPower() <= 4 and (S.BladeofJustice:CooldownRemainsP() > Player:GCD() * 2 or S.DivineHammer:CooldownRemainsP() > Player:GCD() * 2) and Target:DebuffRemainsP(S.JudgmentDebuff) > Player:GCD() and (S.GreaterJudgment:IsAvailable() or not AC.Tier20_4Pc and S.TheFiresofJustice:IsAvailable())) then
       if AR.Cast(S.CrusaderStrike) then return ""; end
     end
     -- consecration
@@ -208,7 +209,7 @@ local function Apl()
       if AR.Cast(S.Consecration) then return ""; end
     end
     -- hammer_of_justice,if=equipped.137065&target.health.pct>=75&holy_power<=4
-    if S.HammerofJustice:IsCastableP() and (I.Item137065:IsEquipped() and Target:HealthPercentage() >= 75 and holy_power <= 4) then
+    if S.HammerofJustice:IsCastableP() and (I.Item137065:IsEquipped() and Target:HealthPercentage() >= 75 and Player:HolyPower() <= 4) then
       if AR.Cast(S.HammerofJustice) then return ""; end
     end
     -- call_action_list,name=finishers

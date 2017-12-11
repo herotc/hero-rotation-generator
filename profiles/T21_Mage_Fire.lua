@@ -48,6 +48,7 @@ Spell.Mage.Fire = {
   Kindling                              = Spell(155148),
   IncantersFlowBuff                     = Spell(1463),
   MirrorImage                           = Spell(55342),
+  PhoenixReborn                         = Spell(),
   Counterspell                          = Spell(2139),
   TimeWarp                              = Spell(80353),
   EruptingInfernalCoreBuff              = Spell(248147),
@@ -272,7 +273,7 @@ local function Apl()
       if AR.Cast(S.FireBlast) then return ""; end
     end
     -- phoenixs_flames,if=(buff.combustion.up|buff.rune_of_power.up|buff.incanters_flow.stack>3|talent.mirror_image.enabled)&artifact.phoenix_reborn.enabled&(4-charges_fractional)*13<cooldown.combustion.remains+5|target.time_to_die<10
-    if S.PhoenixsFlames:IsCastableP() and ((Player:BuffP(S.CombustionBuff) or Player:BuffP(S.RuneofPowerBuff) or Player:BuffStackP(S.IncantersFlowBuff) > 3 or S.MirrorImage:IsAvailable()) and bool(artifact.phoenix_reborn.enabled) and (4 - S.PhoenixsFlames:ChargesFractional()) * 13 < S.Combustion:CooldownRemainsP() + 5 or Target:TimeToDie() < 10) then
+    if S.PhoenixsFlames:IsCastableP() and ((Player:BuffP(S.CombustionBuff) or Player:BuffP(S.RuneofPowerBuff) or Player:BuffStackP(S.IncantersFlowBuff) > 3 or S.MirrorImage:IsAvailable()) and S.PhoenixReborn:ArtifactEnabled() and (4 - S.PhoenixsFlames:ChargesFractional()) * 13 < S.Combustion:CooldownRemainsP() + 5 or Target:TimeToDie() < 10) then
       if AR.Cast(S.PhoenixsFlames) then return ""; end
     end
     -- phoenixs_flames,if=(buff.combustion.up|buff.rune_of_power.up)&(4-charges_fractional)*30<cooldown.combustion.remains+5

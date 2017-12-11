@@ -51,6 +51,7 @@ Spell.Warlock.Destruction = {
   ServicePet                            = Spell(),
   SoulHarvest                           = Spell(),
   SummonInfernal                        = Spell(),
+  LordofFlames                          = Spell(),
   LordofFlamesBuff                      = Spell(),
   SindoreiSpiteIcd                      = Spell(),
   ChannelDemonfire                      = Spell(),
@@ -169,7 +170,7 @@ local function Apl()
     if AR.Cast(S.ServicePet) then return ""; end
   end
   -- summon_infernal,if=artifact.lord_of_flames.rank>0&!buff.lord_of_flames.remains
-  if S.SummonInfernal:IsCastableP() and (artifact.lord_of_flames.rank > 0 and not bool(Player:BuffRemainsP(S.LordofFlamesBuff))) then
+  if S.SummonInfernal:IsCastableP() and (S.LordofFlames:ArtifactRank() > 0 and not bool(Player:BuffRemainsP(S.LordofFlamesBuff))) then
     if AR.Cast(S.SummonInfernal) then return ""; end
   end
   -- summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<=2&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)
@@ -181,7 +182,7 @@ local function Apl()
     if AR.Cast(S.SummonInfernal) then return ""; end
   end
   -- summon_doomguard,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal=1&artifact.lord_of_flames.rank>0&buff.lord_of_flames.remains&!pet.doomguard.active
-  if S.SummonDoomguard:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] == 1 and artifact.lord_of_flames.rank > 0 and bool(Player:BuffRemainsP(S.LordofFlamesBuff)) and not bool(pet.doomguard.active)) then
+  if S.SummonDoomguard:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] == 1 and S.LordofFlames:ArtifactRank() > 0 and bool(Player:BuffRemainsP(S.LordofFlamesBuff)) and not bool(pet.doomguard.active)) then
     if AR.Cast(S.SummonDoomguard) then return ""; end
   end
   -- summon_doomguard,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal=1&equipped.132379&!cooldown.sindorei_spite_icd.remains

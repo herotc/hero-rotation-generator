@@ -26,6 +26,7 @@ Spell.Monk.Windwalker = {
   Berserking                            = Spell(26297),
   ArcaneTorrent                         = Spell(50613),
   TouchofDeath                          = Spell(115080),
+  GaleBurst                             = Spell(),
   Serenity                              = Spell(152173),
   StrikeoftheWindlord                   = Spell(205320),
   FistsofFury                           = Spell(113656),
@@ -98,29 +99,29 @@ local function Apl()
       if AR.Cast(S.Berserking, Settings.Windwalker.OffGCDasOffGCD.Berserking) then return ""; end
     end
     -- arcane_torrent,if=chi.max-chi>=1&energy.time_to_max>=0.5
-    if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (chi.max - chi >= 1 and energy.time_to_max >= 0.5) then
+    if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (Player:ChiMax() - Player:Chi() >= 1 and energy.time_to_max >= 0.5) then
       if AR.Cast(S.ArcaneTorrent, Settings.Windwalker.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
     end
     -- touch_of_death,cycle_targets=1,max_cycle_targets=2,if=!artifact.gale_burst.enabled&equipped.hidden_masters_forbidden_touch&!prev_gcd.1.touch_of_death
-    if S.TouchofDeath:IsCastableP() and (not bool(artifact.gale_burst.enabled) and I.HiddenMastersForbiddenTouch:IsEquipped() and not Player:PrevGCDP(1, S.TouchofDeath)) then
+    if S.TouchofDeath:IsCastableP() and (not S.GaleBurst:ArtifactEnabled() and I.HiddenMastersForbiddenTouch:IsEquipped() and not Player:PrevGCDP(1, S.TouchofDeath)) then
       if AR.Cast(S.TouchofDeath) then return ""; end
     end
     -- touch_of_death,if=!artifact.gale_burst.enabled&!equipped.hidden_masters_forbidden_touch
-    if S.TouchofDeath:IsCastableP() and (not bool(artifact.gale_burst.enabled) and not I.HiddenMastersForbiddenTouch:IsEquipped()) then
+    if S.TouchofDeath:IsCastableP() and (not S.GaleBurst:ArtifactEnabled() and not I.HiddenMastersForbiddenTouch:IsEquipped()) then
       if AR.Cast(S.TouchofDeath) then return ""; end
     end
     -- touch_of_death,cycle_targets=1,max_cycle_targets=2,if=artifact.gale_burst.enabled&((talent.serenity.enabled&cooldown.serenity.remains<=1)|chi>=2)&(cooldown.strike_of_the_windlord.remains<8|cooldown.fists_of_fury.remains<=4)&cooldown.rising_sun_kick.remains<7&!prev_gcd.1.touch_of_death
-    if S.TouchofDeath:IsCastableP() and (bool(artifact.gale_burst.enabled) and ((S.Serenity:IsAvailable() and S.Serenity:CooldownRemainsP() <= 1) or chi >= 2) and (S.StrikeoftheWindlord:CooldownRemainsP() < 8 or S.FistsofFury:CooldownRemainsP() <= 4) and S.RisingSunKick:CooldownRemainsP() < 7 and not Player:PrevGCDP(1, S.TouchofDeath)) then
+    if S.TouchofDeath:IsCastableP() and (S.GaleBurst:ArtifactEnabled() and ((S.Serenity:IsAvailable() and S.Serenity:CooldownRemainsP() <= 1) or Player:Chi() >= 2) and (S.StrikeoftheWindlord:CooldownRemainsP() < 8 or S.FistsofFury:CooldownRemainsP() <= 4) and S.RisingSunKick:CooldownRemainsP() < 7 and not Player:PrevGCDP(1, S.TouchofDeath)) then
       if AR.Cast(S.TouchofDeath) then return ""; end
     end
   end
   local function Sef()
     -- tiger_palm,cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy=energy.max&chi<1
-    if S.TigerPalm:IsCastableP() and (not Player:PrevGCDP(1, S.TigerPalm) and energy == energy.max and chi < 1) then
+    if S.TigerPalm:IsCastableP() and (not Player:PrevGCDP(1, S.TigerPalm) and Player:Energy() == Player:EnergyMax() and Player:Chi() < 1) then
       if AR.Cast(S.TigerPalm) then return ""; end
     end
     -- arcane_torrent,if=chi.max-chi>=1&energy.time_to_max>=0.5
-    if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (chi.max - chi >= 1 and energy.time_to_max >= 0.5) then
+    if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (Player:ChiMax() - Player:Chi() >= 1 and energy.time_to_max >= 0.5) then
       if AR.Cast(S.ArcaneTorrent, Settings.Windwalker.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
     end
     -- call_action_list,name=cd
@@ -138,7 +139,7 @@ local function Apl()
   end
   local function Serenity()
     -- tiger_palm,cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy=energy.max&chi<1&!buff.serenity.up
-    if S.TigerPalm:IsCastableP() and (not Player:PrevGCDP(1, S.TigerPalm) and energy == energy.max and chi < 1 and not Player:BuffP(S.SerenityBuff)) then
+    if S.TigerPalm:IsCastableP() and (not Player:PrevGCDP(1, S.TigerPalm) and Player:Energy() == Player:EnergyMax() and Player:Chi() < 1 and not Player:BuffP(S.SerenityBuff)) then
       if AR.Cast(S.TigerPalm) then return ""; end
     end
     -- call_action_list,name=cd
@@ -196,11 +197,11 @@ local function Apl()
   end
   local function SerenityOpener()
     -- tiger_palm,cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy=energy.max&chi<1&!buff.serenity.up&cooldown.fists_of_fury.remains<=0
-    if S.TigerPalm:IsCastableP() and (not Player:PrevGCDP(1, S.TigerPalm) and energy == energy.max and chi < 1 and not Player:BuffP(S.SerenityBuff) and S.FistsofFury:CooldownRemainsP() <= 0) then
+    if S.TigerPalm:IsCastableP() and (not Player:PrevGCDP(1, S.TigerPalm) and Player:Energy() == Player:EnergyMax() and Player:Chi() < 1 and not Player:BuffP(S.SerenityBuff) and S.FistsofFury:CooldownRemainsP() <= 0) then
       if AR.Cast(S.TigerPalm) then return ""; end
     end
     -- arcane_torrent,if=chi.max-chi>=1&energy.time_to_max>=0.5
-    if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (chi.max - chi >= 1 and energy.time_to_max >= 0.5) then
+    if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (Player:ChiMax() - Player:Chi() >= 1 and energy.time_to_max >= 0.5) then
       if AR.Cast(S.ArcaneTorrent, Settings.Windwalker.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
     end
     -- call_action_list,name=cd,if=cooldown.fists_of_fury.remains>1
@@ -228,11 +229,11 @@ local function Apl()
       if AR.Cast(S.FistsofFury) then return ""; end
     end
     -- blackout_kick,cycle_targets=1,if=buff.serenity.down&chi<=2&cooldown.serenity.remains<=0&prev_gcd.1.tiger_palm
-    if S.BlackoutKick:IsCastableP() and (Player:BuffDownP(S.SerenityBuff) and chi <= 2 and S.Serenity:CooldownRemainsP() <= 0 and Player:PrevGCDP(1, S.TigerPalm)) then
+    if S.BlackoutKick:IsCastableP() and (Player:BuffDownP(S.SerenityBuff) and Player:Chi() <= 2 and S.Serenity:CooldownRemainsP() <= 0 and Player:PrevGCDP(1, S.TigerPalm)) then
       if AR.Cast(S.BlackoutKick) then return ""; end
     end
     -- tiger_palm,cycle_targets=1,if=chi=1
-    if S.TigerPalm:IsCastableP() and (chi == 1) then
+    if S.TigerPalm:IsCastableP() and (Player:Chi() == 1) then
       if AR.Cast(S.TigerPalm) then return ""; end
     end
   end
@@ -242,15 +243,15 @@ local function Apl()
       local ShouldReturn = Cd(); if ShouldReturn then return ShouldReturn; end
     end
     -- energizing_elixir,if=chi<=1&(cooldown.rising_sun_kick.remains=0|(artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains=0)|energy<50)
-    if S.EnergizingElixir:IsCastableP() and (chi <= 1 and (S.RisingSunKick:CooldownRemainsP() == 0 or (bool(artifact.strike_of_the_windlord.enabled) and S.StrikeoftheWindlord:CooldownRemainsP() == 0) or energy < 50)) then
+    if S.EnergizingElixir:IsCastableP() and (Player:Chi() <= 1 and (S.RisingSunKick:CooldownRemainsP() == 0 or (S.StrikeoftheWindlord:ArtifactEnabled() and S.StrikeoftheWindlord:CooldownRemainsP() == 0) or Player:Energy() < 50)) then
       if AR.Cast(S.EnergizingElixir) then return ""; end
     end
     -- arcane_torrent,if=chi.max-chi>=1&energy.time_to_max>=0.5
-    if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (chi.max - chi >= 1 and energy.time_to_max >= 0.5) then
+    if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (Player:ChiMax() - Player:Chi() >= 1 and energy.time_to_max >= 0.5) then
       if AR.Cast(S.ArcaneTorrent, Settings.Windwalker.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
     end
     -- tiger_palm,cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy.time_to_max<=0.5&chi.max-chi>=2
-    if S.TigerPalm:IsCastableP() and (not Player:PrevGCDP(1, S.TigerPalm) and energy.time_to_max <= 0.5 and chi.max - chi >= 2) then
+    if S.TigerPalm:IsCastableP() and (not Player:PrevGCDP(1, S.TigerPalm) and energy.time_to_max <= 0.5 and Player:ChiMax() - Player:Chi() >= 2) then
       if AR.Cast(S.TigerPalm) then return ""; end
     end
     -- strike_of_the_windlord,if=!talent.serenity.enabled|cooldown.serenity.remains>=10
@@ -258,7 +259,7 @@ local function Apl()
       if AR.Cast(S.StrikeoftheWindlord) then return ""; end
     end
     -- rising_sun_kick,cycle_targets=1,if=((chi>=3&energy>=40)|chi>=5)&(!talent.serenity.enabled|cooldown.serenity.remains>=6)
-    if S.RisingSunKick:IsCastableP() and (((chi >= 3 and energy >= 40) or chi >= 5) and (not S.Serenity:IsAvailable() or S.Serenity:CooldownRemainsP() >= 6)) then
+    if S.RisingSunKick:IsCastableP() and (((Player:Chi() >= 3 and Player:Energy() >= 40) or Player:Chi() >= 5) and (not S.Serenity:IsAvailable() or S.Serenity:CooldownRemainsP() >= 6)) then
       if AR.Cast(S.RisingSunKick) then return ""; end
     end
     -- fists_of_fury,if=talent.serenity.enabled&!equipped.drinking_horn_cover&cooldown.serenity.remains>=5&energy.time_to_max>2
@@ -282,11 +283,11 @@ local function Apl()
       if AR.Cast(S.WhirlingDragonPunch) then return ""; end
     end
     -- blackout_kick,cycle_targets=1,if=!prev_gcd.1.blackout_kick&chi.max-chi>=1&set_bonus.tier21_4pc&(!set_bonus.tier19_2pc|talent.serenity.enabled|buff.bok_proc.up)
-    if S.BlackoutKick:IsCastableP() and (not Player:PrevGCDP(1, S.BlackoutKick) and chi.max - chi >= 1 and AC.Tier21_4Pc and (not AC.Tier19_2Pc or S.Serenity:IsAvailable() or Player:BuffP(S.BokProcBuff))) then
+    if S.BlackoutKick:IsCastableP() and (not Player:PrevGCDP(1, S.BlackoutKick) and Player:ChiMax() - Player:Chi() >= 1 and AC.Tier21_4Pc and (not AC.Tier19_2Pc or S.Serenity:IsAvailable() or Player:BuffP(S.BokProcBuff))) then
       if AR.Cast(S.BlackoutKick) then return ""; end
     end
     -- spinning_crane_kick,if=(active_enemies>=3|(buff.bok_proc.up&chi.max-chi>=0))&!prev_gcd.1.spinning_crane_kick&set_bonus.tier21_4pc
-    if S.SpinningCraneKick:IsCastableP() and ((active_enemies >= 3 or (Player:BuffP(S.BokProcBuff) and chi.max - chi >= 0)) and not Player:PrevGCDP(1, S.SpinningCraneKick) and AC.Tier21_4Pc) then
+    if S.SpinningCraneKick:IsCastableP() and ((active_enemies >= 3 or (Player:BuffP(S.BokProcBuff) and Player:ChiMax() - Player:Chi() >= 0)) and not Player:PrevGCDP(1, S.SpinningCraneKick) and AC.Tier21_4Pc) then
       if AR.Cast(S.SpinningCraneKick) then return ""; end
     end
     -- crackling_jade_lightning,if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=19&energy.time_to_max>3
@@ -302,11 +303,11 @@ local function Apl()
       if AR.Cast(S.SpinningCraneKick) then return ""; end
     end
     -- rushing_jade_wind,if=chi.max-chi>1&!prev_gcd.1.rushing_jade_wind
-    if S.RushingJadeWind:IsCastableP() and (chi.max - chi > 1 and not Player:PrevGCDP(1, S.RushingJadeWind)) then
+    if S.RushingJadeWind:IsCastableP() and (Player:ChiMax() - Player:Chi() > 1 and not Player:PrevGCDP(1, S.RushingJadeWind)) then
       if AR.Cast(S.RushingJadeWind) then return ""; end
     end
     -- blackout_kick,cycle_targets=1,if=(chi>1|buff.bok_proc.up|(talent.energizing_elixir.enabled&cooldown.energizing_elixir.remains<cooldown.fists_of_fury.remains))&((cooldown.rising_sun_kick.remains>1&(!artifact.strike_of_the_windlord.enabled|cooldown.strike_of_the_windlord.remains>1)|chi>2)&(cooldown.fists_of_fury.remains>1|chi>3)|prev_gcd.1.tiger_palm)&!prev_gcd.1.blackout_kick
-    if S.BlackoutKick:IsCastableP() and ((chi > 1 or Player:BuffP(S.BokProcBuff) or (S.EnergizingElixir:IsAvailable() and S.EnergizingElixir:CooldownRemainsP() < S.FistsofFury:CooldownRemainsP())) and ((S.RisingSunKick:CooldownRemainsP() > 1 and (not bool(artifact.strike_of_the_windlord.enabled) or S.StrikeoftheWindlord:CooldownRemainsP() > 1) or chi > 2) and (S.FistsofFury:CooldownRemainsP() > 1 or chi > 3) or Player:PrevGCDP(1, S.TigerPalm)) and not Player:PrevGCDP(1, S.BlackoutKick)) then
+    if S.BlackoutKick:IsCastableP() and ((Player:Chi() > 1 or Player:BuffP(S.BokProcBuff) or (S.EnergizingElixir:IsAvailable() and S.EnergizingElixir:CooldownRemainsP() < S.FistsofFury:CooldownRemainsP())) and ((S.RisingSunKick:CooldownRemainsP() > 1 and (not S.StrikeoftheWindlord:ArtifactEnabled() or S.StrikeoftheWindlord:CooldownRemainsP() > 1) or Player:Chi() > 2) and (S.FistsofFury:CooldownRemainsP() > 1 or Player:Chi() > 3) or Player:PrevGCDP(1, S.TigerPalm)) and not Player:PrevGCDP(1, S.BlackoutKick)) then
       if AR.Cast(S.BlackoutKick) then return ""; end
     end
     -- chi_wave,if=energy.time_to_max>1
@@ -318,7 +319,7 @@ local function Apl()
       if AR.Cast(S.ChiBurst) then return ""; end
     end
     -- tiger_palm,cycle_targets=1,if=!prev_gcd.1.tiger_palm&(chi.max-chi>=2|energy.time_to_max<1)
-    if S.TigerPalm:IsCastableP() and (not Player:PrevGCDP(1, S.TigerPalm) and (chi.max - chi >= 2 or energy.time_to_max < 1)) then
+    if S.TigerPalm:IsCastableP() and (not Player:PrevGCDP(1, S.TigerPalm) and (Player:ChiMax() - Player:Chi() >= 2 or energy.time_to_max < 1)) then
       if AR.Cast(S.TigerPalm) then return ""; end
     end
     -- chi_wave
@@ -356,11 +357,11 @@ local function Apl()
     local ShouldReturn = Sef(); if ShouldReturn then return ShouldReturn; end
   end
   -- call_action_list,name=sef,if=!talent.serenity.enabled&equipped.drinking_horn_cover&(cooldown.strike_of_the_windlord.remains<=18&cooldown.fists_of_fury.remains<=12&chi>=3&cooldown.rising_sun_kick.remains<=1|target.time_to_die<=25|cooldown.touch_of_death.remains>112)&cooldown.storm_earth_and_fire.charges=1
-  if (not S.Serenity:IsAvailable() and I.DrinkingHornCover:IsEquipped() and (S.StrikeoftheWindlord:CooldownRemainsP() <= 18 and S.FistsofFury:CooldownRemainsP() <= 12 and chi >= 3 and S.RisingSunKick:CooldownRemainsP() <= 1 or Target:TimeToDie() <= 25 or S.TouchofDeath:CooldownRemainsP() > 112) and S.StormEarthandFire:ChargesP() == 1) then
+  if (not S.Serenity:IsAvailable() and I.DrinkingHornCover:IsEquipped() and (S.StrikeoftheWindlord:CooldownRemainsP() <= 18 and S.FistsofFury:CooldownRemainsP() <= 12 and Player:Chi() >= 3 and S.RisingSunKick:CooldownRemainsP() <= 1 or Target:TimeToDie() <= 25 or S.TouchofDeath:CooldownRemainsP() > 112) and S.StormEarthandFire:ChargesP() == 1) then
     local ShouldReturn = Sef(); if ShouldReturn then return ShouldReturn; end
   end
   -- call_action_list,name=sef,if=!talent.serenity.enabled&!equipped.drinking_horn_cover&(cooldown.strike_of_the_windlord.remains<=14&cooldown.fists_of_fury.remains<=6&chi>=3&cooldown.rising_sun_kick.remains<=1|target.time_to_die<=15|cooldown.touch_of_death.remains>112)&cooldown.storm_earth_and_fire.charges=1
-  if (not S.Serenity:IsAvailable() and not I.DrinkingHornCover:IsEquipped() and (S.StrikeoftheWindlord:CooldownRemainsP() <= 14 and S.FistsofFury:CooldownRemainsP() <= 6 and chi >= 3 and S.RisingSunKick:CooldownRemainsP() <= 1 or Target:TimeToDie() <= 15 or S.TouchofDeath:CooldownRemainsP() > 112) and S.StormEarthandFire:ChargesP() == 1) then
+  if (not S.Serenity:IsAvailable() and not I.DrinkingHornCover:IsEquipped() and (S.StrikeoftheWindlord:CooldownRemainsP() <= 14 and S.FistsofFury:CooldownRemainsP() <= 6 and Player:Chi() >= 3 and S.RisingSunKick:CooldownRemainsP() <= 1 or Target:TimeToDie() <= 15 or S.TouchofDeath:CooldownRemainsP() > 112) and S.StormEarthandFire:ChargesP() == 1) then
     local ShouldReturn = Sef(); if ShouldReturn then return ShouldReturn; end
   end
   -- call_action_list,name=st

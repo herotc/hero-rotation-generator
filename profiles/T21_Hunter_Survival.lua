@@ -89,7 +89,7 @@ end
 local function Apl()
   local function Cds()
     -- arcane_torrent,if=focus<=30
-    if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (focus <= 30) then
+    if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (Player:Focus() <= 30) then
       if AR.Cast(S.ArcaneTorrent, Settings.Survival.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
     end
     -- berserking,if=buff.aspect_of_the_eagle.up
@@ -119,7 +119,7 @@ local function Apl()
       if AR.Cast(S.Butchery) then return ""; end
     end
     -- caltrops,if=!ticking
-    if S.Caltrops:IsCastableP() and (not bool(ticking)) then
+    if S.Caltrops:IsCastableP() and (not Target:DebuffP(S.Caltrops)) then
       if AR.Cast(S.Caltrops) then return ""; end
     end
     -- explosive_trap
@@ -149,7 +149,7 @@ local function Apl()
       if AR.Cast(S.FuryoftheEagle) then return ""; end
     end
     -- lacerate,if=dot.lacerate.refreshable&(focus>((50+35)-((cooldown.flanking_strike.remains%gcd)*(focus.regen*gcd))))
-    if S.Lacerate:IsCastableP() and (bool(dot.lacerate.refreshable) and (focus > ((50 + 35) - ((S.FlankingStrike:CooldownRemainsP() / Player:GCD()) * (focus.regen * Player:GCD()))))) then
+    if S.Lacerate:IsCastableP() and (bool(dot.lacerate.refreshable) and (Player:Focus() > ((50 + 35) - ((S.FlankingStrike:CooldownRemainsP() / Player:GCD()) * (Player:FocusRegen() * Player:GCD()))))) then
       if AR.Cast(S.Lacerate) then return ""; end
     end
     -- raptor_strike,if=buff.t21_2p_exposed_flank.up
@@ -173,7 +173,7 @@ local function Apl()
       if AR.Cast(S.AMurderofCrows) then return ""; end
     end
     -- caltrops,if=!ticking
-    if S.Caltrops:IsCastableP() and (not bool(ticking)) then
+    if S.Caltrops:IsCastableP() and (not Target:DebuffP(S.Caltrops)) then
       if AR.Cast(S.Caltrops) then return ""; end
     end
     -- explosive_trap
@@ -205,7 +205,7 @@ local function Apl()
       if AR.Cast(S.DragonsfireGrenade) then return ""; end
     end
     -- lacerate,if=refreshable|!ticking
-    if S.Lacerate:IsCastableP() and (bool(refreshable) or not bool(ticking)) then
+    if S.Lacerate:IsCastableP() and (bool(refreshable) or not Target:DebuffP(S.Lacerate)) then
       if AR.Cast(S.Lacerate) then return ""; end
     end
     -- raptor_strike,if=buff.t21_2p_exposed_flank.up&!variable.mokTalented
@@ -217,11 +217,11 @@ local function Apl()
       if AR.Cast(S.RaptorStrike) then return ""; end
     end
     -- steel_trap,if=refreshable|!ticking
-    if S.SteelTrap:IsCastableP() and (bool(refreshable) or not bool(ticking)) then
+    if S.SteelTrap:IsCastableP() and (bool(refreshable) or not Target:DebuffP(S.SteelTrap)) then
       if AR.Cast(S.SteelTrap) then return ""; end
     end
     -- caltrops,if=refreshable|!ticking
-    if S.Caltrops:IsCastableP() and (bool(refreshable) or not bool(ticking)) then
+    if S.Caltrops:IsCastableP() and (bool(refreshable) or not Target:DebuffP(S.Caltrops)) then
       if AR.Cast(S.Caltrops) then return ""; end
     end
     -- explosive_trap
@@ -229,11 +229,11 @@ local function Apl()
       if AR.Cast(S.ExplosiveTrap) then return ""; end
     end
     -- butchery,if=variable.frizzosEquipped&dot.lacerate.refreshable&(focus>((50+40)-((cooldown.flanking_strike.remains%gcd)*(focus.regen*gcd))))
-    if S.Butchery:IsCastableP() and (bool(Frizzosequipped) and bool(dot.lacerate.refreshable) and (focus > ((50 + 40) - ((S.FlankingStrike:CooldownRemainsP() / Player:GCD()) * (focus.regen * Player:GCD()))))) then
+    if S.Butchery:IsCastableP() and (bool(Frizzosequipped) and bool(dot.lacerate.refreshable) and (Player:Focus() > ((50 + 40) - ((S.FlankingStrike:CooldownRemainsP() / Player:GCD()) * (Player:FocusRegen() * Player:GCD()))))) then
       if AR.Cast(S.Butchery) then return ""; end
     end
     -- carve,if=variable.frizzosEquipped&dot.lacerate.refreshable&(focus>((50+40)-((cooldown.flanking_strike.remains%gcd)*(focus.regen*gcd))))
-    if S.Carve:IsCastableP() and (bool(Frizzosequipped) and bool(dot.lacerate.refreshable) and (focus > ((50 + 40) - ((S.FlankingStrike:CooldownRemainsP() / Player:GCD()) * (focus.regen * Player:GCD()))))) then
+    if S.Carve:IsCastableP() and (bool(Frizzosequipped) and bool(dot.lacerate.refreshable) and (Player:Focus() > ((50 + 40) - ((S.FlankingStrike:CooldownRemainsP() / Player:GCD()) * (Player:FocusRegen() * Player:GCD()))))) then
       if AR.Cast(S.Carve) then return ""; end
     end
     -- flanking_strike
@@ -241,7 +241,7 @@ local function Apl()
       if AR.Cast(S.FlankingStrike) then return ""; end
     end
     -- raptor_strike,if=(variable.mokTalented&buff.moknathal_tactics.remains<gcd*4)|(focus>((75-focus.regen*gcd)))
-    if S.RaptorStrike:IsCastableP() and ((bool(Moktalented) and Player:BuffRemainsP(S.MoknathalTacticsBuff) < Player:GCD() * 4) or (focus > ((75 - focus.regen * Player:GCD())))) then
+    if S.RaptorStrike:IsCastableP() and ((bool(Moktalented) and Player:BuffRemainsP(S.MoknathalTacticsBuff) < Player:GCD() * 4) or (Player:Focus() > ((75 - Player:FocusRegen() * Player:GCD())))) then
       if AR.Cast(S.RaptorStrike) then return ""; end
     end
   end

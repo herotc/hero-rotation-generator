@@ -41,6 +41,7 @@ Spell.Warlock.Demonology = {
   SindoreiSpiteIcd                      = Spell(),
   ShadowyInspirationBuff                = Spell(),
   ShadowyInspiration                    = Spell(),
+  ThalkielsAscendance                   = Spell(),
   DemonicEmpowerment                    = Spell(),
   UseItems                              = Spell(),
   Berserking                            = Spell(26297),
@@ -127,7 +128,7 @@ local function Apl()
     if AR.Cast(S.CallDreadstalkers) then return ""; end
   end
   -- doom,cycle_targets=1,if=(!talent.hand_of_doom.enabled&target.time_to_die>duration&(!ticking|remains<duration*0.3))&!(variable.no_de1|prev_gcd.1.hand_of_guldan)
-  if S.Doom:IsCastableP() and ((not S.HandofDoom:IsAvailable() and Target:TimeToDie() > S.Doom:BaseDuration() and (not bool(ticking) or Player:BuffRemainsP(S.Doom) < S.Doom:BaseDuration() * 0.3)) and not (bool(NoDe1) or Player:PrevGCDP(1, S.HandofGuldan))) then
+  if S.Doom:IsCastableP() and ((not S.HandofDoom:IsAvailable() and Target:TimeToDie() > S.Doom:BaseDuration() and (not Player:BuffP(S.Doom) or Player:BuffRemainsP(S.Doom) < S.Doom:BaseDuration() * 0.3)) and not (bool(NoDe1) or Player:PrevGCDP(1, S.HandofGuldan))) then
     if AR.Cast(S.Doom) then return ""; end
   end
   -- shadowflame,if=(charges=2&soul_shard<5)&spell_targets.demonwrath<5&!variable.no_de1
@@ -179,7 +180,7 @@ local function Apl()
     if AR.Cast(S.HandofGuldan) then return ""; end
   end
   -- hand_of_guldan,if=(soul_shard>=3&prev_gcd.1.call_dreadstalkers&!artifact.thalkiels_ascendance.rank)|soul_shard>=5|(soul_shard>=4&cooldown.summon_darkglare.remains>2)
-  if S.HandofGuldan:IsCastableP() and ((soul_shard >= 3 and Player:PrevGCDP(1, S.CallDreadstalkers) and not bool(artifact.thalkiels_ascendance.rank)) or soul_shard >= 5 or (soul_shard >= 4 and S.SummonDarkglare:CooldownRemainsP() > 2)) then
+  if S.HandofGuldan:IsCastableP() and ((soul_shard >= 3 and Player:PrevGCDP(1, S.CallDreadstalkers) and not bool(S.ThalkielsAscendance:ArtifactRank())) or soul_shard >= 5 or (soul_shard >= 4 and S.SummonDarkglare:CooldownRemainsP() > 2)) then
     if AR.Cast(S.HandofGuldan) then return ""; end
   end
   -- demonic_empowerment,if=(((talent.power_trip.enabled&(!talent.implosion.enabled|spell_targets.demonwrath<=1))|!talent.implosion.enabled|(talent.implosion.enabled&!talent.soul_conduit.enabled&spell_targets.demonwrath<=3))&(wild_imp_no_de>3|prev_gcd.1.hand_of_guldan))|(prev_gcd.1.hand_of_guldan&wild_imp_no_de=0&wild_imp_remaining_duration<=0)|(prev_gcd.1.implosion&wild_imp_no_de>0)
@@ -239,7 +240,7 @@ local function Apl()
     if AR.Cast(S.ShadowBolt) then return ""; end
   end
   -- demonic_empowerment,if=artifact.thalkiels_ascendance.rank&talent.power_trip.enabled&!talent.demonbolt.enabled&talent.shadowy_inspiration.enabled
-  if S.DemonicEmpowerment:IsCastableP() and (bool(artifact.thalkiels_ascendance.rank) and S.PowerTrip:IsAvailable() and not S.Demonbolt:IsAvailable() and S.ShadowyInspiration:IsAvailable()) then
+  if S.DemonicEmpowerment:IsCastableP() and (bool(S.ThalkielsAscendance:ArtifactRank()) and S.PowerTrip:IsAvailable() and not S.Demonbolt:IsAvailable() and S.ShadowyInspiration:IsAvailable()) then
     if AR.Cast(S.DemonicEmpowerment) then return ""; end
   end
   -- shadow_bolt

@@ -54,7 +54,9 @@ Spell.Priest.Shadow = {
   Wait                                  = Spell(),
   Dispersion                            = Spell(47585),
   Shadowfiend                           = Spell(34433),
+  SphereofInsanity                      = Spell(),
   Sanlayn                               = Spell(199855),
+  UnleashtheShadows                     = Spell(),
   ShadowyInsightBuff                    = Spell(124430),
   SurrenderToMadnessBuff                = Spell(193223)
 };
@@ -151,31 +153,31 @@ local function Apl()
       if AR.Cast(S.ShadowCrash) then return ""; end
     end
     -- shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls.enabled&active_enemies<=2))&cooldown.shadow_word_death.charges=2&insanity<=(85-15*talent.reaper_of_souls.enabled)|(equipped.zeks_exterminatus&buff.zeks_exterminatus.react)
-    if S.ShadowWordDeath:IsCastableP() and ((active_enemies <= 4 or (S.ReaperofSouls:IsAvailable() and active_enemies <= 2)) and S.ShadowWordDeath:ChargesP() == 2 and insanity <= (85 - 15 * num(S.ReaperofSouls:IsAvailable())) or (I.ZeksExterminatus:IsEquipped() and bool(Player:BuffStackP(S.ZeksExterminatusBuff)))) then
+    if S.ShadowWordDeath:IsCastableP() and ((active_enemies <= 4 or (S.ReaperofSouls:IsAvailable() and active_enemies <= 2)) and S.ShadowWordDeath:ChargesP() == 2 and Player:Insanity() <= (85 - 15 * num(S.ReaperofSouls:IsAvailable())) or (I.ZeksExterminatus:IsEquipped() and bool(Player:BuffStackP(S.ZeksExterminatusBuff)))) then
       if AR.Cast(S.ShadowWordDeath) then return ""; end
     end
     -- mind_blast,if=active_enemies<=4&talent.legacy_of_the_void.enabled&(insanity<=81|(insanity<=75.2&talent.fortress_of_the_mind.enabled))
-    if S.MindBlast:IsCastableP() and (active_enemies <= 4 and S.LegacyoftheVoid:IsAvailable() and (insanity <= 81 or (insanity <= 75.2 and S.FortressoftheMind:IsAvailable()))) then
+    if S.MindBlast:IsCastableP() and (active_enemies <= 4 and S.LegacyoftheVoid:IsAvailable() and (Player:Insanity() <= 81 or (Player:Insanity() <= 75.2 and S.FortressoftheMind:IsAvailable()))) then
       if AR.Cast(S.MindBlast) then return ""; end
     end
     -- mind_blast,if=active_enemies<=4&!talent.legacy_of_the_void.enabled|(insanity<=96|(insanity<=95.2&talent.fortress_of_the_mind.enabled))
-    if S.MindBlast:IsCastableP() and (active_enemies <= 4 and not S.LegacyoftheVoid:IsAvailable() or (insanity <= 96 or (insanity <= 95.2 and S.FortressoftheMind:IsAvailable()))) then
+    if S.MindBlast:IsCastableP() and (active_enemies <= 4 and not S.LegacyoftheVoid:IsAvailable() or (Player:Insanity() <= 96 or (Player:Insanity() <= 95.2 and S.FortressoftheMind:IsAvailable()))) then
       if AR.Cast(S.MindBlast) then return ""; end
     end
     -- shadow_word_pain,if=!talent.misery.enabled&!ticking&target.time_to_die>10&(active_enemies<5&(talent.auspicious_spirits.enabled|talent.shadowy_insight.enabled)),cycle_targets=1
-    if S.ShadowWordPain:IsCastableP() and (not S.Misery:IsAvailable() and not bool(ticking) and Target:TimeToDie() > 10 and (active_enemies < 5 and (S.AuspiciousSpirits:IsAvailable() or S.ShadowyInsight:IsAvailable()))) then
+    if S.ShadowWordPain:IsCastableP() and (not S.Misery:IsAvailable() and not Target:DebuffP(S.ShadowWordPain) and Target:TimeToDie() > 10 and (active_enemies < 5 and (S.AuspiciousSpirits:IsAvailable() or S.ShadowyInsight:IsAvailable()))) then
       if AR.Cast(S.ShadowWordPain) then return ""; end
     end
     -- vampiric_touch,if=active_enemies>1&!talent.misery.enabled&!ticking&(variable.dot_vt_dpgcd*target.time_to_die%(gcd.max*(156+variable.sear_dpgcd*(active_enemies-1))))>1,cycle_targets=1
-    if S.VampiricTouch:IsCastableP() and (active_enemies > 1 and not S.Misery:IsAvailable() and not bool(ticking) and (DotVtDpgcd * Target:TimeToDie() / (Player:GCD() * (156 + SearDpgcd * (active_enemies - 1)))) > 1) then
+    if S.VampiricTouch:IsCastableP() and (active_enemies > 1 and not S.Misery:IsAvailable() and not Target:DebuffP(S.VampiricTouch) and (DotVtDpgcd * Target:TimeToDie() / (Player:GCD() * (156 + SearDpgcd * (active_enemies - 1)))) > 1) then
       if AR.Cast(S.VampiricTouch) then return ""; end
     end
     -- shadow_word_pain,if=active_enemies>1&!talent.misery.enabled&!ticking&(variable.dot_swp_dpgcd*target.time_to_die%(gcd.max*(118+variable.sear_dpgcd*(active_enemies-1))))>1,cycle_targets=1
-    if S.ShadowWordPain:IsCastableP() and (active_enemies > 1 and not S.Misery:IsAvailable() and not bool(ticking) and (DotSwpDpgcd * Target:TimeToDie() / (Player:GCD() * (118 + SearDpgcd * (active_enemies - 1)))) > 1) then
+    if S.ShadowWordPain:IsCastableP() and (active_enemies > 1 and not S.Misery:IsAvailable() and not Target:DebuffP(S.ShadowWordPain) and (DotSwpDpgcd * Target:TimeToDie() / (Player:GCD() * (118 + SearDpgcd * (active_enemies - 1)))) > 1) then
       if AR.Cast(S.ShadowWordPain) then return ""; end
     end
     -- shadow_word_void,if=talent.shadow_word_void.enabled&(insanity<=75-10*talent.legacy_of_the_void.enabled)
-    if S.ShadowWordVoid:IsCastableP() and (S.ShadowWordVoid:IsAvailable() and (insanity <= 75 - 10 * num(S.LegacyoftheVoid:IsAvailable()))) then
+    if S.ShadowWordVoid:IsCastableP() and (S.ShadowWordVoid:IsAvailable() and (Player:Insanity() <= 75 - 10 * num(S.LegacyoftheVoid:IsAvailable()))) then
       if AR.Cast(S.ShadowWordVoid) then return ""; end
     end
     -- mind_flay,interrupt=1,chain=1
@@ -217,7 +219,7 @@ local function Apl()
       if AR.Cast(S.Berserking, Settings.Shadow.OffGCDasOffGCD.Berserking) then return ""; end
     end
     -- shadow_word_death,if=current_insanity_drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+(30+30*talent.reaper_of_souls.enabled)<100)
-    if S.ShadowWordDeath:IsCastableP() and (current_insanity_drain * Player:GCD() > insanity and (insanity - (current_insanity_drain * Player:GCD()) + (30 + 30 * num(S.ReaperofSouls:IsAvailable())) < 100)) then
+    if S.ShadowWordDeath:IsCastableP() and (current_insanity_drain * Player:GCD() > Player:Insanity() and (Player:Insanity() - (current_insanity_drain * Player:GCD()) + (30 + 30 * num(S.ReaperofSouls:IsAvailable())) < 100)) then
       if AR.Cast(S.ShadowWordDeath) then return ""; end
     end
     -- power_infusion,if=cooldown.shadow_word_death.charges=0&buff.voidform.stack>(45+25*set_bonus.tier20_4pc)|target.time_to_die<=30
@@ -229,7 +231,7 @@ local function Apl()
       if AR.Cast(S.VoidBolt) then return ""; end
     end
     -- shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls.enabled&active_enemies<=2))&current_insanity_drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+(30+30*talent.reaper_of_souls.enabled))<100
-    if S.ShadowWordDeath:IsCastableP() and ((active_enemies <= 4 or (S.ReaperofSouls:IsAvailable() and active_enemies <= 2)) and current_insanity_drain * Player:GCD() > insanity and (insanity - (current_insanity_drain * Player:GCD()) + (30 + 30 * num(S.ReaperofSouls:IsAvailable()))) < 100) then
+    if S.ShadowWordDeath:IsCastableP() and ((active_enemies <= 4 or (S.ReaperofSouls:IsAvailable() and active_enemies <= 2)) and current_insanity_drain * Player:GCD() > Player:Insanity() and (Player:Insanity() - (current_insanity_drain * Player:GCD()) + (30 + 30 * num(S.ReaperofSouls:IsAvailable()))) < 100) then
       if AR.Cast(S.ShadowWordDeath) then return ""; end
     end
     -- wait,sec=action.void_bolt.usable_in,if=action.void_bolt.usable_in<gcd.max*0.28
@@ -237,7 +239,7 @@ local function Apl()
       if AR.Cast(S.Wait) then return ""; end
     end
     -- dispersion,if=current_insanity_drain*gcd.max>insanity&!buff.power_infusion.up|(buff.voidform.stack>76&cooldown.shadow_word_death.charges=0&current_insanity_drain*gcd.max>insanity)
-    if S.Dispersion:IsCastableP() and (current_insanity_drain * Player:GCD() > insanity and not Player:BuffP(S.PowerInfusionBuff) or (Player:BuffStackP(S.VoidformBuff) > 76 and S.ShadowWordDeath:ChargesP() == 0 and current_insanity_drain * Player:GCD() > insanity)) then
+    if S.Dispersion:IsCastableP() and (current_insanity_drain * Player:GCD() > Player:Insanity() and not Player:BuffP(S.PowerInfusionBuff) or (Player:BuffStackP(S.VoidformBuff) > 76 and S.ShadowWordDeath:ChargesP() == 0 and current_insanity_drain * Player:GCD() > Player:Insanity())) then
       if AR.Cast(S.Dispersion) then return ""; end
     end
     -- mind_blast,if=active_enemies<=5
@@ -257,7 +259,7 @@ local function Apl()
       if AR.Cast(S.Shadowfiend) then return ""; end
     end
     -- shadow_word_void,if=talent.shadow_word_void.enabled&(insanity-(current_insanity_drain*gcd.max)+50)<100
-    if S.ShadowWordVoid:IsCastableP() and (S.ShadowWordVoid:IsAvailable() and (insanity - (current_insanity_drain * Player:GCD()) + 50) < 100) then
+    if S.ShadowWordVoid:IsCastableP() and (S.ShadowWordVoid:IsAvailable() and (Player:Insanity() - (current_insanity_drain * Player:GCD()) + 50) < 100) then
       if AR.Cast(S.ShadowWordVoid) then return ""; end
     end
     -- shadow_word_pain,if=talent.misery.enabled&dot.shadow_word_pain.remains<gcd,moving=1,cycle_targets=1
@@ -269,23 +271,23 @@ local function Apl()
       if AR.Cast(S.VampiricTouch) then return ""; end
     end
     -- shadow_word_pain,if=!talent.misery.enabled&!ticking&(active_enemies<5|talent.auspicious_spirits.enabled|talent.shadowy_insight.enabled|artifact.sphere_of_insanity.rank)
-    if S.ShadowWordPain:IsCastableP() and (not S.Misery:IsAvailable() and not bool(ticking) and (active_enemies < 5 or S.AuspiciousSpirits:IsAvailable() or S.ShadowyInsight:IsAvailable() or bool(artifact.sphere_of_insanity.rank))) then
+    if S.ShadowWordPain:IsCastableP() and (not S.Misery:IsAvailable() and not Target:DebuffP(S.ShadowWordPain) and (active_enemies < 5 or S.AuspiciousSpirits:IsAvailable() or S.ShadowyInsight:IsAvailable() or bool(S.SphereofInsanity:ArtifactRank()))) then
       if AR.Cast(S.ShadowWordPain) then return ""; end
     end
     -- vampiric_touch,if=!talent.misery.enabled&!ticking&(active_enemies<4|talent.sanlayn.enabled|(talent.auspicious_spirits.enabled&artifact.unleash_the_shadows.rank))
-    if S.VampiricTouch:IsCastableP() and (not S.Misery:IsAvailable() and not bool(ticking) and (active_enemies < 4 or S.Sanlayn:IsAvailable() or (S.AuspiciousSpirits:IsAvailable() and bool(artifact.unleash_the_shadows.rank)))) then
+    if S.VampiricTouch:IsCastableP() and (not S.Misery:IsAvailable() and not Target:DebuffP(S.VampiricTouch) and (active_enemies < 4 or S.Sanlayn:IsAvailable() or (S.AuspiciousSpirits:IsAvailable() and bool(S.UnleashtheShadows:ArtifactRank())))) then
       if AR.Cast(S.VampiricTouch) then return ""; end
     end
     -- shadow_word_pain,if=!talent.misery.enabled&!ticking&target.time_to_die>10&(active_enemies<5&(talent.auspicious_spirits.enabled|talent.shadowy_insight.enabled)),cycle_targets=1
-    if S.ShadowWordPain:IsCastableP() and (not S.Misery:IsAvailable() and not bool(ticking) and Target:TimeToDie() > 10 and (active_enemies < 5 and (S.AuspiciousSpirits:IsAvailable() or S.ShadowyInsight:IsAvailable()))) then
+    if S.ShadowWordPain:IsCastableP() and (not S.Misery:IsAvailable() and not Target:DebuffP(S.ShadowWordPain) and Target:TimeToDie() > 10 and (active_enemies < 5 and (S.AuspiciousSpirits:IsAvailable() or S.ShadowyInsight:IsAvailable()))) then
       if AR.Cast(S.ShadowWordPain) then return ""; end
     end
     -- vampiric_touch,if=!talent.misery.enabled&!ticking&target.time_to_die>10&(active_enemies<4|talent.sanlayn.enabled|(talent.auspicious_spirits.enabled&artifact.unleash_the_shadows.rank)),cycle_targets=1
-    if S.VampiricTouch:IsCastableP() and (not S.Misery:IsAvailable() and not bool(ticking) and Target:TimeToDie() > 10 and (active_enemies < 4 or S.Sanlayn:IsAvailable() or (S.AuspiciousSpirits:IsAvailable() and bool(artifact.unleash_the_shadows.rank)))) then
+    if S.VampiricTouch:IsCastableP() and (not S.Misery:IsAvailable() and not Target:DebuffP(S.VampiricTouch) and Target:TimeToDie() > 10 and (active_enemies < 4 or S.Sanlayn:IsAvailable() or (S.AuspiciousSpirits:IsAvailable() and bool(S.UnleashtheShadows:ArtifactRank())))) then
       if AR.Cast(S.VampiricTouch) then return ""; end
     end
     -- shadow_word_pain,if=!talent.misery.enabled&!ticking&target.time_to_die>10&(active_enemies<5&artifact.sphere_of_insanity.rank),cycle_targets=1
-    if S.ShadowWordPain:IsCastableP() and (not S.Misery:IsAvailable() and not bool(ticking) and Target:TimeToDie() > 10 and (active_enemies < 5 and bool(artifact.sphere_of_insanity.rank))) then
+    if S.ShadowWordPain:IsCastableP() and (not S.Misery:IsAvailable() and not Target:DebuffP(S.ShadowWordPain) and Target:TimeToDie() > 10 and (active_enemies < 5 and bool(S.SphereofInsanity:ArtifactRank()))) then
       if AR.Cast(S.ShadowWordPain) then return ""; end
     end
     -- mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(action.void_bolt.usable|(current_insanity_drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+60)<100&cooldown.shadow_word_death.charges>=1))
@@ -295,7 +297,7 @@ local function Apl()
   end
   local function Vf()
     -- surrender_to_madness,if=talent.surrender_to_madness.enabled&insanity>=25&(cooldown.void_bolt.up|cooldown.void_torrent.up|cooldown.shadow_word_death.up|buff.shadowy_insight.up)&target.time_to_die<=variable.s2mcheck-(buff.insanity_drain_stacks.value)
-    if S.SurrenderToMadness:IsCastableP() and (S.SurrenderToMadness:IsAvailable() and insanity >= 25 and (S.VoidBolt:CooldownUpP() or S.VoidTorrent:CooldownUpP() or S.ShadowWordDeath:CooldownUpP() or Player:BuffP(S.ShadowyInsightBuff)) and Target:TimeToDie() <= S2Mcheck - (buff.insanity_drain_stacks.value)) then
+    if S.SurrenderToMadness:IsCastableP() and (S.SurrenderToMadness:IsAvailable() and Player:Insanity() >= 25 and (S.VoidBolt:CooldownUpP() or S.VoidTorrent:CooldownUpP() or S.ShadowWordDeath:CooldownUpP() or Player:BuffP(S.ShadowyInsightBuff)) and Target:TimeToDie() <= S2Mcheck - (buff.insanity_drain_stacks.value)) then
       if AR.Cast(S.SurrenderToMadness) then return ""; end
     end
     -- silence,if=equipped.sephuzs_secret&(target.is_add|target.debuff.casting.react)&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up&buff.insanity_drain_stacks.value>10,cycle_targets=1
@@ -335,7 +337,7 @@ local function Apl()
       if AR.Cast(S.Berserking, Settings.Shadow.OffGCDasOffGCD.Berserking) then return ""; end
     end
     -- shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls.enabled&active_enemies<=2))&current_insanity_drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+(15+15*talent.reaper_of_souls.enabled))<100
-    if S.ShadowWordDeath:IsCastableP() and ((active_enemies <= 4 or (S.ReaperofSouls:IsAvailable() and active_enemies <= 2)) and current_insanity_drain * Player:GCD() > insanity and (insanity - (current_insanity_drain * Player:GCD()) + (15 + 15 * num(S.ReaperofSouls:IsAvailable()))) < 100) then
+    if S.ShadowWordDeath:IsCastableP() and ((active_enemies <= 4 or (S.ReaperofSouls:IsAvailable() and active_enemies <= 2)) and current_insanity_drain * Player:GCD() > Player:Insanity() and (Player:Insanity() - (current_insanity_drain * Player:GCD()) + (15 + 15 * num(S.ReaperofSouls:IsAvailable()))) < 100) then
       if AR.Cast(S.ShadowWordDeath) then return ""; end
     end
     -- wait,sec=action.void_bolt.usable_in,if=action.void_bolt.usable_in<gcd.max*0.28
@@ -359,7 +361,7 @@ local function Apl()
       if AR.Cast(S.Shadowfiend) then return ""; end
     end
     -- shadow_word_void,if=talent.shadow_word_void.enabled&(insanity-(current_insanity_drain*gcd.max)+25)<100
-    if S.ShadowWordVoid:IsCastableP() and (S.ShadowWordVoid:IsAvailable() and (insanity - (current_insanity_drain * Player:GCD()) + 25) < 100) then
+    if S.ShadowWordVoid:IsCastableP() and (S.ShadowWordVoid:IsAvailable() and (Player:Insanity() - (current_insanity_drain * Player:GCD()) + 25) < 100) then
       if AR.Cast(S.ShadowWordVoid) then return ""; end
     end
     -- shadow_word_pain,if=talent.misery.enabled&dot.shadow_word_pain.remains<gcd,moving=1,cycle_targets=1
@@ -371,19 +373,19 @@ local function Apl()
       if AR.Cast(S.VampiricTouch) then return ""; end
     end
     -- shadow_word_pain,if=!talent.misery.enabled&!ticking&(active_enemies<5|talent.auspicious_spirits.enabled|talent.shadowy_insight.enabled|artifact.sphere_of_insanity.rank)
-    if S.ShadowWordPain:IsCastableP() and (not S.Misery:IsAvailable() and not bool(ticking) and (active_enemies < 5 or S.AuspiciousSpirits:IsAvailable() or S.ShadowyInsight:IsAvailable() or bool(artifact.sphere_of_insanity.rank))) then
+    if S.ShadowWordPain:IsCastableP() and (not S.Misery:IsAvailable() and not Target:DebuffP(S.ShadowWordPain) and (active_enemies < 5 or S.AuspiciousSpirits:IsAvailable() or S.ShadowyInsight:IsAvailable() or bool(S.SphereofInsanity:ArtifactRank()))) then
       if AR.Cast(S.ShadowWordPain) then return ""; end
     end
     -- vampiric_touch,if=!talent.misery.enabled&!ticking&(active_enemies<4|talent.sanlayn.enabled|(talent.auspicious_spirits.enabled&artifact.unleash_the_shadows.rank))
-    if S.VampiricTouch:IsCastableP() and (not S.Misery:IsAvailable() and not bool(ticking) and (active_enemies < 4 or S.Sanlayn:IsAvailable() or (S.AuspiciousSpirits:IsAvailable() and bool(artifact.unleash_the_shadows.rank)))) then
+    if S.VampiricTouch:IsCastableP() and (not S.Misery:IsAvailable() and not Target:DebuffP(S.VampiricTouch) and (active_enemies < 4 or S.Sanlayn:IsAvailable() or (S.AuspiciousSpirits:IsAvailable() and bool(S.UnleashtheShadows:ArtifactRank())))) then
       if AR.Cast(S.VampiricTouch) then return ""; end
     end
     -- vampiric_touch,if=active_enemies>1&!talent.misery.enabled&!ticking&((1+0.02*buff.voidform.stack)*variable.dot_vt_dpgcd*target.time_to_die%(gcd.max*(156+variable.sear_dpgcd*(active_enemies-1))))>1,cycle_targets=1
-    if S.VampiricTouch:IsCastableP() and (active_enemies > 1 and not S.Misery:IsAvailable() and not bool(ticking) and ((1 + 0.02 * Player:BuffStackP(S.VoidformBuff)) * DotVtDpgcd * Target:TimeToDie() / (Player:GCD() * (156 + SearDpgcd * (active_enemies - 1)))) > 1) then
+    if S.VampiricTouch:IsCastableP() and (active_enemies > 1 and not S.Misery:IsAvailable() and not Target:DebuffP(S.VampiricTouch) and ((1 + 0.02 * Player:BuffStackP(S.VoidformBuff)) * DotVtDpgcd * Target:TimeToDie() / (Player:GCD() * (156 + SearDpgcd * (active_enemies - 1)))) > 1) then
       if AR.Cast(S.VampiricTouch) then return ""; end
     end
     -- shadow_word_pain,if=active_enemies>1&!talent.misery.enabled&!ticking&((1+0.02*buff.voidform.stack)*variable.dot_swp_dpgcd*target.time_to_die%(gcd.max*(118+variable.sear_dpgcd*(active_enemies-1))))>1,cycle_targets=1
-    if S.ShadowWordPain:IsCastableP() and (active_enemies > 1 and not S.Misery:IsAvailable() and not bool(ticking) and ((1 + 0.02 * Player:BuffStackP(S.VoidformBuff)) * DotSwpDpgcd * Target:TimeToDie() / (Player:GCD() * (118 + SearDpgcd * (active_enemies - 1)))) > 1) then
+    if S.ShadowWordPain:IsCastableP() and (active_enemies > 1 and not S.Misery:IsAvailable() and not Target:DebuffP(S.ShadowWordPain) and ((1 + 0.02 * Player:BuffStackP(S.VoidformBuff)) * DotSwpDpgcd * Target:TimeToDie() / (Player:GCD() * (118 + SearDpgcd * (active_enemies - 1)))) > 1) then
       if AR.Cast(S.ShadowWordPain) then return ""; end
     end
     -- mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(action.void_bolt.usable|(current_insanity_drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+30)<100&cooldown.shadow_word_death.charges>=1))

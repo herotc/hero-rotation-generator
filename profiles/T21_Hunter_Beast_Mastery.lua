@@ -94,7 +94,7 @@ local function Apl()
     if AR.Cast(S.UseItems) then return ""; end
   end
   -- arcane_torrent,if=focus.deficit>=30
-  if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (focus.deficit >= 30) then
+  if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (Player:FocusDeficit() >= 30) then
     if AR.Cast(S.ArcaneTorrent, Settings.BeastMastery.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
   end
   -- berserking,if=buff.bestial_wrath.remains>7&(!set_bonus.tier20_2pc|buff.bestial_wrath.remains<11)
@@ -166,7 +166,7 @@ local function Apl()
     if AR.Cast(S.Multishot) then return ""; end
   end
   -- chimaera_shot,if=focus<90
-  if S.ChimaeraShot:IsCastableP() and (focus < 90) then
+  if S.ChimaeraShot:IsCastableP() and (Player:Focus() < 90) then
     if AR.Cast(S.ChimaeraShot) then return ""; end
   end
   -- cobra_shot,if=equipped.roar_of_the_seven_lions&spell_targets.multishot=1&(cooldown.kill_command.remains>focus.time_to_max*0.85&cooldown.bestial_wrath.remains>focus.time_to_max*0.85)
@@ -174,7 +174,7 @@ local function Apl()
     if AR.Cast(S.CobraShot) then return ""; end
   end
   -- cobra_shot,if=(cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max)|(buff.bestial_wrath.up&(spell_targets.multishot=1|focus.regen*cooldown.kill_command.remains>action.kill_command.cost))|target.time_to_die<cooldown.kill_command.remains|(equipped.parsels_tongue&buff.parsels_tongue.remains<=gcd.max*2)
-  if S.CobraShot:IsCastableP() and ((S.KillCommand:CooldownRemainsP() > focus.time_to_max and S.BestialWrath:CooldownRemainsP() > focus.time_to_max) or (Player:BuffP(S.BestialWrathBuff) and (Cache.EnemiesCount[0] == 1 or focus.regen * S.KillCommand:CooldownRemainsP() > action.kill_command.cost)) or Target:TimeToDie() < S.KillCommand:CooldownRemainsP() or (I.ParselsTongue:IsEquipped() and Player:BuffRemainsP(S.ParselsTongueBuff) <= Player:GCD() * 2)) then
+  if S.CobraShot:IsCastableP() and ((S.KillCommand:CooldownRemainsP() > focus.time_to_max and S.BestialWrath:CooldownRemainsP() > focus.time_to_max) or (Player:BuffP(S.BestialWrathBuff) and (Cache.EnemiesCount[0] == 1 or Player:FocusRegen() * S.KillCommand:CooldownRemainsP() > action.kill_command.cost)) or Target:TimeToDie() < S.KillCommand:CooldownRemainsP() or (I.ParselsTongue:IsEquipped() and Player:BuffRemainsP(S.ParselsTongueBuff) <= Player:GCD() * 2)) then
     if AR.Cast(S.CobraShot) then return ""; end
   end
   -- dire_beast,if=buff.bestial_wrath.up

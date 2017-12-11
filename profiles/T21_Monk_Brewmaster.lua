@@ -104,11 +104,11 @@ local function Apl()
       if AR.Cast(S.IronskinBrew) then return ""; end
     end
     -- black_ox_brew,if=(energy+(energy.regen*(cooldown.keg_smash.remains)))<40&buff.blackout_combo.down&cooldown.keg_smash.up
-    if S.BlackOxBrew:IsCastableP() and ((energy + (energy.regen * (S.KegSmash:CooldownRemainsP()))) < 40 and Player:BuffDownP(S.BlackoutComboBuff) and S.KegSmash:CooldownUpP()) then
+    if S.BlackOxBrew:IsCastableP() and ((Player:Energy() + (Player:EnergyRegen() * (S.KegSmash:CooldownRemainsP()))) < 40 and Player:BuffDownP(S.BlackoutComboBuff) and S.KegSmash:CooldownUpP()) then
       if AR.Cast(S.BlackOxBrew) then return ""; end
     end
     -- arcane_torrent,if=energy<31
-    if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (energy < 31) then
+    if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (Player:Energy() < 31) then
       if AR.Cast(S.ArcaneTorrent, Settings.Brewmaster.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
     end
     -- tiger_palm,if=buff.blackout_combo.up
@@ -132,7 +132,7 @@ local function Apl()
       if AR.Cast(S.RushingJadeWind) then return ""; end
     end
     -- tiger_palm,if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=55
-    if S.TigerPalm:IsCastableP() and (not S.BlackoutCombo:IsAvailable() and S.KegSmash:CooldownRemainsP() >= Player:GCD() and (energy + (energy.regen * (S.KegSmash:CooldownRemainsP()))) >= 55) then
+    if S.TigerPalm:IsCastableP() and (not S.BlackoutCombo:IsAvailable() and S.KegSmash:CooldownRemainsP() >= Player:GCD() and (Player:Energy() + (Player:EnergyRegen() * (S.KegSmash:CooldownRemainsP()))) >= 55) then
       if AR.Cast(S.TigerPalm) then return ""; end
     end
   end

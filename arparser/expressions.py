@@ -139,11 +139,77 @@ class Expression:
         """
         return Time(self)
 
+    def rune(self):
+        """
+        Return the condition when the prefix is rune.
+        """
+        return Rune(self)
+
     def astral_power(self):
         """
         Return the condition when the prefix is astral_power.
         """
         return AstralPower(self)
+
+    def holy_power(self):
+        """
+        Return the condition when the prefix is holy_power.
+        """
+        return HolyPower(self)
+
+    def insanity(self):
+        """
+        Return the condition when the prefix is insanity.
+        """
+        return Insanity(self)
+
+    def pain(self):
+        """
+        Return the condition when the prefix is pain.
+        """
+        return Pain(self)
+
+    def focus(self):
+        """
+        Return the condition when the prefix is focus.
+        """
+        return Focus(self)
+
+    def maelstrom(self):
+        """
+        Return the condition when the prefix is maelstrom.
+        """
+        return Maelstrom(self)
+
+    def energy(self):
+        """
+        Return the condition when the prefix is energy.
+        """
+        return Energy(self)
+
+    def combo_points(self):
+        """
+        Return the condition when the prefix is combo_points.
+        """
+        return ComboPoints(self)
+
+    def soul_shards(self):
+        """
+        Return the condition when the prefix is soul_shards.
+        """
+        return SoulShards(self)
+
+    def arcane_charges(self):
+        """
+        Return the condition when the prefix is arcane_charges.
+        """
+        return ArcaneCharges(self)
+
+    def chi(self):
+        """
+        Return the condition when the prefix is chi.
+        """
+        return Chi(self)
 
     def runic_power(self):
         """
@@ -163,6 +229,12 @@ class Expression:
         """
         return Mana(self)
 
+    def artifact(self):
+        """
+        Return the condition when the prefix is artifact.
+        """
+        return Artifact(self)
+
     def talent(self):
         """
         Return the condition when the prefix is talent.
@@ -181,11 +253,11 @@ class Expression:
         """
         return SpellTargets(self)
 
-    def rune(self):
+    def level(self):
         """
-        Return the condition when the prefix is rune.
+        Return the condition when the prefix is level.
         """
-        return Rune(self)
+        return LuaExpression(self.player_unit, Method('level'), [])
 
     def target(self):
         """
@@ -434,6 +506,12 @@ class ActionExpression(BuildExpression):
         Return the arguments for the expression action.spell.travel_time.
         """
         self.method = Method('TravelTime')
+    
+    def max_charges(self):
+        """
+        Return the arguments for the expression action.spell.max_charges.
+        """
+        self.method = Method('MaxCharges')
 
     def spell_targets(self):
         """
@@ -444,6 +522,13 @@ class ActionExpression(BuildExpression):
         self.args = [Literal(self.condition.player_unit.spell_property(
             self.action_object(), RANGE, 0))]
         self.array = True
+    
+    def time_to_die(self):
+        """
+        Return the arguments for the expression time_to_die.
+        """
+        self.object_ = self.condition.target_unit
+        self.method = Method('TimeToDie')
 
     def ready(self):
         """
@@ -492,6 +577,13 @@ class ActionExpression(BuildExpression):
         Return the arguments for the expression action.spell.duration.
         """
         self.aura_model.tick_time()
+        self.from_aura()
+
+    def ticking(self):
+        """
+        Return the arguments for the expression action.spell.duration.
+        """
+        self.aura_model.ticking()
         self.from_aura()
 
 
@@ -611,6 +703,32 @@ class Time(BuildExpression):
         self.method = Method('AC.CombatTime')
 
 
+class Artifact(BuildExpression):
+    """
+    Represent the expression for an artifact. condition.
+    """
+
+    def __init__(self, condition):
+        self.condition = condition
+        call = condition.condition_list[2]
+        self.object_ = Spell(condition.parent_action,
+                             condition.condition_list[1])
+        self.args = []
+        super().__init__(call)
+    
+    def rank(self):
+        """
+        Return the arguments for the expression artifact.spell.rank.
+        """
+        self.method = Method('ArtifactRank')
+    
+    def enabled(self):
+        """
+        Return the arguments for the expression artifact.spell.enabled.
+        """
+        self.method = Method('ArtifactEnabled', type_=BOOL)
+
+
 class Talent(BuildExpression):
     """
     Represent the expression for a talent. condition.
@@ -692,6 +810,18 @@ class Resource(BuildExpression):
         Return the arguments for the expression {resource}.pct.
         """
         self.method = Method(f'{self.simc.print_lua()}Percentage')
+    
+    def regen(self):
+        """
+        Return the arguments for the expression {resource}.regen.
+        """
+        self.method = Method(f'{self.simc.print_lua()}Regen')
+    
+    def max(self):
+        """
+        Return the arguments for the expression {resource}.max.
+        """
+        self.method = Method(f'{self.simc.print_lua()}Max')
 
 
 class Rune(Resource):
@@ -734,6 +864,87 @@ class HolyPower(Resource):
 
     def __init__(self, condition):
         super().__init__(condition, 'holy_power')
+
+
+class Insanity(Resource):
+    """
+    Represent the expression for a insanity. condition.
+    """
+
+    def __init__(self, condition):
+        super().__init__(condition, 'insanity')
+
+
+class Pain(Resource):
+    """
+    Represent the expression for a pain. condition.
+    """
+
+    def __init__(self, condition):
+        super().__init__(condition, 'pain')
+
+
+class Focus(Resource):
+    """
+    Represent the expression for a focus. condition.
+    """
+
+    def __init__(self, condition):
+        super().__init__(condition, 'focus')
+
+
+class Maelstrom(Resource):
+    """
+    Represent the expression for a maelstrom. condition.
+    """
+
+    def __init__(self, condition):
+        super().__init__(condition, 'maelstrom')
+
+
+class Energy(Resource):
+    """
+    Represent the expression for a energy. condition.
+    """
+
+    def __init__(self, condition):
+        super().__init__(condition, 'energy')
+
+
+class ComboPoints(Resource):
+    """
+    Represent the expression for a combo_points. condition.
+    """
+
+    def __init__(self, condition):
+        super().__init__(condition, 'combo_points')
+
+
+class SoulShards(Resource):
+    """
+    Represent the expression for a soul_shards. condition.
+    """
+
+    def __init__(self, condition):
+        super().__init__(condition, 'soul_shards')
+
+
+class ArcaneCharges(Resource):
+    """
+    Represent the expression for a arcane_charges. condition.
+    """
+
+    def __init__(self, condition):
+        super().__init__(condition, 'arcane_charges')
+
+
+class Chi(Resource):
+    """
+    Represent the expression for a chi. condition.
+    """
+
+    def __init__(self, condition):
+        super().__init__(condition, 'chi')
 
 
 class RunicPower(Resource):

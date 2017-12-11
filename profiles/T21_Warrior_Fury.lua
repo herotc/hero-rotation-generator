@@ -39,6 +39,7 @@ Spell.Warrior.Fury = {
   WreckingBallBuff                      = Spell(),
   FuriousSlash                          = Spell(),
   FujiedasFuryBuff                      = Spell(),
+  Juggernaut                            = Spell(),
   JuggernautBuff                        = Spell(),
   StoneHeartBuff                        = Spell(),
   Frenzy                                = Spell(),
@@ -176,7 +177,7 @@ local function Apl()
       if AR.Cast(S.Bloodthirst) then return ""; end
     end
     -- execute,if=artifact.juggernaut.enabled&(!buff.juggernaut.up|buff.juggernaut.remains<2)|buff.stone_heart.react
-    if S.Execute:IsCastableP() and (bool(artifact.juggernaut.enabled) and (not Player:BuffP(S.JuggernautBuff) or Player:BuffRemainsP(S.JuggernautBuff) < 2) or bool(Player:BuffStackP(S.StoneHeartBuff))) then
+    if S.Execute:IsCastableP() and (S.Juggernaut:ArtifactEnabled() and (not Player:BuffP(S.JuggernautBuff) or Player:BuffRemainsP(S.JuggernautBuff) < 2) or bool(Player:BuffStackP(S.StoneHeartBuff))) then
       if AR.Cast(S.Execute) then return ""; end
     end
     -- furious_slash,if=talent.frenzy.enabled&buff.frenzy.remains<=2

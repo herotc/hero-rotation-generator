@@ -126,7 +126,7 @@ local function Apl()
       if AR.Cast(S.StopBurnPhase) then return ""; end
     end
     -- nether_tempest,if=refreshable|!ticking
-    if S.NetherTempest:IsCastableP() and (bool(refreshable) or not bool(ticking)) then
+    if S.NetherTempest:IsCastableP() and (bool(refreshable) or not Player:BuffP(S.NetherTempest)) then
       if AR.Cast(S.NetherTempest) then return ""; end
     end
     -- mark_of_aluneth
@@ -244,7 +244,7 @@ local function Apl()
       if AR.Cast(S.Supernova) then return ""; end
     end
     -- nether_tempest,if=refreshable|!ticking
-    if S.NetherTempest:IsCastableP() and (bool(refreshable) or not bool(ticking)) then
+    if S.NetherTempest:IsCastableP() and (bool(refreshable) or not Player:BuffP(S.NetherTempest)) then
       if AR.Cast(S.NetherTempest) then return ""; end
     end
     -- arcane_explosion,if=active_enemies>1&(mana.pct>=70-(10*equipped.mystic_kilt_of_the_rune_master))

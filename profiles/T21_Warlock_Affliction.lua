@@ -443,7 +443,7 @@ local function Apl()
       if AR.Cast(S.SeedofCorruption) then return ""; end
     end
     -- unstable_affliction,if=soul_shard=5|(time_to_die<=((duration+cast_time)*soul_shard))
-    if S.UnstableAffliction:IsCastableP() and (soul_shard == 5 or (time_to_die <= ((S.UnstableAffliction:BaseDuration() + S.UnstableAffliction:CastTime()) * soul_shard))) then
+    if S.UnstableAffliction:IsCastableP() and (soul_shard == 5 or (Target:TimeToDie() <= ((S.UnstableAffliction:BaseDuration() + S.UnstableAffliction:CastTime()) * soul_shard))) then
       if AR.Cast(S.UnstableAffliction) then return ""; end
     end
     -- drain_soul,cycle_targets=1,if=target.time_to_die<=gcd*2&soul_shard<5
@@ -483,7 +483,7 @@ local function Apl()
       if AR.Cast(S.BloodFury, Settings.Affliction.OffGCDasOffGCD.BloodFury) then return ""; end
     end
     -- soul_harvest,if=sim.target=target&buff.soul_harvest.remains<=8&(raid_event.adds.in>20|active_enemies>1|!raid_event.adds.exists)&(buff.active_uas.stack>=2|active_enemies>3)&(!talent.deaths_embrace.enabled|time_to_die>120|time_to_die<30)
-    if S.SoulHarvest:IsCastableP() and (sim.target == target and Player:BuffRemainsP(S.SoulHarvestBuff) <= 8 and (raid_event.adds.in > 20 or active_enemies > 1 or not bool(raid_event.adds.exists)) and (Player:BuffStackP(S.ActiveUasBuff) >= 2 or active_enemies > 3) and (not S.DeathsEmbrace:IsAvailable() or time_to_die > 120 or time_to_die < 30)) then
+    if S.SoulHarvest:IsCastableP() and (sim.target == target and Player:BuffRemainsP(S.SoulHarvestBuff) <= 8 and (raid_event.adds.in > 20 or active_enemies > 1 or not bool(raid_event.adds.exists)) and (Player:BuffStackP(S.ActiveUasBuff) >= 2 or active_enemies > 3) and (not S.DeathsEmbrace:IsAvailable() or Target:TimeToDie() > 120 or Target:TimeToDie() < 30)) then
       if AR.Cast(S.SoulHarvest) then return ""; end
     end
     -- potion,if=target.time_to_die<=70
@@ -495,11 +495,11 @@ local function Apl()
       if AR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- siphon_life,cycle_targets=1,if=remains<=tick_time+gcd&time_to_die>tick_time*2
-    if S.SiphonLife:IsCastableP() and (Player:BuffRemainsP(S.SiphonLife) <= S.SiphonLife:TickTime() + Player:GCD() and time_to_die > S.SiphonLife:TickTime() * 2) then
+    if S.SiphonLife:IsCastableP() and (Player:BuffRemainsP(S.SiphonLife) <= S.SiphonLife:TickTime() + Player:GCD() and Target:TimeToDie() > S.SiphonLife:TickTime() * 2) then
       if AR.Cast(S.SiphonLife) then return ""; end
     end
     -- corruption,cycle_targets=1,if=remains<=tick_time+gcd&((spell_targets.seed_of_corruption<3&talent.sow_the_seeds.enabled)|spell_targets.seed_of_corruption<5)&time_to_die>tick_time*2
-    if S.Corruption:IsCastableP() and (Player:BuffRemainsP(S.Corruption) <= S.Corruption:TickTime() + Player:GCD() and ((Cache.EnemiesCount[0] < 3 and S.SowtheSeeds:IsAvailable()) or Cache.EnemiesCount[0] < 5) and time_to_die > S.Corruption:TickTime() * 2) then
+    if S.Corruption:IsCastableP() and (Player:BuffRemainsP(S.Corruption) <= S.Corruption:TickTime() + Player:GCD() and ((Cache.EnemiesCount[0] < 3 and S.SowtheSeeds:IsAvailable()) or Cache.EnemiesCount[0] < 5) and Target:TimeToDie() > S.Corruption:TickTime() * 2) then
       if AR.Cast(S.Corruption) then return ""; end
     end
     -- life_tap,if=mana.pct<40&(buff.active_uas.stack<1|!buff.deadwind_harvester.remains)
@@ -543,15 +543,15 @@ local function Apl()
       if AR.Cast(S.LifeTap) then return ""; end
     end
     -- agony,if=refreshable&time_to_die>=remains
-    if S.Agony:IsCastableP() and (bool(refreshable) and time_to_die >= Player:BuffRemainsP(S.Agony)) then
+    if S.Agony:IsCastableP() and (bool(refreshable) and Target:TimeToDie() >= Player:BuffRemainsP(S.Agony)) then
       if AR.Cast(S.Agony) then return ""; end
     end
     -- siphon_life,if=refreshable&time_to_die>=remains
-    if S.SiphonLife:IsCastableP() and (bool(refreshable) and time_to_die >= Player:BuffRemainsP(S.SiphonLife)) then
+    if S.SiphonLife:IsCastableP() and (bool(refreshable) and Target:TimeToDie() >= Player:BuffRemainsP(S.SiphonLife)) then
       if AR.Cast(S.SiphonLife) then return ""; end
     end
     -- corruption,if=refreshable&time_to_die>=remains
-    if S.Corruption:IsCastableP() and (bool(refreshable) and time_to_die >= Player:BuffRemainsP(S.Corruption)) then
+    if S.Corruption:IsCastableP() and (bool(refreshable) and Target:TimeToDie() >= Player:BuffRemainsP(S.Corruption)) then
       if AR.Cast(S.Corruption) then return ""; end
     end
     -- agony,cycle_targets=1,target_if=sim.target!=target&time_to_die>tick_time*3&!buff.deadwind_harvester.remains&refreshable

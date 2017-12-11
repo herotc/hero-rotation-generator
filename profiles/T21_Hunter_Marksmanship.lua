@@ -92,7 +92,7 @@ end
 local function Apl()
   local function Cooldowns()
     -- arcane_torrent,if=focus.deficit>=30&(!talent.sidewinders.enabled|cooldown.sidewinders.charges<2)
-    if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (focus.deficit >= 30 and (not S.Sidewinders:IsAvailable() or S.Sidewinders:ChargesP() < 2)) then
+    if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (Player:FocusDeficit() >= 30 and (not S.Sidewinders:IsAvailable() or S.Sidewinders:ChargesP() < 2)) then
       if AR.Cast(S.ArcaneTorrent, Settings.Marksmanship.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
     end
     -- berserking,if=buff.trueshot.up
@@ -126,7 +126,7 @@ local function Apl()
       if AR.Cast(S.ExplosiveShot) then return ""; end
     end
     -- piercing_shot,if=lowest_vuln_within.5>0&focus>100
-    if S.PiercingShot:IsCastableP() and (lowest_vuln_within.5 > 0 and focus > 100) then
+    if S.PiercingShot:IsCastableP() and (lowest_vuln_within.5 > 0 and Player:Focus() > 100) then
       if AR.Cast(S.PiercingShot) then return ""; end
     end
     -- aimed_shot,if=spell_targets>1&debuff.vulnerability.remains>cast_time&(talent.trick_shot.enabled|buff.lock_and_load.up)&buff.sentinels_sight.stack=20
@@ -170,7 +170,7 @@ local function Apl()
       if AR.Cast(S.MarkedShot) then return ""; end
     end
     -- sidewinders,if=!variable.waiting_for_sentinel&(debuff.hunters_mark.down|(buff.trueshot.down&buff.marking_targets.down))&((buff.marking_targets.up|buff.trueshot.up)|charges_fractional>1.8)&(focus.deficit>cast_regen)
-    if S.Sidewinders:IsCastableP() and (not bool(WaitingForSentinel) and (Target:DebuffDownP(S.HuntersMarkDebuff) or (Player:BuffDownP(S.TrueshotBuff) and Player:BuffDownP(S.MarkingTargetsBuff))) and ((Player:BuffP(S.MarkingTargetsBuff) or Player:BuffP(S.TrueshotBuff)) or S.Sidewinders:ChargesFractional() > 1.8) and (focus.deficit > cast_regen)) then
+    if S.Sidewinders:IsCastableP() and (not bool(WaitingForSentinel) and (Target:DebuffDownP(S.HuntersMarkDebuff) or (Player:BuffDownP(S.TrueshotBuff) and Player:BuffDownP(S.MarkingTargetsBuff))) and ((Player:BuffP(S.MarkingTargetsBuff) or Player:BuffP(S.TrueshotBuff)) or S.Sidewinders:ChargesFractional() > 1.8) and (Player:FocusDeficit() > cast_regen)) then
       if AR.Cast(S.Sidewinders) then return ""; end
     end
     -- aimed_shot,if=talent.sidewinders.enabled&debuff.vulnerability.remains>cast_time
@@ -186,7 +186,7 @@ local function Apl()
       if AR.Cast(S.MarkedShot) then return ""; end
     end
     -- aimed_shot,if=focus+cast_regen>focus.max&!buff.sentinels_sight.up
-    if S.AimedShot:IsCastableP() and (focus + cast_regen > focus.max and not Player:BuffP(S.SentinelsSightBuff)) then
+    if S.AimedShot:IsCastableP() and (Player:Focus() + cast_regen > Player:FocusMax() and not Player:BuffP(S.SentinelsSightBuff)) then
       if AR.Cast(S.AimedShot) then return ""; end
     end
     -- multishot,if=spell_targets.multishot>1&!variable.waiting_for_sentinel
@@ -208,8 +208,8 @@ local function Apl()
       VulnAimCasts = math.floor (VulnWindow / S.AimedShot:ExecuteTime())
     end
     -- variable,name=vuln_aim_casts,op=set,value=floor((focus+action.aimed_shot.cast_regen*(variable.vuln_aim_casts-1))%action.aimed_shot.cost),if=variable.vuln_aim_casts>0&variable.vuln_aim_casts>floor((focus+action.aimed_shot.cast_regen*(variable.vuln_aim_casts-1))%action.aimed_shot.cost)
-    if (VulnAimCasts > 0 and VulnAimCasts > math.floor ((focus + action.aimed_shot.cast_regen * (VulnAimCasts - 1)) / action.aimed_shot.cost)) then
-      VulnAimCasts = math.floor ((focus + action.aimed_shot.cast_regen * (VulnAimCasts - 1)) / action.aimed_shot.cost)
+    if (VulnAimCasts > 0 and VulnAimCasts > math.floor ((Player:Focus() + action.aimed_shot.cast_regen * (VulnAimCasts - 1)) / action.aimed_shot.cost)) then
+      VulnAimCasts = math.floor ((Player:Focus() + action.aimed_shot.cast_regen * (VulnAimCasts - 1)) / action.aimed_shot.cost)
     end
     -- variable,name=can_gcd,value=variable.vuln_window<action.aimed_shot.cast_time|variable.vuln_window>variable.vuln_aim_casts*action.aimed_shot.execute_time+gcd.max+0.1
     if (true) then
@@ -224,7 +224,7 @@ local function Apl()
       if AR.Cast(S.PiercingShot) then return ""; end
     end
     -- piercing_shot,if=cooldown.piercing_shot.up&spell_targets>1&lowest_vuln_within.5>0&((!buff.trueshot.up&focus>80&(lowest_vuln_within.5<1|debuff.hunters_mark.up))|(buff.trueshot.up&focus>105&lowest_vuln_within.5<6))
-    if S.PiercingShot:IsCastableP() and (S.PiercingShot:CooldownUpP() and Cache.EnemiesCount[0] > 1 and lowest_vuln_within.5 > 0 and ((not Player:BuffP(S.TrueshotBuff) and focus > 80 and (lowest_vuln_within.5 < 1 or Target:DebuffP(S.HuntersMarkDebuff))) or (Player:BuffP(S.TrueshotBuff) and focus > 105 and lowest_vuln_within.5 < 6))) then
+    if S.PiercingShot:IsCastableP() and (S.PiercingShot:CooldownUpP() and Cache.EnemiesCount[0] > 1 and lowest_vuln_within.5 > 0 and ((not Player:BuffP(S.TrueshotBuff) and Player:Focus() > 80 and (lowest_vuln_within.5 < 1 or Target:DebuffP(S.HuntersMarkDebuff))) or (Player:BuffP(S.TrueshotBuff) and Player:Focus() > 105 and lowest_vuln_within.5 < 6))) then
       if AR.Cast(S.PiercingShot) then return ""; end
     end
     -- aimed_shot,if=spell_targets>1&talent.trick_shot.enabled&debuff.vulnerability.remains>cast_time&(buff.sentinels_sight.stack>=spell_targets.multishot*5|buff.sentinels_sight.stack+(spell_targets.multishot%2)>20|buff.lock_and_load.up|(set_bonus.tier20_2pc&!buff.t20_2p_critical_aimed_damage.up&action.aimed_shot.in_flight))
@@ -244,7 +244,7 @@ local function Apl()
       if AR.Cast(S.Windburst) then return ""; end
     end
     -- black_arrow,if=variable.can_gcd&(!variable.pooling_for_piercing|(lowest_vuln_within.5>gcd.max&focus>85))
-    if S.BlackArrow:IsCastableP() and (bool(CanGcd) and (not bool(PoolingForPiercing) or (lowest_vuln_within.5 > Player:GCD() and focus > 85))) then
+    if S.BlackArrow:IsCastableP() and (bool(CanGcd) and (not bool(PoolingForPiercing) or (lowest_vuln_within.5 > Player:GCD() and Player:Focus() > 85))) then
       if AR.Cast(S.BlackArrow) then return ""; end
     end
     -- a_murder_of_crows,if=(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)&(target.time_to_die>=cooldown+duration|target.health.pct<20|target.time_to_die<16)&variable.vuln_aim_casts=0
@@ -256,7 +256,7 @@ local function Apl()
       if AR.Cast(S.Barrage) then return ""; end
     end
     -- aimed_shot,if=action.windburst.in_flight&focus+action.arcane_shot.cast_regen+cast_regen>focus.max
-    if S.AimedShot:IsCastableP() and (bool(action.windburst.in_flight) and focus + action.arcane_shot.cast_regen + cast_regen > focus.max) then
+    if S.AimedShot:IsCastableP() and (bool(action.windburst.in_flight) and Player:Focus() + action.arcane_shot.cast_regen + cast_regen > Player:FocusMax()) then
       if AR.Cast(S.AimedShot) then return ""; end
     end
     -- aimed_shot,if=debuff.vulnerability.up&buff.lock_and_load.up&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)
@@ -264,19 +264,19 @@ local function Apl()
       if AR.Cast(S.AimedShot) then return ""; end
     end
     -- aimed_shot,if=spell_targets.multishot>1&debuff.vulnerability.remains>execute_time&(!variable.pooling_for_piercing|(focus>100&lowest_vuln_within.5>(execute_time+gcd.max)))
-    if S.AimedShot:IsCastableP() and (Cache.EnemiesCount[0] > 1 and Target:DebuffRemainsP(S.VulnerabilityDebuff) > S.AimedShot:ExecuteTime() and (not bool(PoolingForPiercing) or (focus > 100 and lowest_vuln_within.5 > (S.AimedShot:ExecuteTime() + Player:GCD())))) then
+    if S.AimedShot:IsCastableP() and (Cache.EnemiesCount[0] > 1 and Target:DebuffRemainsP(S.VulnerabilityDebuff) > S.AimedShot:ExecuteTime() and (not bool(PoolingForPiercing) or (Player:Focus() > 100 and lowest_vuln_within.5 > (S.AimedShot:ExecuteTime() + Player:GCD())))) then
       if AR.Cast(S.AimedShot) then return ""; end
     end
     -- multishot,if=spell_targets>1&variable.can_gcd&focus+cast_regen+action.aimed_shot.cast_regen<focus.max&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)
-    if S.Multishot:IsCastableP() and (Cache.EnemiesCount[0] > 1 and bool(CanGcd) and focus + cast_regen + action.aimed_shot.cast_regen < focus.max and (not bool(PoolingForPiercing) or lowest_vuln_within.5 > Player:GCD())) then
+    if S.Multishot:IsCastableP() and (Cache.EnemiesCount[0] > 1 and bool(CanGcd) and Player:Focus() + cast_regen + action.aimed_shot.cast_regen < Player:FocusMax() and (not bool(PoolingForPiercing) or lowest_vuln_within.5 > Player:GCD())) then
       if AR.Cast(S.Multishot) then return ""; end
     end
     -- arcane_shot,if=spell_targets.multishot=1&(!set_bonus.tier20_2pc|!action.aimed_shot.in_flight|buff.t20_2p_critical_aimed_damage.remains>action.aimed_shot.execute_time+gcd)&variable.vuln_aim_casts>0&variable.can_gcd&focus+cast_regen+action.aimed_shot.cast_regen<focus.max&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd)
-    if S.ArcaneShot:IsCastableP() and (Cache.EnemiesCount[0] == 1 and (not AC.Tier20_2Pc or not bool(action.aimed_shot.in_flight) or Player:BuffRemainsP(S.T202PCriticalAimedDamageBuff) > S.AimedShot:ExecuteTime() + Player:GCD()) and VulnAimCasts > 0 and bool(CanGcd) and focus + cast_regen + action.aimed_shot.cast_regen < focus.max and (not bool(PoolingForPiercing) or lowest_vuln_within.5 > Player:GCD())) then
+    if S.ArcaneShot:IsCastableP() and (Cache.EnemiesCount[0] == 1 and (not AC.Tier20_2Pc or not bool(action.aimed_shot.in_flight) or Player:BuffRemainsP(S.T202PCriticalAimedDamageBuff) > S.AimedShot:ExecuteTime() + Player:GCD()) and VulnAimCasts > 0 and bool(CanGcd) and Player:Focus() + cast_regen + action.aimed_shot.cast_regen < Player:FocusMax() and (not bool(PoolingForPiercing) or lowest_vuln_within.5 > Player:GCD())) then
       if AR.Cast(S.ArcaneShot) then return ""; end
     end
     -- aimed_shot,if=talent.sidewinders.enabled&(debuff.vulnerability.remains>cast_time|(buff.lock_and_load.down&action.windburst.in_flight))&(variable.vuln_window-(execute_time*variable.vuln_aim_casts)<1|focus.deficit<25|buff.trueshot.up)&(spell_targets.multishot=1|focus>100)
-    if S.AimedShot:IsCastableP() and (S.Sidewinders:IsAvailable() and (Target:DebuffRemainsP(S.VulnerabilityDebuff) > S.AimedShot:CastTime() or (Player:BuffDownP(S.LockandLoadBuff) and bool(action.windburst.in_flight))) and (VulnWindow - (S.AimedShot:ExecuteTime() * VulnAimCasts) < 1 or focus.deficit < 25 or Player:BuffP(S.TrueshotBuff)) and (Cache.EnemiesCount[0] == 1 or focus > 100)) then
+    if S.AimedShot:IsCastableP() and (S.Sidewinders:IsAvailable() and (Target:DebuffRemainsP(S.VulnerabilityDebuff) > S.AimedShot:CastTime() or (Player:BuffDownP(S.LockandLoadBuff) and bool(action.windburst.in_flight))) and (VulnWindow - (S.AimedShot:ExecuteTime() * VulnAimCasts) < 1 or Player:FocusDeficit() < 25 or Player:BuffP(S.TrueshotBuff)) and (Cache.EnemiesCount[0] == 1 or Player:Focus() > 100)) then
       if AR.Cast(S.AimedShot) then return ""; end
     end
     -- aimed_shot,if=!talent.sidewinders.enabled&debuff.vulnerability.remains>cast_time&(!variable.pooling_for_piercing|lowest_vuln_within.5>execute_time+gcd.max)
@@ -284,7 +284,7 @@ local function Apl()
       if AR.Cast(S.AimedShot) then return ""; end
     end
     -- marked_shot,if=!talent.sidewinders.enabled&!variable.pooling_for_piercing&!action.windburst.in_flight&(focus>65|buff.trueshot.up|(1%attack_haste)>1.171)
-    if S.MarkedShot:IsCastableP() and (not S.Sidewinders:IsAvailable() and not bool(PoolingForPiercing) and not bool(action.windburst.in_flight) and (focus > 65 or Player:BuffP(S.TrueshotBuff) or (1 / attack_haste) > 1.171)) then
+    if S.MarkedShot:IsCastableP() and (not S.Sidewinders:IsAvailable() and not bool(PoolingForPiercing) and not bool(action.windburst.in_flight) and (Player:Focus() > 65 or Player:BuffP(S.TrueshotBuff) or (1 / attack_haste) > 1.171)) then
       if AR.Cast(S.MarkedShot) then return ""; end
     end
     -- marked_shot,if=talent.sidewinders.enabled&(variable.vuln_aim_casts<1|buff.trueshot.up|variable.vuln_window<action.aimed_shot.cast_time)
@@ -292,7 +292,7 @@ local function Apl()
       if AR.Cast(S.MarkedShot) then return ""; end
     end
     -- aimed_shot,if=focus+cast_regen>focus.max&!buff.sentinels_sight.up
-    if S.AimedShot:IsCastableP() and (focus + cast_regen > focus.max and not Player:BuffP(S.SentinelsSightBuff)) then
+    if S.AimedShot:IsCastableP() and (Player:Focus() + cast_regen > Player:FocusMax() and not Player:BuffP(S.SentinelsSightBuff)) then
       if AR.Cast(S.AimedShot) then return ""; end
     end
     -- sidewinders,if=(!debuff.hunters_mark.up|(!buff.marking_targets.up&!buff.trueshot.up))&((buff.marking_targets.up&variable.vuln_aim_casts<1)|buff.trueshot.up|charges_fractional>1.9)
