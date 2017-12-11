@@ -1,18 +1,18 @@
 --- ============================ HEADER ============================
 --- ======= LOCALIZE =======
-- - Addon
-local addonName, addonTable=...
+-- Addon
+local addonName, addonTable = ...
 -- AethysCore
-local AC =     AethysCore
-local Cache =  AethysCache
-local Unit =   AC.Unit
+local AC     = AethysCore
+local Cache  = AethysCache
+local Unit   = AC.Unit
 local Player = Unit.Player
 local Target = Unit.Target
-local Pet =    Unit.Pet
-local Spell =  AC.Spell
-local Item =   AC.Item
+local Pet    = Unit.Pet
+local Spell  = AC.Spell
+local Item   = AC.Item
 -- AethysRotation
-local AR =     AethysRotation
+local AR     = AethysRotation
 
 --- ============================ CONTENT ===========================
 --- ======= APL LOCALS =======
@@ -89,7 +89,7 @@ end
 local function Apl()
 
   -- implosion,if=wild_imp_remaining_duration<=action.shadow_bolt.execute_time&(buff.demonic_synergy.remains|talent.soul_conduit.enabled|(!talent.soul_conduit.enabled&spell_targets.implosion>1)|wild_imp_count<=4)
-  if S.Implosion:IsCastableP() and (wild_imp_remaining_duration <= S.ShadowBolt:ExecuteTime() and (bool(Player:BuffRemainsP(S.DemonicSynergyBuff)) or S.SoulConduit:IsAvailable() or (not S.SoulConduit:IsAvailable() and spell_targets.implosion > 1) or wild_imp_count <= 4)) then
+  if S.Implosion:IsCastableP() and (wild_imp_remaining_duration <= S.ShadowBolt:ExecuteTime() and (bool(Player:BuffRemainsP(S.DemonicSynergyBuff)) or S.SoulConduit:IsAvailable() or (not S.SoulConduit:IsAvailable() and Cache.EnemiesCount[0] > 1) or wild_imp_count <= 4)) then
     if AR.Cast(S.Implosion) then return ""; end
   end
   -- variable,name=3min,value=doomguard_no_de>0|infernal_no_de>0
@@ -105,23 +105,23 @@ local function Apl()
     NoDe2 = num((bool(3Min) and service_no_de > 0) or (bool(3Min) and wild_imp_no_de > 0) or (bool(3Min) and dreadstalker_no_de > 0) or (service_no_de > 0 and dreadstalker_no_de > 0) or (service_no_de > 0 and wild_imp_no_de > 0) or (dreadstalker_no_de > 0 and wild_imp_no_de > 0) or (Player:PrevGCDP(1, S.HandofGuldan) and bool(NoDe1)))
   end
   -- implosion,if=prev_gcd.1.hand_of_guldan&((wild_imp_remaining_duration<=3&buff.demonic_synergy.remains)|(wild_imp_remaining_duration<=4&spell_targets.implosion>2))
-  if S.Implosion:IsCastableP() and (Player:PrevGCDP(1, S.HandofGuldan) and ((wild_imp_remaining_duration <= 3 and bool(Player:BuffRemainsP(S.DemonicSynergyBuff))) or (wild_imp_remaining_duration <= 4 and spell_targets.implosion > 2))) then
+  if S.Implosion:IsCastableP() and (Player:PrevGCDP(1, S.HandofGuldan) and ((wild_imp_remaining_duration <= 3 and bool(Player:BuffRemainsP(S.DemonicSynergyBuff))) or (wild_imp_remaining_duration <= 4 and Cache.EnemiesCount[0] > 2))) then
     if AR.Cast(S.Implosion) then return ""; end
   end
   -- shadowflame,if=(debuff.shadowflame.stack>0&remains<action.shadow_bolt.cast_time+travel_time)&spell_targets.demonwrath<5
-  if S.Shadowflame:IsCastableP() and ((Target:DebuffStackP(S.ShadowflameDebuff) > 0 and Player:BuffRemainsP(S.Shadowflame) < S.ShadowBolt:CastTime() + S.Shadowflame:TravelTime()) and spell_targets.demonwrath < 5) then
+  if S.Shadowflame:IsCastableP() and ((Target:DebuffStackP(S.ShadowflameDebuff) > 0 and Player:BuffRemainsP(S.Shadowflame) < S.ShadowBolt:CastTime() + S.Shadowflame:TravelTime()) and Cache.EnemiesCount[0] < 5) then
     if AR.Cast(S.Shadowflame) then return ""; end
   end
   -- summon_infernal,if=(!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>2)&equipped.132369
-  if S.SummonInfernal:IsCastableP() and ((not S.GrimoireofSupremacy:IsAvailable() and spell_targets.infernal_awakening > 2) and Item(132369):IsEquipped()) then
+  if S.SummonInfernal:IsCastableP() and ((not S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] > 2) and Item(132369):IsEquipped()) then
     if AR.Cast(S.SummonInfernal) then return ""; end
   end
   -- summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<=2&equipped.132369
-  if S.SummonDoomguard:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and spell_targets.infernal_awakening <= 2 and Item(132369):IsEquipped()) then
+  if S.SummonDoomguard:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] <= 2 and Item(132369):IsEquipped()) then
     if AR.Cast(S.SummonDoomguard) then return ""; end
   end
   -- call_dreadstalkers,if=((!talent.summon_darkglare.enabled|talent.power_trip.enabled)&(spell_targets.implosion<3|!talent.implosion.enabled))&!(soul_shard=5&buff.demonic_calling.remains)
-  if S.CallDreadstalkers:IsCastableP() and (((not S.SummonDarkglare:IsAvailable() or S.PowerTrip:IsAvailable()) and (spell_targets.implosion < 3 or not S.Implosion:IsAvailable())) and not (soul_shard == 5 and bool(Player:BuffRemainsP(S.DemonicCallingBuff)))) then
+  if S.CallDreadstalkers:IsCastableP() and (((not S.SummonDarkglare:IsAvailable() or S.PowerTrip:IsAvailable()) and (Cache.EnemiesCount[0] < 3 or not S.Implosion:IsAvailable())) and not (soul_shard == 5 and bool(Player:BuffRemainsP(S.DemonicCallingBuff)))) then
     if AR.Cast(S.CallDreadstalkers) then return ""; end
   end
   -- doom,cycle_targets=1,if=(!talent.hand_of_doom.enabled&target.time_to_die>duration&(!ticking|remains<duration*0.3))&!(variable.no_de1|prev_gcd.1.hand_of_guldan)
@@ -129,7 +129,7 @@ local function Apl()
     if AR.Cast(S.Doom) then return ""; end
   end
   -- shadowflame,if=(charges=2&soul_shard<5)&spell_targets.demonwrath<5&!variable.no_de1
-  if S.Shadowflame:IsCastableP() and ((S.Shadowflame:ChargesP() == 2 and soul_shard < 5) and spell_targets.demonwrath < 5 and not bool(NoDe1)) then
+  if S.Shadowflame:IsCastableP() and ((S.Shadowflame:ChargesP() == 2 and soul_shard < 5) and Cache.EnemiesCount[0] < 5 and not bool(NoDe1)) then
     if AR.Cast(S.Shadowflame) then return ""; end
   end
   -- service_pet
@@ -137,19 +137,19 @@ local function Apl()
     if AR.Cast(S.ServicePet) then return ""; end
   end
   -- summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<=2&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)
-  if S.SummonDoomguard:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and spell_targets.infernal_awakening <= 2 and (Target:TimeToDie() > 180 or Target:HealthPercentage() <= 20 or Target:TimeToDie() < 30)) then
+  if S.SummonDoomguard:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] <= 2 and (Target:TimeToDie() > 180 or Target:HealthPercentage() <= 20 or Target:TimeToDie() < 30)) then
     if AR.Cast(S.SummonDoomguard) then return ""; end
   end
   -- summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>2
-  if S.SummonInfernal:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and spell_targets.infernal_awakening > 2) then
+  if S.SummonInfernal:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] > 2) then
     if AR.Cast(S.SummonInfernal) then return ""; end
   end
   -- summon_doomguard,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal=1&equipped.132379&!cooldown.sindorei_spite_icd.remains
-  if S.SummonDoomguard:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and spell_targets.summon_infernal == 1 and Item(132379):IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
+  if S.SummonDoomguard:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] == 1 and Item(132379):IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
     if AR.Cast(S.SummonDoomguard) then return ""; end
   end
   -- summon_infernal,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>1&equipped.132379&!cooldown.sindorei_spite_icd.remains
-  if S.SummonInfernal:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and spell_targets.summon_infernal > 1 and Item(132379):IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
+  if S.SummonInfernal:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] > 1 and Item(132379):IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
     if AR.Cast(S.SummonInfernal) then return ""; end
   end
   -- shadow_bolt,if=buff.shadowy_inspiration.remains&soul_shard<5&!prev_gcd.1.doom&!variable.no_de2
@@ -169,7 +169,7 @@ local function Apl()
     if AR.Cast(S.SummonDarkglare) then return ""; end
   end
   -- call_dreadstalkers,if=talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)&(cooldown.summon_darkglare.remains>2|prev_gcd.1.summon_darkglare|cooldown.summon_darkglare.remains<=action.call_dreadstalkers.cast_time&soul_shard>=3|cooldown.summon_darkglare.remains<=action.call_dreadstalkers.cast_time&soul_shard>=1&buff.demonic_calling.react)
-  if S.CallDreadstalkers:IsCastableP() and (S.SummonDarkglare:IsAvailable() and (spell_targets.implosion < 3 or not S.Implosion:IsAvailable()) and (S.SummonDarkglare:CooldownRemainsP() > 2 or Player:PrevGCDP(1, S.SummonDarkglare) or S.SummonDarkglare:CooldownRemainsP() <= S.CallDreadstalkers:CastTime() and soul_shard >= 3 or S.SummonDarkglare:CooldownRemainsP() <= S.CallDreadstalkers:CastTime() and soul_shard >= 1 and bool(Player:BuffStackP(S.DemonicCallingBuff)))) then
+  if S.CallDreadstalkers:IsCastableP() and (S.SummonDarkglare:IsAvailable() and (Cache.EnemiesCount[0] < 3 or not S.Implosion:IsAvailable()) and (S.SummonDarkglare:CooldownRemainsP() > 2 or Player:PrevGCDP(1, S.SummonDarkglare) or S.SummonDarkglare:CooldownRemainsP() <= S.CallDreadstalkers:CastTime() and soul_shard >= 3 or S.SummonDarkglare:CooldownRemainsP() <= S.CallDreadstalkers:CastTime() and soul_shard >= 1 and bool(Player:BuffStackP(S.DemonicCallingBuff)))) then
     if AR.Cast(S.CallDreadstalkers) then return ""; end
   end
   -- hand_of_guldan,if=soul_shard>=4&(((!(variable.no_de1|prev_gcd.1.hand_of_guldan)&(pet_count>=13&!talent.shadowy_inspiration.enabled|pet_count>=6&talent.shadowy_inspiration.enabled))|!variable.no_de2|soul_shard=5)&talent.power_trip.enabled)
@@ -181,7 +181,7 @@ local function Apl()
     if AR.Cast(S.HandofGuldan) then return ""; end
   end
   -- demonic_empowerment,if=(((talent.power_trip.enabled&(!talent.implosion.enabled|spell_targets.demonwrath<=1))|!talent.implosion.enabled|(talent.implosion.enabled&!talent.soul_conduit.enabled&spell_targets.demonwrath<=3))&(wild_imp_no_de>3|prev_gcd.1.hand_of_guldan))|(prev_gcd.1.hand_of_guldan&wild_imp_no_de=0&wild_imp_remaining_duration<=0)|(prev_gcd.1.implosion&wild_imp_no_de>0)
-  if S.DemonicEmpowerment:IsCastableP() and ((((S.PowerTrip:IsAvailable() and (not S.Implosion:IsAvailable() or spell_targets.demonwrath <= 1)) or not S.Implosion:IsAvailable() or (S.Implosion:IsAvailable() and not S.SoulConduit:IsAvailable() and spell_targets.demonwrath <= 3)) and (wild_imp_no_de > 3 or Player:PrevGCDP(1, S.HandofGuldan))) or (Player:PrevGCDP(1, S.HandofGuldan) and wild_imp_no_de == 0 and wild_imp_remaining_duration <= 0) or (Player:PrevGCDP(1, S.Implosion) and wild_imp_no_de > 0)) then
+  if S.DemonicEmpowerment:IsCastableP() and ((((S.PowerTrip:IsAvailable() and (not S.Implosion:IsAvailable() or Cache.EnemiesCount[0] <= 1)) or not S.Implosion:IsAvailable() or (S.Implosion:IsAvailable() and not S.SoulConduit:IsAvailable() and Cache.EnemiesCount[0] <= 3)) and (wild_imp_no_de > 3 or Player:PrevGCDP(1, S.HandofGuldan))) or (Player:PrevGCDP(1, S.HandofGuldan) and wild_imp_no_de == 0 and wild_imp_remaining_duration <= 0) or (Player:PrevGCDP(1, S.Implosion) and wild_imp_no_de > 0)) then
     if AR.Cast(S.DemonicEmpowerment) then return ""; end
   end
   -- demonic_empowerment,if=variable.no_de1|prev_gcd.1.hand_of_guldan
@@ -209,11 +209,11 @@ local function Apl()
     if AR.CastSuggested(I.ProlongedPower) then return ""; end
   end
   -- shadowflame,if=charges=2&spell_targets.demonwrath<5
-  if S.Shadowflame:IsCastableP() and (S.Shadowflame:ChargesP() == 2 and spell_targets.demonwrath < 5) then
+  if S.Shadowflame:IsCastableP() and (S.Shadowflame:ChargesP() == 2 and Cache.EnemiesCount[0] < 5) then
     if AR.Cast(S.Shadowflame) then return ""; end
   end
   -- thalkiels_consumption,if=(dreadstalker_remaining_duration>execute_time|talent.implosion.enabled&spell_targets.implosion>=3)&(wild_imp_count>3&dreadstalker_count<=2|wild_imp_count>5)&wild_imp_remaining_duration>execute_time
-  if S.ThalkielsConsumption:IsCastableP() and ((dreadstalker_remaining_duration > S.ThalkielsConsumption:ExecuteTime() or S.Implosion:IsAvailable() and spell_targets.implosion >= 3) and (wild_imp_count > 3 and dreadstalker_count <= 2 or wild_imp_count > 5) and wild_imp_remaining_duration > S.ThalkielsConsumption:ExecuteTime()) then
+  if S.ThalkielsConsumption:IsCastableP() and ((dreadstalker_remaining_duration > S.ThalkielsConsumption:ExecuteTime() or S.Implosion:IsAvailable() and Cache.EnemiesCount[0] >= 3) and (wild_imp_count > 3 and dreadstalker_count <= 2 or wild_imp_count > 5) and wild_imp_remaining_duration > S.ThalkielsConsumption:ExecuteTime()) then
     if AR.Cast(S.ThalkielsConsumption) then return ""; end
   end
   -- life_tap,if=mana.pct<=15|(mana.pct<=65&((cooldown.call_dreadstalkers.remains<=0.75&soul_shard>=2)|((cooldown.call_dreadstalkers.remains<gcd*2)&(cooldown.summon_doomguard.remains<=0.75|cooldown.service_pet.remains<=0.75)&soul_shard>=3)))
@@ -221,7 +221,7 @@ local function Apl()
     if AR.Cast(S.LifeTap) then return ""; end
   end
   -- demonwrath,chain=1,interrupt=1,if=spell_targets.demonwrath>=3
-  if S.Demonwrath:IsCastableP() and (spell_targets.demonwrath >= 3) then
+  if S.Demonwrath:IsCastableP() and (Cache.EnemiesCount[0] >= 3) then
     if AR.Cast(S.Demonwrath) then return ""; end
   end
   -- demonwrath,moving=1,chain=1,interrupt=1

@@ -1,18 +1,18 @@
 --- ============================ HEADER ============================
 --- ======= LOCALIZE =======
-- - Addon
-local addonName, addonTable=...
+-- Addon
+local addonName, addonTable = ...
 -- AethysCore
-local AC =     AethysCore
-local Cache =  AethysCache
-local Unit =   AC.Unit
+local AC     = AethysCore
+local Cache  = AethysCache
+local Unit   = AC.Unit
 local Player = Unit.Player
 local Target = Unit.Target
-local Pet =    Unit.Pet
-local Spell =  AC.Spell
-local Item =   AC.Item
+local Pet    = Unit.Pet
+local Spell  = AC.Spell
+local Item   = AC.Item
 -- AethysRotation
-local AR =     AethysRotation
+local AR     = AethysRotation
 
 --- ============================ CONTENT ===========================
 --- ======= APL LOCALS =======
@@ -59,7 +59,6 @@ Spell.DeathKnight.Frost = {
   FreezingFog                           = Spell(207060),
   IcyTalons                             = Spell(194878),
   IcyTalonsBuff                         = Spell(194879),
-  AutoAttack                            = Spell(),
   MindFreeze                            = Spell(47528)
 };
 local S = Spell.DeathKnight.Frost;
@@ -140,19 +139,19 @@ local function Apl()
       if AR.Cast(S.FrostStrike) then return ""; end
     end
     -- frostscythe,if=buff.killing_machine.react&(!equipped.koltiras_newfound_will|spell_targets.frostscythe>=2)
-    if S.Frostscythe:IsCastableP() and (bool(Player:BuffStackP(S.KillingMachineBuff)) and (not I.KoltirasNewfoundWill:IsEquipped() or spell_targets.frostscythe >= 2)) then
+    if S.Frostscythe:IsCastableP() and (bool(Player:BuffStackP(S.KillingMachineBuff)) and (not I.KoltirasNewfoundWill:IsEquipped() or Cache.EnemiesCount[0] >= 2)) then
       if AR.Cast(S.Frostscythe) then return ""; end
     end
     -- glacial_advance,if=spell_targets.glacial_advance>=2
-    if S.GlacialAdvance:IsCastableP() and (spell_targets.glacial_advance >= 2) then
+    if S.GlacialAdvance:IsCastableP() and (Cache.EnemiesCount[0] >= 2) then
       if AR.Cast(S.GlacialAdvance) then return ""; end
     end
     -- remorseless_winter,if=spell_targets.remorseless_winter>=2
-    if S.RemorselessWinter:IsCastableP() and (spell_targets.remorseless_winter >= 2) then
+    if S.RemorselessWinter:IsCastableP() and (Cache.EnemiesCount[0] >= 2) then
       if AR.Cast(S.RemorselessWinter) then return ""; end
     end
     -- frostscythe,if=spell_targets.frostscythe>=3
-    if S.Frostscythe:IsCastableP() and (spell_targets.frostscythe >= 3) then
+    if S.Frostscythe:IsCastableP() and (Cache.EnemiesCount[0] >= 3) then
       if AR.Cast(S.Frostscythe) then return ""; end
     end
     -- frost_strike,if=(cooldown.remorseless_winter.remains<(gcd*2)|buff.gathering_storm.stack=10)&cooldown.breath_of_sindragosa.remains>rune.time_to_4&talent.gathering_storm.enabled&(!talent.shattering_strikes.enabled|debuff.razorice.stack<5|cooldown.breath_of_sindragosa.remains>6)
@@ -198,15 +197,15 @@ local function Apl()
       if AR.Cast(S.HornofWinter) then return ""; end
     end
     -- frostscythe,if=buff.killing_machine.react&(!equipped.koltiras_newfound_will|talent.gathering_storm.enabled|spell_targets.frostscythe>=2)
-    if S.Frostscythe:IsCastableP() and (bool(Player:BuffStackP(S.KillingMachineBuff)) and (not I.KoltirasNewfoundWill:IsEquipped() or S.GatheringStorm:IsAvailable() or spell_targets.frostscythe >= 2)) then
+    if S.Frostscythe:IsCastableP() and (bool(Player:BuffStackP(S.KillingMachineBuff)) and (not I.KoltirasNewfoundWill:IsEquipped() or S.GatheringStorm:IsAvailable() or Cache.EnemiesCount[0] >= 2)) then
       if AR.Cast(S.Frostscythe) then return ""; end
     end
     -- glacial_advance,if=spell_targets.glacial_advance>=2
-    if S.GlacialAdvance:IsCastableP() and (spell_targets.glacial_advance >= 2) then
+    if S.GlacialAdvance:IsCastableP() and (Cache.EnemiesCount[0] >= 2) then
       if AR.Cast(S.GlacialAdvance) then return ""; end
     end
     -- remorseless_winter,if=spell_targets.remorseless_winter>=2
-    if S.RemorselessWinter:IsCastableP() and (spell_targets.remorseless_winter >= 2) then
+    if S.RemorselessWinter:IsCastableP() and (Cache.EnemiesCount[0] >= 2) then
       if AR.Cast(S.RemorselessWinter) then return ""; end
     end
     -- obliterate,if=runic_power.deficit>25|rune>3
@@ -246,7 +245,7 @@ local function Apl()
       if AR.Cast(S.ArcaneTorrent, Settings.Frost.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
     end
     -- arcane_torrent,if=dot.breath_of_sindragosa.ticking&runic_power.deficit>=50&rune<2
-    if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (bool(dot.breath_of_sindragosa.ticking) and Player:RunicPowerDeficit() >= 50 and Player:Rune() < 2) then
+    if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (Target:DebuffP(S.BreathofSindragosaDebuff) and Player:RunicPowerDeficit() >= 50 and Player:Rune() < 2) then
       if AR.Cast(S.ArcaneTorrent, Settings.Frost.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
     end
     -- blood_fury,if=buff.pillar_of_frost.up
@@ -270,7 +269,7 @@ local function Apl()
       if AR.Cast(S.UseItem) then return ""; end
     end
     -- use_item,name=draught_of_souls,if=rune.time_to_5<3&(!dot.breath_of_sindragosa.ticking|runic_power>60)
-    if S.UseItem:IsCastableP() and (Player:RuneTimeToX(5) < 3 and (not bool(dot.breath_of_sindragosa.ticking) or Player:RunicPower() > 60)) then
+    if S.UseItem:IsCastableP() and (Player:RuneTimeToX(5) < 3 and (not Target:DebuffP(S.BreathofSindragosaDebuff) or Player:RunicPower() > 60)) then
       if AR.Cast(S.UseItem) then return ""; end
     end
     -- use_item,name=feloiled_infernal_machine,if=!talent.obliteration.enabled|buff.obliteration.up
@@ -278,7 +277,7 @@ local function Apl()
       if AR.Cast(S.UseItem) then return ""; end
     end
     -- potion,if=buff.pillar_of_frost.up&(dot.breath_of_sindragosa.ticking|buff.obliteration.up|talent.hungering_rune_weapon.enabled)
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.PillarofFrostBuff) and (bool(dot.breath_of_sindragosa.ticking) or Player:BuffP(S.ObliterationBuff) or S.HungeringRuneWeapon:IsAvailable())) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.PillarofFrostBuff) and (Target:DebuffP(S.BreathofSindragosaDebuff) or Player:BuffP(S.ObliterationBuff) or S.HungeringRuneWeapon:IsAvailable())) then
       if AR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- pillar_of_frost,if=talent.obliteration.enabled&(cooldown.obliteration.remains>20|cooldown.obliteration.remains<10|!talent.icecap.enabled)
@@ -320,19 +319,19 @@ local function Apl()
       if AR.Cast(S.RemorselessWinter) then return ""; end
     end
     -- frostscythe,if=(buff.killing_machine.up&(buff.killing_machine.react|prev_gcd.1.frost_strike|prev_gcd.1.howling_blast))&spell_targets.frostscythe>1
-    if S.Frostscythe:IsCastableP() and ((Player:BuffP(S.KillingMachineBuff) and (bool(Player:BuffStackP(S.KillingMachineBuff)) or Player:PrevGCDP(1, S.FrostStrike) or Player:PrevGCDP(1, S.HowlingBlast))) and spell_targets.frostscythe > 1) then
+    if S.Frostscythe:IsCastableP() and ((Player:BuffP(S.KillingMachineBuff) and (bool(Player:BuffStackP(S.KillingMachineBuff)) or Player:PrevGCDP(1, S.FrostStrike) or Player:PrevGCDP(1, S.HowlingBlast))) and Cache.EnemiesCount[0] > 1) then
       if AR.Cast(S.Frostscythe) then return ""; end
     end
     -- obliterate,if=(buff.killing_machine.up&(buff.killing_machine.react|prev_gcd.1.frost_strike|prev_gcd.1.howling_blast))|(spell_targets.howling_blast>=3&!buff.rime.up)
-    if S.Obliterate:IsCastableP() and ((Player:BuffP(S.KillingMachineBuff) and (bool(Player:BuffStackP(S.KillingMachineBuff)) or Player:PrevGCDP(1, S.FrostStrike) or Player:PrevGCDP(1, S.HowlingBlast))) or (spell_targets.howling_blast >= 3 and not Player:BuffP(S.RimeBuff))) then
+    if S.Obliterate:IsCastableP() and ((Player:BuffP(S.KillingMachineBuff) and (bool(Player:BuffStackP(S.KillingMachineBuff)) or Player:PrevGCDP(1, S.FrostStrike) or Player:PrevGCDP(1, S.HowlingBlast))) or (Cache.EnemiesCount[0] >= 3 and not Player:BuffP(S.RimeBuff))) then
       if AR.Cast(S.Obliterate) then return ""; end
     end
     -- howling_blast,if=buff.rime.up&spell_targets.howling_blast>1
-    if S.HowlingBlast:IsCastableP() and (Player:BuffP(S.RimeBuff) and spell_targets.howling_blast > 1) then
+    if S.HowlingBlast:IsCastableP() and (Player:BuffP(S.RimeBuff) and Cache.EnemiesCount[0] > 1) then
       if AR.Cast(S.HowlingBlast) then return ""; end
     end
     -- howling_blast,if=!buff.rime.up&spell_targets.howling_blast>2&rune>3&talent.freezing_fog.enabled&talent.gathering_storm.enabled
-    if S.HowlingBlast:IsCastableP() and (not Player:BuffP(S.RimeBuff) and spell_targets.howling_blast > 2 and Player:Rune() > 3 and S.FreezingFog:IsAvailable() and S.GatheringStorm:IsAvailable()) then
+    if S.HowlingBlast:IsCastableP() and (not Player:BuffP(S.RimeBuff) and Cache.EnemiesCount[0] > 2 and Player:Rune() > 3 and S.FreezingFog:IsAvailable() and S.GatheringStorm:IsAvailable()) then
       if AR.Cast(S.HowlingBlast) then return ""; end
     end
     -- frost_strike,if=!buff.rime.up|rune.time_to_1>=gcd|runic_power.deficit<20
@@ -386,7 +385,7 @@ local function Apl()
       if AR.Cast(S.FrostStrike) then return ""; end
     end
     -- frostscythe,if=buff.killing_machine.react&(!equipped.koltiras_newfound_will|spell_targets.frostscythe>=2)
-    if S.Frostscythe:IsCastableP() and (bool(Player:BuffStackP(S.KillingMachineBuff)) and (not I.KoltirasNewfoundWill:IsEquipped() or spell_targets.frostscythe >= 2)) then
+    if S.Frostscythe:IsCastableP() and (bool(Player:BuffStackP(S.KillingMachineBuff)) and (not I.KoltirasNewfoundWill:IsEquipped() or Cache.EnemiesCount[0] >= 2)) then
       if AR.Cast(S.Frostscythe) then return ""; end
     end
     -- obliterate,if=buff.killing_machine.react
@@ -398,15 +397,15 @@ local function Apl()
       if AR.Cast(S.FrostStrike) then return ""; end
     end
     -- remorseless_winter,if=spell_targets.remorseless_winter>=2
-    if S.RemorselessWinter:IsCastableP() and (spell_targets.remorseless_winter >= 2) then
+    if S.RemorselessWinter:IsCastableP() and (Cache.EnemiesCount[0] >= 2) then
       if AR.Cast(S.RemorselessWinter) then return ""; end
     end
     -- glacial_advance,if=spell_targets.glacial_advance>=2
-    if S.GlacialAdvance:IsCastableP() and (spell_targets.glacial_advance >= 2) then
+    if S.GlacialAdvance:IsCastableP() and (Cache.EnemiesCount[0] >= 2) then
       if AR.Cast(S.GlacialAdvance) then return ""; end
     end
     -- frostscythe,if=spell_targets.frostscythe>=3
-    if S.Frostscythe:IsCastableP() and (spell_targets.frostscythe >= 3) then
+    if S.Frostscythe:IsCastableP() and (Cache.EnemiesCount[0] >= 3) then
       if AR.Cast(S.Frostscythe) then return ""; end
     end
     -- obliterate,if=!talent.gathering_storm.enabled|cooldown.remorseless_winter.remains>(gcd*2)
@@ -431,9 +430,6 @@ local function Apl()
     end
   end
   -- auto_attack
-  if S.AutoAttack:IsCastableP() and (true) then
-    if AR.Cast(S.AutoAttack) then return ""; end
-  end
   -- mind_freeze
   if S.MindFreeze:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (true) then
     if AR.CastAnnotated(S.MindFreeze, false, "Interrupt") then return ""; end
@@ -447,7 +443,7 @@ local function Apl()
     return BosPooling();
   end
   -- run_action_list,name=bos_ticking,if=dot.breath_of_sindragosa.ticking
-  if (bool(dot.breath_of_sindragosa.ticking)) then
+  if (Target:DebuffP(S.BreathofSindragosaDebuff)) then
     return BosTicking();
   end
   -- run_action_list,name=obliteration,if=buff.obliteration.up

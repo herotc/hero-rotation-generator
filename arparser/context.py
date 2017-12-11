@@ -18,19 +18,19 @@ class Context:
     HEADER = (
         '--- ============================ HEADER ============================\n'
         '--- ======= LOCALIZE =======\n'
-        '- - Addon\n'
-        'local addonName, addonTable=...\n'
+        '-- Addon\n'
+        'local addonName, addonTable = ...\n'
         '-- AethysCore\n'
-        'local AC =     AethysCore\n'
-        'local Cache =  AethysCache\n'
-        'local Unit =   AC.Unit\n'
+        'local AC     = AethysCore\n'
+        'local Cache  = AethysCache\n'
+        'local Unit   = AC.Unit\n'
         'local Player = Unit.Player\n'
         'local Target = Unit.Target\n'
-        'local Pet =    Unit.Pet\n'
-        'local Spell =  AC.Spell\n'
-        'local Item =   AC.Item\n'
+        'local Pet    = Unit.Pet\n'
+        'local Spell  = AC.Spell\n'
+        'local Item   = AC.Item\n'
         '-- AethysRotation\n'
-        'local AR =     AethysRotation\n')
+        'local AR     = AethysRotation\n')
 
     CONTENT_HEADER = (
         '--- ============================ CONTENT ===========================\n'

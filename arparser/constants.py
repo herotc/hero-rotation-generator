@@ -34,6 +34,7 @@ MELEE = 'melee'
 CD = 'cd'
 PET = 'pet'
 COMMON = 'common'
+RANGE = 'range'
 
 # Miscellaneous
 # =============
@@ -41,6 +42,12 @@ COMMON = 'common'
 # Named action lists to ignore in simc
 IGNORED_ACTION_LISTS = [
     'precombat',
+]
+
+# Named executions which should be ignored by ARParser
+IGNORED_EXECUTIONS = [
+    'auto_attack',
+    'auto_shot',
 ]
 
 # Strings to recognize as items

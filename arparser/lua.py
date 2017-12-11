@@ -131,7 +131,8 @@ class LuaExpression(LuaTyped):
     object:method(args)
     """
 
-    def __init__(self, object_, method, args, type_=None):
+    def __init__(self, object_, method, args, type_=None, array=False):
+        self.array = array
         self.object_ = object_
         self.method = method
         self.args = args
@@ -142,13 +143,45 @@ class LuaExpression(LuaTyped):
         else:
             super().__init__()
 
+    def template(self):
+        """
+        The template for the expression, depending on if it's an array or not.
+        """
+        if self.array:
+            return '{}{}[{}]'
+        else:
+            return '{}{}({})'
+
     def print_lua(self):
         """
-        Print the lua code for the expression
+        Print the lua code for the expression.
         """
         object_caller = f'{self.object_.print_lua()}:' if self.object_ else ''
-        return (f'{object_caller}{self.method.print_lua()}('
-                f'{", ".join(arg.print_lua() for arg in self.args)})')
+        return self.template().format(
+            object_caller,
+            self.method.print_lua(),
+            ', '.join(arg.print_lua() for arg in self.args)
+        )
+
+
+class LuaComparison(LuaTyped):
+    """"
+    Abstract class representing a generic lua comparison of the form:
+    exp1 <comp> exp2.
+    """
+
+    def __init__(self, exp1, exp2, symbol):
+        self.exp1 = exp1
+        self.exp2 = exp2
+        self.symbol = symbol
+        super().__init__(type_=BOOL)
+    
+    def print_lua(self):
+        """
+        Print the lua code for the comparison.
+        """
+        return (f'({self.exp1.print_lua()} {self.symbol} '
+                f'{self.exp2.print_lua()})')
 
 
 class Method:
@@ -182,4 +215,4 @@ class Literal(LuaTyped):
         """
         Print the literal value.
         """
-        return self.simc
+        return str(self.simc)

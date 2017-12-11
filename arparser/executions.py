@@ -8,7 +8,7 @@ Define the objects representing simc executions.
 from .lua import LuaNamed, LuaExpression, Literal, Method
 from .demonhunter import havoc_melee_condition
 from .druid import guardian_swipe_thrash_value
-from .constants import (BLOODLUST, SPELL, BUFF, DEBUFF,
+from .constants import (IGNORED_EXECUTIONS, SPELL, BUFF, DEBUFF,
                         USABLE, INTERRUPT, CD, GCDAOGCD, OGCDAOGCD)
 
 
@@ -245,8 +245,10 @@ class Spell(LuaNamed, Castable):
         super().__init__(simc)
         self.action = action
         self.type_ = type_
-        self.action.context.add_spell(self)
-    
+        self.ignored = simc in IGNORED_EXECUTIONS
+        if not self.ignored:
+            self.action.context.add_spell(self)
+
     def lua_name(self):
         return f'{super().lua_name()}{self.TYPE_SUFFIX[self.type_]}'
 
@@ -287,6 +289,14 @@ class Spell(LuaNamed, Castable):
             args.append(Literal('false'))
             args.append(Literal('"Interrupt"'))
         return args
+
+    def print_cast(self):
+        """
+        Print the lua code of what to do when casting the action.
+        """
+        if self.ignored:
+            return ''
+        return super().print_cast()
 
     @guardian_swipe_thrash_value
     def print_lua(self):

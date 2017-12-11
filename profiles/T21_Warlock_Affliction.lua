@@ -1,18 +1,18 @@
 --- ============================ HEADER ============================
 --- ======= LOCALIZE =======
-- - Addon
-local addonName, addonTable=...
+-- Addon
+local addonName, addonTable = ...
 -- AethysCore
-local AC =     AethysCore
-local Cache =  AethysCache
-local Unit =   AC.Unit
+local AC     = AethysCore
+local Cache  = AethysCache
+local Unit   = AC.Unit
 local Player = Unit.Player
 local Target = Unit.Target
-local Pet =    Unit.Pet
-local Spell =  AC.Spell
-local Item =   AC.Item
+local Pet    = Unit.Pet
+local Spell  = AC.Spell
+local Item   = AC.Item
 -- AethysRotation
-local AR =     AethysRotation
+local AR     = AethysRotation
 
 --- ============================ CONTENT ===========================
 --- ======= APL LOCALS =======
@@ -103,7 +103,7 @@ local function Apl()
       if AR.Cast(S.ReapSouls) then return ""; end
     end
     -- reap_souls,if=active_enemies>1&!buff.deadwind_harvester.remains&time>5&soul_shard>0&((talent.sow_the_seeds.enabled&spell_targets.seed_of_corruption>=3)|spell_targets.seed_of_corruption>=5)
-    if S.ReapSouls:IsCastableP() and (active_enemies > 1 and not bool(Player:BuffRemainsP(S.DeadwindHarvesterBuff)) and AC.CombatTime() > 5 and soul_shard > 0 and ((S.SowtheSeeds:IsAvailable() and spell_targets.seed_of_corruption >= 3) or spell_targets.seed_of_corruption >= 5)) then
+    if S.ReapSouls:IsCastableP() and (active_enemies > 1 and not bool(Player:BuffRemainsP(S.DeadwindHarvesterBuff)) and AC.CombatTime() > 5 and soul_shard > 0 and ((S.SowtheSeeds:IsAvailable() and Cache.EnemiesCount[0] >= 3) or Cache.EnemiesCount[0] >= 5)) then
       if AR.Cast(S.ReapSouls) then return ""; end
     end
     -- agony,cycle_targets=1,if=remains<=tick_time+gcd
@@ -119,19 +119,19 @@ local function Apl()
       if AR.Cast(S.ServicePet) then return ""; end
     end
     -- summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<=2&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)
-    if S.SummonDoomguard:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and spell_targets.summon_infernal <= 2 and (Target:TimeToDie() > 180 or Target:HealthPercentage() <= 20 or Target:TimeToDie() < 30)) then
+    if S.SummonDoomguard:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] <= 2 and (Target:TimeToDie() > 180 or Target:HealthPercentage() <= 20 or Target:TimeToDie() < 30)) then
       if AR.Cast(S.SummonDoomguard) then return ""; end
     end
     -- summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>2
-    if S.SummonInfernal:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and spell_targets.summon_infernal > 2) then
+    if S.SummonInfernal:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] > 2) then
       if AR.Cast(S.SummonInfernal) then return ""; end
     end
     -- summon_doomguard,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal=1&equipped.132379&!cooldown.sindorei_spite_icd.remains
-    if S.SummonDoomguard:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and spell_targets.summon_infernal == 1 and Item(132379):IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
+    if S.SummonDoomguard:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] == 1 and Item(132379):IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
       if AR.Cast(S.SummonDoomguard) then return ""; end
     end
     -- summon_infernal,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>1&equipped.132379&!cooldown.sindorei_spite_icd.remains
-    if S.SummonInfernal:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and spell_targets.summon_infernal > 1 and Item(132379):IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
+    if S.SummonInfernal:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] > 1 and Item(132379):IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
       if AR.Cast(S.SummonInfernal) then return ""; end
     end
     -- berserking,if=prev_gcd.1.unstable_affliction|buff.soul_harvest.remains>=10
@@ -159,7 +159,7 @@ local function Apl()
       if AR.Cast(S.SiphonLife) then return ""; end
     end
     -- corruption,cycle_targets=1,if=remains<=tick_time+gcd&(spell_targets.seed_of_corruption<3&talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<5)
-    if S.Corruption:IsCastableP() and (Player:BuffRemainsP(S.Corruption) <= S.Corruption:TickTime() + Player:GCD() and (spell_targets.seed_of_corruption < 3 and S.SowtheSeeds:IsAvailable() or spell_targets.seed_of_corruption < 5)) then
+    if S.Corruption:IsCastableP() and (Player:BuffRemainsP(S.Corruption) <= S.Corruption:TickTime() + Player:GCD() and (Cache.EnemiesCount[0] < 3 and S.SowtheSeeds:IsAvailable() or Cache.EnemiesCount[0] < 5)) then
       if AR.Cast(S.Corruption) then return ""; end
     end
     -- reap_souls,if=(buff.deadwind_harvester.remains+buff.tormented_souls.react*(5+equipped.144364))>=(12*(5+1.5*equipped.144364))
@@ -195,7 +195,7 @@ local function Apl()
       if AR.Cast(S.SiphonLife) then return ""; end
     end
     -- seed_of_corruption,if=talent.sow_the_seeds.enabled&spell_targets.seed_of_corruption>=3|spell_targets.seed_of_corruption>=5|spell_targets.seed_of_corruption>=3&dot.corruption.remains<=cast_time+travel_time
-    if S.SeedofCorruption:IsCastableP() and (S.SowtheSeeds:IsAvailable() and spell_targets.seed_of_corruption >= 3 or spell_targets.seed_of_corruption >= 5 or spell_targets.seed_of_corruption >= 3 and Target:DebuffRemainsP(S.CorruptionDebuff) <= S.SeedofCorruption:CastTime() + S.SeedofCorruption:TravelTime()) then
+    if S.SeedofCorruption:IsCastableP() and (S.SowtheSeeds:IsAvailable() and Cache.EnemiesCount[0] >= 3 or Cache.EnemiesCount[0] >= 5 or Cache.EnemiesCount[0] >= 3 and Target:DebuffRemainsP(S.CorruptionDebuff) <= S.SeedofCorruption:CastTime() + S.SeedofCorruption:TravelTime()) then
       if AR.Cast(S.SeedofCorruption) then return ""; end
     end
     -- corruption,if=remains<=duration*0.3&target.time_to_die>=remains
@@ -207,23 +207,23 @@ local function Apl()
       if AR.Cast(S.Corruption) then return ""; end
     end
     -- unstable_affliction,if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<5&((soul_shard>=4&!talent.contagion.enabled)|soul_shard>=5|target.time_to_die<30)
-    if S.UnstableAffliction:IsCastableP() and ((not S.SowtheSeeds:IsAvailable() or spell_targets.seed_of_corruption < 3) and spell_targets.seed_of_corruption < 5 and ((soul_shard >= 4 and not S.Contagion:IsAvailable()) or soul_shard >= 5 or Target:TimeToDie() < 30)) then
+    if S.UnstableAffliction:IsCastableP() and ((not S.SowtheSeeds:IsAvailable() or Cache.EnemiesCount[0] < 3) and Cache.EnemiesCount[0] < 5 and ((soul_shard >= 4 and not S.Contagion:IsAvailable()) or soul_shard >= 5 or Target:TimeToDie() < 30)) then
       if AR.Cast(S.UnstableAffliction) then return ""; end
     end
     -- unstable_affliction,cycle_targets=1,if=active_enemies>1&(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&soul_shard>=4&talent.contagion.enabled&cooldown.haunt.remains<15&dot.unstable_affliction_1.remains<cast_time&dot.unstable_affliction_2.remains<cast_time&dot.unstable_affliction_3.remains<cast_time&dot.unstable_affliction_4.remains<cast_time&dot.unstable_affliction_5.remains<cast_time
-    if S.UnstableAffliction:IsCastableP() and (active_enemies > 1 and (not S.SowtheSeeds:IsAvailable() or spell_targets.seed_of_corruption < 3) and soul_shard >= 4 and S.Contagion:IsAvailable() and S.Haunt:CooldownRemainsP() < 15 and Target:DebuffRemainsP(S.UnstableAffliction1Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction2Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction3Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction4Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction5Debuff) < S.UnstableAffliction:CastTime()) then
+    if S.UnstableAffliction:IsCastableP() and (active_enemies > 1 and (not S.SowtheSeeds:IsAvailable() or Cache.EnemiesCount[0] < 3) and soul_shard >= 4 and S.Contagion:IsAvailable() and S.Haunt:CooldownRemainsP() < 15 and Target:DebuffRemainsP(S.UnstableAffliction1Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction2Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction3Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction4Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction5Debuff) < S.UnstableAffliction:CastTime()) then
       if AR.Cast(S.UnstableAffliction) then return ""; end
     end
     -- unstable_affliction,cycle_targets=1,if=active_enemies>1&(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&(equipped.132381|equipped.132457)&cooldown.haunt.remains<15&dot.unstable_affliction_1.remains<cast_time&dot.unstable_affliction_2.remains<cast_time&dot.unstable_affliction_3.remains<cast_time&dot.unstable_affliction_4.remains<cast_time&dot.unstable_affliction_5.remains<cast_time
-    if S.UnstableAffliction:IsCastableP() and (active_enemies > 1 and (not S.SowtheSeeds:IsAvailable() or spell_targets.seed_of_corruption < 3) and (Item(132381):IsEquipped() or Item(132457):IsEquipped()) and S.Haunt:CooldownRemainsP() < 15 and Target:DebuffRemainsP(S.UnstableAffliction1Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction2Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction3Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction4Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction5Debuff) < S.UnstableAffliction:CastTime()) then
+    if S.UnstableAffliction:IsCastableP() and (active_enemies > 1 and (not S.SowtheSeeds:IsAvailable() or Cache.EnemiesCount[0] < 3) and (Item(132381):IsEquipped() or Item(132457):IsEquipped()) and S.Haunt:CooldownRemainsP() < 15 and Target:DebuffRemainsP(S.UnstableAffliction1Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction2Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction3Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction4Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction5Debuff) < S.UnstableAffliction:CastTime()) then
       if AR.Cast(S.UnstableAffliction) then return ""; end
     end
     -- unstable_affliction,if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<5&talent.contagion.enabled&soul_shard>=4&dot.unstable_affliction_1.remains<cast_time&dot.unstable_affliction_2.remains<cast_time&dot.unstable_affliction_3.remains<cast_time&dot.unstable_affliction_4.remains<cast_time&dot.unstable_affliction_5.remains<cast_time
-    if S.UnstableAffliction:IsCastableP() and ((not S.SowtheSeeds:IsAvailable() or spell_targets.seed_of_corruption < 3) and spell_targets.seed_of_corruption < 5 and S.Contagion:IsAvailable() and soul_shard >= 4 and Target:DebuffRemainsP(S.UnstableAffliction1Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction2Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction3Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction4Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction5Debuff) < S.UnstableAffliction:CastTime()) then
+    if S.UnstableAffliction:IsCastableP() and ((not S.SowtheSeeds:IsAvailable() or Cache.EnemiesCount[0] < 3) and Cache.EnemiesCount[0] < 5 and S.Contagion:IsAvailable() and soul_shard >= 4 and Target:DebuffRemainsP(S.UnstableAffliction1Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction2Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction3Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction4Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction5Debuff) < S.UnstableAffliction:CastTime()) then
       if AR.Cast(S.UnstableAffliction) then return ""; end
     end
     -- unstable_affliction,if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<5&debuff.haunt.remains>=action.unstable_affliction_1.tick_time*2
-    if S.UnstableAffliction:IsCastableP() and ((not S.SowtheSeeds:IsAvailable() or spell_targets.seed_of_corruption < 3) and spell_targets.seed_of_corruption < 5 and Target:DebuffRemainsP(S.HauntDebuff) >= S.UnstableAffliction1:TickTime() * 2) then
+    if S.UnstableAffliction:IsCastableP() and ((not S.SowtheSeeds:IsAvailable() or Cache.EnemiesCount[0] < 3) and Cache.EnemiesCount[0] < 5 and Target:DebuffRemainsP(S.HauntDebuff) >= S.UnstableAffliction1:TickTime() * 2) then
       if AR.Cast(S.UnstableAffliction) then return ""; end
     end
     -- reap_souls,if=!buff.deadwind_harvester.remains&(buff.active_uas.stack>1|(prev_gcd.1.unstable_affliction&buff.tormented_souls.react>1))
@@ -277,7 +277,7 @@ local function Apl()
       if AR.Cast(S.Agony) then return ""; end
     end
     -- seed_of_corruption,if=talent.sow_the_seeds.enabled&spell_targets.seed_of_corruption>=3&soul_shard=5
-    if S.SeedofCorruption:IsCastableP() and (S.SowtheSeeds:IsAvailable() and spell_targets.seed_of_corruption >= 3 and soul_shard == 5) then
+    if S.SeedofCorruption:IsCastableP() and (S.SowtheSeeds:IsAvailable() and Cache.EnemiesCount[0] >= 3 and soul_shard == 5) then
       if AR.Cast(S.SeedofCorruption) then return ""; end
     end
     -- unstable_affliction,if=target=sim.target&soul_shard=5
@@ -297,19 +297,19 @@ local function Apl()
       if AR.Cast(S.ServicePet) then return ""; end
     end
     -- summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<=2&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)
-    if S.SummonDoomguard:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and spell_targets.summon_infernal <= 2 and (Target:TimeToDie() > 180 or Target:HealthPercentage() <= 20 or Target:TimeToDie() < 30)) then
+    if S.SummonDoomguard:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] <= 2 and (Target:TimeToDie() > 180 or Target:HealthPercentage() <= 20 or Target:TimeToDie() < 30)) then
       if AR.Cast(S.SummonDoomguard) then return ""; end
     end
     -- summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>2
-    if S.SummonInfernal:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and spell_targets.summon_infernal > 2) then
+    if S.SummonInfernal:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] > 2) then
       if AR.Cast(S.SummonInfernal) then return ""; end
     end
     -- summon_doomguard,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal=1&equipped.132379&!cooldown.sindorei_spite_icd.remains
-    if S.SummonDoomguard:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and spell_targets.summon_infernal == 1 and Item(132379):IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
+    if S.SummonDoomguard:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] == 1 and Item(132379):IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
       if AR.Cast(S.SummonDoomguard) then return ""; end
     end
     -- summon_infernal,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>1&equipped.132379&!cooldown.sindorei_spite_icd.remains
-    if S.SummonInfernal:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and spell_targets.summon_infernal > 1 and Item(132379):IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
+    if S.SummonInfernal:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] > 1 and Item(132379):IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
       if AR.Cast(S.SummonInfernal) then return ""; end
     end
     -- berserking,if=prev_gcd.1.unstable_affliction|buff.soul_harvest.remains>=10
@@ -325,7 +325,7 @@ local function Apl()
       if AR.Cast(S.SiphonLife) then return ""; end
     end
     -- corruption,cycle_targets=1,if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<5&remains<=(tick_time+gcd)&target.time_to_die>tick_time*3
-    if S.Corruption:IsCastableP() and ((not S.SowtheSeeds:IsAvailable() or spell_targets.seed_of_corruption < 3) and spell_targets.seed_of_corruption < 5 and Player:BuffRemainsP(S.Corruption) <= (S.Corruption:TickTime() + Player:GCD()) and Target:TimeToDie() > S.Corruption:TickTime() * 3) then
+    if S.Corruption:IsCastableP() and ((not S.SowtheSeeds:IsAvailable() or Cache.EnemiesCount[0] < 3) and Cache.EnemiesCount[0] < 5 and Player:BuffRemainsP(S.Corruption) <= (S.Corruption:TickTime() + Player:GCD()) and Target:TimeToDie() > S.Corruption:TickTime() * 3) then
       if AR.Cast(S.Corruption) then return ""; end
     end
     -- phantom_singularity
@@ -353,7 +353,7 @@ local function Apl()
       if AR.Cast(S.SiphonLife) then return ""; end
     end
     -- corruption,cycle_targets=1,if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<5&remains<=(duration*0.3)&target.time_to_die>=remains&(buff.active_uas.stack=0|prev_gcd.1.corruption)
-    if S.Corruption:IsCastableP() and ((not S.SowtheSeeds:IsAvailable() or spell_targets.seed_of_corruption < 3) and spell_targets.seed_of_corruption < 5 and Player:BuffRemainsP(S.Corruption) <= (S.Corruption:BaseDuration() * 0.3) and Target:TimeToDie() >= Player:BuffRemainsP(S.Corruption) and (Player:BuffStackP(S.ActiveUasBuff) == 0 or Player:PrevGCDP(1, S.Corruption))) then
+    if S.Corruption:IsCastableP() and ((not S.SowtheSeeds:IsAvailable() or Cache.EnemiesCount[0] < 3) and Cache.EnemiesCount[0] < 5 and Player:BuffRemainsP(S.Corruption) <= (S.Corruption:BaseDuration() * 0.3) and Target:TimeToDie() >= Player:BuffRemainsP(S.Corruption) and (Player:BuffStackP(S.ActiveUasBuff) == 0 or Player:PrevGCDP(1, S.Corruption))) then
       if AR.Cast(S.Corruption) then return ""; end
     end
     -- life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<duration*0.3|talent.malefic_grasp.enabled&target.time_to_die>15&mana.pct<10
@@ -361,7 +361,7 @@ local function Apl()
       if AR.Cast(S.LifeTap) then return ""; end
     end
     -- seed_of_corruption,if=(talent.sow_the_seeds.enabled&spell_targets.seed_of_corruption>=3)|(spell_targets.seed_of_corruption>=5&dot.corruption.remains<=cast_time+travel_time)
-    if S.SeedofCorruption:IsCastableP() and ((S.SowtheSeeds:IsAvailable() and spell_targets.seed_of_corruption >= 3) or (spell_targets.seed_of_corruption >= 5 and Target:DebuffRemainsP(S.CorruptionDebuff) <= S.SeedofCorruption:CastTime() + S.SeedofCorruption:TravelTime())) then
+    if S.SeedofCorruption:IsCastableP() and ((S.SowtheSeeds:IsAvailable() and Cache.EnemiesCount[0] >= 3) or (Cache.EnemiesCount[0] >= 5 and Target:DebuffRemainsP(S.CorruptionDebuff) <= S.SeedofCorruption:CastTime() + S.SeedofCorruption:TravelTime())) then
       if AR.Cast(S.SeedofCorruption) then return ""; end
     end
     -- unstable_affliction,if=target=sim.target&target.time_to_die<30
@@ -435,7 +435,7 @@ local function Apl()
       if AR.Cast(S.Agony) then return ""; end
     end
     -- seed_of_corruption,if=talent.sow_the_seeds.enabled&spell_targets.seed_of_corruption>=3&soul_shard=5
-    if S.SeedofCorruption:IsCastableP() and (S.SowtheSeeds:IsAvailable() and spell_targets.seed_of_corruption >= 3 and soul_shard == 5) then
+    if S.SeedofCorruption:IsCastableP() and (S.SowtheSeeds:IsAvailable() and Cache.EnemiesCount[0] >= 3 and soul_shard == 5) then
       if AR.Cast(S.SeedofCorruption) then return ""; end
     end
     -- unstable_affliction,if=soul_shard=5|(time_to_die<=((duration+cast_time)*soul_shard))
@@ -455,19 +455,19 @@ local function Apl()
       if AR.Cast(S.ServicePet) then return ""; end
     end
     -- summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<=2&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)
-    if S.SummonDoomguard:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and spell_targets.summon_infernal <= 2 and (Target:TimeToDie() > 180 or Target:HealthPercentage() <= 20 or Target:TimeToDie() < 30)) then
+    if S.SummonDoomguard:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] <= 2 and (Target:TimeToDie() > 180 or Target:HealthPercentage() <= 20 or Target:TimeToDie() < 30)) then
       if AR.Cast(S.SummonDoomguard) then return ""; end
     end
     -- summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>2
-    if S.SummonInfernal:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and spell_targets.summon_infernal > 2) then
+    if S.SummonInfernal:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] > 2) then
       if AR.Cast(S.SummonInfernal) then return ""; end
     end
     -- summon_doomguard,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal=1&equipped.132379&!cooldown.sindorei_spite_icd.remains
-    if S.SummonDoomguard:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and spell_targets.summon_infernal == 1 and Item(132379):IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
+    if S.SummonDoomguard:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] == 1 and Item(132379):IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
       if AR.Cast(S.SummonDoomguard) then return ""; end
     end
     -- summon_infernal,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>1&equipped.132379&!cooldown.sindorei_spite_icd.remains
-    if S.SummonInfernal:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and spell_targets.summon_infernal > 1 and Item(132379):IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
+    if S.SummonInfernal:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] > 1 and Item(132379):IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
       if AR.Cast(S.SummonInfernal) then return ""; end
     end
     -- berserking,if=prev_gcd.1.unstable_affliction|buff.soul_harvest.remains>=10
@@ -495,7 +495,7 @@ local function Apl()
       if AR.Cast(S.SiphonLife) then return ""; end
     end
     -- corruption,cycle_targets=1,if=remains<=tick_time+gcd&((spell_targets.seed_of_corruption<3&talent.sow_the_seeds.enabled)|spell_targets.seed_of_corruption<5)&time_to_die>tick_time*2
-    if S.Corruption:IsCastableP() and (Player:BuffRemainsP(S.Corruption) <= S.Corruption:TickTime() + Player:GCD() and ((spell_targets.seed_of_corruption < 3 and S.SowtheSeeds:IsAvailable()) or spell_targets.seed_of_corruption < 5) and time_to_die > S.Corruption:TickTime() * 2) then
+    if S.Corruption:IsCastableP() and (Player:BuffRemainsP(S.Corruption) <= S.Corruption:TickTime() + Player:GCD() and ((Cache.EnemiesCount[0] < 3 and S.SowtheSeeds:IsAvailable()) or Cache.EnemiesCount[0] < 5) and time_to_die > S.Corruption:TickTime() * 2) then
       if AR.Cast(S.Corruption) then return ""; end
     end
     -- life_tap,if=mana.pct<40&(buff.active_uas.stack<1|!buff.deadwind_harvester.remains)
@@ -511,7 +511,7 @@ local function Apl()
       if AR.Cast(S.PhantomSingularity) then return ""; end
     end
     -- seed_of_corruption,if=(talent.sow_the_seeds.enabled&spell_targets.seed_of_corruption>=3)|(spell_targets.seed_of_corruption>3&dot.corruption.refreshable)
-    if S.SeedofCorruption:IsCastableP() and ((S.SowtheSeeds:IsAvailable() and spell_targets.seed_of_corruption >= 3) or (spell_targets.seed_of_corruption > 3 and bool(dot.corruption.refreshable))) then
+    if S.SeedofCorruption:IsCastableP() and ((S.SowtheSeeds:IsAvailable() and Cache.EnemiesCount[0] >= 3) or (Cache.EnemiesCount[0] > 3 and bool(dot.corruption.refreshable))) then
       if AR.Cast(S.SeedofCorruption) then return ""; end
     end
     -- unstable_affliction,if=talent.contagion.enabled&dot.unstable_affliction_1.remains<cast_time&dot.unstable_affliction_2.remains<cast_time&dot.unstable_affliction_3.remains<cast_time&dot.unstable_affliction_4.remains<cast_time&dot.unstable_affliction_5.remains<cast_time
@@ -523,7 +523,7 @@ local function Apl()
       if AR.Cast(S.UnstableAffliction) then return ""; end
     end
     -- unstable_affliction,if=buff.deadwind_harvester.remains>tick_time*2&(!talent.contagion.enabled|soul_shard>1|buff.soul_harvest.remains)&(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking<5)
-    if S.UnstableAffliction:IsCastableP() and (Player:BuffRemainsP(S.DeadwindHarvesterBuff) > S.UnstableAffliction:TickTime() * 2 and (not S.Contagion:IsAvailable() or soul_shard > 1 or bool(Player:BuffRemainsP(S.SoulHarvestBuff))) and (dot.unstable_affliction_1.ticking + dot.unstable_affliction_2.ticking + dot.unstable_affliction_3.ticking + dot.unstable_affliction_4.ticking + dot.unstable_affliction_5.ticking < 5)) then
+    if S.UnstableAffliction:IsCastableP() and (Player:BuffRemainsP(S.DeadwindHarvesterBuff) > S.UnstableAffliction:TickTime() * 2 and (not S.Contagion:IsAvailable() or soul_shard > 1 or bool(Player:BuffRemainsP(S.SoulHarvestBuff))) and (num(Target:DebuffP(S.UnstableAffliction1Debuff)) + num(Target:DebuffP(S.UnstableAffliction2Debuff)) + num(Target:DebuffP(S.UnstableAffliction3Debuff)) + num(Target:DebuffP(S.UnstableAffliction4Debuff)) + num(Target:DebuffP(S.UnstableAffliction5Debuff)) < 5)) then
       if AR.Cast(S.UnstableAffliction) then return ""; end
     end
     -- reap_souls,if=!buff.deadwind_harvester.remains&buff.active_uas.stack>1

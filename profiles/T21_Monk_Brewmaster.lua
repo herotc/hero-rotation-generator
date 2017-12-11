@@ -1,18 +1,18 @@
 --- ============================ HEADER ============================
 --- ======= LOCALIZE =======
-- - Addon
-local addonName, addonTable=...
+-- Addon
+local addonName, addonTable = ...
 -- AethysCore
-local AC =     AethysCore
-local Cache =  AethysCache
-local Unit =   AC.Unit
+local AC     = AethysCore
+local Cache  = AethysCache
+local Unit   = AC.Unit
 local Player = Unit.Player
 local Target = Unit.Target
-local Pet =    Unit.Pet
-local Spell =  AC.Spell
-local Item =   AC.Item
+local Pet    = Unit.Pet
+local Spell  = AC.Spell
+local Item   = AC.Item
 -- AethysRotation
-local AR =     AethysRotation
+local AR     = AethysRotation
 
 --- ============================ CONTENT ===========================
 --- ======= APL LOCALS =======
@@ -37,7 +37,6 @@ Spell.Monk.Brewmaster = {
   BreathofFireDotDebuff                 = Spell(),
   RushingJadeWind                       = Spell(116847),
   BlackoutCombo                         = Spell(196736),
-  AutoAttack                            = Spell(),
   GreaterGiftoftheOx                    = Spell(),
   GiftoftheOx                           = Spell(124507),
   DampenHarm                            = Spell(122278),
@@ -138,9 +137,6 @@ local function Apl()
     end
   end
   -- auto_attack
-  if S.AutoAttack:IsCastableP() and (true) then
-    if AR.Cast(S.AutoAttack) then return ""; end
-  end
   -- greater_gift_of_the_ox
   if S.GreaterGiftoftheOx:IsCastableP() and (true) then
     if AR.Cast(S.GreaterGiftoftheOx) then return ""; end

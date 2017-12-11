@@ -1,18 +1,18 @@
 --- ============================ HEADER ============================
 --- ======= LOCALIZE =======
-- - Addon
-local addonName, addonTable=...
+-- Addon
+local addonName, addonTable = ...
 -- AethysCore
-local AC =     AethysCore
-local Cache =  AethysCache
-local Unit =   AC.Unit
+local AC     = AethysCore
+local Cache  = AethysCache
+local Unit   = AC.Unit
 local Player = Unit.Player
 local Target = Unit.Target
-local Pet =    Unit.Pet
-local Spell =  AC.Spell
-local Item =   AC.Item
+local Pet    = Unit.Pet
+local Spell  = AC.Spell
+local Item   = AC.Item
 -- AethysRotation
-local AR =     AethysRotation
+local AR     = AethysRotation
 
 --- ============================ CONTENT ===========================
 --- ======= APL LOCALS =======
@@ -21,7 +21,6 @@ local AR =     AethysRotation
 -- Spells
 if not Spell.Paladin then Spell.Paladin = {} end
 Spell.Paladin.Protection = {
-  AutoAttack                            = Spell(),
   UseItem                               = Spell(),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
@@ -93,9 +92,6 @@ end
 local function Apl()
   local function MaxDps()
     -- auto_attack
-    if S.AutoAttack:IsCastableP() and (true) then
-      if AR.Cast(S.AutoAttack) then return ""; end
-    end
     -- use_item,name=apocalypse_drive
     if S.UseItem:IsCastableP() and (true) then
       if AR.Cast(S.UseItem) then return ""; end
@@ -115,9 +111,6 @@ local function Apl()
   end
   local function MaxSurvival()
     -- auto_attack
-    if S.AutoAttack:IsCastableP() and (true) then
-      if AR.Cast(S.AutoAttack) then return ""; end
-    end
     -- use_item,name=apocalypse_drive
     if S.UseItem:IsCastableP() and (true) then
       if AR.Cast(S.UseItem) then return ""; end
@@ -298,9 +291,6 @@ local function Apl()
     end
   end
   -- auto_attack
-  if S.AutoAttack:IsCastableP() and (true) then
-    if AR.Cast(S.AutoAttack) then return ""; end
-  end
   -- use_item,name=apocalypse_drive
   if S.UseItem:IsCastableP() and (true) then
     if AR.Cast(S.UseItem) then return ""; end

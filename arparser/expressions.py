@@ -5,11 +5,11 @@ Define the objects representing simc expressions.
 @author: skasch
 """
 
-from .lua import LuaNamed, LuaExpression, Method, Literal
+from .lua import LuaNamed, LuaExpression, LuaComparison, Method, Literal
 from .executions import Spell, Item
 from .druid import balance_astral_power_value
 from .units import Pet
-from .constants import SPELL, BUFF, DEBUFF, BOOL, PET, BLOODLUST
+from .constants import SPELL, BUFF, DEBUFF, BOOL, PET, BLOODLUST, RANGE
 
 
 class Expression:
@@ -169,13 +169,17 @@ class Expression:
         """
         return Talent(self)
 
-    def charges_fractional(self):
+    def race(self):
         """
-        Return the condition when the prefix is charges_fractional.
+        Return the condition when the prefix is race.
         """
-        # TODO: fix charges fractional for other classes
-        return LuaExpression(Spell(self.parent_action, 'blood_boil'),
-                             Method('ChargesFractional'), [])
+        return Race(self)
+
+    def spell_targets(self):
+        """
+        Return the condition when the prefix is spell_targets.
+        """
+        return SpellTargets(self)
 
     def rune(self):
         """
@@ -204,10 +208,11 @@ class BuildExpression(LuaExpression):
     Build an expression from a call.
     """
 
-    def __init__(self, call):
+    def __init__(self, call, array=False):
         call = 'ready' if call == 'up' else call
+        self.array = array
         getattr(self, call)()
-        super().__init__(self.object_, self.method, self.args)
+        super().__init__(self.object_, self.method, self.args, array=self.array)
 
 
 class Expires:
@@ -317,6 +322,12 @@ class Aura(Expires):
         self.object_ = self.spell
         self.method = Method('TickTime')
         self.args = []
+    
+    def ticking(self):
+        """
+        Return the arguments for the expression {aura}.spell.ticking.
+        """
+        self.ready()
 
 
 class ActionExpression(BuildExpression):
@@ -400,6 +411,12 @@ class ActionExpression(BuildExpression):
         """
         self.method = Method('ChargesP')
 
+    def charges_fractional(self):
+        """
+        Return the arguments for the expression action.spell.charges.
+        """
+        self.method = Method('ChargesFractional')
+
     def cooldown(self):
         """
         Return the arguments for the expression action.spell.charges.
@@ -417,6 +434,16 @@ class ActionExpression(BuildExpression):
         Return the arguments for the expression action.spell.travel_time.
         """
         self.method = Method('TravelTime')
+
+    def spell_targets(self):
+        """
+        Return the arguments for the expression action.spell.spell_targets.
+        """
+        self.object_ = None
+        self.method = Method('Cache.EnemiesCount')
+        self.args = [Literal(self.condition.player_unit.spell_property(
+            self.action_object(), RANGE, 0))]
+        self.array = True
 
     def ready(self):
         """
@@ -604,6 +631,42 @@ class Talent(BuildExpression):
         self.method = Method('IsAvailable', type_=BOOL)
 
 
+class Race(LuaComparison):
+    """
+    Represent the expression for a race. condition.
+    """
+
+    def __init__(self, condition):
+        self.condition = condition
+        race_expression, race_name, symbol = self.value(
+            condition.condition_list[1])
+        super().__init__(race_expression, race_name, symbol)
+
+    def value(self, race):
+        """
+        Returns the value for a race. expression.
+        """
+        race_expression = LuaExpression(self.condition.player_unit,
+                                        Method('Race'), [])
+        race_name = Literal(f'"{LuaNamed(race).lua_name()}"')
+        symbol = '=='
+        return race_expression, race_name, symbol
+
+
+class SpellTargets(LuaExpression):
+    """
+    Represent the expression for a spell_targets. condition.
+    """
+
+    def __init__(self, condition):
+        self.condition = condition
+        object_ = None
+        method = Method('Cache.EnemiesCount')
+        args = [Literal(condition.player_unit.spell_property(
+            condition.condition_list[1], RANGE, 0))]
+        super().__init__(object_, method, args, array=True)
+
+
 class Resource(BuildExpression):
     """
     Represent the expression for resource (mana, runic_power, etc) condition.
@@ -670,6 +733,15 @@ class AstralPower(Resource):
     @balance_astral_power_value
     def value(self):
         return super().value()
+
+
+class HolyPower(Resource):
+    """
+    Represent the expression for a runic_power. condition.
+    """
+
+    def __init__(self, condition):
+        super().__init__(condition, 'holy_power')
 
 
 class RunicPower(Resource):
@@ -750,6 +822,13 @@ class Cooldown(BuildExpression, Expires):
         Return the arguments for the expression cooldown.spell.recharge_time.
         """
         self.method = Method('RechargeP')
+    
+    def charges_fractional(self):
+        """
+        Return the arguments for the expression 
+        cooldown.spell.charges_fractional.
+        """
+        self.method = Method('ChargesFractional')
 
 
 

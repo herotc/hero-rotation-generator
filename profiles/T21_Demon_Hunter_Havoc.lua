@@ -1,18 +1,18 @@
 --- ============================ HEADER ============================
 --- ======= LOCALIZE =======
-- - Addon
-local addonName, addonTable=...
+-- Addon
+local addonName, addonTable = ...
 -- AethysCore
-local AC =     AethysCore
-local Cache =  AethysCache
-local Unit =   AC.Unit
+local AC     = AethysCore
+local Cache  = AethysCache
+local Unit   = AC.Unit
 local Player = Unit.Player
 local Target = Unit.Target
-local Pet =    Unit.Pet
-local Spell =  AC.Spell
-local Item =   AC.Item
+local Pet    = Unit.Pet
+local Spell  = AC.Spell
+local Item   = AC.Item
 -- AethysRotation
-local AR =     AethysRotation
+local AR     = AethysRotation
 
 --- ============================ CONTENT ===========================
 --- ======= APL LOCALS =======
@@ -53,7 +53,6 @@ Spell.DemonHunter.Havoc = {
   DemonicAppetite                       = Spell(206478),
   FelBarrage                            = Spell(211053),
   BlindFury                             = Spell(203550),
-  AutoAttack                            = Spell(),
   FirstBlood                            = Spell(206416),
   ChaosCleave                           = Spell(206475),
   ConsumeMagic                          = Spell(183752)
@@ -165,7 +164,7 @@ local function Apl()
       if AR.Cast(S.BladeDance) then return ""; end
     end
     -- throw_glaive,if=talent.bloodlet.enabled&spell_targets>=2&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&(spell_targets>=3|raid_event.adds.in>recharge_time+cooldown)
-    if S.ThrowGlaive:IsCastableP() and (S.Bloodlet:IsAvailable() and spell_targets >= 2 and (not S.MasteroftheGlaive:IsAvailable() or not S.Momentum:IsAvailable() or Player:BuffP(S.MomentumBuff)) and (spell_targets >= 3 or raid_event.adds.in > S.ThrowGlaive:RechargeP() + S.ThrowGlaive:Cooldown())) then
+    if S.ThrowGlaive:IsCastableP() and (S.Bloodlet:IsAvailable() and Cache.EnemiesCount[0] >= 2 and (not S.MasteroftheGlaive:IsAvailable() or not S.Momentum:IsAvailable() or Player:BuffP(S.MomentumBuff)) and (Cache.EnemiesCount[0] >= 3 or raid_event.adds.in > S.ThrowGlaive:RechargeP() + S.ThrowGlaive:Cooldown())) then
       if AR.Cast(S.ThrowGlaive) then return ""; end
     end
     -- felblade,if=fury.deficit>=30&(fury<40|buff.metamorphosis.down)
@@ -173,7 +172,7 @@ local function Apl()
       if AR.Cast(S.Felblade) then return ""; end
     end
     -- eye_beam,if=spell_targets.eye_beam_tick>desired_targets|!buff.metamorphosis.extended_by_demonic|(set_bonus.tier21_4pc&buff.metamorphosis.remains>16)
-    if S.EyeBeam:IsCastableP() and (spell_targets.eye_beam_tick > desired_targets or not bool(buff.metamorphosis.extended_by_demonic) or (AC.Tier21_4Pc and Player:BuffRemainsP(S.MetamorphosisBuff) > 16)) then
+    if S.EyeBeam:IsCastableP() and (Cache.EnemiesCount[0] > desired_targets or not bool(buff.metamorphosis.extended_by_demonic) or (AC.Tier21_4Pc and Player:BuffRemainsP(S.MetamorphosisBuff) > 16)) then
       if AR.Cast(S.EyeBeam) then return ""; end
     end
     -- annihilation,if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance
@@ -255,7 +254,7 @@ local function Apl()
       if AR.Cast(S.BladeDance) then return ""; end
     end
     -- throw_glaive,if=talent.bloodlet.enabled&spell_targets>=2&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&(spell_targets>=3|raid_event.adds.in>recharge_time+cooldown)
-    if S.ThrowGlaive:IsCastableP() and (S.Bloodlet:IsAvailable() and spell_targets >= 2 and (not S.MasteroftheGlaive:IsAvailable() or not S.Momentum:IsAvailable() or Player:BuffP(S.MomentumBuff)) and (spell_targets >= 3 or raid_event.adds.in > S.ThrowGlaive:RechargeP() + S.ThrowGlaive:Cooldown())) then
+    if S.ThrowGlaive:IsCastableP() and (S.Bloodlet:IsAvailable() and Cache.EnemiesCount[0] >= 2 and (not S.MasteroftheGlaive:IsAvailable() or not S.Momentum:IsAvailable() or Player:BuffP(S.MomentumBuff)) and (Cache.EnemiesCount[0] >= 3 or raid_event.adds.in > S.ThrowGlaive:RechargeP() + S.ThrowGlaive:Cooldown())) then
       if AR.Cast(S.ThrowGlaive) then return ""; end
     end
     -- felblade,if=fury.deficit>=30+buff.prepared.up*8
@@ -263,7 +262,7 @@ local function Apl()
       if AR.Cast(S.Felblade) then return ""; end
     end
     -- eye_beam,if=spell_targets.eye_beam_tick>desired_targets|(spell_targets.eye_beam_tick>=3&raid_event.adds.in>cooldown)|(talent.blind_fury.enabled&fury.deficit>=35)|set_bonus.tier21_2pc
-    if S.EyeBeam:IsCastableP() and (spell_targets.eye_beam_tick > desired_targets or (spell_targets.eye_beam_tick >= 3 and raid_event.adds.in > S.EyeBeam:Cooldown()) or (S.BlindFury:IsAvailable() and Player:FuryDeficit() >= 35) or AC.Tier21_2Pc) then
+    if S.EyeBeam:IsCastableP() and (Cache.EnemiesCount[0] > desired_targets or (Cache.EnemiesCount[0] >= 3 and raid_event.adds.in > S.EyeBeam:Cooldown()) or (S.BlindFury:IsAvailable() and Player:FuryDeficit() >= 35) or AC.Tier21_2Pc) then
       if AR.Cast(S.EyeBeam) then return ""; end
     end
     -- annihilation,if=(talent.demon_blades.enabled|!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance
@@ -275,7 +274,7 @@ local function Apl()
       if AR.Cast(S.ThrowGlaive) then return ""; end
     end
     -- throw_glaive,if=!talent.bloodlet.enabled&buff.metamorphosis.down&spell_targets>=3
-    if S.ThrowGlaive:IsCastableP() and (not S.Bloodlet:IsAvailable() and Player:BuffDownP(S.MetamorphosisBuff) and spell_targets >= 3) then
+    if S.ThrowGlaive:IsCastableP() and (not S.Bloodlet:IsAvailable() and Player:BuffDownP(S.MetamorphosisBuff) and Cache.EnemiesCount[0] >= 3) then
       if AR.Cast(S.ThrowGlaive) then return ""; end
     end
     -- chaos_strike,if=(talent.demon_blades.enabled|!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8)&!variable.pooling_for_chaos_strike&!variable.pooling_for_meta&!variable.pooling_for_blade_dance
@@ -312,9 +311,6 @@ local function Apl()
     end
   end
   -- auto_attack
-  if S.AutoAttack:IsCastableP() and (true) then
-    if AR.Cast(S.AutoAttack) then return ""; end
-  end
   -- variable,name=waiting_for_nemesis,value=!(!talent.nemesis.enabled|cooldown.nemesis.ready|cooldown.nemesis.remains>target.time_to_die|cooldown.nemesis.remains>60)
   if (true) then
     WaitingForNemesis = num(not (not S.Nemesis:IsAvailable() or S.Nemesis:CooldownUpP() or S.Nemesis:CooldownRemainsP() > Target:TimeToDie() or S.Nemesis:CooldownRemainsP() > 60))
@@ -329,7 +325,7 @@ local function Apl()
   end
   -- variable,name=blade_dance,value=talent.first_blood.enabled|set_bonus.tier20_4pc|spell_targets.blade_dance1>=3+(talent.chaos_cleave.enabled*3)
   if (true) then
-    BladeDance = num(S.FirstBlood:IsAvailable() or AC.Tier20_4Pc or spell_targets.blade_dance1 >= 3 + (num(S.ChaosCleave:IsAvailable()) * 3))
+    BladeDance = num(S.FirstBlood:IsAvailable() or AC.Tier20_4Pc or Cache.EnemiesCount[0] >= 3 + (num(S.ChaosCleave:IsAvailable()) * 3))
   end
   -- variable,name=pooling_for_blade_dance,value=variable.blade_dance&(fury<75-talent.first_blood.enabled*20)
   if (true) then

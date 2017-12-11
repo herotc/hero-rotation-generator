@@ -5,7 +5,7 @@ Paladin specific constants and functions.
 @author: skasch
 """
 
-from .constants import COMMON, SPELL, BUFF, DEBUFF, INTERRUPT
+from .constants import COMMON, SPELL, BUFF, DEBUFF, INTERRUPT, RANGE
 
 PALADIN = 'paladin'
 PROTECTION = 'protection'
@@ -71,7 +71,8 @@ PL_SPELL_INFO = {
                                                  DEBUFF:    213757},
             'judgment':                         {SPELL:     20271,
                                                  DEBUFF:    231663},
-            'divine_storm':                     {SPELL:     53385},
+            'divine_storm':                     {SPELL:     53385,
+                                                 RANGE:     8},
             'divine_purpose':                   {BUFF:      223819},
             'justicars_vengeance':              {SPELL:     215661},
             'templars_verdict':                 {SPELL:     85256},

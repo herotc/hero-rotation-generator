@@ -1,18 +1,18 @@
 --- ============================ HEADER ============================
 --- ======= LOCALIZE =======
-- - Addon
-local addonName, addonTable=...
+-- Addon
+local addonName, addonTable = ...
 -- AethysCore
-local AC =     AethysCore
-local Cache =  AethysCache
-local Unit =   AC.Unit
+local AC     = AethysCore
+local Cache  = AethysCache
+local Unit   = AC.Unit
 local Player = Unit.Player
 local Target = Unit.Target
-local Pet =    Unit.Pet
-local Spell =  AC.Spell
-local Item =   AC.Item
+local Pet    = Unit.Pet
+local Spell  = AC.Spell
+local Item   = AC.Item
 -- AethysRotation
-local AR =     AethysRotation
+local AR     = AethysRotation
 
 --- ============================ CONTENT ===========================
 --- ======= APL LOCALS =======
@@ -49,7 +49,6 @@ Spell.Warrior.Arms = {
   AngerManagement                       = Spell(),
   Slam                                  = Spell(),
   Charge                                = Spell(),
-  AutoAttack                            = Spell(),
   Avatar                                = Spell(),
   AvatarBuff                            = Spell(),
   BloodFury                             = Spell(20572),
@@ -110,19 +109,19 @@ local function Apl()
       if AR.Cast(S.ColossusSmash) then return ""; end
     end
     -- colossus_smash,cycle_targets=1,if=debuff.colossus_smash.down&spell_targets.whirlwind<=10
-    if S.ColossusSmash:IsCastableP() and (Target:DebuffDownP(S.ColossusSmashDebuff) and spell_targets.whirlwind <= 10) then
+    if S.ColossusSmash:IsCastableP() and (Target:DebuffDownP(S.ColossusSmashDebuff) and Cache.EnemiesCount[0] <= 10) then
       if AR.Cast(S.ColossusSmash) then return ""; end
     end
     -- cleave,if=spell_targets.whirlwind>=5
-    if S.Cleave:IsCastableP() and (spell_targets.whirlwind >= 5) then
+    if S.Cleave:IsCastableP() and (Cache.EnemiesCount[0] >= 5) then
       if AR.Cast(S.Cleave) then return ""; end
     end
     -- whirlwind,if=spell_targets.whirlwind>=5&buff.cleave.up
-    if S.Whirlwind:IsCastableP() and (spell_targets.whirlwind >= 5 and Player:BuffP(S.CleaveBuff)) then
+    if S.Whirlwind:IsCastableP() and (Cache.EnemiesCount[0] >= 5 and Player:BuffP(S.CleaveBuff)) then
       if AR.Cast(S.Whirlwind) then return ""; end
     end
     -- whirlwind,if=spell_targets.whirlwind>=7
-    if S.Whirlwind:IsCastableP() and (spell_targets.whirlwind >= 7) then
+    if S.Whirlwind:IsCastableP() and (Cache.EnemiesCount[0] >= 7) then
       if AR.Cast(S.Whirlwind) then return ""; end
     end
     -- colossus_smash,if=buff.shattered_defenses.down
@@ -138,7 +137,7 @@ local function Apl()
       if AR.Cast(S.MortalStrike) then return ""; end
     end
     -- rend,cycle_targets=1,if=remains<=duration*0.3&spell_targets.whirlwind<=3
-    if S.Rend:IsCastableP() and (Player:BuffRemainsP(S.Rend) <= S.Rend:BaseDuration() * 0.3 and spell_targets.whirlwind <= 3) then
+    if S.Rend:IsCastableP() and (Player:BuffRemainsP(S.Rend) <= S.Rend:BaseDuration() * 0.3 and Cache.EnemiesCount[0] <= 3) then
       if AR.Cast(S.Rend) then return ""; end
     end
     -- cleave
@@ -234,7 +233,7 @@ local function Apl()
       if AR.Cast(S.Execute) then return ""; end
     end
     -- bladestorm,interrupt=1,if=(raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)&!set_bonus.tier20_4pc
-    if S.Bladestorm:IsCastableP() and ((raid_event.adds.in > 90 or not bool(raid_event.adds.exists) or spell_targets.bladestorm_mh > desired_targets) and not AC.Tier20_4Pc) then
+    if S.Bladestorm:IsCastableP() and ((raid_event.adds.in > 90 or not bool(raid_event.adds.exists) or Cache.EnemiesCount[0] > desired_targets) and not AC.Tier20_4Pc) then
       if AR.Cast(S.Bladestorm) then return ""; end
     end
   end
@@ -284,11 +283,11 @@ local function Apl()
       if AR.Cast(S.Cleave) then return ""; end
     end
     -- whirlwind,if=spell_targets.whirlwind>1|talent.fervor_of_battle.enabled
-    if S.Whirlwind:IsCastableP() and (spell_targets.whirlwind > 1 or S.FervorofBattle:IsAvailable()) then
+    if S.Whirlwind:IsCastableP() and (Cache.EnemiesCount[0] > 1 or S.FervorofBattle:IsAvailable()) then
       if AR.Cast(S.Whirlwind) then return ""; end
     end
     -- slam,if=spell_targets.whirlwind=1&!talent.fervor_of_battle.enabled&(rage>=52|!talent.rend.enabled|!talent.ravager.enabled)
-    if S.Slam:IsCastableP() and (spell_targets.whirlwind == 1 and not S.FervorofBattle:IsAvailable() and (rage >= 52 or not S.Rend:IsAvailable() or not S.Ravager:IsAvailable())) then
+    if S.Slam:IsCastableP() and (Cache.EnemiesCount[0] == 1 and not S.FervorofBattle:IsAvailable() and (rage >= 52 or not S.Rend:IsAvailable() or not S.Ravager:IsAvailable())) then
       if AR.Cast(S.Slam) then return ""; end
     end
     -- overpower
@@ -305,9 +304,6 @@ local function Apl()
     if AR.Cast(S.Charge) then return ""; end
   end
   -- auto_attack
-  if S.AutoAttack:IsCastableP() and (true) then
-    if AR.Cast(S.AutoAttack) then return ""; end
-  end
   -- potion,name=old_war,if=(!talent.avatar.enabled|buff.avatar.up)&buff.battle_cry.up&debuff.colossus_smash.up|target.time_to_die<=26
   if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and ((not S.Avatar:IsAvailable() or Player:BuffP(S.AvatarBuff)) and Player:BuffP(S.BattleCryBuff) and Target:DebuffP(S.ColossusSmashDebuff) or Target:TimeToDie() <= 26) then
     if AR.CastSuggested(I.ProlongedPower) then return ""; end
@@ -341,11 +337,11 @@ local function Apl()
     return Execute();
   end
   -- run_action_list,name=aoe,if=spell_targets.whirlwind>=4
-  if (spell_targets.whirlwind >= 4) then
+  if (Cache.EnemiesCount[0] >= 4) then
     return Aoe();
   end
   -- run_action_list,name=cleave,if=spell_targets.whirlwind>=2
-  if (spell_targets.whirlwind >= 2) then
+  if (Cache.EnemiesCount[0] >= 2) then
     return Cleave();
   end
   -- run_action_list,name=single,if=target.health.pct>20

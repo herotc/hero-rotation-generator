@@ -1,18 +1,18 @@
 --- ============================ HEADER ============================
 --- ======= LOCALIZE =======
-- - Addon
-local addonName, addonTable=...
+-- Addon
+local addonName, addonTable = ...
 -- AethysCore
-local AC =     AethysCore
-local Cache =  AethysCache
-local Unit =   AC.Unit
+local AC     = AethysCore
+local Cache  = AethysCache
+local Unit   = AC.Unit
 local Player = Unit.Player
 local Target = Unit.Target
-local Pet =    Unit.Pet
-local Spell =  AC.Spell
-local Item =   AC.Item
+local Pet    = Unit.Pet
+local Spell  = AC.Spell
+local Item   = AC.Item
 -- AethysRotation
-local AR =     AethysRotation
+local AR     = AethysRotation
 
 --- ============================ CONTENT ===========================
 --- ======= APL LOCALS =======
@@ -43,7 +43,6 @@ Spell.Druid.Feral = {
   CatForm                               = Spell(768),
   ProwlBuff                             = Spell(5215),
   ShadowmeldBuff                        = Spell(58984),
-  AutoAttack                            = Spell(),
   FerociousBite                         = Spell(22568),
   Regrowth                              = Spell(8936),
   PredatorySwiftnessBuff                = Spell(69369),
@@ -58,7 +57,6 @@ Spell.Druid.Feral = {
   FieryRedMaimersBuff                   = Spell(236757),
   BrutalSlash                           = Spell(202028),
   ThrashCat                             = Spell(106830),
-  BloodBoil                             = Spell(),
   MoonfireCat                           = Spell(155625),
   ClearcastingBuff                      = Spell(135700),
   SwipeCat                              = Spell(106785),
@@ -156,9 +154,6 @@ local function Apl()
       if AR.Cast(S.Rake) then return ""; end
     end
     -- auto_attack
-    if S.AutoAttack:IsCastableP() and (true) then
-      if AR.Cast(S.AutoAttack) then return ""; end
-    end
     -- call_action_list,name=cooldowns
     if (true) then
       local ShouldReturn = Cooldowns(); if ShouldReturn then return ShouldReturn; end
@@ -236,7 +231,7 @@ local function Apl()
       if AR.Cast(S.Regrowth) then return ""; end
     end
     -- brutal_slash,if=spell_targets.brutal_slash>desired_targets
-    if S.BrutalSlash:IsCastableP() and (spell_targets.brutal_slash > desired_targets) then
+    if S.BrutalSlash:IsCastableP() and (Cache.EnemiesCount[0] > desired_targets) then
       if AR.Cast(S.BrutalSlash) then return ""; end
     end
     -- pool_resource,for_next=1
@@ -244,7 +239,7 @@ local function Apl()
       if AR.Cast(S.PoolResource) then return ""; end
     end
     -- thrash_cat,if=refreshable&(spell_targets.thrash_cat>2)
-    if S.ThrashCat:IsCastableP() and (bool(refreshable) and (spell_targets.thrash_cat > 2)) then
+    if S.ThrashCat:IsCastableP() and (bool(refreshable) and (Cache.EnemiesCount[0] > 2)) then
       if AR.Cast(S.ThrashCat) then return ""; end
     end
     -- pool_resource,for_next=1
@@ -252,7 +247,7 @@ local function Apl()
       if AR.Cast(S.PoolResource) then return ""; end
     end
     -- thrash_cat,if=spell_targets.thrash_cat>3&equipped.luffa_wrappings&talent.brutal_slash.enabled
-    if S.ThrashCat:IsCastableP() and (spell_targets.thrash_cat > 3 and I.LuffaWrappings:IsEquipped() and S.BrutalSlash:IsAvailable()) then
+    if S.ThrashCat:IsCastableP() and (Cache.EnemiesCount[0] > 3 and I.LuffaWrappings:IsEquipped() and S.BrutalSlash:IsAvailable()) then
       if AR.Cast(S.ThrashCat) then return ""; end
     end
     -- pool_resource,for_next=1
@@ -272,7 +267,7 @@ local function Apl()
       if AR.Cast(S.Rake) then return ""; end
     end
     -- brutal_slash,if=(buff.tigers_fury.up&(raid_event.adds.in>(1+max_charges-charges_fractional)*recharge_time))
-    if S.BrutalSlash:IsCastableP() and ((Player:BuffP(S.TigersFuryBuff) and (raid_event.adds.in > (1 + max_charges - S.BloodBoil:ChargesFractional()) * S.BrutalSlash:RechargeP()))) then
+    if S.BrutalSlash:IsCastableP() and ((Player:BuffP(S.TigersFuryBuff) and (raid_event.adds.in > (1 + max_charges - S.BrutalSlash:ChargesFractional()) * S.BrutalSlash:RechargeP()))) then
       if AR.Cast(S.BrutalSlash) then return ""; end
     end
     -- moonfire_cat,target_if=refreshable
@@ -284,7 +279,7 @@ local function Apl()
       if AR.Cast(S.PoolResource) then return ""; end
     end
     -- thrash_cat,if=refreshable&(variable.use_thrash=2|spell_targets.thrash_cat>1)
-    if S.ThrashCat:IsCastableP() and (bool(refreshable) and (UseThrash == 2 or spell_targets.thrash_cat > 1)) then
+    if S.ThrashCat:IsCastableP() and (bool(refreshable) and (UseThrash == 2 or Cache.EnemiesCount[0] > 1)) then
       if AR.Cast(S.ThrashCat) then return ""; end
     end
     -- thrash_cat,if=refreshable&variable.use_thrash=1&buff.clearcasting.react
@@ -296,7 +291,7 @@ local function Apl()
       if AR.Cast(S.PoolResource) then return ""; end
     end
     -- swipe_cat,if=spell_targets.swipe_cat>1
-    if S.SwipeCat:IsCastableP() and (spell_targets.swipe_cat > 1) then
+    if S.SwipeCat:IsCastableP() and (Cache.EnemiesCount[0] > 1) then
       if AR.Cast(S.SwipeCat) then return ""; end
     end
     -- shred,if=dot.rake.remains>(action.shred.cost+action.rake.cost-energy)%energy.regen|buff.clearcasting.react
@@ -305,7 +300,7 @@ local function Apl()
     end
   end
   -- run_action_list,name=single_target,if=dot.rip.ticking|time>15
-  if (bool(dot.rip.ticking) or AC.CombatTime() > 15) then
+  if (Target:DebuffP(S.RipDebuff) or AC.CombatTime() > 15) then
     return SingleTarget();
   end
   -- rake,if=!ticking|buff.prowl.up
@@ -317,9 +312,6 @@ local function Apl()
     if AR.Cast(S.Dash) then return ""; end
   end
   -- auto_attack
-  if S.AutoAttack:IsCastableP() and (true) then
-    if AR.Cast(S.AutoAttack) then return ""; end
-  end
   -- moonfire_cat,if=talent.lunar_inspiration.enabled&!ticking
   if S.MoonfireCat:IsCastableP() and (S.LunarInspiration:IsAvailable() and not bool(ticking)) then
     if AR.Cast(S.MoonfireCat) then return ""; end

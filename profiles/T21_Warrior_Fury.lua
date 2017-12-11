@@ -1,18 +1,18 @@
 --- ============================ HEADER ============================
 --- ======= LOCALIZE =======
-- - Addon
-local addonName, addonTable=...
+-- Addon
+local addonName, addonTable = ...
 -- AethysCore
-local AC =     AethysCore
-local Cache =  AethysCache
-local Unit =   AC.Unit
+local AC     = AethysCore
+local Cache  = AethysCache
+local Unit   = AC.Unit
 local Player = Unit.Player
 local Target = Unit.Target
-local Pet =    Unit.Pet
-local Spell =  AC.Spell
-local Item =   AC.Item
+local Pet    = Unit.Pet
+local Spell  = AC.Spell
+local Item   = AC.Item
 -- AethysRotation
-local AR =     AethysRotation
+local AR     = AethysRotation
 
 --- ============================ CONTENT ===========================
 --- ======= APL LOCALS =======
@@ -47,7 +47,6 @@ Spell.Warrior.Fury = {
   BattleCry                             = Spell(),
   Bloodbath                             = Spell(),
   Carnage                               = Spell(),
-  AutoAttack                            = Spell(),
   Charge                                = Spell(),
   AvatarBuff                            = Spell(),
   Avatar                                = Spell(),
@@ -101,7 +100,7 @@ local function Apl()
       if AR.Cast(S.Bloodthirst) then return ""; end
     end
     -- bladestorm,if=buff.enrage.remains>2&(raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)
-    if S.Bladestorm:IsCastableP() and (Player:BuffRemainsP(S.EnrageBuff) > 2 and (raid_event.adds.in > 90 or not bool(raid_event.adds.exists) or spell_targets.bladestorm_mh > desired_targets)) then
+    if S.Bladestorm:IsCastableP() and (Player:BuffRemainsP(S.EnrageBuff) > 2 and (raid_event.adds.in > 90 or not bool(raid_event.adds.exists) or Cache.EnemiesCount[0] > desired_targets)) then
       if AR.Cast(S.Bladestorm) then return ""; end
     end
     -- whirlwind,if=buff.meat_cleaver.down
@@ -284,9 +283,6 @@ local function Apl()
     end
   end
   -- auto_attack
-  if S.AutoAttack:IsCastableP() and (true) then
-    if AR.Cast(S.AutoAttack) then return ""; end
-  end
   -- charge
   if S.Charge:IsCastableP() and (true) then
     if AR.Cast(S.Charge) then return ""; end
@@ -332,7 +328,7 @@ local function Apl()
     if AR.Cast(S.BattleCry) then return ""; end
   end
   -- battle_cry,if=gcd.remains=0&talent.bladestorm.enabled&(raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)
-  if S.BattleCry:IsCastableP() and (Player:GCDRemains() == 0 and S.Bladestorm:IsAvailable() and (raid_event.adds.in > 90 or not bool(raid_event.adds.exists) or spell_targets.bladestorm_mh > desired_targets)) then
+  if S.BattleCry:IsCastableP() and (Player:GCDRemains() == 0 and S.Bladestorm:IsAvailable() and (raid_event.adds.in > 90 or not bool(raid_event.adds.exists) or Cache.EnemiesCount[0] > desired_targets)) then
     if AR.Cast(S.BattleCry) then return ""; end
   end
   -- battle_cry,if=gcd.remains=0&buff.dragon_roar.up&(cooldown.bloodthirst.remains=0|buff.enrage.remains>cooldown.bloodthirst.remains)
@@ -360,15 +356,15 @@ local function Apl()
     if AR.Cast(S.ArcaneTorrent, Settings.Fury.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
   end
   -- run_action_list,name=cooldowns,if=buff.battle_cry.up&spell_targets.whirlwind=1
-  if (Player:BuffP(S.BattleCryBuff) and spell_targets.whirlwind == 1) then
+  if (Player:BuffP(S.BattleCryBuff) and Cache.EnemiesCount[0] == 1) then
     return Cooldowns();
   end
   -- run_action_list,name=three_targets,if=target.health.pct>20&(spell_targets.whirlwind=3|spell_targets.whirlwind=4)
-  if (Target:HealthPercentage() > 20 and (spell_targets.whirlwind == 3 or spell_targets.whirlwind == 4)) then
+  if (Target:HealthPercentage() > 20 and (Cache.EnemiesCount[0] == 3 or Cache.EnemiesCount[0] == 4)) then
     return ThreeTargets();
   end
   -- run_action_list,name=aoe,if=spell_targets.whirlwind>4
-  if (spell_targets.whirlwind > 4) then
+  if (Cache.EnemiesCount[0] > 4) then
     return Aoe();
   end
   -- run_action_list,name=execute,if=target.health.pct<20

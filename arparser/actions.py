@@ -175,12 +175,16 @@ class Action:
         """
         lua_string = ''
         if self.show_comments:
-            lua_string += f'-- {self.simc}\n'
+            lua_string += f'-- {self.simc}'
+        exec_cast = self.print_exec()
+        if exec_cast == '':
+            return lua_string
         exec_cond = self.execution().object_().print_conditions()
         cond_link = ' and ' if exec_cond != '' else ''
         if_cond = convert_type(self.condition_tree(), BOOL)
-        lua_string += (f'if {exec_cond}{cond_link}({if_cond}) then\n'
-                       f'  {self.print_exec()}\n'
+        lua_string += ('\n'
+                       f'if {exec_cond}{cond_link}({if_cond}) then\n'
+                       f'  {exec_cast}\n'
                        f'end')
         return lua_string
 

@@ -1,18 +1,18 @@
 --- ============================ HEADER ============================
 --- ======= LOCALIZE =======
-- - Addon
-local addonName, addonTable=...
+-- Addon
+local addonName, addonTable = ...
 -- AethysCore
-local AC =     AethysCore
-local Cache =  AethysCache
-local Unit =   AC.Unit
+local AC     = AethysCore
+local Cache  = AethysCache
+local Unit   = AC.Unit
 local Player = Unit.Player
 local Target = Unit.Target
-local Pet =    Unit.Pet
-local Spell =  AC.Spell
-local Item =   AC.Item
+local Pet    = Unit.Pet
+local Spell  = AC.Spell
+local Item   = AC.Item
 -- AethysRotation
-local AR =     AethysRotation
+local AR     = AethysRotation
 
 --- ============================ CONTENT ===========================
 --- ======= APL LOCALS =======
@@ -38,7 +38,6 @@ Spell.Mage.Frost = {
   ConeofCold                            = Spell(120),
   RuneofPower                           = Spell(116011),
   IcyVeins                              = Spell(12472),
-  BloodBoil                             = Spell(),
   IcyVeinsBuff                          = Spell(12472),
   MirrorImage                           = Spell(55342),
   UseItems                              = Spell(),
@@ -151,7 +150,7 @@ local function Apl()
   end
   local function Cooldowns()
     -- rune_of_power,if=cooldown.icy_veins.remains<cast_time|charges_fractional>1.9&cooldown.icy_veins.remains>10|buff.icy_veins.up|target.time_to_die+5<charges_fractional*10
-    if S.RuneofPower:IsCastableP() and (S.IcyVeins:CooldownRemainsP() < S.RuneofPower:CastTime() or S.BloodBoil:ChargesFractional() > 1.9 and S.IcyVeins:CooldownRemainsP() > 10 or Player:BuffP(S.IcyVeinsBuff) or Target:TimeToDie() + 5 < S.BloodBoil:ChargesFractional() * 10) then
+    if S.RuneofPower:IsCastableP() and (S.IcyVeins:CooldownRemainsP() < S.RuneofPower:CastTime() or S.RuneofPower:ChargesFractional() > 1.9 and S.IcyVeins:CooldownRemainsP() > 10 or Player:BuffP(S.IcyVeinsBuff) or Target:TimeToDie() + 5 < S.RuneofPower:ChargesFractional() * 10) then
       if AR.Cast(S.RuneofPower) then return ""; end
     end
     -- potion,if=cooldown.icy_veins.remains<1|target.time_to_die<70

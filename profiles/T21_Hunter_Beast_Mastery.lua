@@ -1,18 +1,18 @@
 --- ============================ HEADER ============================
 --- ======= LOCALIZE =======
-- - Addon
-local addonName, addonTable=...
+-- Addon
+local addonName, addonTable = ...
 -- AethysCore
-local AC =     AethysCore
-local Cache =  AethysCache
-local Unit =   AC.Unit
+local AC     = AethysCore
+local Cache  = AethysCache
+local Unit   = AC.Unit
 local Player = Unit.Player
 local Target = Unit.Target
-local Pet =    Unit.Pet
-local Spell =  AC.Spell
-local Item =   AC.Item
+local Pet    = Unit.Pet
+local Spell  = AC.Spell
+local Item   = AC.Item
 -- AethysRotation
-local AR =     AethysRotation
+local AR     = AethysRotation
 
 --- ============================ CONTENT ===========================
 --- ======= APL LOCALS =======
@@ -21,7 +21,6 @@ local AR =     AethysRotation
 -- Spells
 if not Spell.Hunter then Spell.Hunter = {} end
 Spell.Hunter.BeastMastery = {
-  AutoShot                              = Spell(),
   CounterShot                           = Spell(147362),
   UseItems                              = Spell(),
   ArcaneTorrent                         = Spell(50613),
@@ -41,7 +40,6 @@ Spell.Hunter.BeastMastery = {
   CobraShot                             = Spell(193455),
   DireBeast                             = Spell(120679),
   TitansThunder                         = Spell(207068),
-  BloodBoil                             = Spell(),
   Barrage                               = Spell(120360),
   Multishot                             = Spell(2643),
   BeastCleaveBuff                       = Spell(118455, "pet"),
@@ -87,9 +85,6 @@ end
 local function Apl()
 
   -- auto_shot
-  if S.AutoShot:IsCastableP() and (true) then
-    if AR.Cast(S.AutoShot) then return ""; end
-  end
   -- counter_shot,if=target.debuff.casting.react
   if S.CounterShot:IsCastableP() and (bool(target.debuff.casting.react)) then
     if AR.Cast(S.CounterShot) then return ""; end
@@ -139,11 +134,11 @@ local function Apl()
     if AR.Cast(S.KillCommand) then return ""; end
   end
   -- cobra_shot,if=set_bonus.tier20_2pc&spell_targets.multishot=1&!equipped.qapla_eredun_war_order&(buff.bestial_wrath.up&buff.bestial_wrath.remains<gcd.max*2)&(!talent.dire_frenzy.enabled|pet.cat.buff.dire_frenzy.remains>gcd.max*1.2)
-  if S.CobraShot:IsCastableP() and (AC.Tier20_2Pc and spell_targets.multishot == 1 and not I.QaplaEredunWarOrder:IsEquipped() and (Player:BuffP(S.BestialWrathBuff) and Player:BuffRemainsP(S.BestialWrathBuff) < Player:GCD() * 2) and (not S.DireFrenzy:IsAvailable() or Pet:BuffRemainsP(S.DireFrenzyBuff) > Player:GCD() * 1.2)) then
+  if S.CobraShot:IsCastableP() and (AC.Tier20_2Pc and Cache.EnemiesCount[0] == 1 and not I.QaplaEredunWarOrder:IsEquipped() and (Player:BuffP(S.BestialWrathBuff) and Player:BuffRemainsP(S.BestialWrathBuff) < Player:GCD() * 2) and (not S.DireFrenzy:IsAvailable() or Pet:BuffRemainsP(S.DireFrenzyBuff) > Player:GCD() * 1.2)) then
     if AR.Cast(S.CobraShot) then return ""; end
   end
   -- dire_beast,if=cooldown.bestial_wrath.remains>2&((!equipped.qapla_eredun_war_order|cooldown.kill_command.remains>=1)|full_recharge_time<gcd.max|cooldown.titans_thunder.up|spell_targets>1)
-  if S.DireBeast:IsCastableP() and (S.BestialWrath:CooldownRemainsP() > 2 and ((not I.QaplaEredunWarOrder:IsEquipped() or S.KillCommand:CooldownRemainsP() >= 1) or S.DireBeast:FullRechargeTimeP() < Player:GCD() or S.TitansThunder:CooldownUpP() or spell_targets > 1)) then
+  if S.DireBeast:IsCastableP() and (S.BestialWrath:CooldownRemainsP() > 2 and ((not I.QaplaEredunWarOrder:IsEquipped() or S.KillCommand:CooldownRemainsP() >= 1) or S.DireBeast:FullRechargeTimeP() < Player:GCD() or S.TitansThunder:CooldownUpP() or Cache.EnemiesCount[0] > 1)) then
     if AR.Cast(S.DireBeast) then return ""; end
   end
   -- titans_thunder,if=buff.bestial_wrath.up
@@ -151,15 +146,15 @@ local function Apl()
     if AR.Cast(S.TitansThunder) then return ""; end
   end
   -- dire_frenzy,if=pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2|(talent.one_with_the_pack.enabled&(cooldown.bestial_wrath.remains>3&charges_fractional>1.2))|full_recharge_time<gcd.max|target.time_to_die<9
-  if S.DireFrenzy:IsCastableP() and (Pet:BuffRemainsP(S.DireFrenzyBuff) <= Player:GCD() * 1.2 or (S.OneWiththePack:IsAvailable() and (S.BestialWrath:CooldownRemainsP() > 3 and S.BloodBoil:ChargesFractional() > 1.2)) or S.DireFrenzy:FullRechargeTimeP() < Player:GCD() or Target:TimeToDie() < 9) then
+  if S.DireFrenzy:IsCastableP() and (Pet:BuffRemainsP(S.DireFrenzyBuff) <= Player:GCD() * 1.2 or (S.OneWiththePack:IsAvailable() and (S.BestialWrath:CooldownRemainsP() > 3 and S.DireFrenzy:ChargesFractional() > 1.2)) or S.DireFrenzy:FullRechargeTimeP() < Player:GCD() or Target:TimeToDie() < 9) then
     if AR.Cast(S.DireFrenzy) then return ""; end
   end
   -- barrage,if=spell_targets.barrage>1
-  if S.Barrage:IsCastableP() and (spell_targets.barrage > 1) then
+  if S.Barrage:IsCastableP() and (Cache.EnemiesCount[0] > 1) then
     if AR.Cast(S.Barrage) then return ""; end
   end
   -- multishot,if=spell_targets>4&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)
-  if S.Multishot:IsCastableP() and (spell_targets > 4 and (Pet:BuffRemainsP(S.BeastCleaveBuff) < Player:GCD() or Pet:BuffDownP(S.BeastCleaveBuff))) then
+  if S.Multishot:IsCastableP() and (Cache.EnemiesCount[0] > 4 and (Pet:BuffRemainsP(S.BeastCleaveBuff) < Player:GCD() or Pet:BuffDownP(S.BeastCleaveBuff))) then
     if AR.Cast(S.Multishot) then return ""; end
   end
   -- kill_command
@@ -167,7 +162,7 @@ local function Apl()
     if AR.Cast(S.KillCommand) then return ""; end
   end
   -- multishot,if=spell_targets>1&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)
-  if S.Multishot:IsCastableP() and (spell_targets > 1 and (Pet:BuffRemainsP(S.BeastCleaveBuff) < Player:GCD() or Pet:BuffDownP(S.BeastCleaveBuff))) then
+  if S.Multishot:IsCastableP() and (Cache.EnemiesCount[0] > 1 and (Pet:BuffRemainsP(S.BeastCleaveBuff) < Player:GCD() or Pet:BuffDownP(S.BeastCleaveBuff))) then
     if AR.Cast(S.Multishot) then return ""; end
   end
   -- chimaera_shot,if=focus<90
@@ -175,11 +170,11 @@ local function Apl()
     if AR.Cast(S.ChimaeraShot) then return ""; end
   end
   -- cobra_shot,if=equipped.roar_of_the_seven_lions&spell_targets.multishot=1&(cooldown.kill_command.remains>focus.time_to_max*0.85&cooldown.bestial_wrath.remains>focus.time_to_max*0.85)
-  if S.CobraShot:IsCastableP() and (I.RoaroftheSevenLions:IsEquipped() and spell_targets.multishot == 1 and (S.KillCommand:CooldownRemainsP() > focus.time_to_max * 0.85 and S.BestialWrath:CooldownRemainsP() > focus.time_to_max * 0.85)) then
+  if S.CobraShot:IsCastableP() and (I.RoaroftheSevenLions:IsEquipped() and Cache.EnemiesCount[0] == 1 and (S.KillCommand:CooldownRemainsP() > focus.time_to_max * 0.85 and S.BestialWrath:CooldownRemainsP() > focus.time_to_max * 0.85)) then
     if AR.Cast(S.CobraShot) then return ""; end
   end
   -- cobra_shot,if=(cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max)|(buff.bestial_wrath.up&(spell_targets.multishot=1|focus.regen*cooldown.kill_command.remains>action.kill_command.cost))|target.time_to_die<cooldown.kill_command.remains|(equipped.parsels_tongue&buff.parsels_tongue.remains<=gcd.max*2)
-  if S.CobraShot:IsCastableP() and ((S.KillCommand:CooldownRemainsP() > focus.time_to_max and S.BestialWrath:CooldownRemainsP() > focus.time_to_max) or (Player:BuffP(S.BestialWrathBuff) and (spell_targets.multishot == 1 or focus.regen * S.KillCommand:CooldownRemainsP() > action.kill_command.cost)) or Target:TimeToDie() < S.KillCommand:CooldownRemainsP() or (I.ParselsTongue:IsEquipped() and Player:BuffRemainsP(S.ParselsTongueBuff) <= Player:GCD() * 2)) then
+  if S.CobraShot:IsCastableP() and ((S.KillCommand:CooldownRemainsP() > focus.time_to_max and S.BestialWrath:CooldownRemainsP() > focus.time_to_max) or (Player:BuffP(S.BestialWrathBuff) and (Cache.EnemiesCount[0] == 1 or focus.regen * S.KillCommand:CooldownRemainsP() > action.kill_command.cost)) or Target:TimeToDie() < S.KillCommand:CooldownRemainsP() or (I.ParselsTongue:IsEquipped() and Player:BuffRemainsP(S.ParselsTongueBuff) <= Player:GCD() * 2)) then
     if AR.Cast(S.CobraShot) then return ""; end
   end
   -- dire_beast,if=buff.bestial_wrath.up

@@ -1,18 +1,18 @@
 --- ============================ HEADER ============================
 --- ======= LOCALIZE =======
-- - Addon
-local addonName, addonTable=...
+-- Addon
+local addonName, addonTable = ...
 -- AethysCore
-local AC =     AethysCore
-local Cache =  AethysCache
-local Unit =   AC.Unit
+local AC     = AethysCore
+local Cache  = AethysCache
+local Unit   = AC.Unit
 local Player = Unit.Player
 local Target = Unit.Target
-local Pet =    Unit.Pet
-local Spell =  AC.Spell
-local Item =   AC.Item
+local Pet    = Unit.Pet
+local Spell  = AC.Spell
+local Item   = AC.Item
 -- AethysRotation
-local AR =     AethysRotation
+local AR     = AethysRotation
 
 --- ============================ CONTENT ===========================
 --- ======= APL LOCALS =======
@@ -179,7 +179,7 @@ local function Apl()
       if AR.Cast(S.Moonfire) then return ""; end
     end
     -- lunar_strike,if=spell_targets.lunar_strike>=4|spell_haste<0.45
-    if S.LunarStrike:IsCastableP() and (spell_targets.lunar_strike >= 4 or Player:SpellHaste() < 0.45) then
+    if S.LunarStrike:IsCastableP() and (Cache.EnemiesCount[0] >= 4 or Player:SpellHaste() < 0.45) then
       if AR.Cast(S.LunarStrike) then return ""; end
     end
     -- solar_wrath
@@ -486,7 +486,7 @@ local function Apl()
     if AR.Cast(S.CelestialAlignment) then return ""; end
   end
   -- call_action_list,name=AoE,if=(spell_targets.starfall>=2&talent.stellar_drift.enabled)|spell_targets.starfall>=3
-  if ((spell_targets.starfall >= 2 and S.StellarDrift:IsAvailable()) or spell_targets.starfall >= 3) then
+  if ((Cache.EnemiesCount[0] >= 2 and S.StellarDrift:IsAvailable()) or Cache.EnemiesCount[0] >= 3) then
     local ShouldReturn = Aoe(); if ShouldReturn then return ShouldReturn; end
   end
   -- call_action_list,name=single_target

@@ -1,18 +1,18 @@
 --- ============================ HEADER ============================
 --- ======= LOCALIZE =======
-- - Addon
-local addonName, addonTable=...
+-- Addon
+local addonName, addonTable = ...
 -- AethysCore
-local AC =     AethysCore
-local Cache =  AethysCache
-local Unit =   AC.Unit
+local AC     = AethysCore
+local Cache  = AethysCache
+local Unit   = AC.Unit
 local Player = Unit.Player
 local Target = Unit.Target
-local Pet =    Unit.Pet
-local Spell =  AC.Spell
-local Item =   AC.Item
+local Pet    = Unit.Pet
+local Spell  = AC.Spell
+local Item   = AC.Item
 -- AethysRotation
-local AR =     AethysRotation
+local AR     = AethysRotation
 
 --- ============================ CONTENT ===========================
 --- ======= APL LOCALS =======
@@ -106,7 +106,7 @@ local function Apl()
       if AR.Cast(S.LiquidMagmaTotem) then return ""; end
     end
     -- flame_shock,if=spell_targets.chain_lightning<4&maelstrom>=20,target_if=refreshable
-    if S.FlameShock:IsCastableP() and (spell_targets.chain_lightning < 4 and maelstrom >= 20) then
+    if S.FlameShock:IsCastableP() and (Cache.EnemiesCount[0] < 4 and maelstrom >= 20) then
       if AR.Cast(S.FlameShock) then return ""; end
     end
     -- earthquake
@@ -114,11 +114,11 @@ local function Apl()
       if AR.Cast(S.Earthquake) then return ""; end
     end
     -- lava_burst,if=dot.flame_shock.remains>cast_time&buff.lava_surge.up&!talent.lightning_rod.enabled&spell_targets.chain_lightning<4
-    if S.LavaBurst:IsCastableP() and (Target:DebuffRemainsP(S.FlameShockDebuff) > S.LavaBurst:CastTime() and Player:BuffP(S.LavaSurgeBuff) and not S.LightningRod:IsAvailable() and spell_targets.chain_lightning < 4) then
+    if S.LavaBurst:IsCastableP() and (Target:DebuffRemainsP(S.FlameShockDebuff) > S.LavaBurst:CastTime() and Player:BuffP(S.LavaSurgeBuff) and not S.LightningRod:IsAvailable() and Cache.EnemiesCount[0] < 4) then
       if AR.Cast(S.LavaBurst) then return ""; end
     end
     -- elemental_blast,if=!talent.lightning_rod.enabled&spell_targets.chain_lightning<5|talent.lightning_rod.enabled&spell_targets.chain_lightning<4
-    if S.ElementalBlast:IsCastableP() and (not S.LightningRod:IsAvailable() and spell_targets.chain_lightning < 5 or S.LightningRod:IsAvailable() and spell_targets.chain_lightning < 4) then
+    if S.ElementalBlast:IsCastableP() and (not S.LightningRod:IsAvailable() and Cache.EnemiesCount[0] < 5 or S.LightningRod:IsAvailable() and Cache.EnemiesCount[0] < 4) then
       if AR.Cast(S.ElementalBlast) then return ""; end
     end
     -- lava_beam
@@ -176,7 +176,7 @@ local function Apl()
       if AR.Cast(S.LiquidMagmaTotem) then return ""; end
     end
     -- lightning_bolt,if=buff.power_of_the_maelstrom.up&buff.stormkeeper.up&spell_targets.chain_lightning<3
-    if S.LightningBolt:IsCastableP() and (Player:BuffP(S.PoweroftheMaelstromBuff) and Player:BuffP(S.StormkeeperBuff) and spell_targets.chain_lightning < 3) then
+    if S.LightningBolt:IsCastableP() and (Player:BuffP(S.PoweroftheMaelstromBuff) and Player:BuffP(S.StormkeeperBuff) and Cache.EnemiesCount[0] < 3) then
       if AR.Cast(S.LightningBolt) then return ""; end
     end
     -- lava_burst,if=dot.flame_shock.remains>cast_time&(cooldown_react|buff.ascendance.up)
@@ -196,15 +196,15 @@ local function Apl()
       if AR.Cast(S.TotemMastery) then return ""; end
     end
     -- lava_beam,if=active_enemies>1&spell_targets.lava_beam>1
-    if S.LavaBeam:IsCastableP() and (active_enemies > 1 and spell_targets.lava_beam > 1) then
+    if S.LavaBeam:IsCastableP() and (active_enemies > 1 and Cache.EnemiesCount[0] > 1) then
       if AR.Cast(S.LavaBeam) then return ""; end
     end
     -- lightning_bolt,if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3
-    if S.LightningBolt:IsCastableP() and (Player:BuffP(S.PoweroftheMaelstromBuff) and spell_targets.chain_lightning < 3) then
+    if S.LightningBolt:IsCastableP() and (Player:BuffP(S.PoweroftheMaelstromBuff) and Cache.EnemiesCount[0] < 3) then
       if AR.Cast(S.LightningBolt) then return ""; end
     end
     -- chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1
-    if S.ChainLightning:IsCastableP() and (active_enemies > 1 and spell_targets.chain_lightning > 1) then
+    if S.ChainLightning:IsCastableP() and (active_enemies > 1 and Cache.EnemiesCount[0] > 1) then
       if AR.Cast(S.ChainLightning) then return ""; end
     end
     -- lightning_bolt
@@ -262,7 +262,7 @@ local function Apl()
       if AR.Cast(S.LiquidMagmaTotem) then return ""; end
     end
     -- lightning_bolt,if=buff.power_of_the_maelstrom.up&buff.stormkeeper.up&spell_targets.chain_lightning<3
-    if S.LightningBolt:IsCastableP() and (Player:BuffP(S.PoweroftheMaelstromBuff) and Player:BuffP(S.StormkeeperBuff) and spell_targets.chain_lightning < 3) then
+    if S.LightningBolt:IsCastableP() and (Player:BuffP(S.PoweroftheMaelstromBuff) and Player:BuffP(S.StormkeeperBuff) and Cache.EnemiesCount[0] < 3) then
       if AR.Cast(S.LightningBolt) then return ""; end
     end
     -- lava_burst,if=dot.flame_shock.remains>cast_time&cooldown_react
@@ -290,11 +290,11 @@ local function Apl()
       if AR.Cast(S.TotemMastery) then return ""; end
     end
     -- lightning_bolt,if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3
-    if S.LightningBolt:IsCastableP() and (Player:BuffP(S.PoweroftheMaelstromBuff) and spell_targets.chain_lightning < 3) then
+    if S.LightningBolt:IsCastableP() and (Player:BuffP(S.PoweroftheMaelstromBuff) and Cache.EnemiesCount[0] < 3) then
       if AR.Cast(S.LightningBolt) then return ""; end
     end
     -- chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1
-    if S.ChainLightning:IsCastableP() and (active_enemies > 1 and spell_targets.chain_lightning > 1) then
+    if S.ChainLightning:IsCastableP() and (active_enemies > 1 and Cache.EnemiesCount[0] > 1) then
       if AR.Cast(S.ChainLightning) then return ""; end
     end
     -- lightning_bolt
@@ -356,19 +356,19 @@ local function Apl()
       if AR.Cast(S.TotemMastery) then return ""; end
     end
     -- lightning_bolt,if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3,target_if=debuff.lightning_rod.down
-    if S.LightningBolt:IsCastableP() and (Player:BuffP(S.PoweroftheMaelstromBuff) and spell_targets.chain_lightning < 3) then
+    if S.LightningBolt:IsCastableP() and (Player:BuffP(S.PoweroftheMaelstromBuff) and Cache.EnemiesCount[0] < 3) then
       if AR.Cast(S.LightningBolt) then return ""; end
     end
     -- lightning_bolt,if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3
-    if S.LightningBolt:IsCastableP() and (Player:BuffP(S.PoweroftheMaelstromBuff) and spell_targets.chain_lightning < 3) then
+    if S.LightningBolt:IsCastableP() and (Player:BuffP(S.PoweroftheMaelstromBuff) and Cache.EnemiesCount[0] < 3) then
       if AR.Cast(S.LightningBolt) then return ""; end
     end
     -- chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1,target_if=debuff.lightning_rod.down
-    if S.ChainLightning:IsCastableP() and (active_enemies > 1 and spell_targets.chain_lightning > 1) then
+    if S.ChainLightning:IsCastableP() and (active_enemies > 1 and Cache.EnemiesCount[0] > 1) then
       if AR.Cast(S.ChainLightning) then return ""; end
     end
     -- chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1
-    if S.ChainLightning:IsCastableP() and (active_enemies > 1 and spell_targets.chain_lightning > 1) then
+    if S.ChainLightning:IsCastableP() and (active_enemies > 1 and Cache.EnemiesCount[0] > 1) then
       if AR.Cast(S.ChainLightning) then return ""; end
     end
     -- lightning_bolt,target_if=debuff.lightning_rod.down
@@ -437,7 +437,7 @@ local function Apl()
     if AR.Cast(S.Berserking, Settings.Elemental.OffGCDasOffGCD.Berserking) then return ""; end
   end
   -- run_action_list,name=aoe,if=active_enemies>2&(spell_targets.chain_lightning>2|spell_targets.lava_beam>2)
-  if (active_enemies > 2 and (spell_targets.chain_lightning > 2 or spell_targets.lava_beam > 2)) then
+  if (active_enemies > 2 and (Cache.EnemiesCount[0] > 2 or Cache.EnemiesCount[0] > 2)) then
     return Aoe();
   end
   -- run_action_list,name=single_asc,if=talent.ascendance.enabled

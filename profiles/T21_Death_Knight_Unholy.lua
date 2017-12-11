@@ -1,18 +1,18 @@
 --- ============================ HEADER ============================
 --- ======= LOCALIZE =======
-- - Addon
-local addonName, addonTable=...
+-- Addon
+local addonName, addonTable = ...
 -- AethysCore
-local AC =     AethysCore
-local Cache =  AethysCache
-local Unit =   AC.Unit
+local AC     = AethysCore
+local Cache  = AethysCache
+local Unit   = AC.Unit
 local Player = Unit.Player
 local Target = Unit.Target
-local Pet =    Unit.Pet
-local Spell =  AC.Spell
-local Item =   AC.Item
+local Pet    = Unit.Pet
+local Spell  = AC.Spell
+local Item   = AC.Item
 -- AethysRotation
-local AR =     AethysRotation
+local AR     = AethysRotation
 
 --- ============================ CONTENT ===========================
 --- ======= APL LOCALS =======
@@ -46,7 +46,6 @@ Spell.DeathKnight.Unholy = {
   BlightedRuneWeaponBuff                = Spell(194918),
   Castigator                            = Spell(207305),
   Necrosis                              = Spell(207346),
-  AutoAttack                            = Spell(),
   MindFreeze                            = Spell(47528),
   ArcaneTorrent                         = Spell(50613),
   BloodFury                             = Spell(20572),
@@ -92,23 +91,23 @@ end
 local function Apl()
   local function Aoe()
     -- death_and_decay,if=spell_targets.death_and_decay>=2
-    if S.DeathandDecay:IsUsable() and (spell_targets.death_and_decay >= 2) then
+    if S.DeathandDecay:IsUsable() and (Cache.EnemiesCount[0] >= 2) then
       if AR.Cast(S.DeathandDecay) then return ""; end
     end
     -- epidemic,if=spell_targets.epidemic>4
-    if S.Epidemic:IsCastableP() and (spell_targets.epidemic > 4) then
+    if S.Epidemic:IsCastableP() and (Cache.EnemiesCount[0] > 4) then
       if AR.Cast(S.Epidemic) then return ""; end
     end
     -- scourge_strike,if=spell_targets.scourge_strike>=2&(death_and_decay.ticking|defile.ticking)
-    if S.ScourgeStrike:IsCastableP() and (spell_targets.scourge_strike >= 2 and (bool(death_and_decay.ticking) or bool(defile.ticking))) then
+    if S.ScourgeStrike:IsCastableP() and (Cache.EnemiesCount[0] >= 2 and (bool(death_and_decay.ticking) or bool(defile.ticking))) then
       if AR.Cast(S.ScourgeStrike) then return ""; end
     end
     -- clawing_shadows,if=spell_targets.clawing_shadows>=2&(death_and_decay.ticking|defile.ticking)
-    if S.ClawingShadows:IsCastableP() and (spell_targets.clawing_shadows >= 2 and (bool(death_and_decay.ticking) or bool(defile.ticking))) then
+    if S.ClawingShadows:IsCastableP() and (Cache.EnemiesCount[0] >= 2 and (bool(death_and_decay.ticking) or bool(defile.ticking))) then
       if AR.Cast(S.ClawingShadows) then return ""; end
     end
     -- epidemic,if=spell_targets.epidemic>2
-    if S.Epidemic:IsCastableP() and (spell_targets.epidemic > 2) then
+    if S.Epidemic:IsCastableP() and (Cache.EnemiesCount[0] > 2) then
       if AR.Cast(S.Epidemic) then return ""; end
     end
   end
@@ -259,9 +258,6 @@ local function Apl()
     end
   end
   -- auto_attack
-  if S.AutoAttack:IsCastableP() and (true) then
-    if AR.Cast(S.AutoAttack) then return ""; end
-  end
   -- mind_freeze
   if S.MindFreeze:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (true) then
     if AR.CastAnnotated(S.MindFreeze, false, "Interrupt") then return ""; end

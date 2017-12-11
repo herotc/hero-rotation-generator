@@ -1,18 +1,18 @@
 --- ============================ HEADER ============================
 --- ======= LOCALIZE =======
-- - Addon
-local addonName, addonTable=...
+-- Addon
+local addonName, addonTable = ...
 -- AethysCore
-local AC =     AethysCore
-local Cache =  AethysCache
-local Unit =   AC.Unit
+local AC     = AethysCore
+local Cache  = AethysCache
+local Unit   = AC.Unit
 local Player = Unit.Player
 local Target = Unit.Target
-local Pet =    Unit.Pet
-local Spell =  AC.Spell
-local Item =   AC.Item
+local Pet    = Unit.Pet
+local Spell  = AC.Spell
+local Item   = AC.Item
 -- AethysRotation
-local AR =     AethysRotation
+local AR     = AethysRotation
 
 --- ============================ CONTENT ===========================
 --- ======= APL LOCALS =======
@@ -103,7 +103,7 @@ local function Apl()
     if AR.Cast(S.DimensionalRift) then return ""; end
   end
   -- cataclysm,if=spell_targets.cataclysm>=3
-  if S.Cataclysm:IsCastableP() and (spell_targets.cataclysm >= 3) then
+  if S.Cataclysm:IsCastableP() and (Cache.EnemiesCount[0] >= 3) then
     if AR.Cast(S.Cataclysm) then return ""; end
   end
   -- immolate,if=(active_enemies<5|!talent.fire_and_brimstone.enabled)&remains<=tick_time
@@ -171,23 +171,23 @@ local function Apl()
     if AR.Cast(S.SummonInfernal) then return ""; end
   end
   -- summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<=2&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)
-  if S.SummonDoomguard:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and spell_targets.infernal_awakening <= 2 and (Target:TimeToDie() > 180 or Target:HealthPercentage() <= 20 or Target:TimeToDie() < 30)) then
+  if S.SummonDoomguard:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] <= 2 and (Target:TimeToDie() > 180 or Target:HealthPercentage() <= 20 or Target:TimeToDie() < 30)) then
     if AR.Cast(S.SummonDoomguard) then return ""; end
   end
   -- summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>2
-  if S.SummonInfernal:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and spell_targets.infernal_awakening > 2) then
+  if S.SummonInfernal:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] > 2) then
     if AR.Cast(S.SummonInfernal) then return ""; end
   end
   -- summon_doomguard,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal=1&artifact.lord_of_flames.rank>0&buff.lord_of_flames.remains&!pet.doomguard.active
-  if S.SummonDoomguard:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and spell_targets.summon_infernal == 1 and artifact.lord_of_flames.rank > 0 and bool(Player:BuffRemainsP(S.LordofFlamesBuff)) and not bool(pet.doomguard.active)) then
+  if S.SummonDoomguard:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] == 1 and artifact.lord_of_flames.rank > 0 and bool(Player:BuffRemainsP(S.LordofFlamesBuff)) and not bool(pet.doomguard.active)) then
     if AR.Cast(S.SummonDoomguard) then return ""; end
   end
   -- summon_doomguard,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal=1&equipped.132379&!cooldown.sindorei_spite_icd.remains
-  if S.SummonDoomguard:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and spell_targets.summon_infernal == 1 and Item(132379):IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
+  if S.SummonDoomguard:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] == 1 and Item(132379):IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
     if AR.Cast(S.SummonDoomguard) then return ""; end
   end
   -- summon_infernal,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>1&equipped.132379&!cooldown.sindorei_spite_icd.remains
-  if S.SummonInfernal:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and spell_targets.summon_infernal > 1 and Item(132379):IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
+  if S.SummonInfernal:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] > 1 and Item(132379):IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
     if AR.Cast(S.SummonInfernal) then return ""; end
   end
   -- soul_harvest,if=!buff.soul_harvest.remains
@@ -223,7 +223,7 @@ local function Apl()
     if AR.Cast(S.Cataclysm) then return ""; end
   end
   -- chaos_bolt,if=active_enemies<3&(cooldown.havoc.remains>12&cooldown.havoc.remains|active_enemies=1|soul_shard>=5-spell_targets.infernal_awakening*1.5|target.time_to_die<=10)
-  if S.ChaosBolt:IsCastableP() and (active_enemies < 3 and (S.Havoc:CooldownRemainsP() > 12 and bool(S.Havoc:CooldownRemainsP()) or active_enemies == 1 or soul_shard >= 5 - spell_targets.infernal_awakening * 1.5 or Target:TimeToDie() <= 10)) then
+  if S.ChaosBolt:IsCastableP() and (active_enemies < 3 and (S.Havoc:CooldownRemainsP() > 12 and bool(S.Havoc:CooldownRemainsP()) or active_enemies == 1 or soul_shard >= 5 - Cache.EnemiesCount[0] * 1.5 or Target:TimeToDie() <= 10)) then
     if AR.Cast(S.ChaosBolt) then return ""; end
   end
   -- shadowburn

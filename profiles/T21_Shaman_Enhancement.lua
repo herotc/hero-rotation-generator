@@ -1,18 +1,18 @@
 --- ============================ HEADER ============================
 --- ======= LOCALIZE =======
-- - Addon
-local addonName, addonTable=...
+-- Addon
+local addonName, addonTable = ...
 -- AethysCore
-local AC =     AethysCore
-local Cache =  AethysCache
-local Unit =   AC.Unit
+local AC     = AethysCore
+local Cache  = AethysCache
+local Unit   = AC.Unit
 local Player = Unit.Player
 local Target = Unit.Target
-local Pet =    Unit.Pet
-local Spell =  AC.Spell
-local Item =   AC.Item
+local Pet    = Unit.Pet
+local Spell  = AC.Spell
+local Item   = AC.Item
 -- AethysRotation
-local AR =     AethysRotation
+local AR     = AethysRotation
 
 --- ============================ CONTENT ===========================
 --- ======= APL LOCALS =======
@@ -47,7 +47,6 @@ Spell.Shaman.Enhancement = {
   Windsong                              = Spell(),
   CrashingStorm                         = Spell(),
   ForceoftheMountainBuff                = Spell(),
-  BloodBoil                             = Spell(),
   Stormstrike                           = Spell(),
   StormbringerBuff                      = Spell(),
   LightningBolt                         = Spell(),
@@ -60,7 +59,6 @@ Spell.Shaman.Enhancement = {
   WindShear                             = Spell(),
   LightningCrashBuff                    = Spell(),
   AlphaWolfBuff                         = Spell(),
-  AutoAttack                            = Spell(),
   UseItems                              = Spell()
 };
 local S = Spell.Shaman.Enhancement;
@@ -203,7 +201,7 @@ local function Apl()
       if AR.Cast(S.Windstrike) then return ""; end
     end
     -- rockbiter,if=buff.force_of_the_mountain.up&charges_fractional>1.7&active_enemies<=4
-    if S.Rockbiter:IsCastableP() and (Player:BuffP(S.ForceoftheMountainBuff) and S.BloodBoil:ChargesFractional() > 1.7 and active_enemies <= 4) then
+    if S.Rockbiter:IsCastableP() and (Player:BuffP(S.ForceoftheMountainBuff) and S.Rockbiter:ChargesFractional() > 1.7 and active_enemies <= 4) then
       if AR.Cast(S.Rockbiter) then return ""; end
     end
     -- stormstrike,if=buff.stormbringer.up&variable.furyCheck25
@@ -245,7 +243,7 @@ local function Apl()
   end
   local function Filler()
     -- rockbiter,if=maelstrom<120&charges_fractional>1.7
-    if S.Rockbiter:IsCastableP() and (maelstrom < 120 and S.BloodBoil:ChargesFractional() > 1.7) then
+    if S.Rockbiter:IsCastableP() and (maelstrom < 120 and S.Rockbiter:ChargesFractional() > 1.7) then
       if AR.Cast(S.Rockbiter) then return ""; end
     end
     -- flametongue,if=buff.flametongue.remains<4.8
@@ -344,9 +342,6 @@ local function Apl()
     Alphawolfcheck = num(((Pet:BuffRemainsP(S.AlphaWolfBuff) < 2 and Pet:BuffRemainsP(S.AlphaWolfBuff) < 2 and Pet:BuffRemainsP(S.AlphaWolfBuff) < 2) and feral_spirit.remains > 4))
   end
   -- auto_attack
-  if S.AutoAttack:IsCastableP() and (true) then
-    if AR.Cast(S.AutoAttack) then return ""; end
-  end
   -- use_items
   if S.UseItems:IsCastableP() and (true) then
     if AR.Cast(S.UseItems) then return ""; end

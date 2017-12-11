@@ -1,18 +1,18 @@
 --- ============================ HEADER ============================
 --- ======= LOCALIZE =======
-- - Addon
-local addonName, addonTable=...
+-- Addon
+local addonName, addonTable = ...
 -- AethysCore
-local AC =     AethysCore
-local Cache =  AethysCache
-local Unit =   AC.Unit
+local AC     = AethysCore
+local Cache  = AethysCache
+local Unit   = AC.Unit
 local Player = Unit.Player
 local Target = Unit.Target
-local Pet =    Unit.Pet
-local Spell =  AC.Spell
-local Item =   AC.Item
+local Pet    = Unit.Pet
+local Spell  = AC.Spell
+local Item   = AC.Item
 -- AethysRotation
-local AR =     AethysRotation
+local AR     = AethysRotation
 
 --- ============================ CONTENT ===========================
 --- ======= APL LOCALS =======
@@ -36,7 +36,6 @@ Spell.DeathKnight.Blood = {
   Consumption                           = Spell(205223),
   HeartStrike                           = Spell(206930),
   CrimsonScourgeBuff                    = Spell(81141),
-  AutoAttack                            = Spell(),
   MindFreeze                            = Spell(47528),
   ArcaneTorrent                         = Spell(50613),
   BloodFury                             = Spell(20572),
@@ -107,7 +106,7 @@ local function Apl()
       if AR.Cast(S.Marrowrend) then return ""; end
     end
     -- bonestorm,if=runic_power>=100&spell_targets.bonestorm>=3
-    if S.Bonestorm:IsCastableP() and (Player:RunicPower() >= 100 and spell_targets.bonestorm >= 3) then
+    if S.Bonestorm:IsCastableP() and (Player:RunicPower() >= 100 and Cache.EnemiesCount[0] >= 3) then
       if AR.Cast(S.Bonestorm) then return ""; end
     end
     -- death_strike,if=buff.blood_shield.up|(runic_power.deficit<15&(runic_power.deficit<25|!buff.dancing_rune_weapon.up))
@@ -140,9 +139,6 @@ local function Apl()
     end
   end
   -- auto_attack
-  if S.AutoAttack:IsCastableP() and (true) then
-    if AR.Cast(S.AutoAttack) then return ""; end
-  end
   -- mind_freeze
   if S.MindFreeze:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (true) then
     if AR.CastAnnotated(S.MindFreeze, false, "Interrupt") then return ""; end

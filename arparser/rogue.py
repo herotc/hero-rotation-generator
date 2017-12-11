@@ -95,7 +95,7 @@ RG_SPELL_INFO = {
             'killing_spree':                        {SPELL:     51690},
             'gouge':                                {SPELL:     1776},
             'dirty_tricks':                         {SPELL:     108216},
-         },
+        },
         SUBTLETY: {
             'shuriken_storm':                       {SPELL:     197835},
             'gloomblade':                           {SPELL:     200758},

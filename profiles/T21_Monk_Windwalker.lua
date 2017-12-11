@@ -1,18 +1,18 @@
 --- ============================ HEADER ============================
 --- ======= LOCALIZE =======
-- - Addon
-local addonName, addonTable=...
+-- Addon
+local addonName, addonTable = ...
 -- AethysCore
-local AC =     AethysCore
-local Cache =  AethysCache
-local Unit =   AC.Unit
+local AC     = AethysCore
+local Cache  = AethysCache
+local Unit   = AC.Unit
 local Player = Unit.Player
 local Target = Unit.Target
-local Pet =    Unit.Pet
-local Spell =  AC.Spell
-local Item =   AC.Item
+local Pet    = Unit.Pet
+local Spell  = AC.Spell
+local Item   = AC.Item
 -- AethysRotation
-local AR =     AethysRotation
+local AR     = AethysRotation
 
 --- ============================ CONTENT ===========================
 --- ======= APL LOCALS =======
@@ -46,7 +46,6 @@ Spell.Monk.Windwalker = {
   TheEmperorsCapacitorBuff              = Spell(235054),
   ChiWave                               = Spell(115098),
   ChiBurst                              = Spell(123986),
-  AutoAttack                            = Spell(),
   SpearHandStrike                       = Spell(116705),
   TouchofKarma                          = Spell(122470)
 };
@@ -332,9 +331,6 @@ local function Apl()
     end
   end
   -- auto_attack
-  if S.AutoAttack:IsCastableP() and (true) then
-    if AR.Cast(S.AutoAttack) then return ""; end
-  end
   -- spear_hand_strike,if=target.debuff.casting.react
   if S.SpearHandStrike:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (bool(target.debuff.casting.react)) then
     if AR.CastAnnotated(S.SpearHandStrike, false, "Interrupt") then return ""; end
