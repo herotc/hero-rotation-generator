@@ -63,10 +63,10 @@ local S = Spell.Priest.Shadow;
 -- Items
 if not Item.Priest then Item.Priest = {} end
 Item.Priest.Shadow = {
-  ZeksExterminatus              = Item(144438),
-  MangazasMadness               = Item(132864),
-  SephuzsSecret                 = Item(132452),
-  ProlongedPower                = Item(142117)
+  ZeksExterminatus                 = Item(144438),
+  MangazasMadness                  = Item(132864),
+  SephuzsSecret                    = Item(132452),
+  ProlongedPower                   = Item(142117)
 };
 local I = Item.Priest.Shadow;
 

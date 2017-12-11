@@ -58,7 +58,11 @@ local S = Spell.Paladin.Retribution;
 -- Items
 if not Item.Paladin then Item.Paladin = {} end
 Item.Paladin.Retribution = {
-  OldWar                        = Item(127844)
+  OldWar                           = Item(127844),
+  Item137048                       = Item(137048),
+  Item137020                       = Item(137020),
+  Item144358                       = Item(144358),
+  Item137065                       = Item(137065)
 };
 local I = Item.Paladin.Retribution;
 
@@ -116,7 +120,7 @@ local function Apl()
       if AR.Cast(S.AvengingWrath) then return ""; end
     end
     -- crusade,if=holy_power>=3|((equipped.137048|race.blood_elf)&holy_power>=2)
-    if S.Crusade:IsCastableP() and (holy_power >= 3 or ((Item(137048):IsEquipped() or (Player:Race() == "BloodElf")) and holy_power >= 2)) then
+    if S.Crusade:IsCastableP() and (holy_power >= 3 or ((I.Item137048:IsEquipped() or (Player:Race() == "BloodElf")) and holy_power >= 2)) then
       if AR.Cast(S.Crusade) then return ""; end
     end
   end
@@ -134,7 +138,7 @@ local function Apl()
       if AR.Cast(S.DivineStorm) then return ""; end
     end
     -- justicars_vengeance,if=debuff.judgment.up&buff.divine_purpose.react&!equipped.137020
-    if S.JusticarsVengeance:IsCastableP() and (Target:DebuffP(S.JudgmentDebuff) and bool(Player:BuffStackP(S.DivinePurposeBuff)) and not Item(137020):IsEquipped()) then
+    if S.JusticarsVengeance:IsCastableP() and (Target:DebuffP(S.JudgmentDebuff) and bool(Player:BuffStackP(S.DivinePurposeBuff)) and not I.Item137020:IsEquipped()) then
       if AR.Cast(S.JusticarsVengeance) then return ""; end
     end
     -- templars_verdict,if=debuff.judgment.up&buff.divine_purpose.react
@@ -149,7 +153,7 @@ local function Apl()
   local function Generators()
     -- variable,name=ds_castable,value=spell_targets.divine_storm>=2|(buff.scarlet_inquisitors_expurgation.stack>=29&(equipped.144358&(dot.wake_of_ashes.ticking&time>10|dot.wake_of_ashes.remains<gcd))|(buff.scarlet_inquisitors_expurgation.stack>=29&(buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=15|cooldown.crusade.remains>15&!buff.crusade.up)|cooldown.avenging_wrath.remains>15)&!equipped.144358)
     if (true) then
-      DsCastable = num(Cache.EnemiesCount[8] >= 2 or (Player:BuffStackP(S.ScarletInquisitorsExpurgationBuff) >= 29 and (Item(144358):IsEquipped() and (Target:DebuffP(S.WakeofAshesDebuff) and AC.CombatTime() > 10 or Target:DebuffRemainsP(S.WakeofAshesDebuff) < Player:GCD())) or (Player:BuffStackP(S.ScarletInquisitorsExpurgationBuff) >= 29 and (Player:BuffP(S.AvengingWrathBuff) or Player:BuffP(S.CrusadeBuff) and Player:BuffStackP(S.CrusadeBuff) >= 15 or S.Crusade:CooldownRemainsP() > 15 and not Player:BuffP(S.CrusadeBuff)) or S.AvengingWrath:CooldownRemainsP() > 15) and not Item(144358):IsEquipped()))
+      DsCastable = num(Cache.EnemiesCount[8] >= 2 or (Player:BuffStackP(S.ScarletInquisitorsExpurgationBuff) >= 29 and (I.Item144358:IsEquipped() and (Target:DebuffP(S.WakeofAshesDebuff) and AC.CombatTime() > 10 or Target:DebuffRemainsP(S.WakeofAshesDebuff) < Player:GCD())) or (Player:BuffStackP(S.ScarletInquisitorsExpurgationBuff) >= 29 and (Player:BuffP(S.AvengingWrathBuff) or Player:BuffP(S.CrusadeBuff) and Player:BuffStackP(S.CrusadeBuff) >= 15 or S.Crusade:CooldownRemainsP() > 15 and not Player:BuffP(S.CrusadeBuff)) or S.AvengingWrath:CooldownRemainsP() > 15) and not I.Item144358:IsEquipped()))
     end
     -- call_action_list,name=finishers,if=(buff.crusade.up&buff.crusade.stack<15|buff.liadrins_fury_unleashed.up)|(artifact.ashes_to_ashes.enabled&cooldown.wake_of_ashes.remains<gcd*2)
     if ((Player:BuffP(S.CrusadeBuff) and Player:BuffStackP(S.CrusadeBuff) < 15 or Player:BuffP(S.LiadrinsFuryUnleashedBuff)) or (bool(artifact.ashes_to_ashes.enabled) and S.WakeofAshes:CooldownRemainsP() < Player:GCD() * 2)) then
@@ -204,7 +208,7 @@ local function Apl()
       if AR.Cast(S.Consecration) then return ""; end
     end
     -- hammer_of_justice,if=equipped.137065&target.health.pct>=75&holy_power<=4
-    if S.HammerofJustice:IsCastableP() and (Item(137065):IsEquipped() and Target:HealthPercentage() >= 75 and holy_power <= 4) then
+    if S.HammerofJustice:IsCastableP() and (I.Item137065:IsEquipped() and Target:HealthPercentage() >= 75 and holy_power <= 4) then
       if AR.Cast(S.HammerofJustice) then return ""; end
     end
     -- call_action_list,name=finishers
@@ -238,11 +242,11 @@ local function Apl()
       if AR.Cast(S.Judgment) then return ""; end
     end
     -- blade_of_justice,if=equipped.137048|race.blood_elf|!cooldown.wake_of_ashes.up
-    if S.BladeofJustice:IsCastableP() and (Item(137048):IsEquipped() or (Player:Race() == "BloodElf") or not S.WakeofAshes:CooldownUpP()) then
+    if S.BladeofJustice:IsCastableP() and (I.Item137048:IsEquipped() or (Player:Race() == "BloodElf") or not S.WakeofAshes:CooldownUpP()) then
       if AR.Cast(S.BladeofJustice) then return ""; end
     end
     -- divine_hammer,if=equipped.137048|race.blood_elf|!cooldown.wake_of_ashes.up
-    if S.DivineHammer:IsCastableP() and (Item(137048):IsEquipped() or (Player:Race() == "BloodElf") or not S.WakeofAshes:CooldownUpP()) then
+    if S.DivineHammer:IsCastableP() and (I.Item137048:IsEquipped() or (Player:Race() == "BloodElf") or not S.WakeofAshes:CooldownUpP()) then
       if AR.Cast(S.DivineHammer) then return ""; end
     end
     -- wake_of_ashes

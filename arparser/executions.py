@@ -98,13 +98,15 @@ class Item(LuaNamed, Castable):
     def __init__(self, action, simc):
         super().__init__(simc)
         self.action = action
+        self.iid = ''
         try:
             int(simc)
-            self.id_as_item = True
+            self.unnamed_item = True
+            self.iid = simc
+            self.simc = f'item{simc}'
         except ValueError:
-            self.id_as_item = False
-        if not self.id_as_item:
-            self.action.context.add_item(self)
+            self.unnamed_item = False
+        self.action.context.add_item(self)
 
     def condition_method(self):
         return Method('IsReady')
@@ -116,8 +118,6 @@ class Item(LuaNamed, Castable):
         """
         Print the lua representation of the item.
         """
-        if self.id_as_item:
-            return f'Item({self.simc})'
         return f'I.{self.lua_name()}'
 
 

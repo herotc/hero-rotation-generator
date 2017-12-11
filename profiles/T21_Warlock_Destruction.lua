@@ -62,7 +62,9 @@ local S = Spell.Warlock.Destruction;
 -- Items
 if not Item.Warlock then Item.Warlock = {} end
 Item.Warlock.Destruction = {
-  ProlongedPower                = Item(142117)
+  ProlongedPower                   = Item(142117),
+  Item144369                       = Item(144369),
+  Item132379                       = Item(132379)
 };
 local I = Item.Warlock.Destruction;
 
@@ -159,7 +161,7 @@ local function Apl()
     if AR.Cast(S.LifeTap) then return ""; end
   end
   -- dimensional_rift,if=equipped.144369&!buff.lessons_of_spacetime.remains&((!talent.grimoire_of_supremacy.enabled&!cooldown.summon_doomguard.remains)|(talent.grimoire_of_service.enabled&!cooldown.service_pet.remains)|(talent.soul_harvest.enabled&!cooldown.soul_harvest.remains))
-  if S.DimensionalRift:IsCastableP() and (Item(144369):IsEquipped() and not bool(Player:BuffRemainsP(S.LessonsofSpacetimeBuff)) and ((not S.GrimoireofSupremacy:IsAvailable() and not bool(S.SummonDoomguard:CooldownRemainsP())) or (S.GrimoireofService:IsAvailable() and not bool(S.ServicePet:CooldownRemainsP())) or (S.SoulHarvest:IsAvailable() and not bool(S.SoulHarvest:CooldownRemainsP())))) then
+  if S.DimensionalRift:IsCastableP() and (I.Item144369:IsEquipped() and not bool(Player:BuffRemainsP(S.LessonsofSpacetimeBuff)) and ((not S.GrimoireofSupremacy:IsAvailable() and not bool(S.SummonDoomguard:CooldownRemainsP())) or (S.GrimoireofService:IsAvailable() and not bool(S.ServicePet:CooldownRemainsP())) or (S.SoulHarvest:IsAvailable() and not bool(S.SoulHarvest:CooldownRemainsP())))) then
     if AR.Cast(S.DimensionalRift) then return ""; end
   end
   -- service_pet
@@ -183,11 +185,11 @@ local function Apl()
     if AR.Cast(S.SummonDoomguard) then return ""; end
   end
   -- summon_doomguard,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal=1&equipped.132379&!cooldown.sindorei_spite_icd.remains
-  if S.SummonDoomguard:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] == 1 and Item(132379):IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
+  if S.SummonDoomguard:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] == 1 and I.Item132379:IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
     if AR.Cast(S.SummonDoomguard) then return ""; end
   end
   -- summon_infernal,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>1&equipped.132379&!cooldown.sindorei_spite_icd.remains
-  if S.SummonInfernal:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] > 1 and Item(132379):IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
+  if S.SummonInfernal:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] > 1 and I.Item132379:IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
     if AR.Cast(S.SummonInfernal) then return ""; end
   end
   -- soul_harvest,if=!buff.soul_harvest.remains
@@ -211,7 +213,7 @@ local function Apl()
     if AR.Cast(S.RainofFire) then return ""; end
   end
   -- dimensional_rift,if=target.time_to_die<=32|!equipped.144369|charges>1|(!equipped.144369&(!talent.grimoire_of_service.enabled|recharge_time<cooldown.service_pet.remains)&(!talent.soul_harvest.enabled|recharge_time<cooldown.soul_harvest.remains)&(!talent.grimoire_of_supremacy.enabled|recharge_time<cooldown.summon_doomguard.remains))
-  if S.DimensionalRift:IsCastableP() and (Target:TimeToDie() <= 32 or not Item(144369):IsEquipped() or S.DimensionalRift:ChargesP() > 1 or (not Item(144369):IsEquipped() and (not S.GrimoireofService:IsAvailable() or S.DimensionalRift:RechargeP() < S.ServicePet:CooldownRemainsP()) and (not S.SoulHarvest:IsAvailable() or S.DimensionalRift:RechargeP() < S.SoulHarvest:CooldownRemainsP()) and (not S.GrimoireofSupremacy:IsAvailable() or S.DimensionalRift:RechargeP() < S.SummonDoomguard:CooldownRemainsP()))) then
+  if S.DimensionalRift:IsCastableP() and (Target:TimeToDie() <= 32 or not I.Item144369:IsEquipped() or S.DimensionalRift:ChargesP() > 1 or (not I.Item144369:IsEquipped() and (not S.GrimoireofService:IsAvailable() or S.DimensionalRift:RechargeP() < S.ServicePet:CooldownRemainsP()) and (not S.SoulHarvest:IsAvailable() or S.DimensionalRift:RechargeP() < S.SoulHarvest:CooldownRemainsP()) and (not S.GrimoireofSupremacy:IsAvailable() or S.DimensionalRift:RechargeP() < S.SummonDoomguard:CooldownRemainsP()))) then
     if AR.Cast(S.DimensionalRift) then return ""; end
   end
   -- life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<duration*0.3

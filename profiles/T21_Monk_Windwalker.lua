@@ -54,10 +54,10 @@ local S = Spell.Monk.Windwalker;
 -- Items
 if not Item.Monk then Item.Monk = {} end
 Item.Monk.Windwalker = {
-  HiddenMastersForbiddenTouch   = Item(137057),
-  DrinkingHornCover             = Item(137097),
-  TheEmperorsCapacitor          = Item(144239),
-  ProlongedPower                = Item(142117)
+  HiddenMastersForbiddenTouch      = Item(137057),
+  DrinkingHornCover                = Item(137097),
+  TheEmperorsCapacitor             = Item(144239),
+  ProlongedPower                   = Item(142117)
 };
 local I = Item.Monk.Windwalker;
 

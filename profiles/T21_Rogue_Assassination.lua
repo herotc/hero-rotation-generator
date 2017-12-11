@@ -62,11 +62,11 @@ local S = Spell.Rogue.Assassination;
 -- Items
 if not Item.Rogue then Item.Rogue = {} end
 Item.Rogue.Assassination = {
-  InsigniaofRavenholdt          = Item(137049),
-  ProlongedPower                = Item(142117),
-  MantleoftheMasterAssassin     = Item(144236),
-  DuskwalkersFootpads           = Item(137030),
-  ConvergenceofFates            = Item(140806)
+  InsigniaofRavenholdt             = Item(137049),
+  ProlongedPower                   = Item(142117),
+  MantleoftheMasterAssassin        = Item(144236),
+  DuskwalkersFootpads              = Item(137030),
+  ConvergenceofFates               = Item(140806)
 };
 local I = Item.Rogue.Assassination;
 

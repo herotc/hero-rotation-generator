@@ -49,7 +49,7 @@ local S = Spell.DeathKnight.Blood;
 -- Items
 if not Item.DeathKnight then Item.DeathKnight = {} end
 Item.DeathKnight.Blood = {
-  ProlongedPower                = Item(142117)
+  ProlongedPower                   = Item(142117)
 };
 local I = Item.DeathKnight.Blood;
 

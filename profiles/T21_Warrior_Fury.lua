@@ -64,10 +64,10 @@ local S = Spell.Warrior.Fury;
 -- Items
 if not Item.Warrior then Item.Warrior = {} end
 Item.Warrior.Fury = {
-  OldWar                        = Item(127844),
-  ConvergenceofFates            = Item(140806),
-  UmbralMoonglaives             = Item(),
-  KazzalaxFujiedasFury          = Item()
+  OldWar                           = Item(127844),
+  ConvergenceofFates               = Item(140806),
+  UmbralMoonglaives                = Item(),
+  KazzalaxFujiedasFury             = Item()
 };
 local I = Item.Warrior.Fury;
 

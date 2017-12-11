@@ -58,7 +58,10 @@ local S = Spell.Mage.Fire;
 -- Items
 if not Item.Mage then Item.Mage = {} end
 Item.Mage.Fire = {
-  ProlongedPower                = Item(142117)
+  Item132863                       = Item(132863),
+  ProlongedPower                   = Item(142117),
+  Item132454                       = Item(132454),
+  Item132410                       = Item(132410)
 };
 local I = Item.Mage.Fire;
 
@@ -99,7 +102,7 @@ local function Apl()
       if AR.Cast(S.Cinderstorm) then return ""; end
     end
     -- dragons_breath,if=equipped.132863|(talent.alexstraszas_fury.enabled&!buff.hot_streak.react)
-    if S.DragonsBreath:IsCastableP() and (Item(132863):IsEquipped() or (S.AlexstraszasFury:IsAvailable() and not bool(Player:BuffStackP(S.HotStreakBuff)))) then
+    if S.DragonsBreath:IsCastableP() and (I.Item132863:IsEquipped() or (S.AlexstraszasFury:IsAvailable() and not bool(Player:BuffStackP(S.HotStreakBuff)))) then
       if AR.Cast(S.DragonsBreath) then return ""; end
     end
     -- living_bomb,if=active_enemies>1&buff.combustion.down
@@ -169,7 +172,7 @@ local function Apl()
       if AR.Cast(S.DragonsBreath) then return ""; end
     end
     -- scorch,if=target.health.pct<=30&equipped.132454
-    if S.Scorch:IsCastableP() and (Target:HealthPercentage() <= 30 and Item(132454):IsEquipped()) then
+    if S.Scorch:IsCastableP() and (Target:HealthPercentage() <= 30 and I.Item132454:IsEquipped()) then
       if AR.Cast(S.Scorch) then return ""; end
     end
   end
@@ -211,7 +214,7 @@ local function Apl()
       if AR.Cast(S.PhoenixsFlames) then return ""; end
     end
     -- scorch,if=target.health.pct<=30&equipped.132454
-    if S.Scorch:IsCastableP() and (Target:HealthPercentage() <= 30 and Item(132454):IsEquipped()) then
+    if S.Scorch:IsCastableP() and (Target:HealthPercentage() <= 30 and I.Item132454:IsEquipped()) then
       if AR.Cast(S.Scorch) then return ""; end
     end
     -- dragons_breath,if=active_enemies>2
@@ -249,7 +252,7 @@ local function Apl()
       if AR.Cast(S.Pyroblast) then return ""; end
     end
     -- pyroblast,if=buff.hot_streak.react&target.health.pct<=30&equipped.132454
-    if S.Pyroblast:IsCastableP() and (bool(Player:BuffStackP(S.HotStreakBuff)) and Target:HealthPercentage() <= 30 and Item(132454):IsEquipped()) then
+    if S.Pyroblast:IsCastableP() and (bool(Player:BuffStackP(S.HotStreakBuff)) and Target:HealthPercentage() <= 30 and I.Item132454:IsEquipped()) then
       if AR.Cast(S.Pyroblast) then return ""; end
     end
     -- pyroblast,if=buff.kaelthas_ultimate_ability.react&execute_time<buff.kaelthas_ultimate_ability.remains
@@ -285,7 +288,7 @@ local function Apl()
       if AR.Cast(S.Flamestrike) then return ""; end
     end
     -- scorch,if=target.health.pct<=30&equipped.132454
-    if S.Scorch:IsCastableP() and (Target:HealthPercentage() <= 30 and Item(132454):IsEquipped()) then
+    if S.Scorch:IsCastableP() and (Target:HealthPercentage() <= 30 and I.Item132454:IsEquipped()) then
       if AR.Cast(S.Scorch) then return ""; end
     end
     -- fireball
@@ -302,7 +305,7 @@ local function Apl()
     if AR.Cast(S.Counterspell) then return ""; end
   end
   -- time_warp,if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410&(cooldown.combustion.remains<1|target.time_to_die<50))
-  if S.TimeWarp:IsCastableP() and ((AC.CombatTime() == 0 and Player:HasNotHeroism()) or (Player:HasNotHeroism() and Item(132410):IsEquipped() and (S.Combustion:CooldownRemainsP() < 1 or Target:TimeToDie() < 50))) then
+  if S.TimeWarp:IsCastableP() and ((AC.CombatTime() == 0 and Player:HasNotHeroism()) or (Player:HasNotHeroism() and I.Item132410:IsEquipped() and (S.Combustion:CooldownRemainsP() < 1 or Target:TimeToDie() < 50))) then
     if AR.Cast(S.TimeWarp) then return ""; end
   end
   -- mirror_image,if=buff.combustion.down

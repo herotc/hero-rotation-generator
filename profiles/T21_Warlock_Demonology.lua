@@ -57,7 +57,9 @@ local S = Spell.Warlock.Demonology;
 -- Items
 if not Item.Warlock then Item.Warlock = {} end
 Item.Warlock.Demonology = {
-  ProlongedPower                = Item(142117)
+  Item132369                       = Item(132369),
+  Item132379                       = Item(132379),
+  ProlongedPower                   = Item(142117)
 };
 local I = Item.Warlock.Demonology;
 
@@ -113,11 +115,11 @@ local function Apl()
     if AR.Cast(S.Shadowflame) then return ""; end
   end
   -- summon_infernal,if=(!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>2)&equipped.132369
-  if S.SummonInfernal:IsCastableP() and ((not S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] > 2) and Item(132369):IsEquipped()) then
+  if S.SummonInfernal:IsCastableP() and ((not S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] > 2) and I.Item132369:IsEquipped()) then
     if AR.Cast(S.SummonInfernal) then return ""; end
   end
   -- summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<=2&equipped.132369
-  if S.SummonDoomguard:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] <= 2 and Item(132369):IsEquipped()) then
+  if S.SummonDoomguard:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] <= 2 and I.Item132369:IsEquipped()) then
     if AR.Cast(S.SummonDoomguard) then return ""; end
   end
   -- call_dreadstalkers,if=((!talent.summon_darkglare.enabled|talent.power_trip.enabled)&(spell_targets.implosion<3|!talent.implosion.enabled))&!(soul_shard=5&buff.demonic_calling.remains)
@@ -145,11 +147,11 @@ local function Apl()
     if AR.Cast(S.SummonInfernal) then return ""; end
   end
   -- summon_doomguard,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal=1&equipped.132379&!cooldown.sindorei_spite_icd.remains
-  if S.SummonDoomguard:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] == 1 and Item(132379):IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
+  if S.SummonDoomguard:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] == 1 and I.Item132379:IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
     if AR.Cast(S.SummonDoomguard) then return ""; end
   end
   -- summon_infernal,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>1&equipped.132379&!cooldown.sindorei_spite_icd.remains
-  if S.SummonInfernal:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] > 1 and Item(132379):IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
+  if S.SummonInfernal:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] > 1 and I.Item132379:IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
     if AR.Cast(S.SummonInfernal) then return ""; end
   end
   -- shadow_bolt,if=buff.shadowy_inspiration.remains&soul_shard<5&!prev_gcd.1.doom&!variable.no_de2

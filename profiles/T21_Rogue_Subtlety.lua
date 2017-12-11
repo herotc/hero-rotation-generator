@@ -68,12 +68,12 @@ local S = Spell.Rogue.Subtlety;
 -- Items
 if not Item.Rogue then Item.Rogue = {} end
 Item.Rogue.Subtlety = {
-  ProlongedPower                = Item(142117),
-  TheFirstoftheDead             = Item(151818),
-  MantleoftheMasterAssassin     = Item(144236),
-  ShadowSatyrsWalk              = Item(137032),
-  InsigniaofRavenholdt          = Item(137049),
-  DenialoftheHalfgiants         = Item(137100)
+  ProlongedPower                   = Item(142117),
+  TheFirstoftheDead                = Item(151818),
+  MantleoftheMasterAssassin        = Item(144236),
+  ShadowSatyrsWalk                 = Item(137032),
+  InsigniaofRavenholdt             = Item(137049),
+  DenialoftheHalfgiants            = Item(137100)
 };
 local I = Item.Rogue.Subtlety;
 

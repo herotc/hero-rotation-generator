@@ -51,12 +51,12 @@ local S = Spell.Hunter.BeastMastery;
 -- Items
 if not Item.Hunter then Item.Hunter = {} end
 Item.Hunter.BeastMastery = {
-  ProlongedPower                = Item(142117),
-  CalloftheWild                 = Item(137101),
-  ConvergenceofFates            = Item(140806),
-  QaplaEredunWarOrder           = Item(137227),
-  RoaroftheSevenLions           = Item(137080),
-  ParselsTongue                 = Item(151805)
+  ProlongedPower                   = Item(142117),
+  CalloftheWild                    = Item(137101),
+  ConvergenceofFates               = Item(140806),
+  QaplaEredunWarOrder              = Item(137227),
+  RoaroftheSevenLions              = Item(137080),
+  ParselsTongue                    = Item(151805)
 };
 local I = Item.Hunter.BeastMastery;
 

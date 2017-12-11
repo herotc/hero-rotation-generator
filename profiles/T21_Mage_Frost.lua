@@ -62,8 +62,8 @@ local S = Spell.Mage.Frost;
 -- Items
 if not Item.Mage then Item.Mage = {} end
 Item.Mage.Frost = {
-  ProlongedPower                = Item(142117),
-  ShardoftheExodar              = Item(132410)
+  ProlongedPower                   = Item(142117),
+  ShardoftheExodar                 = Item(132410)
 };
 local I = Item.Mage.Frost;
 

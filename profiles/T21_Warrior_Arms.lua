@@ -62,9 +62,9 @@ local S = Spell.Warrior.Arms;
 -- Items
 if not Item.Warrior then Item.Warrior = {} end
 Item.Warrior.Arms = {
-  TheGreatStormsEye             = Item(),
-  ArchavonsHeavyHand            = Item(),
-  ProlongedPower                = Item(142117)
+  TheGreatStormsEye                = Item(),
+  ArchavonsHeavyHand               = Item(),
+  ProlongedPower                   = Item(142117)
 };
 local I = Item.Warrior.Arms;
 

@@ -57,7 +57,7 @@ local S = Spell.Hunter.Marksmanship;
 -- Items
 if not Item.Hunter then Item.Hunter = {} end
 Item.Hunter.Marksmanship = {
-  ProlongedPower                = Item(142117)
+  ProlongedPower                   = Item(142117)
 };
 local I = Item.Hunter.Marksmanship;
 

@@ -61,9 +61,9 @@ local S = Spell.Mage.Arcane;
 -- Items
 if not Item.Mage then Item.Mage = {} end
 Item.Mage.Arcane = {
-  DeadlyGrace                   = Item(127843),
-  MantleoftheFirstKirinTor      = Item(248098),
-  MysticKiltoftheRuneMaster     = Item(209280)
+  DeadlyGrace                      = Item(127843),
+  MantleoftheFirstKirinTor         = Item(248098),
+  MysticKiltoftheRuneMaster        = Item(209280)
 };
 local I = Item.Mage.Arcane;
 

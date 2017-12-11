@@ -69,9 +69,9 @@ local S = Spell.Druid.Feral;
 -- Items
 if not Item.Druid then Item.Druid = {} end
 Item.Druid.Feral = {
-  OldWar                        = Item(127844),
-  AiluroPouncers                = Item(137024),
-  LuffaWrappings                = Item(137056)
+  OldWar                           = Item(127844),
+  AiluroPouncers                   = Item(137024),
+  LuffaWrappings                   = Item(137056)
 };
 local I = Item.Druid.Feral;
 

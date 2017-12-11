@@ -66,7 +66,11 @@ local S = Spell.Warlock.Affliction;
 -- Items
 if not Item.Warlock then Item.Warlock = {} end
 Item.Warlock.Affliction = {
-  ProlongedPower                = Item(142117)
+  Item144364                       = Item(144364),
+  Item132379                       = Item(132379),
+  ProlongedPower                   = Item(142117),
+  Item132381                       = Item(132381),
+  Item132457                       = Item(132457)
 };
 local I = Item.Warlock.Affliction;
 
@@ -95,7 +99,7 @@ end
 local function Apl()
   local function Haunt()
     -- reap_souls,if=!buff.deadwind_harvester.remains&time>5&(buff.tormented_souls.react>=5|target.time_to_die<=buff.tormented_souls.react*(5+1.5*equipped.144364)+(buff.deadwind_harvester.remains*(5+1.5*equipped.144364)%12*(5+1.5*equipped.144364)))
-    if S.ReapSouls:IsCastableP() and (not bool(Player:BuffRemainsP(S.DeadwindHarvesterBuff)) and AC.CombatTime() > 5 and (Player:BuffStackP(S.TormentedSoulsBuff) >= 5 or Target:TimeToDie() <= Player:BuffStackP(S.TormentedSoulsBuff) * (5 + 1.5 * num(Item(144364):IsEquipped())) + (Player:BuffRemainsP(S.DeadwindHarvesterBuff) * (5 + 1.5 * num(Item(144364):IsEquipped())) / 12 * (5 + 1.5 * num(Item(144364):IsEquipped()))))) then
+    if S.ReapSouls:IsCastableP() and (not bool(Player:BuffRemainsP(S.DeadwindHarvesterBuff)) and AC.CombatTime() > 5 and (Player:BuffStackP(S.TormentedSoulsBuff) >= 5 or Target:TimeToDie() <= Player:BuffStackP(S.TormentedSoulsBuff) * (5 + 1.5 * num(I.Item144364:IsEquipped())) + (Player:BuffRemainsP(S.DeadwindHarvesterBuff) * (5 + 1.5 * num(I.Item144364:IsEquipped())) / 12 * (5 + 1.5 * num(I.Item144364:IsEquipped()))))) then
       if AR.Cast(S.ReapSouls) then return ""; end
     end
     -- reap_souls,if=debuff.haunt.remains&!buff.deadwind_harvester.remains
@@ -127,11 +131,11 @@ local function Apl()
       if AR.Cast(S.SummonInfernal) then return ""; end
     end
     -- summon_doomguard,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal=1&equipped.132379&!cooldown.sindorei_spite_icd.remains
-    if S.SummonDoomguard:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] == 1 and Item(132379):IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
+    if S.SummonDoomguard:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] == 1 and I.Item132379:IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
       if AR.Cast(S.SummonDoomguard) then return ""; end
     end
     -- summon_infernal,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>1&equipped.132379&!cooldown.sindorei_spite_icd.remains
-    if S.SummonInfernal:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] > 1 and Item(132379):IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
+    if S.SummonInfernal:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] > 1 and I.Item132379:IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
       if AR.Cast(S.SummonInfernal) then return ""; end
     end
     -- berserking,if=prev_gcd.1.unstable_affliction|buff.soul_harvest.remains>=10
@@ -163,7 +167,7 @@ local function Apl()
       if AR.Cast(S.Corruption) then return ""; end
     end
     -- reap_souls,if=(buff.deadwind_harvester.remains+buff.tormented_souls.react*(5+equipped.144364))>=(12*(5+1.5*equipped.144364))
-    if S.ReapSouls:IsCastableP() and ((Player:BuffRemainsP(S.DeadwindHarvesterBuff) + Player:BuffStackP(S.TormentedSoulsBuff) * (5 + num(Item(144364):IsEquipped()))) >= (12 * (5 + 1.5 * num(Item(144364):IsEquipped())))) then
+    if S.ReapSouls:IsCastableP() and ((Player:BuffRemainsP(S.DeadwindHarvesterBuff) + Player:BuffStackP(S.TormentedSoulsBuff) * (5 + num(I.Item144364:IsEquipped()))) >= (12 * (5 + 1.5 * num(I.Item144364:IsEquipped())))) then
       if AR.Cast(S.ReapSouls) then return ""; end
     end
     -- life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<=gcd
@@ -215,7 +219,7 @@ local function Apl()
       if AR.Cast(S.UnstableAffliction) then return ""; end
     end
     -- unstable_affliction,cycle_targets=1,if=active_enemies>1&(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&(equipped.132381|equipped.132457)&cooldown.haunt.remains<15&dot.unstable_affliction_1.remains<cast_time&dot.unstable_affliction_2.remains<cast_time&dot.unstable_affliction_3.remains<cast_time&dot.unstable_affliction_4.remains<cast_time&dot.unstable_affliction_5.remains<cast_time
-    if S.UnstableAffliction:IsCastableP() and (active_enemies > 1 and (not S.SowtheSeeds:IsAvailable() or Cache.EnemiesCount[0] < 3) and (Item(132381):IsEquipped() or Item(132457):IsEquipped()) and S.Haunt:CooldownRemainsP() < 15 and Target:DebuffRemainsP(S.UnstableAffliction1Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction2Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction3Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction4Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction5Debuff) < S.UnstableAffliction:CastTime()) then
+    if S.UnstableAffliction:IsCastableP() and (active_enemies > 1 and (not S.SowtheSeeds:IsAvailable() or Cache.EnemiesCount[0] < 3) and (I.Item132381:IsEquipped() or I.Item132457:IsEquipped()) and S.Haunt:CooldownRemainsP() < 15 and Target:DebuffRemainsP(S.UnstableAffliction1Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction2Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction3Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction4Debuff) < S.UnstableAffliction:CastTime() and Target:DebuffRemainsP(S.UnstableAffliction5Debuff) < S.UnstableAffliction:CastTime()) then
       if AR.Cast(S.UnstableAffliction) then return ""; end
     end
     -- unstable_affliction,if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<5&talent.contagion.enabled&soul_shard>=4&dot.unstable_affliction_1.remains<cast_time&dot.unstable_affliction_2.remains<cast_time&dot.unstable_affliction_3.remains<cast_time&dot.unstable_affliction_4.remains<cast_time&dot.unstable_affliction_5.remains<cast_time
@@ -265,7 +269,7 @@ local function Apl()
   end
   local function Mg()
     -- reap_souls,if=!buff.deadwind_harvester.remains&time>5&((buff.tormented_souls.react>=4+active_enemies|buff.tormented_souls.react>=9)|target.time_to_die<=buff.tormented_souls.react*(5+1.5*equipped.144364)+(buff.deadwind_harvester.remains*(5+1.5*equipped.144364)%12*(5+1.5*equipped.144364)))
-    if S.ReapSouls:IsCastableP() and (not bool(Player:BuffRemainsP(S.DeadwindHarvesterBuff)) and AC.CombatTime() > 5 and ((Player:BuffStackP(S.TormentedSoulsBuff) >= 4 + active_enemies or Player:BuffStackP(S.TormentedSoulsBuff) >= 9) or Target:TimeToDie() <= Player:BuffStackP(S.TormentedSoulsBuff) * (5 + 1.5 * num(Item(144364):IsEquipped())) + (Player:BuffRemainsP(S.DeadwindHarvesterBuff) * (5 + 1.5 * num(Item(144364):IsEquipped())) / 12 * (5 + 1.5 * num(Item(144364):IsEquipped()))))) then
+    if S.ReapSouls:IsCastableP() and (not bool(Player:BuffRemainsP(S.DeadwindHarvesterBuff)) and AC.CombatTime() > 5 and ((Player:BuffStackP(S.TormentedSoulsBuff) >= 4 + active_enemies or Player:BuffStackP(S.TormentedSoulsBuff) >= 9) or Target:TimeToDie() <= Player:BuffStackP(S.TormentedSoulsBuff) * (5 + 1.5 * num(I.Item144364:IsEquipped())) + (Player:BuffRemainsP(S.DeadwindHarvesterBuff) * (5 + 1.5 * num(I.Item144364:IsEquipped())) / 12 * (5 + 1.5 * num(I.Item144364:IsEquipped()))))) then
       if AR.Cast(S.ReapSouls) then return ""; end
     end
     -- agony,cycle_targets=1,max_cycle_targets=5,target_if=sim.target!=target&talent.soul_harvest.enabled&cooldown.soul_harvest.remains<cast_time*6&remains<=duration*0.3&target.time_to_die>=remains&time_to_die>tick_time*3
@@ -305,11 +309,11 @@ local function Apl()
       if AR.Cast(S.SummonInfernal) then return ""; end
     end
     -- summon_doomguard,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal=1&equipped.132379&!cooldown.sindorei_spite_icd.remains
-    if S.SummonDoomguard:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] == 1 and Item(132379):IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
+    if S.SummonDoomguard:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] == 1 and I.Item132379:IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
       if AR.Cast(S.SummonDoomguard) then return ""; end
     end
     -- summon_infernal,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>1&equipped.132379&!cooldown.sindorei_spite_icd.remains
-    if S.SummonInfernal:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] > 1 and Item(132379):IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
+    if S.SummonInfernal:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] > 1 and I.Item132379:IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
       if AR.Cast(S.SummonInfernal) then return ""; end
     end
     -- berserking,if=prev_gcd.1.unstable_affliction|buff.soul_harvest.remains>=10
@@ -415,11 +419,11 @@ local function Apl()
   end
   local function Writhe()
     -- reap_souls,if=!buff.deadwind_harvester.remains&time>5&(buff.tormented_souls.react>=5|target.time_to_die<=buff.tormented_souls.react*(5+1.5*equipped.144364)+(buff.deadwind_harvester.remains*(5+1.5*equipped.144364)%12*(5+1.5*equipped.144364)))
-    if S.ReapSouls:IsCastableP() and (not bool(Player:BuffRemainsP(S.DeadwindHarvesterBuff)) and AC.CombatTime() > 5 and (Player:BuffStackP(S.TormentedSoulsBuff) >= 5 or Target:TimeToDie() <= Player:BuffStackP(S.TormentedSoulsBuff) * (5 + 1.5 * num(Item(144364):IsEquipped())) + (Player:BuffRemainsP(S.DeadwindHarvesterBuff) * (5 + 1.5 * num(Item(144364):IsEquipped())) / 12 * (5 + 1.5 * num(Item(144364):IsEquipped()))))) then
+    if S.ReapSouls:IsCastableP() and (not bool(Player:BuffRemainsP(S.DeadwindHarvesterBuff)) and AC.CombatTime() > 5 and (Player:BuffStackP(S.TormentedSoulsBuff) >= 5 or Target:TimeToDie() <= Player:BuffStackP(S.TormentedSoulsBuff) * (5 + 1.5 * num(I.Item144364:IsEquipped())) + (Player:BuffRemainsP(S.DeadwindHarvesterBuff) * (5 + 1.5 * num(I.Item144364:IsEquipped())) / 12 * (5 + 1.5 * num(I.Item144364:IsEquipped()))))) then
       if AR.Cast(S.ReapSouls) then return ""; end
     end
     -- reap_souls,if=!buff.deadwind_harvester.remains&time>5&(buff.soul_harvest.remains>=(5+1.5*equipped.144364)&buff.active_uas.stack>1|buff.concordance_of_the_legionfall.react|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react|trinket.proc.mastery.react|trinket.stacking_proc.mastery.react|trinket.proc.crit.react|trinket.stacking_proc.crit.react|trinket.proc.versatility.react|trinket.stacking_proc.versatility.react|trinket.proc.spell_power.react|trinket.stacking_proc.spell_power.react)
-    if S.ReapSouls:IsCastableP() and (not bool(Player:BuffRemainsP(S.DeadwindHarvesterBuff)) and AC.CombatTime() > 5 and (Player:BuffRemainsP(S.SoulHarvestBuff) >= (5 + 1.5 * num(Item(144364):IsEquipped())) and Player:BuffStackP(S.ActiveUasBuff) > 1 or bool(Player:BuffStackP(S.ConcordanceoftheLegionfallBuff)) or bool(trinket.proc.intellect.react) or bool(trinket.stacking_proc.intellect.react) or bool(trinket.proc.mastery.react) or bool(trinket.stacking_proc.mastery.react) or bool(trinket.proc.crit.react) or bool(trinket.stacking_proc.crit.react) or bool(trinket.proc.versatility.react) or bool(trinket.stacking_proc.versatility.react) or bool(trinket.proc.spell_power.react) or bool(trinket.stacking_proc.spell_power.react))) then
+    if S.ReapSouls:IsCastableP() and (not bool(Player:BuffRemainsP(S.DeadwindHarvesterBuff)) and AC.CombatTime() > 5 and (Player:BuffRemainsP(S.SoulHarvestBuff) >= (5 + 1.5 * num(I.Item144364:IsEquipped())) and Player:BuffStackP(S.ActiveUasBuff) > 1 or bool(Player:BuffStackP(S.ConcordanceoftheLegionfallBuff)) or bool(trinket.proc.intellect.react) or bool(trinket.stacking_proc.intellect.react) or bool(trinket.proc.mastery.react) or bool(trinket.stacking_proc.mastery.react) or bool(trinket.proc.crit.react) or bool(trinket.stacking_proc.crit.react) or bool(trinket.proc.versatility.react) or bool(trinket.stacking_proc.versatility.react) or bool(trinket.proc.spell_power.react) or bool(trinket.stacking_proc.spell_power.react))) then
       if AR.Cast(S.ReapSouls) then return ""; end
     end
     -- agony,if=remains<=tick_time+gcd
@@ -463,11 +467,11 @@ local function Apl()
       if AR.Cast(S.SummonInfernal) then return ""; end
     end
     -- summon_doomguard,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal=1&equipped.132379&!cooldown.sindorei_spite_icd.remains
-    if S.SummonDoomguard:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] == 1 and Item(132379):IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
+    if S.SummonDoomguard:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] == 1 and I.Item132379:IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
       if AR.Cast(S.SummonDoomguard) then return ""; end
     end
     -- summon_infernal,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>1&equipped.132379&!cooldown.sindorei_spite_icd.remains
-    if S.SummonInfernal:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] > 1 and Item(132379):IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
+    if S.SummonInfernal:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[0] > 1 and I.Item132379:IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
       if AR.Cast(S.SummonInfernal) then return ""; end
     end
     -- berserking,if=prev_gcd.1.unstable_affliction|buff.soul_harvest.remains>=10
@@ -503,7 +507,7 @@ local function Apl()
       if AR.Cast(S.LifeTap) then return ""; end
     end
     -- reap_souls,if=(buff.deadwind_harvester.remains+buff.tormented_souls.react*(5+equipped.144364))>=(12*(5+1.5*equipped.144364))
-    if S.ReapSouls:IsCastableP() and ((Player:BuffRemainsP(S.DeadwindHarvesterBuff) + Player:BuffStackP(S.TormentedSoulsBuff) * (5 + num(Item(144364):IsEquipped()))) >= (12 * (5 + 1.5 * num(Item(144364):IsEquipped())))) then
+    if S.ReapSouls:IsCastableP() and ((Player:BuffRemainsP(S.DeadwindHarvesterBuff) + Player:BuffStackP(S.TormentedSoulsBuff) * (5 + num(I.Item144364:IsEquipped()))) >= (12 * (5 + 1.5 * num(I.Item144364:IsEquipped())))) then
       if AR.Cast(S.ReapSouls) then return ""; end
     end
     -- phantom_singularity

@@ -62,10 +62,10 @@ local S = Spell.Shaman.Elemental;
 -- Items
 if not Item.Shaman then Item.Shaman = {} end
 Item.Shaman.Elemental = {
-  SmolderingHeart               = Item(),
-  TheDeceiversBloodPact         = Item(),
-  ProlongedPower                = Item(142117),
-  GnawedThumbRing               = Item()
+  SmolderingHeart                  = Item(),
+  TheDeceiversBloodPact            = Item(),
+  ProlongedPower                   = Item(142117),
+  GnawedThumbRing                  = Item()
 };
 local I = Item.Shaman.Elemental;
 

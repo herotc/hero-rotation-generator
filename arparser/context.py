@@ -121,8 +121,8 @@ class Context:
             f'if not Item.{class_} then Item.{class_} = {{}} end\n'
             f'Item.{class_}.{spec} = {{\n')
         for i, item in enumerate(self.items.values()):
-            item_id = str(ITEM_INFO.get(item.simc, ''))
-            lua_items += f'  {item.lua_name():30}= Item({item_id})'
+            item_id = str(ITEM_INFO.get(item.simc, item.iid))
+            lua_items += f'  {item.lua_name():33}= Item({item_id})'
             lua_items += ',\n' if i < len(self.items)-1 else '\n'
         lua_items += (
             '};\n'

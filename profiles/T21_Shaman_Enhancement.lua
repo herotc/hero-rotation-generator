@@ -66,7 +66,9 @@ local S = Spell.Shaman.Enhancement;
 -- Items
 if not Item.Shaman then Item.Shaman = {} end
 Item.Shaman.Enhancement = {
-  ProlongedPower                = Item(142117)
+  ProlongedPower                   = Item(142117),
+  Item151819                       = Item(151819),
+  Item137084                       = Item(137084)
 };
 local I = Item.Shaman.Enhancement;
 
@@ -323,11 +325,11 @@ local function Apl()
   end
   -- variable,name=heartEquipped,value=(equipped.151819)
   if (true) then
-    Heartequipped = num((Item(151819):IsEquipped()))
+    Heartequipped = num((I.Item151819:IsEquipped()))
   end
   -- variable,name=akainuEquipped,value=(equipped.137084)
   if (true) then
-    Akainuequipped = num((Item(137084):IsEquipped()))
+    Akainuequipped = num((I.Item137084:IsEquipped()))
   end
   -- variable,name=akainuAS,value=(variable.akainuEquipped&buff.hot_hand.react&!buff.frostbrand.up)
   if (true) then

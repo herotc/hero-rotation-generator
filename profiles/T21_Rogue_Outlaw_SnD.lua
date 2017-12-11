@@ -69,11 +69,11 @@ local S = Spell.Rogue.Outlaw;
 -- Items
 if not Item.Rogue then Item.Rogue = {} end
 Item.Rogue.Outlaw = {
-  ShivarranSymmetry             = Item(141321),
-  ProlongedPower                = Item(142117),
-  ThraxisTricksyTreads          = Item(137031),
-  GreenskinsWaterloggedWristcuffs= Item(137099),
-  MantleoftheMasterAssassin     = Item(144236)
+  ShivarranSymmetry                = Item(141321),
+  ProlongedPower                   = Item(142117),
+  ThraxisTricksyTreads             = Item(137031),
+  GreenskinsWaterloggedWristcuffs  = Item(137099),
+  MantleoftheMasterAssassin        = Item(144236)
 };
 local I = Item.Rogue.Outlaw;
 

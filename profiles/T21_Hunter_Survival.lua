@@ -57,7 +57,8 @@ local S = Spell.Hunter.Survival;
 -- Items
 if not Item.Hunter then Item.Hunter = {} end
 Item.Hunter.Survival = {
-  ProlongedPower                = Item(142117)
+  ProlongedPower                   = Item(142117),
+  Item137043                       = Item(137043)
 };
 local I = Item.Hunter.Survival;
 
@@ -252,7 +253,7 @@ local function Apl()
   end
   -- variable,name=frizzosEquipped,value=(equipped.137043)
   if (true) then
-    Frizzosequipped = num((Item(137043):IsEquipped()))
+    Frizzosequipped = num((I.Item137043:IsEquipped()))
   end
   -- variable,name=mokTalented,value=(talent.way_of_the_moknathal.enabled)
   if (true) then

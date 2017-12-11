@@ -68,10 +68,10 @@ local S = Spell.Druid.Balance;
 -- Items
 if not Item.Druid then Item.Druid = {} end
 Item.Druid.Balance = {
-  LadyandtheChild               = Item(144295),
-  RadiantMoonlight              = Item(151800),
-  ProlongedPower                = Item(142117),
-  TheEmeraldDreamcatcher        = Item(137062)
+  LadyandtheChild                  = Item(144295),
+  RadiantMoonlight                 = Item(151800),
+  ProlongedPower                   = Item(142117),
+  TheEmeraldDreamcatcher           = Item(137062)
 };
 local I = Item.Druid.Balance;
 

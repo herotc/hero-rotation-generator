@@ -61,8 +61,11 @@ local S = Spell.DeathKnight.Unholy;
 -- Items
 if not Item.DeathKnight then Item.DeathKnight = {} end
 Item.DeathKnight.Unholy = {
-  ColdHeart                     = Item(151796),
-  ProlongedPower                = Item(142117)
+  ColdHeart                        = Item(151796),
+  Item137075                       = Item(137075),
+  Item140806                       = Item(140806),
+  Item132448                       = Item(132448),
+  ProlongedPower                   = Item(142117)
 };
 local I = Item.DeathKnight.Unholy;
 
@@ -139,11 +142,11 @@ local function Apl()
       if AR.Cast(S.Apocalypse) then return ""; end
     end
     -- dark_arbiter,if=(!equipped.137075|cooldown.dark_transformation.remains<2)&runic_power.deficit<30
-    if S.DarkArbiter:IsCastableP() and ((not Item(137075):IsEquipped() or S.DarkTransformation:CooldownRemainsP() < 2) and Player:RunicPowerDeficit() < 30) then
+    if S.DarkArbiter:IsCastableP() and ((not I.Item137075:IsEquipped() or S.DarkTransformation:CooldownRemainsP() < 2) and Player:RunicPowerDeficit() < 30) then
       if AR.Cast(S.DarkArbiter) then return ""; end
     end
     -- summon_gargoyle,if=(!equipped.137075|cooldown.dark_transformation.remains<10)&rune.time_to_4>=gcd
-    if S.SummonGargoyle:IsCastableP() and ((not Item(137075):IsEquipped() or S.DarkTransformation:CooldownRemainsP() < 10) and Player:RuneTimeToX(4) >= Player:GCD()) then
+    if S.SummonGargoyle:IsCastableP() and ((not I.Item137075:IsEquipped() or S.DarkTransformation:CooldownRemainsP() < 10) and Player:RuneTimeToX(4) >= Player:GCD()) then
       if AR.Cast(S.SummonGargoyle) then return ""; end
     end
     -- soul_reaper,if=(debuff.festering_wound.stack>=6&cooldown.apocalypse.remains<=gcd)|(debuff.festering_wound.stack>=3&rune>=3&cooldown.apocalypse.remains>20)
@@ -157,27 +160,27 @@ local function Apl()
   end
   local function Dt()
     -- dark_transformation,if=equipped.137075&talent.dark_arbiter.enabled&(talent.shadow_infusion.enabled|cooldown.dark_arbiter.remains>52)&cooldown.dark_arbiter.remains>30&!equipped.140806
-    if S.DarkTransformation:IsCastableP() and (Item(137075):IsEquipped() and S.DarkArbiter:IsAvailable() and (S.ShadowInfusion:IsAvailable() or S.DarkArbiter:CooldownRemainsP() > 52) and S.DarkArbiter:CooldownRemainsP() > 30 and not Item(140806):IsEquipped()) then
+    if S.DarkTransformation:IsCastableP() and (I.Item137075:IsEquipped() and S.DarkArbiter:IsAvailable() and (S.ShadowInfusion:IsAvailable() or S.DarkArbiter:CooldownRemainsP() > 52) and S.DarkArbiter:CooldownRemainsP() > 30 and not I.Item140806:IsEquipped()) then
       if AR.Cast(S.DarkTransformation) then return ""; end
     end
     -- dark_transformation,if=equipped.137075&(talent.shadow_infusion.enabled|cooldown.dark_arbiter.remains>(52*1.333))&equipped.140806&cooldown.dark_arbiter.remains>(30*1.333)
-    if S.DarkTransformation:IsCastableP() and (Item(137075):IsEquipped() and (S.ShadowInfusion:IsAvailable() or S.DarkArbiter:CooldownRemainsP() > (52 * 1.333)) and Item(140806):IsEquipped() and S.DarkArbiter:CooldownRemainsP() > (30 * 1.333)) then
+    if S.DarkTransformation:IsCastableP() and (I.Item137075:IsEquipped() and (S.ShadowInfusion:IsAvailable() or S.DarkArbiter:CooldownRemainsP() > (52 * 1.333)) and I.Item140806:IsEquipped() and S.DarkArbiter:CooldownRemainsP() > (30 * 1.333)) then
       if AR.Cast(S.DarkTransformation) then return ""; end
     end
     -- dark_transformation,if=equipped.137075&target.time_to_die<cooldown.dark_arbiter.remains-8
-    if S.DarkTransformation:IsCastableP() and (Item(137075):IsEquipped() and Target:TimeToDie() < S.DarkArbiter:CooldownRemainsP() - 8) then
+    if S.DarkTransformation:IsCastableP() and (I.Item137075:IsEquipped() and Target:TimeToDie() < S.DarkArbiter:CooldownRemainsP() - 8) then
       if AR.Cast(S.DarkTransformation) then return ""; end
     end
     -- dark_transformation,if=equipped.137075&(talent.shadow_infusion.enabled|cooldown.summon_gargoyle.remains>55)&cooldown.summon_gargoyle.remains>35
-    if S.DarkTransformation:IsCastableP() and (Item(137075):IsEquipped() and (S.ShadowInfusion:IsAvailable() or S.SummonGargoyle:CooldownRemainsP() > 55) and S.SummonGargoyle:CooldownRemainsP() > 35) then
+    if S.DarkTransformation:IsCastableP() and (I.Item137075:IsEquipped() and (S.ShadowInfusion:IsAvailable() or S.SummonGargoyle:CooldownRemainsP() > 55) and S.SummonGargoyle:CooldownRemainsP() > 35) then
       if AR.Cast(S.DarkTransformation) then return ""; end
     end
     -- dark_transformation,if=equipped.137075&target.time_to_die<cooldown.summon_gargoyle.remains-8
-    if S.DarkTransformation:IsCastableP() and (Item(137075):IsEquipped() and Target:TimeToDie() < S.SummonGargoyle:CooldownRemainsP() - 8) then
+    if S.DarkTransformation:IsCastableP() and (I.Item137075:IsEquipped() and Target:TimeToDie() < S.SummonGargoyle:CooldownRemainsP() - 8) then
       if AR.Cast(S.DarkTransformation) then return ""; end
     end
     -- dark_transformation,if=!equipped.137075&rune.time_to_4>=gcd
-    if S.DarkTransformation:IsCastableP() and (not Item(137075):IsEquipped() and Player:RuneTimeToX(4) >= Player:GCD()) then
+    if S.DarkTransformation:IsCastableP() and (not I.Item137075:IsEquipped() and Player:RuneTimeToX(4) >= Player:GCD()) then
       if AR.Cast(S.DarkTransformation) then return ""; end
     end
   end
@@ -219,11 +222,11 @@ local function Apl()
       if AR.Cast(S.DeathCoil) then return ""; end
     end
     -- scourge_strike,if=(buff.necrosis.up|buff.unholy_strength.react|rune>=2)&debuff.festering_wound.stack>=1&(debuff.festering_wound.stack>=3|!(talent.castigator.enabled|equipped.132448))&(cooldown.army_of_the_dead.remains>5|rune.time_to_4<=gcd)
-    if S.ScourgeStrike:IsCastableP() and ((Player:BuffP(S.NecrosisBuff) or bool(Player:BuffStackP(S.UnholyStrengthBuff)) or Player:Rune() >= 2) and Target:DebuffStackP(S.FesteringWoundDebuff) >= 1 and (Target:DebuffStackP(S.FesteringWoundDebuff) >= 3 or not (S.Castigator:IsAvailable() or Item(132448):IsEquipped())) and (S.ArmyoftheDead:CooldownRemainsP() > 5 or Player:RuneTimeToX(4) <= Player:GCD())) then
+    if S.ScourgeStrike:IsCastableP() and ((Player:BuffP(S.NecrosisBuff) or bool(Player:BuffStackP(S.UnholyStrengthBuff)) or Player:Rune() >= 2) and Target:DebuffStackP(S.FesteringWoundDebuff) >= 1 and (Target:DebuffStackP(S.FesteringWoundDebuff) >= 3 or not (S.Castigator:IsAvailable() or I.Item132448:IsEquipped())) and (S.ArmyoftheDead:CooldownRemainsP() > 5 or Player:RuneTimeToX(4) <= Player:GCD())) then
       if AR.Cast(S.ScourgeStrike) then return ""; end
     end
     -- clawing_shadows,if=(buff.necrosis.up|buff.unholy_strength.react|rune>=2)&debuff.festering_wound.stack>=1&(debuff.festering_wound.stack>=3|!equipped.132448)&(cooldown.army_of_the_dead.remains>5|rune.time_to_4<=gcd)
-    if S.ClawingShadows:IsCastableP() and ((Player:BuffP(S.NecrosisBuff) or bool(Player:BuffStackP(S.UnholyStrengthBuff)) or Player:Rune() >= 2) and Target:DebuffStackP(S.FesteringWoundDebuff) >= 1 and (Target:DebuffStackP(S.FesteringWoundDebuff) >= 3 or not Item(132448):IsEquipped()) and (S.ArmyoftheDead:CooldownRemainsP() > 5 or Player:RuneTimeToX(4) <= Player:GCD())) then
+    if S.ClawingShadows:IsCastableP() and ((Player:BuffP(S.NecrosisBuff) or bool(Player:BuffStackP(S.UnholyStrengthBuff)) or Player:Rune() >= 2) and Target:DebuffStackP(S.FesteringWoundDebuff) >= 1 and (Target:DebuffStackP(S.FesteringWoundDebuff) >= 3 or not I.Item132448:IsEquipped()) and (S.ArmyoftheDead:CooldownRemainsP() > 5 or Player:RuneTimeToX(4) <= Player:GCD())) then
       if AR.Cast(S.ClawingShadows) then return ""; end
     end
     -- death_coil,if=(talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>10)|!talent.dark_arbiter.enabled

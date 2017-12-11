@@ -62,7 +62,7 @@ local S = Spell.DemonHunter.Havoc;
 -- Items
 if not Item.DemonHunter then Item.DemonHunter = {} end
 Item.DemonHunter.Havoc = {
-  ProlongedPower                = Item(142117)
+  ProlongedPower                   = Item(142117)
 };
 local I = Item.DemonHunter.Havoc;
 

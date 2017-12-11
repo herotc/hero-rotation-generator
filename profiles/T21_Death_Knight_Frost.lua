@@ -66,11 +66,11 @@ local S = Spell.DeathKnight.Frost;
 -- Items
 if not Item.DeathKnight then Item.DeathKnight = {} end
 Item.DeathKnight.Frost = {
-  PerseveranceoftheEbonMartyr   = Item(132459),
-  ConsortsColdCore              = Item(144293),
-  KoltirasNewfoundWill          = Item(132366),
-  ProlongedPower                = Item(142117),
-  ColdHeart                     = Item(151796)
+  PerseveranceoftheEbonMartyr      = Item(132459),
+  ConsortsColdCore                 = Item(144293),
+  KoltirasNewfoundWill             = Item(132366),
+  ProlongedPower                   = Item(142117),
+  ColdHeart                        = Item(151796)
 };
 local I = Item.DeathKnight.Frost;
 

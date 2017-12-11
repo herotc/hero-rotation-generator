@@ -62,7 +62,8 @@ local S = Spell.Paladin.Protection;
 -- Items
 if not Item.Paladin then Item.Paladin = {} end
 Item.Paladin.Protection = {
-  ProlongedPower                = Item(142117)
+  ProlongedPower                   = Item(142117),
+  Item151812                       = Item(151812)
 };
 local I = Item.Paladin.Protection;
 
@@ -245,7 +246,7 @@ local function Apl()
       if AR.Cast(S.ShieldoftheRighteous) then return ""; end
     end
     -- eye_of_tyr,if=talent.seraphim.enabled&equipped.151812&buff.seraphim.up
-    if S.EyeofTyr:IsCastableP() and (S.Seraphim:IsAvailable() and Item(151812):IsEquipped() and Player:BuffP(S.SeraphimBuff)) then
+    if S.EyeofTyr:IsCastableP() and (S.Seraphim:IsAvailable() and I.Item151812:IsEquipped() and Player:BuffP(S.SeraphimBuff)) then
       if AR.Cast(S.EyeofTyr) then return ""; end
     end
     -- avengers_shield,if=talent.seraphim.enabled
@@ -269,7 +270,7 @@ local function Apl()
       if AR.Cast(S.Consecration) then return ""; end
     end
     -- eye_of_tyr,if=talent.seraphim.enabled&!equipped.151812
-    if S.EyeofTyr:IsCastableP() and (S.Seraphim:IsAvailable() and not Item(151812):IsEquipped()) then
+    if S.EyeofTyr:IsCastableP() and (S.Seraphim:IsAvailable() and not I.Item151812:IsEquipped()) then
       if AR.Cast(S.EyeofTyr) then return ""; end
     end
     -- blessed_hammer,if=talent.seraphim.enabled
