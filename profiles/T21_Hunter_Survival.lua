@@ -101,7 +101,7 @@ local function Apl()
       if AR.Cast(S.BloodFury, Settings.Survival.OffGCDasOffGCD.BloodFury) then return ""; end
     end
     -- potion,if=buff.aspect_of_the_eagle.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.AspectoftheEagleBuff) and (Player:BuffP(S.BerserkingBuff) or Player:BuffP(S.BloodFuryBuff) or not (Player:Race() == "Troll") and not (Player:Race() == "Orc"))) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.AspectoftheEagleBuff) and (Player:BuffP(S.BerserkingBuff) or Player:BuffP(S.BloodFuryBuff) or not Player:IsRace("Troll") and not Player:IsRace("Orc"))) then
       if AR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- snake_hunter,if=cooldown.mongoose_bite.charges=0&buff.mongoose_fury.remains>3*gcd&(cooldown.aspect_of_the_eagle.remains>5&!buff.aspect_of_the_eagle.up)

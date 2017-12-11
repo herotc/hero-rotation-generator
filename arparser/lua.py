@@ -200,13 +200,15 @@ class Method:
         return self.name
 
 
-class Literal(LuaTyped):
+class Literal(LuaTyped, LuaNamed):
     """
     Represent a literal expression (a value) as a string.
     """
 
-    def __init__(self, simc, type_=None):
+    def __init__(self, simc, type_=None, convert=False, quoted=False):
         self.simc = simc
+        self.convert = convert
+        self.quoted = quoted
         if not type_:
             type_ = BOOL if simc in (TRUE, FALSE) else NUM
         super().__init__(type_)
@@ -215,4 +217,11 @@ class Literal(LuaTyped):
         """
         Print the literal value.
         """
-        return str(self.simc)
+        result = ''
+        if self.convert:
+            result = self.lua_name()
+        else:
+            result = str(self.simc)
+        if self.quoted:
+            result = f'"{result}"'
+        return result

@@ -120,7 +120,7 @@ local function Apl()
       if AR.Cast(S.AvengingWrath) then return ""; end
     end
     -- crusade,if=holy_power>=3|((equipped.137048|race.blood_elf)&holy_power>=2)
-    if S.Crusade:IsCastableP() and (holy_power >= 3 or ((I.Item137048:IsEquipped() or (Player:Race() == "BloodElf")) and holy_power >= 2)) then
+    if S.Crusade:IsCastableP() and (holy_power >= 3 or ((I.Item137048:IsEquipped() or Player:IsRace("BloodElf")) and holy_power >= 2)) then
       if AR.Cast(S.Crusade) then return ""; end
     end
   end
@@ -242,11 +242,11 @@ local function Apl()
       if AR.Cast(S.Judgment) then return ""; end
     end
     -- blade_of_justice,if=equipped.137048|race.blood_elf|!cooldown.wake_of_ashes.up
-    if S.BladeofJustice:IsCastableP() and (I.Item137048:IsEquipped() or (Player:Race() == "BloodElf") or not S.WakeofAshes:CooldownUpP()) then
+    if S.BladeofJustice:IsCastableP() and (I.Item137048:IsEquipped() or Player:IsRace("BloodElf") or not S.WakeofAshes:CooldownUpP()) then
       if AR.Cast(S.BladeofJustice) then return ""; end
     end
     -- divine_hammer,if=equipped.137048|race.blood_elf|!cooldown.wake_of_ashes.up
-    if S.DivineHammer:IsCastableP() and (I.Item137048:IsEquipped() or (Player:Race() == "BloodElf") or not S.WakeofAshes:CooldownUpP()) then
+    if S.DivineHammer:IsCastableP() and (I.Item137048:IsEquipped() or Player:IsRace("BloodElf") or not S.WakeofAshes:CooldownUpP()) then
       if AR.Cast(S.DivineHammer) then return ""; end
     end
     -- wake_of_ashes

@@ -5,7 +5,7 @@ Define the objects representing simc actions.
 @author: skasch
 """
 
-from .lua import LuaNamed
+from .lua import Literal
 from .conditions import ConditionExpression
 from .executions import (Spell, Item, Potion, Variable, CancelBuff,
                          RunActionList, CallActionList)
@@ -27,7 +27,7 @@ class ActionList:
         self.context = apl.context
         self.show_comments = apl.show_comments
         self.simc = simc
-        self.name = LuaNamed(name)
+        self.name = Literal(name, convert=True)
 
     def split_simc(self):
         """
@@ -54,7 +54,7 @@ class ActionList:
         Print the lua string representing the action list.
         """
         actions = self.print_actions_lua()
-        function_name = self.name.lua_name()
+        function_name = self.name.print_lua()
         return (f'local function {function_name}()\n'
                 f'{actions}\n'
                 f'end')

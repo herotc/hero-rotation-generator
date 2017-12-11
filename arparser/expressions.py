@@ -5,7 +5,7 @@ Define the objects representing simc expressions.
 @author: skasch
 """
 
-from .lua import LuaNamed, LuaExpression, LuaComparison, Method, Literal
+from .lua import LuaNamed, LuaExpression, Method, Literal
 from .executions import Spell, Item
 from .druid import balance_astral_power_value
 from .units import Pet
@@ -199,8 +199,7 @@ class Expression:
         """
         Return the condition when the prefix is variable.
         """
-        lua_varname = LuaNamed(self.condition_list[1]).lua_name()
-        return Literal(lua_varname)
+        return Literal(self.condition_list[1], convert=True)
 
 
 class BuildExpression(LuaExpression):
@@ -211,7 +210,8 @@ class BuildExpression(LuaExpression):
     def __init__(self, call, array=False):
         call = 'ready' if call == 'up' else call
         self.array = array
-        getattr(self, call)()
+        if call:
+            getattr(self, call)()
         super().__init__(self.object_, self.method, self.args, array=self.array)
 
 
@@ -223,8 +223,8 @@ class Expires:
     def __init__(self, condition, simc, ready_simc, spell_type=SPELL,
                  spell=None):
         self.condition = condition
-        self.simc = LuaNamed(simc)
-        self.ready_simc = LuaNamed(ready_simc)
+        self.simc = Literal(simc, convert=True)
+        self.ready_simc = Literal(ready_simc, convert=True)
         if not spell:
             spell_simc = condition.condition_list[1]
             if spell_simc == BLOODLUST:
@@ -247,7 +247,7 @@ class Expires:
             # Required when called from Aura
             self.args = []
         else:
-            self.method = Method(f'{self.ready_simc.lua_name()}P', type_=BOOL)
+            self.method = Method(f'{self.ready_simc.print_lua()}P', type_=BOOL)
 
     def remains(self):
         """
@@ -258,7 +258,7 @@ class Expires:
             # Required when called from Aura
             self.args = []
         else:
-            self.method = Method(f'{self.simc.lua_name()}RemainsP')
+            self.method = Method(f'{self.simc.print_lua()}RemainsP')
 
     def duration(self):
         """
@@ -631,26 +631,18 @@ class Talent(BuildExpression):
         self.method = Method('IsAvailable', type_=BOOL)
 
 
-class Race(LuaComparison):
+class Race(BuildExpression):
     """
     Represent the expression for a race. condition.
     """
 
     def __init__(self, condition):
         self.condition = condition
-        race_expression, race_name, symbol = self.value(
-            condition.condition_list[1])
-        super().__init__(race_expression, race_name, symbol)
-
-    def value(self, race):
-        """
-        Returns the value for a race. expression.
-        """
-        race_expression = LuaExpression(self.condition.player_unit,
-                                        Method('Race'), [])
-        race_name = Literal(f'"{LuaNamed(race).lua_name()}"')
-        symbol = '=='
-        return race_expression, race_name, symbol
+        self.object_ = condition.player_unit
+        self.method = Method('IsRace', type_=BOOL)
+        self.args = [Literal(condition.condition_list[1], convert=True,
+                             quoted=True)]
+        super().__init__('')
 
 
 class SpellTargets(LuaExpression):
@@ -674,7 +666,7 @@ class Resource(BuildExpression):
 
     def __init__(self, condition, simc):
         self.condition = condition
-        self.simc = LuaNamed(simc)
+        self.simc = Literal(simc, convert=True)
         if len(condition.condition_list) > 1:
             call = condition.condition_list[1]
         else:
@@ -687,19 +679,19 @@ class Resource(BuildExpression):
         """
         Return the arguments for the expression {resource}.
         """
-        self.method = Method(f'{self.simc.lua_name()}')
+        self.method = Method(f'{self.simc.print_lua()}')
 
     def deficit(self):
         """
         Return the arguments for the expression {resource}.deficit.
         """
-        self.method = Method(f'{self.simc.lua_name()}Deficit')
+        self.method = Method(f'{self.simc.print_lua()}Deficit')
 
     def pct(self):
         """
         Return the arguments for the expression {resource}.pct.
         """
-        self.method = Method(f'{self.simc.lua_name()}Percentage')
+        self.method = Method(f'{self.simc.print_lua()}Percentage')
 
 
 class Rune(Resource):
