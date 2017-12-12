@@ -5,10 +5,10 @@ Define the objects representing simc expressions.
 @author: skasch
 """
 
-from .lua import LuaExpression, Method, Literal
+from .lua import LuaExpression, BuildExpression, Method, Literal
 from .executions import Spell, Item
 from .resources import (Rune, AstralPower, HolyPower, Insanity, Pain, Focus,
-                        Maelstrom, Energy, ComboPoints, SoulShards, 
+                        Maelstrom, Energy, ComboPoints, SoulShards,
                         ArcaneCharges, Chi, RunicPower, Fury, Mana)
 from .units import Pet
 from .constants import SPELL, BUFF, DEBUFF, BOOL, PET, BLOODLUST, RANGE
@@ -276,19 +276,6 @@ class Expression:
         return Literal(self.condition_list[1], convert=True)
 
 
-class BuildExpression(LuaExpression):
-    """
-    Build an expression from a call.
-    """
-
-    def __init__(self, call, array=False):
-        call = 'ready' if call == 'up' else call
-        self.array = array
-        if call:
-            getattr(self, call)()
-        super().__init__(self.object_, self.method, self.args, array=self.array)
-
-
 class Expires:
     """
     Available expressions for conditions with expiration times.
@@ -429,9 +416,8 @@ class ActionExpression(BuildExpression):
         """
         if self.to_self:
             return self.condition.parent_action.execution().object_()
-        else:
-            return Spell(self.condition.parent_action,
-                         self.condition.condition_list[1])
+        return Spell(self.condition.parent_action,
+                     self.condition.condition_list[1])
 
     def build_aura(self):
         """
@@ -604,16 +590,17 @@ class SetBonus(Literal):
     """
 
     def __init__(self, condition):
-        lua_tier = f'AC.{self.lua_tier_name(condition)}'
-        super().__init__(lua_tier, type_=BOOL)
+        self.condition = condition
+        self.simc = self.lua_tier_name()
+        super().__init__(type_=BOOL)
 
-    def lua_tier_name(self, condition):
+    def lua_tier_name(self):
         """
         Parse the lua name for the tier variable name holding whether a tier set
         is equipped or not.
         """
-        simc = condition.condition_list[1]
-        return '_'.join(word.title() for word in simc.split('_'))
+        simc = self.condition.condition_list[1]
+        return f'AC.{"_".join(word.title() for word in simc.split("_"))}'
 
 
 class Equipped(BuildExpression):

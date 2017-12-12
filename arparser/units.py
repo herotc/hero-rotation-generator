@@ -171,4 +171,4 @@ class PlayerSpec(LuaNamed):
         Return the potion used by a the spec.
         """
         return DEFAULT_POTION.get(
-                        self.player.class_.simc, {}).get(self.simc, None)
+            self.player.class_.simc, {}).get(self.simc, None)

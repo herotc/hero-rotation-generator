@@ -38,7 +38,7 @@ class LuaTyped:
 
     def __init__(self, type_=NUM):
         self.type_ = type_
-    
+
     def lua_type(self):
         """
         Return the lua type of the object.
@@ -149,8 +149,7 @@ class LuaExpression(LuaTyped):
         """
         if self.array:
             return '{}{}[{}]'
-        else:
-            return '{}{}({})'
+        return '{}{}({})'
 
     def print_lua(self):
         """
@@ -164,6 +163,19 @@ class LuaExpression(LuaTyped):
         )
 
 
+class BuildExpression(LuaExpression):
+    """
+    Build an expression from a call.
+    """
+
+    def __init__(self, call, array=False):
+        call = 'ready' if call == 'up' else call
+        self.array = array
+        if call:
+            getattr(self, call)()
+        super().__init__(self.object_, self.method, self.args, array=self.array)
+
+
 class LuaComparison(LuaTyped):
     """"
     Abstract class representing a generic lua comparison of the form:
@@ -175,7 +187,7 @@ class LuaComparison(LuaTyped):
         self.exp2 = exp2
         self.symbol = symbol
         super().__init__(type_=BOOL)
-    
+
     def print_lua(self):
         """
         Print the lua code for the comparison.
@@ -205,12 +217,13 @@ class Literal(LuaTyped, LuaNamed):
     Represent a literal expression (a value) as a string.
     """
 
-    def __init__(self, simc, type_=None, convert=False, quoted=False):
-        self.simc = simc
+    def __init__(self, simc=None, type_=None, convert=False, quoted=False):
+        if simc is not None:
+            self.simc = simc
         self.convert = convert
         self.quoted = quoted
         if not type_:
-            type_ = BOOL if simc in (TRUE, FALSE) else NUM
+            type_ = BOOL if self.simc in (TRUE, FALSE) else NUM
         super().__init__(type_)
 
     def print_lua(self):

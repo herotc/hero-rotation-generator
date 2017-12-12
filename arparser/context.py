@@ -36,12 +36,12 @@ class Context:
         '--- ============================ CONTENT ===========================\n'
         '--- ======= APL LOCALS =======\n'
         '-- luacheck: max_line_length 9999\n')
-    
+
     NUM_FUNCTION = (
         'local function num(val)\n'
         '  if val then return 1 else return 0 end\n'
         'end\n')
-    
+
     BOOL_FUNCTION = (
         'local function bool(val)\n'
         '  return val ~= 0\n'

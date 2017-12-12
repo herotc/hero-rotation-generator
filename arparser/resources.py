@@ -6,8 +6,7 @@ Define the objects representing simc resources expressions.
 """
 
 
-from .expressions import BuildExpression
-from .lua import Literal, Method
+from .lua import BuildExpression, Literal, Method
 from .druid import balance_astral_power_value
 
 
