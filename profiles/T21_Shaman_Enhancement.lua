@@ -21,45 +21,45 @@ local AR     = AethysRotation
 -- Spells
 if not Spell.Shaman then Spell.Shaman = {} end
 Spell.Shaman.Enhancement = {
-  EarthenSpike                          = Spell(),
-  DoomWinds                             = Spell(),
+  EarthenSpike                          = Spell(188089),
+  DoomWinds                             = Spell(204945),
   Strike                                = Spell(),
-  Windstrike                            = Spell(),
-  Rockbiter                             = Spell(),
-  Landslide                             = Spell(),
-  LandslideBuff                         = Spell(),
-  FuryofAir                             = Spell(),
-  CrashLightning                        = Spell(),
-  AlphaWolf                             = Spell(),
-  FeralSpirit                           = Spell(),
-  Flametongue                           = Spell(),
-  FlametongueBuff                       = Spell(),
-  Frostbrand                            = Spell(),
-  Hailstorm                             = Spell(),
-  FrostbrandBuff                        = Spell(),
-  Bloodlust                             = Spell(),
+  Windstrike                            = Spell(115356),
+  Rockbiter                             = Spell(193786),
+  Landslide                             = Spell(197992),
+  LandslideBuff                         = Spell(202004),
+  FuryofAir                             = Spell(197211),
+  CrashLightning                        = Spell(187874),
+  AlphaWolf                             = Spell(198434),
+  FeralSpirit                           = Spell(51533),
+  Flametongue                           = Spell(193796),
+  FlametongueBuff                       = Spell(194084),
+  Frostbrand                            = Spell(196834),
+  Hailstorm                             = Spell(210853),
+  FrostbrandBuff                        = Spell(196834),
+  Bloodlust                             = Spell(2825),
   Berserking                            = Spell(26297),
-  AscendanceBuff                        = Spell(),
+  AscendanceBuff                        = Spell(114051),
   BloodFury                             = Spell(20572),
-  Ascendance                            = Spell(),
-  Boulderfist                           = Spell(),
-  EarthenSpikeDebuff                    = Spell(),
-  CrashLightningBuff                    = Spell(),
-  Windsong                              = Spell(),
-  CrashingStorm                         = Spell(),
+  Ascendance                            = Spell(114051),
+  Boulderfist                           = Spell(246035),
+  EarthenSpikeDebuff                    = Spell(188089),
+  CrashLightningBuff                    = Spell(187874),
+  Windsong                              = Spell(201898),
+  CrashingStorm                         = Spell(192246),
   ForceoftheMountainBuff                = Spell(),
-  Stormstrike                           = Spell(),
-  StormbringerBuff                      = Spell(),
-  LightningBolt                         = Spell(),
-  Overcharge                            = Spell(),
-  LavaLash                              = Spell(),
-  ExposedElementsDebuff                 = Spell(),
-  LashingFlamesDebuff                   = Spell(),
-  HotHandBuff                           = Spell(),
-  Sundering                             = Spell(),
-  WindShear                             = Spell(),
-  LightningCrashBuff                    = Spell(),
-  AlphaWolfBuff                         = Spell(),
+  Stormstrike                           = Spell(17364),
+  StormbringerBuff                      = Spell(201845),
+  LightningBolt                         = Spell(187837),
+  Overcharge                            = Spell(210727),
+  LavaLash                              = Spell(60103),
+  ExposedElementsDebuff                 = Spell(252151),
+  LashingFlamesDebuff                   = Spell(240842),
+  HotHandBuff                           = Spell(215785),
+  Sundering                             = Spell(197214),
+  WindShear                             = Spell(57994),
+  LightningCrashBuff                    = Spell(242284),
+  AlphaWolfBuff                         = Spell(198434),
   UseItems                              = Spell()
 };
 local S = Spell.Shaman.Enhancement;
@@ -188,7 +188,7 @@ local function Apl()
       if AR.Cast(S.EarthenSpike) then return ""; end
     end
     -- crash_lightning,if=!buff.crash_lightning.up&active_enemies>=2
-    if S.CrashLightning:IsCastableP() and (not Player:BuffP(S.CrashLightningBuff) and Cache.EnemiesCount[5] >= 2) then
+    if S.CrashLightning:IsCastableP() and (not Player:BuffP(S.CrashLightningBuff) and Cache.EnemiesCount[8] >= 2) then
       if AR.Cast(S.CrashLightning) then return ""; end
     end
     -- windsong
@@ -196,7 +196,7 @@ local function Apl()
       if AR.Cast(S.Windsong) then return ""; end
     end
     -- crash_lightning,if=active_enemies>=8|(active_enemies>=6&talent.crashing_storm.enabled)
-    if S.CrashLightning:IsCastableP() and (Cache.EnemiesCount[5] >= 8 or (Cache.EnemiesCount[5] >= 6 and S.CrashingStorm:IsAvailable())) then
+    if S.CrashLightning:IsCastableP() and (Cache.EnemiesCount[8] >= 8 or (Cache.EnemiesCount[8] >= 6 and S.CrashingStorm:IsAvailable())) then
       if AR.Cast(S.CrashLightning) then return ""; end
     end
     -- windstrike
@@ -204,7 +204,7 @@ local function Apl()
       if AR.Cast(S.Windstrike) then return ""; end
     end
     -- rockbiter,if=buff.force_of_the_mountain.up&charges_fractional>1.7&active_enemies<=4
-    if S.Rockbiter:IsCastableP() and (Player:BuffP(S.ForceoftheMountainBuff) and S.Rockbiter:ChargesFractional() > 1.7 and Cache.EnemiesCount[5] <= 4) then
+    if S.Rockbiter:IsCastableP() and (Player:BuffP(S.ForceoftheMountainBuff) and S.Rockbiter:ChargesFractional() > 1.7 and Cache.EnemiesCount[8] <= 4) then
       if AR.Cast(S.Rockbiter) then return ""; end
     end
     -- stormstrike,if=buff.stormbringer.up&variable.furyCheck25
@@ -212,7 +212,7 @@ local function Apl()
       if AR.Cast(S.Stormstrike) then return ""; end
     end
     -- crash_lightning,if=active_enemies>=4|(active_enemies>=2&talent.crashing_storm.enabled)
-    if S.CrashLightning:IsCastableP() and (Cache.EnemiesCount[5] >= 4 or (Cache.EnemiesCount[5] >= 2 and S.CrashingStorm:IsAvailable())) then
+    if S.CrashLightning:IsCastableP() and (Cache.EnemiesCount[8] >= 4 or (Cache.EnemiesCount[8] >= 2 and S.CrashingStorm:IsAvailable())) then
       if AR.Cast(S.CrashLightning) then return ""; end
     end
     -- rockbiter,if=buff.force_of_the_mountain.up
@@ -236,11 +236,11 @@ local function Apl()
       if AR.Cast(S.Frostbrand) then return ""; end
     end
     -- sundering,if=active_enemies>=3
-    if S.Sundering:IsCastableP() and (Cache.EnemiesCount[5] >= 3) then
+    if S.Sundering:IsCastableP() and (Cache.EnemiesCount[8] >= 3) then
       if AR.Cast(S.Sundering) then return ""; end
     end
     -- crash_lightning,if=active_enemies>=3|variable.LightningCrashNotUp|variable.alphaWolfCheck
-    if S.CrashLightning:IsCastableP() and (Cache.EnemiesCount[5] >= 3 or bool(Lightningcrashnotup) or bool(Alphawolfcheck)) then
+    if S.CrashLightning:IsCastableP() and (Cache.EnemiesCount[8] >= 3 or bool(Lightningcrashnotup) or bool(Alphawolfcheck)) then
       if AR.Cast(S.CrashLightning) then return ""; end
     end
   end
@@ -254,7 +254,7 @@ local function Apl()
       if AR.Cast(S.Flametongue) then return ""; end
     end
     -- crash_lightning,if=(talent.crashing_storm.enabled|active_enemies>=2)&debuff.earthen_spike.up&maelstrom>=40&variable.OCPool60
-    if S.CrashLightning:IsCastableP() and ((S.CrashingStorm:IsAvailable() or Cache.EnemiesCount[5] >= 2) and Target:DebuffP(S.EarthenSpikeDebuff) and Player:Maelstrom() >= 40 and bool(Ocpool60)) then
+    if S.CrashLightning:IsCastableP() and ((S.CrashingStorm:IsAvailable() or Cache.EnemiesCount[8] >= 2) and Target:DebuffP(S.EarthenSpikeDebuff) and Player:Maelstrom() >= 40 and bool(Ocpool60)) then
       if AR.Cast(S.CrashLightning) then return ""; end
     end
     -- frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8&maelstrom>40
@@ -278,7 +278,7 @@ local function Apl()
       if AR.Cast(S.Rockbiter) then return ""; end
     end
     -- crash_lightning,if=(maelstrom>=65|talent.crashing_storm.enabled|active_enemies>=2)&variable.OCPool60&variable.furyCheck45
-    if S.CrashLightning:IsCastableP() and ((Player:Maelstrom() >= 65 or S.CrashingStorm:IsAvailable() or Cache.EnemiesCount[5] >= 2) and bool(Ocpool60) and bool(Furycheck45)) then
+    if S.CrashLightning:IsCastableP() and ((Player:Maelstrom() >= 65 or S.CrashingStorm:IsAvailable() or Cache.EnemiesCount[8] >= 2) and bool(Ocpool60) and bool(Furycheck45)) then
       if AR.Cast(S.CrashLightning) then return ""; end
     end
     -- flametongue
@@ -293,8 +293,8 @@ local function Apl()
     end
   end
   -- wind_shear
-  if S.WindShear:IsCastableP() and (true) then
-    if AR.Cast(S.WindShear) then return ""; end
+  if S.WindShear:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (true) then
+    if AR.CastAnnotated(S.WindShear, false, "Interrupt") then return ""; end
   end
   -- variable,name=hailstormCheck,value=((talent.hailstorm.enabled&!buff.frostbrand.up)|!talent.hailstorm.enabled)
   if (true) then

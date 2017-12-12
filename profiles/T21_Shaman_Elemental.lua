@@ -21,38 +21,38 @@ local AR     = AethysRotation
 -- Spells
 if not Spell.Shaman then Spell.Shaman = {} end
 Spell.Shaman.Elemental = {
-  Stormkeeper                           = Spell(),
-  Ascendance                            = Spell(),
-  LiquidMagmaTotem                      = Spell(),
-  FlameShock                            = Spell(),
-  Earthquake                            = Spell(),
-  LavaBurst                             = Spell(),
-  FlameShockDebuff                      = Spell(),
-  LavaSurgeBuff                         = Spell(),
-  LightningRod                          = Spell(),
-  ElementalBlast                        = Spell(),
-  LavaBeam                              = Spell(),
-  ChainLightning                        = Spell(),
-  AscendanceBuff                        = Spell(),
-  StormkeeperBuff                       = Spell(),
-  EchoesoftheGreatSunderingBuff         = Spell(),
-  EarthShock                            = Spell(),
-  SwellingMaelstrom                     = Spell(),
-  LightningBolt                         = Spell(),
-  PoweroftheMaelstromBuff               = Spell(),
-  ElementalFocusBuff                    = Spell(),
-  Aftershock                            = Spell(),
-  TotemMastery                          = Spell(),
-  ResonanceTotemBuff                    = Spell(),
-  EarthenStrengthBuff                   = Spell(),
-  FrostShock                            = Spell(),
-  IcefuryBuff                           = Spell(),
-  Icefury                               = Spell(),
-  Bloodlust                             = Spell(),
-  FireElemental                         = Spell(),
-  WindShear                             = Spell(),
-  StormElemental                        = Spell(),
-  ElementalMastery                      = Spell(),
+  Stormkeeper                           = Spell(205495),
+  Ascendance                            = Spell(114050),
+  LiquidMagmaTotem                      = Spell(192222),
+  FlameShock                            = Spell(188389),
+  Earthquake                            = Spell(61882),
+  LavaBurst                             = Spell(51505),
+  FlameShockDebuff                      = Spell(188389),
+  LavaSurgeBuff                         = Spell(77762),
+  LightningRod                          = Spell(210689),
+  ElementalBlast                        = Spell(117014),
+  LavaBeam                              = Spell(114074),
+  ChainLightning                        = Spell(188443),
+  AscendanceBuff                        = Spell(114050),
+  StormkeeperBuff                       = Spell(205495),
+  EchoesoftheGreatSunderingBuff         = Spell(208722),
+  EarthShock                            = Spell(8042),
+  SwellingMaelstrom                     = Spell(238105),
+  LightningBolt                         = Spell(188196),
+  PoweroftheMaelstromBuff               = Spell(191877),
+  ElementalFocusBuff                    = Spell(16246),
+  Aftershock                            = Spell(210707),
+  TotemMastery                          = Spell(210643),
+  ResonanceTotemBuff                    = Spell(202192),
+  EarthenStrengthBuff                   = Spell(252141),
+  FrostShock                            = Spell(196840),
+  IcefuryBuff                           = Spell(210714),
+  Icefury                               = Spell(210714),
+  Bloodlust                             = Spell(2825),
+  FireElemental                         = Spell(198067),
+  WindShear                             = Spell(57994),
+  StormElemental                        = Spell(192249),
+  ElementalMastery                      = Spell(16166),
   UseItems                              = Spell(),
   UseItem                               = Spell(),
   BloodFury                             = Spell(20572),
@@ -63,10 +63,10 @@ local S = Spell.Shaman.Elemental;
 -- Items
 if not Item.Shaman then Item.Shaman = {} end
 Item.Shaman.Elemental = {
-  SmolderingHeart                  = Item(),
-  TheDeceiversBloodPact            = Item(),
+  SmolderingHeart                  = Item(151819),
+  TheDeceiversBloodPact            = Item(137035),
   ProlongedPower                   = Item(142117),
-  GnawedThumbRing                  = Item()
+  GnawedThumbRing                  = Item(134526)
 };
 local I = Item.Shaman.Elemental;
 
@@ -107,7 +107,7 @@ local function Apl()
       if AR.Cast(S.LiquidMagmaTotem) then return ""; end
     end
     -- flame_shock,if=spell_targets.chain_lightning<4&maelstrom>=20,target_if=refreshable
-    if S.FlameShock:IsCastableP() and (Cache.EnemiesCount[5] < 4 and Player:Maelstrom() >= 20) then
+    if S.FlameShock:IsCastableP() and (Cache.EnemiesCount[40] < 4 and Player:Maelstrom() >= 20) then
       if AR.Cast(S.FlameShock) then return ""; end
     end
     -- earthquake
@@ -115,11 +115,11 @@ local function Apl()
       if AR.Cast(S.Earthquake) then return ""; end
     end
     -- lava_burst,if=dot.flame_shock.remains>cast_time&buff.lava_surge.up&!talent.lightning_rod.enabled&spell_targets.chain_lightning<4
-    if S.LavaBurst:IsCastableP() and (Target:DebuffRemainsP(S.FlameShockDebuff) > S.LavaBurst:CastTime() and Player:BuffP(S.LavaSurgeBuff) and not S.LightningRod:IsAvailable() and Cache.EnemiesCount[5] < 4) then
+    if S.LavaBurst:IsCastableP() and (Target:DebuffRemainsP(S.FlameShockDebuff) > S.LavaBurst:CastTime() and Player:BuffP(S.LavaSurgeBuff) and not S.LightningRod:IsAvailable() and Cache.EnemiesCount[40] < 4) then
       if AR.Cast(S.LavaBurst) then return ""; end
     end
     -- elemental_blast,if=!talent.lightning_rod.enabled&spell_targets.chain_lightning<5|talent.lightning_rod.enabled&spell_targets.chain_lightning<4
-    if S.ElementalBlast:IsCastableP() and (not S.LightningRod:IsAvailable() and Cache.EnemiesCount[5] < 5 or S.LightningRod:IsAvailable() and Cache.EnemiesCount[5] < 4) then
+    if S.ElementalBlast:IsCastableP() and (not S.LightningRod:IsAvailable() and Cache.EnemiesCount[40] < 5 or S.LightningRod:IsAvailable() and Cache.EnemiesCount[40] < 4) then
       if AR.Cast(S.ElementalBlast) then return ""; end
     end
     -- lava_beam
@@ -149,11 +149,11 @@ local function Apl()
       if AR.Cast(S.Ascendance) then return ""; end
     end
     -- flame_shock,if=!ticking|dot.flame_shock.remains<=gcd
-    if S.FlameShock:IsCastableP() and (not Player:BuffP(S.FlameShock) or Target:DebuffRemainsP(S.FlameShockDebuff) <= Player:GCD()) then
+    if S.FlameShock:IsCastableP() and (not Target:DebuffP(S.FlameShock) or Target:DebuffRemainsP(S.FlameShockDebuff) <= Player:GCD()) then
       if AR.Cast(S.FlameShock) then return ""; end
     end
     -- flame_shock,if=maelstrom>=20&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<=duration
-    if S.FlameShock:IsCastableP() and (Player:Maelstrom() >= 20 and Player:BuffRemainsP(S.FlameShock) <= S.AscendanceBuff:BaseDuration() and S.Ascendance:CooldownRemainsP() + S.AscendanceBuff:BaseDuration() <= S.FlameShock:BaseDuration()) then
+    if S.FlameShock:IsCastableP() and (Player:Maelstrom() >= 20 and Target:DebuffRemainsP(S.FlameShock) <= S.AscendanceBuff:BaseDuration() and S.Ascendance:CooldownRemainsP() + S.AscendanceBuff:BaseDuration() <= S.FlameShock:BaseDuration()) then
       if AR.Cast(S.FlameShock) then return ""; end
     end
     -- earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up
@@ -177,7 +177,7 @@ local function Apl()
       if AR.Cast(S.LiquidMagmaTotem) then return ""; end
     end
     -- lightning_bolt,if=buff.power_of_the_maelstrom.up&buff.stormkeeper.up&spell_targets.chain_lightning<3
-    if S.LightningBolt:IsCastableP() and (Player:BuffP(S.PoweroftheMaelstromBuff) and Player:BuffP(S.StormkeeperBuff) and Cache.EnemiesCount[5] < 3) then
+    if S.LightningBolt:IsCastableP() and (Player:BuffP(S.PoweroftheMaelstromBuff) and Player:BuffP(S.StormkeeperBuff) and Cache.EnemiesCount[40] < 3) then
       if AR.Cast(S.LightningBolt) then return ""; end
     end
     -- lava_burst,if=dot.flame_shock.remains>cast_time&(cooldown_react|buff.ascendance.up)
@@ -197,15 +197,15 @@ local function Apl()
       if AR.Cast(S.TotemMastery) then return ""; end
     end
     -- lava_beam,if=active_enemies>1&spell_targets.lava_beam>1
-    if S.LavaBeam:IsCastableP() and (Cache.EnemiesCount[5] > 1 and Cache.EnemiesCount[5] > 1) then
+    if S.LavaBeam:IsCastableP() and (Cache.EnemiesCount[40] > 1 and Cache.EnemiesCount[40] > 1) then
       if AR.Cast(S.LavaBeam) then return ""; end
     end
     -- lightning_bolt,if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3
-    if S.LightningBolt:IsCastableP() and (Player:BuffP(S.PoweroftheMaelstromBuff) and Cache.EnemiesCount[5] < 3) then
+    if S.LightningBolt:IsCastableP() and (Player:BuffP(S.PoweroftheMaelstromBuff) and Cache.EnemiesCount[40] < 3) then
       if AR.Cast(S.LightningBolt) then return ""; end
     end
     -- chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1
-    if S.ChainLightning:IsCastableP() and (Cache.EnemiesCount[5] > 1 and Cache.EnemiesCount[5] > 1) then
+    if S.ChainLightning:IsCastableP() and (Cache.EnemiesCount[40] > 1 and Cache.EnemiesCount[40] > 1) then
       if AR.Cast(S.ChainLightning) then return ""; end
     end
     -- lightning_bolt
@@ -227,7 +227,7 @@ local function Apl()
   end
   local function SingleIf()
     -- flame_shock,if=!ticking|dot.flame_shock.remains<=gcd
-    if S.FlameShock:IsCastableP() and (not Player:BuffP(S.FlameShock) or Target:DebuffRemainsP(S.FlameShockDebuff) <= Player:GCD()) then
+    if S.FlameShock:IsCastableP() and (not Target:DebuffP(S.FlameShock) or Target:DebuffRemainsP(S.FlameShockDebuff) <= Player:GCD()) then
       if AR.Cast(S.FlameShock) then return ""; end
     end
     -- earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up
@@ -263,7 +263,7 @@ local function Apl()
       if AR.Cast(S.LiquidMagmaTotem) then return ""; end
     end
     -- lightning_bolt,if=buff.power_of_the_maelstrom.up&buff.stormkeeper.up&spell_targets.chain_lightning<3
-    if S.LightningBolt:IsCastableP() and (Player:BuffP(S.PoweroftheMaelstromBuff) and Player:BuffP(S.StormkeeperBuff) and Cache.EnemiesCount[5] < 3) then
+    if S.LightningBolt:IsCastableP() and (Player:BuffP(S.PoweroftheMaelstromBuff) and Player:BuffP(S.StormkeeperBuff) and Cache.EnemiesCount[40] < 3) then
       if AR.Cast(S.LightningBolt) then return ""; end
     end
     -- lava_burst,if=dot.flame_shock.remains>cast_time&cooldown_react
@@ -291,11 +291,11 @@ local function Apl()
       if AR.Cast(S.TotemMastery) then return ""; end
     end
     -- lightning_bolt,if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3
-    if S.LightningBolt:IsCastableP() and (Player:BuffP(S.PoweroftheMaelstromBuff) and Cache.EnemiesCount[5] < 3) then
+    if S.LightningBolt:IsCastableP() and (Player:BuffP(S.PoweroftheMaelstromBuff) and Cache.EnemiesCount[40] < 3) then
       if AR.Cast(S.LightningBolt) then return ""; end
     end
     -- chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1
-    if S.ChainLightning:IsCastableP() and (Cache.EnemiesCount[5] > 1 and Cache.EnemiesCount[5] > 1) then
+    if S.ChainLightning:IsCastableP() and (Cache.EnemiesCount[40] > 1 and Cache.EnemiesCount[40] > 1) then
       if AR.Cast(S.ChainLightning) then return ""; end
     end
     -- lightning_bolt
@@ -317,7 +317,7 @@ local function Apl()
   end
   local function SingleLr()
     -- flame_shock,if=!ticking|dot.flame_shock.remains<=gcd
-    if S.FlameShock:IsCastableP() and (not Player:BuffP(S.FlameShock) or Target:DebuffRemainsP(S.FlameShockDebuff) <= Player:GCD()) then
+    if S.FlameShock:IsCastableP() and (not Target:DebuffP(S.FlameShock) or Target:DebuffRemainsP(S.FlameShockDebuff) <= Player:GCD()) then
       if AR.Cast(S.FlameShock) then return ""; end
     end
     -- earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up
@@ -357,19 +357,19 @@ local function Apl()
       if AR.Cast(S.TotemMastery) then return ""; end
     end
     -- lightning_bolt,if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3,target_if=debuff.lightning_rod.down
-    if S.LightningBolt:IsCastableP() and (Player:BuffP(S.PoweroftheMaelstromBuff) and Cache.EnemiesCount[5] < 3) then
+    if S.LightningBolt:IsCastableP() and (Player:BuffP(S.PoweroftheMaelstromBuff) and Cache.EnemiesCount[40] < 3) then
       if AR.Cast(S.LightningBolt) then return ""; end
     end
     -- lightning_bolt,if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3
-    if S.LightningBolt:IsCastableP() and (Player:BuffP(S.PoweroftheMaelstromBuff) and Cache.EnemiesCount[5] < 3) then
+    if S.LightningBolt:IsCastableP() and (Player:BuffP(S.PoweroftheMaelstromBuff) and Cache.EnemiesCount[40] < 3) then
       if AR.Cast(S.LightningBolt) then return ""; end
     end
     -- chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1,target_if=debuff.lightning_rod.down
-    if S.ChainLightning:IsCastableP() and (Cache.EnemiesCount[5] > 1 and Cache.EnemiesCount[5] > 1) then
+    if S.ChainLightning:IsCastableP() and (Cache.EnemiesCount[40] > 1 and Cache.EnemiesCount[40] > 1) then
       if AR.Cast(S.ChainLightning) then return ""; end
     end
     -- chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1
-    if S.ChainLightning:IsCastableP() and (Cache.EnemiesCount[5] > 1 and Cache.EnemiesCount[5] > 1) then
+    if S.ChainLightning:IsCastableP() and (Cache.EnemiesCount[40] > 1 and Cache.EnemiesCount[40] > 1) then
       if AR.Cast(S.ChainLightning) then return ""; end
     end
     -- lightning_bolt,target_if=debuff.lightning_rod.down
@@ -402,8 +402,8 @@ local function Apl()
     if AR.CastSuggested(I.ProlongedPower) then return ""; end
   end
   -- wind_shear
-  if S.WindShear:IsCastableP() and (true) then
-    if AR.Cast(S.WindShear) then return ""; end
+  if S.WindShear:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (true) then
+    if AR.CastAnnotated(S.WindShear, false, "Interrupt") then return ""; end
   end
   -- totem_mastery,if=buff.resonance_totem.remains<2
   if S.TotemMastery:IsCastableP() and (Player:BuffRemainsP(S.ResonanceTotemBuff) < 2) then
@@ -438,7 +438,7 @@ local function Apl()
     if AR.Cast(S.Berserking, Settings.Elemental.OffGCDasOffGCD.Berserking) then return ""; end
   end
   -- run_action_list,name=aoe,if=active_enemies>2&(spell_targets.chain_lightning>2|spell_targets.lava_beam>2)
-  if (Cache.EnemiesCount[5] > 2 and (Cache.EnemiesCount[5] > 2 or Cache.EnemiesCount[5] > 2)) then
+  if (Cache.EnemiesCount[40] > 2 and (Cache.EnemiesCount[40] > 2 or Cache.EnemiesCount[40] > 2)) then
     return Aoe();
   end
   -- run_action_list,name=single_asc,if=talent.ascendance.enabled
