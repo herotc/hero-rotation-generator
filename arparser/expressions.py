@@ -523,6 +523,12 @@ class ActionExpression(BuildExpression):
             self.action_object(), RANGE, 0))]
         self.array = True
     
+    def active_enemies(self):
+        """
+        Return the arguments for the expression action.spell.active_enemies.
+        """
+        self.spell_targets()
+    
     def time_to_die(self):
         """
         Return the arguments for the expression time_to_die.
