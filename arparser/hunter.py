@@ -5,7 +5,7 @@ Hunter specific constants and functions.
 @author: skasch
 """
 
-from .constants import COMMON, SPELL, BUFF, DEBUFF, PET, INTERRUPT
+from .constants import COMMON, SPELL, BUFF, DEBUFF, PET, INTERRUPT, RANGE
 
 HUNTER = 'hunter'
 BEAST_MASTERY = 'beast_mastery'
@@ -25,8 +25,10 @@ HT_POTION = {
 HT_SPELL_INFO = {
     HUNTER: {
         COMMON: {
-            'multishot':                    {SPELL:     2643},
-            'barrage':                      {SPELL:     120360},
+            'multishot':                    {SPELL:     2643,
+                                             RANGE:     40},
+            'barrage':                      {SPELL:     120360,
+                                             RANGE:     40},
             'binding_shot':                 {SPELL:     109248},
             'volley':                       {SPELL:     194386},
             'aspect_of_the_turtle':         {SPELL:     186265},
@@ -52,7 +54,8 @@ HT_SPELL_INFO = {
             'bestial_wrath':                {SPELL:     19574,
                                              BUFF:      19574},
             'cobra_shot':                   {SPELL:     193455},
-            'dire_beast':                   {SPELL:     120679},
+            'dire_beast':                   {SPELL:     120679,
+                                             RANGE:     40},
             'kill_command':                 {SPELL:     34026},
             'a_murder_of_crows':            {SPELL:     131894},
             'aspect_of_the_beast':          {SPELL:     191384},
@@ -66,11 +69,13 @@ HT_SPELL_INFO = {
             'titans_thunder':               {SPELL:     207068},
         },
         MARKSMANSHIP: {
-            'aimed_shot':                   {SPELL:     19434},
+            'aimed_shot':                   {SPELL:     19434,
+                                             RANGE:     40},
             'arcane_shot':                  {SPELL:     185358},
             'bursting_shot':                {SPELL:     186387},
             'hunters_mark':                 {DEBUFF:    185365},
-            'marked_shot':                  {SPELL:     185901},
+            'marked_shot':                  {SPELL:     185901,
+                                             RANGE:     40},
             'marking_targets':              {BUFF:      223138},
             'trueshot':                     {SPELL:     193526,
                                              BUFF:      193526},
@@ -80,7 +85,8 @@ HT_SPELL_INFO = {
             'explosive_shot':               {SPELL:     212431},
             'lock_and_load':                {BUFF:      194594},
             'patient_sniper':               {SPELL:     234588},
-            'piercing_shot':                {SPELL:     198670},
+            'piercing_shot':                {SPELL:     198670,
+                                             RANGE:     40},
             'sentinel':                     {SPELL:     206817},
             'sidewinders':                  {SPELL:     214579},
             'trick_shot':                   {SPELL:     199522},
@@ -93,7 +99,8 @@ HT_SPELL_INFO = {
         SURVIVAL: {
             'aspect_of_the_eagle':          {SPELL:     186289,
                                              BUFF:      186289},
-            'carve':                        {SPELL:     187708},
+            'carve':                        {SPELL:     187708,
+                                             RANGE:     8},
             'explosive_trap':               {SPELL:     191433,
                                              DEBUFF:    13812},
             'flanking_strike':              {SPELL:     202800},

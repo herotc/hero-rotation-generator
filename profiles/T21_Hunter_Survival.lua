@@ -127,7 +127,7 @@ local function Apl()
       if AR.Cast(S.ExplosiveTrap) then return ""; end
     end
     -- carve,if=(talent.serpent_sting.enabled&dot.serpent_sting.refreshable)|(active_enemies>5)
-    if S.Carve:IsCastableP() and ((S.SerpentSting:IsAvailable() and bool(dot.serpent_sting.refreshable)) or (active_enemies > 5)) then
+    if S.Carve:IsCastableP() and ((S.SerpentSting:IsAvailable() and bool(dot.serpent_sting.refreshable)) or (Cache.EnemiesCount[8] > 5)) then
       if AR.Cast(S.Carve) then return ""; end
     end
   end
@@ -277,7 +277,7 @@ local function Apl()
     local ShouldReturn = Cds(); if ShouldReturn then return ShouldReturn; end
   end
   -- call_action_list,name=aoe,if=active_enemies>=3
-  if (active_enemies >= 3) then
+  if (Cache.EnemiesCount[40] >= 3) then
     local ShouldReturn = Aoe(); if ShouldReturn then return ShouldReturn; end
   end
   -- call_action_list,name=fillers,if=!buff.mongoose_fury.up

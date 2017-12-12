@@ -188,7 +188,7 @@ local function Apl()
       if AR.Cast(S.EarthenSpike) then return ""; end
     end
     -- crash_lightning,if=!buff.crash_lightning.up&active_enemies>=2
-    if S.CrashLightning:IsCastableP() and (not Player:BuffP(S.CrashLightningBuff) and active_enemies >= 2) then
+    if S.CrashLightning:IsCastableP() and (not Player:BuffP(S.CrashLightningBuff) and Cache.EnemiesCount[5] >= 2) then
       if AR.Cast(S.CrashLightning) then return ""; end
     end
     -- windsong
@@ -196,7 +196,7 @@ local function Apl()
       if AR.Cast(S.Windsong) then return ""; end
     end
     -- crash_lightning,if=active_enemies>=8|(active_enemies>=6&talent.crashing_storm.enabled)
-    if S.CrashLightning:IsCastableP() and (active_enemies >= 8 or (active_enemies >= 6 and S.CrashingStorm:IsAvailable())) then
+    if S.CrashLightning:IsCastableP() and (Cache.EnemiesCount[5] >= 8 or (Cache.EnemiesCount[5] >= 6 and S.CrashingStorm:IsAvailable())) then
       if AR.Cast(S.CrashLightning) then return ""; end
     end
     -- windstrike
@@ -204,7 +204,7 @@ local function Apl()
       if AR.Cast(S.Windstrike) then return ""; end
     end
     -- rockbiter,if=buff.force_of_the_mountain.up&charges_fractional>1.7&active_enemies<=4
-    if S.Rockbiter:IsCastableP() and (Player:BuffP(S.ForceoftheMountainBuff) and S.Rockbiter:ChargesFractional() > 1.7 and active_enemies <= 4) then
+    if S.Rockbiter:IsCastableP() and (Player:BuffP(S.ForceoftheMountainBuff) and S.Rockbiter:ChargesFractional() > 1.7 and Cache.EnemiesCount[5] <= 4) then
       if AR.Cast(S.Rockbiter) then return ""; end
     end
     -- stormstrike,if=buff.stormbringer.up&variable.furyCheck25
@@ -212,7 +212,7 @@ local function Apl()
       if AR.Cast(S.Stormstrike) then return ""; end
     end
     -- crash_lightning,if=active_enemies>=4|(active_enemies>=2&talent.crashing_storm.enabled)
-    if S.CrashLightning:IsCastableP() and (active_enemies >= 4 or (active_enemies >= 2 and S.CrashingStorm:IsAvailable())) then
+    if S.CrashLightning:IsCastableP() and (Cache.EnemiesCount[5] >= 4 or (Cache.EnemiesCount[5] >= 2 and S.CrashingStorm:IsAvailable())) then
       if AR.Cast(S.CrashLightning) then return ""; end
     end
     -- rockbiter,if=buff.force_of_the_mountain.up
@@ -236,11 +236,11 @@ local function Apl()
       if AR.Cast(S.Frostbrand) then return ""; end
     end
     -- sundering,if=active_enemies>=3
-    if S.Sundering:IsCastableP() and (active_enemies >= 3) then
+    if S.Sundering:IsCastableP() and (Cache.EnemiesCount[5] >= 3) then
       if AR.Cast(S.Sundering) then return ""; end
     end
     -- crash_lightning,if=active_enemies>=3|variable.LightningCrashNotUp|variable.alphaWolfCheck
-    if S.CrashLightning:IsCastableP() and (active_enemies >= 3 or bool(Lightningcrashnotup) or bool(Alphawolfcheck)) then
+    if S.CrashLightning:IsCastableP() and (Cache.EnemiesCount[5] >= 3 or bool(Lightningcrashnotup) or bool(Alphawolfcheck)) then
       if AR.Cast(S.CrashLightning) then return ""; end
     end
   end
@@ -254,7 +254,7 @@ local function Apl()
       if AR.Cast(S.Flametongue) then return ""; end
     end
     -- crash_lightning,if=(talent.crashing_storm.enabled|active_enemies>=2)&debuff.earthen_spike.up&maelstrom>=40&variable.OCPool60
-    if S.CrashLightning:IsCastableP() and ((S.CrashingStorm:IsAvailable() or active_enemies >= 2) and Target:DebuffP(S.EarthenSpikeDebuff) and Player:Maelstrom() >= 40 and bool(Ocpool60)) then
+    if S.CrashLightning:IsCastableP() and ((S.CrashingStorm:IsAvailable() or Cache.EnemiesCount[5] >= 2) and Target:DebuffP(S.EarthenSpikeDebuff) and Player:Maelstrom() >= 40 and bool(Ocpool60)) then
       if AR.Cast(S.CrashLightning) then return ""; end
     end
     -- frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8&maelstrom>40
@@ -278,7 +278,7 @@ local function Apl()
       if AR.Cast(S.Rockbiter) then return ""; end
     end
     -- crash_lightning,if=(maelstrom>=65|talent.crashing_storm.enabled|active_enemies>=2)&variable.OCPool60&variable.furyCheck45
-    if S.CrashLightning:IsCastableP() and ((Player:Maelstrom() >= 65 or S.CrashingStorm:IsAvailable() or active_enemies >= 2) and bool(Ocpool60) and bool(Furycheck45)) then
+    if S.CrashLightning:IsCastableP() and ((Player:Maelstrom() >= 65 or S.CrashingStorm:IsAvailable() or Cache.EnemiesCount[5] >= 2) and bool(Ocpool60) and bool(Furycheck45)) then
       if AR.Cast(S.CrashLightning) then return ""; end
     end
     -- flametongue

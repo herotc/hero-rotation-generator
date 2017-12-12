@@ -9,7 +9,7 @@ import os
 
 from .lua import LuaExpression
 from .expressions import Method
-from .constants import MELEE, SPELL, BUFF, DEBUFF, COMMON
+from .constants import MELEE, SPELL, BUFF, DEBUFF, COMMON, RANGE
 
 DEMONHUNTER = 'demonhunter'
 HAVOC = 'havoc'
@@ -29,7 +29,10 @@ DH_SPELL_INFO = {
         COMMON: {
             'annihilation':         {SPELL:     201427,
                                      MELEE:     True},
-            'blade_dance':          {SPELL:     188499},
+            'blade_dance':          {SPELL:     188499,
+                                     RANGE:     8},
+            'blade_dance1':         {SPELL:     188499,
+                                     RANGE:     8},
             'consume_magic':        {SPELL:     183752},
             'chaos_strike':         {SPELL:     162794,
                                      MELEE:     True},
@@ -37,7 +40,10 @@ DH_SPELL_INFO = {
             'death_sweep':          {SPELL:     210152},
             'demons_bite':          {SPELL:     162243,
                                      MELEE:     True},
-            'eye_beam':             {SPELL:     198013},
+            'eye_beam':             {SPELL:     198013,
+                                     RANGE:     20},
+            'eye_beam_tick':        {SPELL:     198013,
+                                     RANGE:     20},
             'fel_rush':             {SPELL:     195072},
             'metamorphosis':        {SPELL:     191427,
                                      BUFF:      162264},
@@ -51,7 +57,8 @@ DH_SPELL_INFO = {
             'demonic':              {SPELL:     213410},
             'demonic_appetite':     {SPELL:     206478},
             'demon_reborn':         {SPELL:     193897},
-            'fel_barrage':          {SPELL:     211053},
+            'fel_barrage':          {SPELL:     211053,
+                                     RANGE:     30},
             'felblade':             {SPELL:     232893},
             'fel_eruption':         {SPELL:     211881},
             'fel_mastery':          {SPELL:     192939},
@@ -63,7 +70,8 @@ DH_SPELL_INFO = {
                                      DEBUFF:    206491},
             'prepared':             {SPELL:     203551,
                                      BUFF:      203650},
-            'fury_of_the_illidari': {SPELL:     201467},
+            'fury_of_the_illidari': {SPELL:     201467,
+                                     RANGE:     40},
             'fel_devastation':      {SPELL:     212084},
             'immolation_aura':      {SPELL:     178740},
             'shear':                {SPELL:     203782},
@@ -75,7 +83,8 @@ DH_SPELL_INFO = {
             'infernal_strike':      {SPELL:     189110},
         },
         HAVOC: {
-            'throw_glaive':         {SPELL:     185123},
+            'throw_glaive':         {SPELL:     185123,
+                                     RANGE:     30},
         },
         VENGEANCE: {
             'throw_glaive':         {SPELL:     204157},

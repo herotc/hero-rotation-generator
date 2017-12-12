@@ -5,9 +5,12 @@ Define the objects representing simc units.
 @author: skasch
 """
 
+from functools import reduce
+
 from .lua import LuaNamed
 from .demonhunter import havoc_is_in_melee_range
 from .druid import balance_future_astral_power, guardian_swipe_thrash
+from .constants import RANGE
 from .database import (CLASS_SPECS, RACES, SPELL_INFO, COMMON, DEFAULT_POTION)
 
 
@@ -23,6 +26,7 @@ class Player:
         self.race = None
         self.apl = apl
         self.spells = None
+        self.range_ = None
 
     def potion(self):
         """
@@ -51,6 +55,18 @@ class Player:
             spells.update(SPELL_INFO.get(class_simc, {}).get(spec_simc, {}))
             self.spells = spells
         return self.spells
+
+    def spec_range(self):
+        """
+        Returns the default range of the spec.
+        """
+        if not self.range_:
+            self.range_ = reduce(
+                lambda range_, spell: max(spell[RANGE], range_),
+                filter(lambda spell: RANGE in spell,
+                       self.spell_book().values()),
+                5)
+        return self.range_
 
     def spell_property(self, spell, key, default=False):
         """

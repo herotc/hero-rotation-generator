@@ -106,15 +106,15 @@ end
 local function Apl()
   local function Bf()
     -- cancel_buff,name=blade_flurry,if=spell_targets.blade_flurry<2&buff.blade_flurry.up
-    if (Cache.EnemiesCount[0] < 2 and Player:BuffP(S.BladeFlurryBuff)) then
+    if (Cache.EnemiesCount[8] < 2 and Player:BuffP(S.BladeFlurryBuff)) then
       -- if AR.Cancel(S.BladeFlurryBuff) then return ""; end
     end
     -- cancel_buff,name=blade_flurry,if=equipped.shivarran_symmetry&cooldown.blade_flurry.up&buff.blade_flurry.up&spell_targets.blade_flurry>=2
-    if (I.ShivarranSymmetry:IsEquipped() and S.BladeFlurry:CooldownUpP() and Player:BuffP(S.BladeFlurryBuff) and Cache.EnemiesCount[0] >= 2) then
+    if (I.ShivarranSymmetry:IsEquipped() and S.BladeFlurry:CooldownUpP() and Player:BuffP(S.BladeFlurryBuff) and Cache.EnemiesCount[8] >= 2) then
       -- if AR.Cancel(S.BladeFlurryBuff) then return ""; end
     end
     -- blade_flurry,if=spell_targets.blade_flurry>=2&!buff.blade_flurry.up
-    if S.BladeFlurry:IsCastableP() and (Cache.EnemiesCount[0] >= 2 and not Player:BuffP(S.BladeFlurryBuff)) then
+    if S.BladeFlurry:IsCastableP() and (Cache.EnemiesCount[8] >= 2 and not Player:BuffP(S.BladeFlurryBuff)) then
       if AR.Cast(S.BladeFlurry) then return ""; end
     end
   end
@@ -150,7 +150,7 @@ local function Apl()
       if AR.Cast(S.ArcaneTorrent, Settings.Outlaw.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
     end
     -- cannonball_barrage,if=spell_targets.cannonball_barrage>=1
-    if S.CannonballBarrage:IsCastableP() and (Cache.EnemiesCount[0] >= 1) then
+    if S.CannonballBarrage:IsCastableP() and (Cache.EnemiesCount[35] >= 1) then
       if AR.Cast(S.CannonballBarrage) then return ""; end
     end
     -- adrenaline_rush,if=!buff.adrenaline_rush.up&energy.deficit>0

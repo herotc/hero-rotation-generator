@@ -139,19 +139,19 @@ local function Apl()
       if AR.Cast(S.FrostStrike) then return ""; end
     end
     -- frostscythe,if=buff.killing_machine.react&(!equipped.koltiras_newfound_will|spell_targets.frostscythe>=2)
-    if S.Frostscythe:IsCastableP() and (bool(Player:BuffStackP(S.KillingMachineBuff)) and (not I.KoltirasNewfoundWill:IsEquipped() or Cache.EnemiesCount[0] >= 2)) then
+    if S.Frostscythe:IsCastableP() and (bool(Player:BuffStackP(S.KillingMachineBuff)) and (not I.KoltirasNewfoundWill:IsEquipped() or Cache.EnemiesCount[8] >= 2)) then
       if AR.Cast(S.Frostscythe) then return ""; end
     end
     -- glacial_advance,if=spell_targets.glacial_advance>=2
-    if S.GlacialAdvance:IsCastableP() and (Cache.EnemiesCount[0] >= 2) then
+    if S.GlacialAdvance:IsCastableP() and (Cache.EnemiesCount[30] >= 2) then
       if AR.Cast(S.GlacialAdvance) then return ""; end
     end
     -- remorseless_winter,if=spell_targets.remorseless_winter>=2
-    if S.RemorselessWinter:IsCastableP() and (Cache.EnemiesCount[0] >= 2) then
+    if S.RemorselessWinter:IsCastableP() and (Cache.EnemiesCount[8] >= 2) then
       if AR.Cast(S.RemorselessWinter) then return ""; end
     end
     -- frostscythe,if=spell_targets.frostscythe>=3
-    if S.Frostscythe:IsCastableP() and (Cache.EnemiesCount[0] >= 3) then
+    if S.Frostscythe:IsCastableP() and (Cache.EnemiesCount[8] >= 3) then
       if AR.Cast(S.Frostscythe) then return ""; end
     end
     -- frost_strike,if=(cooldown.remorseless_winter.remains<(gcd*2)|buff.gathering_storm.stack=10)&cooldown.breath_of_sindragosa.remains>rune.time_to_4&talent.gathering_storm.enabled&(!talent.shattering_strikes.enabled|debuff.razorice.stack<5|cooldown.breath_of_sindragosa.remains>6)
@@ -197,15 +197,15 @@ local function Apl()
       if AR.Cast(S.HornofWinter) then return ""; end
     end
     -- frostscythe,if=buff.killing_machine.react&(!equipped.koltiras_newfound_will|talent.gathering_storm.enabled|spell_targets.frostscythe>=2)
-    if S.Frostscythe:IsCastableP() and (bool(Player:BuffStackP(S.KillingMachineBuff)) and (not I.KoltirasNewfoundWill:IsEquipped() or S.GatheringStorm:IsAvailable() or Cache.EnemiesCount[0] >= 2)) then
+    if S.Frostscythe:IsCastableP() and (bool(Player:BuffStackP(S.KillingMachineBuff)) and (not I.KoltirasNewfoundWill:IsEquipped() or S.GatheringStorm:IsAvailable() or Cache.EnemiesCount[8] >= 2)) then
       if AR.Cast(S.Frostscythe) then return ""; end
     end
     -- glacial_advance,if=spell_targets.glacial_advance>=2
-    if S.GlacialAdvance:IsCastableP() and (Cache.EnemiesCount[0] >= 2) then
+    if S.GlacialAdvance:IsCastableP() and (Cache.EnemiesCount[30] >= 2) then
       if AR.Cast(S.GlacialAdvance) then return ""; end
     end
     -- remorseless_winter,if=spell_targets.remorseless_winter>=2
-    if S.RemorselessWinter:IsCastableP() and (Cache.EnemiesCount[0] >= 2) then
+    if S.RemorselessWinter:IsCastableP() and (Cache.EnemiesCount[8] >= 2) then
       if AR.Cast(S.RemorselessWinter) then return ""; end
     end
     -- obliterate,if=runic_power.deficit>25|rune>3
@@ -319,19 +319,19 @@ local function Apl()
       if AR.Cast(S.RemorselessWinter) then return ""; end
     end
     -- frostscythe,if=(buff.killing_machine.up&(buff.killing_machine.react|prev_gcd.1.frost_strike|prev_gcd.1.howling_blast))&spell_targets.frostscythe>1
-    if S.Frostscythe:IsCastableP() and ((Player:BuffP(S.KillingMachineBuff) and (bool(Player:BuffStackP(S.KillingMachineBuff)) or Player:PrevGCDP(1, S.FrostStrike) or Player:PrevGCDP(1, S.HowlingBlast))) and Cache.EnemiesCount[0] > 1) then
+    if S.Frostscythe:IsCastableP() and ((Player:BuffP(S.KillingMachineBuff) and (bool(Player:BuffStackP(S.KillingMachineBuff)) or Player:PrevGCDP(1, S.FrostStrike) or Player:PrevGCDP(1, S.HowlingBlast))) and Cache.EnemiesCount[8] > 1) then
       if AR.Cast(S.Frostscythe) then return ""; end
     end
     -- obliterate,if=(buff.killing_machine.up&(buff.killing_machine.react|prev_gcd.1.frost_strike|prev_gcd.1.howling_blast))|(spell_targets.howling_blast>=3&!buff.rime.up)
-    if S.Obliterate:IsCastableP() and ((Player:BuffP(S.KillingMachineBuff) and (bool(Player:BuffStackP(S.KillingMachineBuff)) or Player:PrevGCDP(1, S.FrostStrike) or Player:PrevGCDP(1, S.HowlingBlast))) or (Cache.EnemiesCount[0] >= 3 and not Player:BuffP(S.RimeBuff))) then
+    if S.Obliterate:IsCastableP() and ((Player:BuffP(S.KillingMachineBuff) and (bool(Player:BuffStackP(S.KillingMachineBuff)) or Player:PrevGCDP(1, S.FrostStrike) or Player:PrevGCDP(1, S.HowlingBlast))) or (Cache.EnemiesCount[30] >= 3 and not Player:BuffP(S.RimeBuff))) then
       if AR.Cast(S.Obliterate) then return ""; end
     end
     -- howling_blast,if=buff.rime.up&spell_targets.howling_blast>1
-    if S.HowlingBlast:IsCastableP() and (Player:BuffP(S.RimeBuff) and Cache.EnemiesCount[0] > 1) then
+    if S.HowlingBlast:IsCastableP() and (Player:BuffP(S.RimeBuff) and Cache.EnemiesCount[30] > 1) then
       if AR.Cast(S.HowlingBlast) then return ""; end
     end
     -- howling_blast,if=!buff.rime.up&spell_targets.howling_blast>2&rune>3&talent.freezing_fog.enabled&talent.gathering_storm.enabled
-    if S.HowlingBlast:IsCastableP() and (not Player:BuffP(S.RimeBuff) and Cache.EnemiesCount[0] > 2 and Player:Rune() > 3 and S.FreezingFog:IsAvailable() and S.GatheringStorm:IsAvailable()) then
+    if S.HowlingBlast:IsCastableP() and (not Player:BuffP(S.RimeBuff) and Cache.EnemiesCount[30] > 2 and Player:Rune() > 3 and S.FreezingFog:IsAvailable() and S.GatheringStorm:IsAvailable()) then
       if AR.Cast(S.HowlingBlast) then return ""; end
     end
     -- frost_strike,if=!buff.rime.up|rune.time_to_1>=gcd|runic_power.deficit<20
@@ -385,7 +385,7 @@ local function Apl()
       if AR.Cast(S.FrostStrike) then return ""; end
     end
     -- frostscythe,if=buff.killing_machine.react&(!equipped.koltiras_newfound_will|spell_targets.frostscythe>=2)
-    if S.Frostscythe:IsCastableP() and (bool(Player:BuffStackP(S.KillingMachineBuff)) and (not I.KoltirasNewfoundWill:IsEquipped() or Cache.EnemiesCount[0] >= 2)) then
+    if S.Frostscythe:IsCastableP() and (bool(Player:BuffStackP(S.KillingMachineBuff)) and (not I.KoltirasNewfoundWill:IsEquipped() or Cache.EnemiesCount[8] >= 2)) then
       if AR.Cast(S.Frostscythe) then return ""; end
     end
     -- obliterate,if=buff.killing_machine.react
@@ -397,15 +397,15 @@ local function Apl()
       if AR.Cast(S.FrostStrike) then return ""; end
     end
     -- remorseless_winter,if=spell_targets.remorseless_winter>=2
-    if S.RemorselessWinter:IsCastableP() and (Cache.EnemiesCount[0] >= 2) then
+    if S.RemorselessWinter:IsCastableP() and (Cache.EnemiesCount[8] >= 2) then
       if AR.Cast(S.RemorselessWinter) then return ""; end
     end
     -- glacial_advance,if=spell_targets.glacial_advance>=2
-    if S.GlacialAdvance:IsCastableP() and (Cache.EnemiesCount[0] >= 2) then
+    if S.GlacialAdvance:IsCastableP() and (Cache.EnemiesCount[30] >= 2) then
       if AR.Cast(S.GlacialAdvance) then return ""; end
     end
     -- frostscythe,if=spell_targets.frostscythe>=3
-    if S.Frostscythe:IsCastableP() and (Cache.EnemiesCount[0] >= 3) then
+    if S.Frostscythe:IsCastableP() and (Cache.EnemiesCount[8] >= 3) then
       if AR.Cast(S.Frostscythe) then return ""; end
     end
     -- obliterate,if=!talent.gathering_storm.enabled|cooldown.remorseless_winter.remains>(gcd*2)

@@ -107,7 +107,7 @@ local function Apl()
       if AR.Cast(S.DragonsBreath) then return ""; end
     end
     -- living_bomb,if=active_enemies>1&buff.combustion.down
-    if S.LivingBomb:IsCastableP() and (active_enemies > 1 and Player:BuffDownP(S.CombustionBuff)) then
+    if S.LivingBomb:IsCastableP() and (Cache.EnemiesCount[40] > 1 and Player:BuffDownP(S.CombustionBuff)) then
       if AR.Cast(S.LivingBomb) then return ""; end
     end
   end
@@ -145,7 +145,7 @@ local function Apl()
       if AR.Cast(S.UseItems) then return ""; end
     end
     -- flamestrike,if=(talent.flame_patch.enabled&active_enemies>2|active_enemies>4)&buff.hot_streak.react
-    if S.Flamestrike:IsCastableP() and ((S.FlamePatch:IsAvailable() and active_enemies > 2 or active_enemies > 4) and bool(Player:BuffStackP(S.HotStreakBuff))) then
+    if S.Flamestrike:IsCastableP() and ((S.FlamePatch:IsAvailable() and Cache.EnemiesCount[40] > 2 or Cache.EnemiesCount[40] > 4) and bool(Player:BuffStackP(S.HotStreakBuff))) then
       if AR.Cast(S.Flamestrike) then return ""; end
     end
     -- pyroblast,if=buff.kaelthas_ultimate_ability.react&buff.combustion.remains>execute_time
@@ -183,7 +183,7 @@ local function Apl()
       if AR.Cast(S.RuneofPower) then return ""; end
     end
     -- flamestrike,if=((talent.flame_patch.enabled&active_enemies>1)|active_enemies>3)&buff.hot_streak.react
-    if S.Flamestrike:IsCastableP() and (((S.FlamePatch:IsAvailable() and active_enemies > 1) or active_enemies > 3) and bool(Player:BuffStackP(S.HotStreakBuff))) then
+    if S.Flamestrike:IsCastableP() and (((S.FlamePatch:IsAvailable() and Cache.EnemiesCount[40] > 1) or Cache.EnemiesCount[40] > 3) and bool(Player:BuffStackP(S.HotStreakBuff))) then
       if AR.Cast(S.Flamestrike) then return ""; end
     end
     -- pyroblast,if=buff.hot_streak.react
@@ -219,11 +219,11 @@ local function Apl()
       if AR.Cast(S.Scorch) then return ""; end
     end
     -- dragons_breath,if=active_enemies>2
-    if S.DragonsBreath:IsCastableP() and (active_enemies > 2) then
+    if S.DragonsBreath:IsCastableP() and (Cache.EnemiesCount[12] > 2) then
       if AR.Cast(S.DragonsBreath) then return ""; end
     end
     -- flamestrike,if=(talent.flame_patch.enabled&active_enemies>2)|active_enemies>5
-    if S.Flamestrike:IsCastableP() and ((S.FlamePatch:IsAvailable() and active_enemies > 2) or active_enemies > 5) then
+    if S.Flamestrike:IsCastableP() and ((S.FlamePatch:IsAvailable() and Cache.EnemiesCount[40] > 2) or Cache.EnemiesCount[40] > 5) then
       if AR.Cast(S.Flamestrike) then return ""; end
     end
     -- fireball
@@ -233,7 +233,7 @@ local function Apl()
   end
   local function StandardRotation()
     -- flamestrike,if=((talent.flame_patch.enabled&active_enemies>1)|active_enemies>3)&buff.hot_streak.react
-    if S.Flamestrike:IsCastableP() and (((S.FlamePatch:IsAvailable() and active_enemies > 1) or active_enemies > 3) and bool(Player:BuffStackP(S.HotStreakBuff))) then
+    if S.Flamestrike:IsCastableP() and (((S.FlamePatch:IsAvailable() and Cache.EnemiesCount[40] > 1) or Cache.EnemiesCount[40] > 3) and bool(Player:BuffStackP(S.HotStreakBuff))) then
       if AR.Cast(S.Flamestrike) then return ""; end
     end
     -- pyroblast,if=buff.hot_streak.react&buff.hot_streak.remains<action.fireball.execute_time
@@ -245,7 +245,7 @@ local function Apl()
       if AR.Cast(S.Pyroblast) then return ""; end
     end
     -- phoenixs_flames,if=charges_fractional>2.7&active_enemies>2
-    if S.PhoenixsFlames:IsCastableP() and (S.PhoenixsFlames:ChargesFractional() > 2.7 and active_enemies > 2) then
+    if S.PhoenixsFlames:IsCastableP() and (S.PhoenixsFlames:ChargesFractional() > 2.7 and Cache.EnemiesCount[40] > 2) then
       if AR.Cast(S.PhoenixsFlames) then return ""; end
     end
     -- pyroblast,if=buff.hot_streak.react&(!prev_gcd.1.pyroblast|action.pyroblast.in_flight)
@@ -285,7 +285,7 @@ local function Apl()
       if AR.Cast(S.PhoenixsFlames) then return ""; end
     end
     -- flamestrike,if=(talent.flame_patch.enabled&active_enemies>3)|active_enemies>5
-    if S.Flamestrike:IsCastableP() and ((S.FlamePatch:IsAvailable() and active_enemies > 3) or active_enemies > 5) then
+    if S.Flamestrike:IsCastableP() and ((S.FlamePatch:IsAvailable() and Cache.EnemiesCount[40] > 3) or Cache.EnemiesCount[40] > 5) then
       if AR.Cast(S.Flamestrike) then return ""; end
     end
     -- scorch,if=target.health.pct<=30&equipped.132454
@@ -322,7 +322,7 @@ local function Apl()
     if AR.Cast(S.RuneofPower) then return ""; end
   end
   -- call_action_list,name=combustion_phase,if=cooldown.combustion.remains<=action.rune_of_power.cast_time+(!talent.kindling.enabled*gcd)&(!talent.firestarter.enabled|!firestarter.active|active_enemies>=4|active_enemies>=2&talent.flame_patch.enabled)|buff.combustion.up
-  if (S.Combustion:CooldownRemainsP() <= S.RuneofPower:CastTime() + (num(not S.Kindling:IsAvailable()) * Player:GCD()) and (not S.Firestarter:IsAvailable() or not bool(firestarter.active) or active_enemies >= 4 or active_enemies >= 2 and S.FlamePatch:IsAvailable()) or Player:BuffP(S.CombustionBuff)) then
+  if (S.Combustion:CooldownRemainsP() <= S.RuneofPower:CastTime() + (num(not S.Kindling:IsAvailable()) * Player:GCD()) and (not S.Firestarter:IsAvailable() or not bool(firestarter.active) or Cache.EnemiesCount[40] >= 4 or Cache.EnemiesCount[40] >= 2 and S.FlamePatch:IsAvailable()) or Player:BuffP(S.CombustionBuff)) then
     local ShouldReturn = CombustionPhase(); if ShouldReturn then return ShouldReturn; end
   end
   -- call_action_list,name=rop_phase,if=buff.rune_of_power.up&buff.combustion.down

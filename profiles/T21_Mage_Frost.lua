@@ -218,7 +218,7 @@ local function Apl()
       if AR.Cast(S.FrozenOrb) then return ""; end
     end
     -- blizzard,if=cast_time=0&active_enemies>1&buff.fingers_of_frost.react<3
-    if S.Blizzard:IsCastableP() and (S.Blizzard:CastTime() == 0 and active_enemies > 1 and Player:BuffStackP(S.FingersofFrostBuff) < 3) then
+    if S.Blizzard:IsCastableP() and (S.Blizzard:CastTime() == 0 and Cache.EnemiesCount[35] > 1 and Player:BuffStackP(S.FingersofFrostBuff) < 3) then
       if AR.Cast(S.Blizzard) then return ""; end
     end
     -- frost_bomb,if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react
@@ -246,7 +246,7 @@ local function Apl()
       if AR.Cast(S.CometStorm) then return ""; end
     end
     -- blizzard,if=active_enemies>1|buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time
-    if S.Blizzard:IsCastableP() and (active_enemies > 1 or Player:BuffStackP(S.ZannesuJourneyBuff) == 5 and Player:BuffRemainsP(S.ZannesuJourneyBuff) > S.Blizzard:CastTime()) then
+    if S.Blizzard:IsCastableP() and (Cache.EnemiesCount[35] > 1 or Player:BuffStackP(S.ZannesuJourneyBuff) == 5 and Player:BuffRemainsP(S.ZannesuJourneyBuff) > S.Blizzard:CastTime()) then
       if AR.Cast(S.Blizzard) then return ""; end
     end
     -- frostbolt,if=buff.frozen_mass.remains>execute_time+action.glacial_spike.execute_time+action.glacial_spike.travel_time&!buff.brain_freeze.react&talent.glacial_spike.enabled
@@ -291,7 +291,7 @@ local function Apl()
     local ShouldReturn = Cooldowns(); if ShouldReturn then return ShouldReturn; end
   end
   -- call_action_list,name=aoe,if=active_enemies>=3
-  if (active_enemies >= 3) then
+  if (Cache.EnemiesCount[35] >= 3) then
     local ShouldReturn = Aoe(); if ShouldReturn then return ShouldReturn; end
   end
   -- call_action_list,name=single

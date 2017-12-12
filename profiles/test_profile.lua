@@ -102,7 +102,7 @@ local function Apl()
       if AR.Cast(S.Marrowrend) then return ""; end
     end
     -- bonestorm,if=runic_power>=100&spell_targets.bonestorm>=3
-    if S.Bonestorm:IsCastableP() and (Player:RunicPower() >= 100 and Cache.EnemiesCount[0] >= 3) then
+    if S.Bonestorm:IsCastableP() and (Player:RunicPower() >= 100 and Cache.EnemiesCount[8] >= 3) then
       if AR.Cast(S.Bonestorm) then return ""; end
     end
     -- death_strike,if=buff.blood_shield.up|(runic_power.deficit<15&(runic_power.deficit<25|!buff.dancing_rune_weapon.up))

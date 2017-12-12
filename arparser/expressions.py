@@ -519,16 +519,19 @@ class ActionExpression(BuildExpression):
         """
         self.object_ = None
         self.method = Method('Cache.EnemiesCount')
-        self.args = [Literal(self.condition.player_unit.spell_property(
-            self.action_object(), RANGE, 0))]
+        self.args = [
+            Literal(self.condition.player_unit.spell_property(
+                self.action_object(), RANGE,
+                self.condition.player_unit.spec_range()))
+        ]
         self.array = True
-    
+
     def active_enemies(self):
         """
         Return the arguments for the expression action.spell.active_enemies.
         """
         self.spell_targets()
-    
+
     def time_to_die(self):
         """
         Return the arguments for the expression time_to_die.
@@ -779,7 +782,7 @@ class SpellTargets(LuaExpression):
         object_ = None
         method = Method('Cache.EnemiesCount')
         args = [Literal(condition.player_unit.spell_property(
-            condition.condition_list[1], RANGE, 0))]
+            condition.condition_list[1], RANGE, 5))]
         super().__init__(object_, method, args, array=True)
 
 

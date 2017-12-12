@@ -175,11 +175,11 @@ local function Apl()
       if AR.Cast(S.LunarStrike) then return ""; end
     end
     -- moonfire,if=equipped.lady_and_the_child&talent.soul_of_the_forest.enabled&(active_enemies<3|(active_enemies<4&!set_bonus.tier20_4pc)|(equipped.radiant_moonlight&active_enemies<7&!set_bonus.tier20_4pc))&spell_haste>0.4&!buff.celestial_alignment.up&!buff.incarnation.up
-    if S.Moonfire:IsCastableP() and (I.LadyandtheChild:IsEquipped() and S.SouloftheForest:IsAvailable() and (active_enemies < 3 or (active_enemies < 4 and not AC.Tier20_4Pc) or (I.RadiantMoonlight:IsEquipped() and active_enemies < 7 and not AC.Tier20_4Pc)) and Player:SpellHaste() > 0.4 and not Player:BuffP(S.CelestialAlignmentBuff) and not Player:BuffP(S.IncarnationBuff)) then
+    if S.Moonfire:IsCastableP() and (I.LadyandtheChild:IsEquipped() and S.SouloftheForest:IsAvailable() and (Cache.EnemiesCount[40] < 3 or (Cache.EnemiesCount[40] < 4 and not AC.Tier20_4Pc) or (I.RadiantMoonlight:IsEquipped() and Cache.EnemiesCount[40] < 7 and not AC.Tier20_4Pc)) and Player:SpellHaste() > 0.4 and not Player:BuffP(S.CelestialAlignmentBuff) and not Player:BuffP(S.IncarnationBuff)) then
       if AR.Cast(S.Moonfire) then return ""; end
     end
     -- lunar_strike,if=spell_targets.lunar_strike>=4|spell_haste<0.45
-    if S.LunarStrike:IsCastableP() and (Cache.EnemiesCount[0] >= 4 or Player:SpellHaste() < 0.45) then
+    if S.LunarStrike:IsCastableP() and (Cache.EnemiesCount[40] >= 4 or Player:SpellHaste() < 0.45) then
       if AR.Cast(S.LunarStrike) then return ""; end
     end
     -- solar_wrath
@@ -205,7 +205,7 @@ local function Apl()
       if AR.Cast(S.Starsurge) then return ""; end
     end
     -- stellar_flare,cycle_targets=1,max_cycle_targets=4,if=active_enemies<4&remains<7.2
-    if S.StellarFlare:IsCastableP() and (active_enemies < 4 and Player:BuffRemainsP(S.StellarFlare) < 7.2) then
+    if S.StellarFlare:IsCastableP() and (Cache.EnemiesCount[40] < 4 and Player:BuffRemainsP(S.StellarFlare) < 7.2) then
       if AR.Cast(S.StellarFlare) then return ""; end
     end
     -- moonfire,if=((talent.natures_balance.enabled&remains<3)|(remains<6.6&!talent.natures_balance.enabled))&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)
@@ -343,15 +343,15 @@ local function Apl()
       if AR.Cast(S.Sunfire) then return ""; end
     end
     -- stellar_flare,if=remains<7.2&active_enemies=1
-    if S.StellarFlare:IsCastableP() and (Player:BuffRemainsP(S.StellarFlare) < 7.2 and active_enemies == 1) then
+    if S.StellarFlare:IsCastableP() and (Player:BuffRemainsP(S.StellarFlare) < 7.2 and Cache.EnemiesCount[40] == 1) then
       if AR.Cast(S.StellarFlare) then return ""; end
     end
     -- starfall,if=(active_enemies>=2&talent.stellar_flare.enabled|active_enemies>=3)&buff.fury_of_elune.down&cooldown.fury_of_elune.remains>10
-    if S.Starfall:IsCastableP() and ((active_enemies >= 2 and S.StellarFlare:IsAvailable() or active_enemies >= 3) and Player:BuffDownP(S.FuryofEluneBuff) and S.FuryofElune:CooldownRemainsP() > 10) then
+    if S.Starfall:IsCastableP() and ((Cache.EnemiesCount[40] >= 2 and S.StellarFlare:IsAvailable() or Cache.EnemiesCount[40] >= 3) and Player:BuffDownP(S.FuryofEluneBuff) and S.FuryofElune:CooldownRemainsP() > 10) then
       if AR.Cast(S.Starfall) then return ""; end
     end
     -- starsurge,if=active_enemies<=2&buff.fury_of_elune.down&cooldown.fury_of_elune.remains>7
-    if S.Starsurge:IsCastableP() and (active_enemies <= 2 and Player:BuffDownP(S.FuryofEluneBuff) and S.FuryofElune:CooldownRemainsP() > 7) then
+    if S.Starsurge:IsCastableP() and (Cache.EnemiesCount[40] <= 2 and Player:BuffDownP(S.FuryofEluneBuff) and S.FuryofElune:CooldownRemainsP() > 7) then
       if AR.Cast(S.Starsurge) then return ""; end
     end
     -- starsurge,if=buff.fury_of_elune.down&((astral_power>=92&cooldown.fury_of_elune.remains>gcd*3)|(cooldown.warrior_of_elune.remains<=5&cooldown.fury_of_elune.remains>=35&buff.lunar_empowerment.stack<2))
@@ -363,7 +363,7 @@ local function Apl()
       if AR.Cast(S.SolarWrath) then return ""; end
     end
     -- lunar_strike,if=buff.lunar_empowerment.stack=3|(buff.lunar_empowerment.remains<5&buff.lunar_empowerment.up)|active_enemies>=2
-    if S.LunarStrike:IsCastableP() and (Player:BuffStackP(S.LunarEmpowermentBuff) == 3 or (Player:BuffRemainsP(S.LunarEmpowermentBuff) < 5 and Player:BuffP(S.LunarEmpowermentBuff)) or active_enemies >= 2) then
+    if S.LunarStrike:IsCastableP() and (Player:BuffStackP(S.LunarEmpowermentBuff) == 3 or (Player:BuffRemainsP(S.LunarEmpowermentBuff) < 5 and Player:BuffP(S.LunarEmpowermentBuff)) or Cache.EnemiesCount[40] >= 2) then
       if AR.Cast(S.LunarStrike) then return ""; end
     end
     -- solar_wrath
@@ -438,11 +438,11 @@ local function Apl()
     if AR.CastSuggested(I.ProlongedPower) then return ""; end
   end
   -- blessing_of_elune,if=active_enemies<=2&talent.blessing_of_the_ancients.enabled&buff.blessing_of_elune.down
-  if S.BlessingofElune:IsCastableP() and (active_enemies <= 2 and S.BlessingoftheAncients:IsAvailable() and Player:BuffDownP(S.BlessingofEluneBuff)) then
+  if S.BlessingofElune:IsCastableP() and (Cache.EnemiesCount[40] <= 2 and S.BlessingoftheAncients:IsAvailable() and Player:BuffDownP(S.BlessingofEluneBuff)) then
     if AR.Cast(S.BlessingofElune) then return ""; end
   end
   -- blessing_of_elune,if=active_enemies>=3&talent.blessing_of_the_ancients.enabled&buff.blessing_of_anshe.down
-  if S.BlessingofElune:IsCastableP() and (active_enemies >= 3 and S.BlessingoftheAncients:IsAvailable() and Player:BuffDownP(S.BlessingofAnsheBuff)) then
+  if S.BlessingofElune:IsCastableP() and (Cache.EnemiesCount[40] >= 3 and S.BlessingoftheAncients:IsAvailable() and Player:BuffDownP(S.BlessingofAnsheBuff)) then
     if AR.Cast(S.BlessingofElune) then return ""; end
   end
   -- blood_fury,if=buff.celestial_alignment.up|buff.incarnation.up
@@ -466,7 +466,7 @@ local function Apl()
     local ShouldReturn = FuryofElune(); if ShouldReturn then return ShouldReturn; end
   end
   -- call_action_list,name=ed,if=equipped.the_emerald_dreamcatcher&active_enemies<=1
-  if (I.TheEmeraldDreamcatcher:IsEquipped() and active_enemies <= 1) then
+  if (I.TheEmeraldDreamcatcher:IsEquipped() and Cache.EnemiesCount[40] <= 1) then
     local ShouldReturn = Ed(); if ShouldReturn then return ShouldReturn; end
   end
   -- astral_communion,if=astral_power.deficit>=79
@@ -486,7 +486,7 @@ local function Apl()
     if AR.Cast(S.CelestialAlignment) then return ""; end
   end
   -- call_action_list,name=AoE,if=(spell_targets.starfall>=2&talent.stellar_drift.enabled)|spell_targets.starfall>=3
-  if ((Cache.EnemiesCount[0] >= 2 and S.StellarDrift:IsAvailable()) or Cache.EnemiesCount[0] >= 3) then
+  if ((Cache.EnemiesCount[40] >= 2 and S.StellarDrift:IsAvailable()) or Cache.EnemiesCount[40] >= 3) then
     local ShouldReturn = Aoe(); if ShouldReturn then return ShouldReturn; end
   end
   -- call_action_list,name=single_target

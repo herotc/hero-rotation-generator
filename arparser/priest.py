@@ -5,7 +5,7 @@ Priest specific constants and functions.
 @author: skasch
 """
 
-from .constants import COMMON, SPELL, BUFF, DEBUFF, INTERRUPT
+from .constants import COMMON, SPELL, BUFF, DEBUFF, INTERRUPT, RANGE
 
 PRIEST = 'priest'
 SHADOW = 'shadow'
@@ -22,7 +22,8 @@ PR_SPELL_INFO = {
     PRIEST: {
         COMMON: {
             'shadow_word_pain':                 {SPELL:     589,
-                                                 DEBUFF:    589},
+                                                 DEBUFF:    589,
+                                                 RANGE:     40},
             'power_infusion':                   {SPELL:     10060,
                                                  BUFF:      10060},
             # Legendaries
@@ -33,15 +34,19 @@ PR_SPELL_INFO = {
         SHADOW: {
             'surrender_to_madness':             {SPELL:     193223,
                                                  BUFF:      193223},
-            'shadow_word_death':                {SPELL:     32379},
+            'shadow_word_death':                {SPELL:     32379,
+                                                 RANGE:     40},
             'misery':                           {SPELL:     238558},
             'vampiric_touch':                   {SPELL:     34914,
-                                                 DEBUFF:    34914},
+                                                 DEBUFF:    34914,
+                                                 RANGE:     40},
             'void_eruption':                    {SPELL:     228260},
-            'mindbender':                       {SPELL:     200174},
+            'mindbender':                       {SPELL:     200174,
+                                                 RANGE:     40},
             'shadow_crash':                     {SPELL:     205385},
             'reaper_of_souls':                  {SPELL:     199853},
-            'mind_blast':                       {SPELL:     8092},
+            'mind_blast':                       {SPELL:     8092,
+                                                 RANGE:     40},
             'legacy_of_the_void':               {SPELL:     193225},
             'fortress_of_the_mind':             {SPELL:     193195},
             'auspicious_spirits':               {SPELL:     155271},

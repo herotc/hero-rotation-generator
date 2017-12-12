@@ -5,7 +5,7 @@ Mage specific constants and functions.
 @author: skasch
 """
 
-from .constants import COMMON, SPELL, BUFF, DEBUFF, PET
+from .constants import COMMON, SPELL, BUFF, DEBUFF, PET, RANGE
 
 MAGE = 'mage'
 ARCANE = 'arcane'
@@ -44,10 +44,13 @@ MG_SPELL_INFO = {
         ARCANE: {
             'arcane_charge':                {BUFF:      36032},
             'arcane_blast':                 {SPELL:     30451},
-            'arcane_barrage':               {SPELL:     44425},
-            'arcane_explosion':             {SPELL:     1449},
+            'arcane_barrage':               {SPELL:     44425,
+                                             RANGE:     40},
+            'arcane_explosion':             {SPELL:     1449,
+                                             RANGE:     10},
             'arcane_missiles':              {SPELL:     5143,
-                                             BUFF:      79683},
+                                             BUFF:      79683,
+                                             RANGE:     40},
             'arcane_power':                 {SPELL:     12042,
                                              BUFF:      12042},
             'evocation':                    {SPELL:     12051},
@@ -83,11 +86,13 @@ MG_SPELL_INFO = {
             'hot_streak':                   {BUFF:      48108},
             'heating_up':                   {BUFF:      48107},
             'enhanced_pyrotechnics':        {SPELL:     157642},
-            'dragons_breath':               {SPELL:     31661},
+            'dragons_breath':               {SPELL:     31661,
+                                             RANGE:     12},
             'combustion':                   {SPELL:     190319,
                                              BUFF:      190319},
             'scorch':                       {SPELL:     2948},
-            'flamestrike':                  {SPELL:     2120},
+            'flamestrike':                  {SPELL:     2120,
+                                             RANGE:     40},
             'pyromaniac':                   {SPELL:     205020},
             'conflagration':                {SPELL:     205023},
             'firestarter':                  {SPELL:     205026},
@@ -96,16 +101,19 @@ MG_SPELL_INFO = {
             'alexstraszas_fury':            {SPELL:     235870},
             'flame_on':                     {SPELL:     205029},
             'controlled_burn':              {SPELL:     205033},
-            'living_bomb':                  {SPELL:     44457},
+            'living_bomb':                  {SPELL:     44457,
+                                             RANGE:     40},
             'flame_patch':                  {SPELL:     205037},
             'kindling':                     {SPELL:     155148},
             'cinderstorm':                  {SPELL:     198929},
             'meteor':                       {SPELL:     153561},
-            'phoenixs_flames':              {SPELL:     194466},
+            'phoenixs_flames':              {SPELL:     194466,
+                                             RANGE:     40},
             'big_mouth':                    {SPELL:     215796},
         },
         FROST: {
-            'blizzard':                     {SPELL:     190356},
+            'blizzard':                     {SPELL:     190356,
+                                             RANGE:     35},
             'brain_freeze':                 {BUFF:      190446},
             'cone_of_cold':                 {SPELL:     120},
             'fingers_of_frost':             {BUFF:      44544},

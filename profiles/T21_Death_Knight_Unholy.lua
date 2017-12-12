@@ -94,23 +94,23 @@ end
 local function Apl()
   local function Aoe()
     -- death_and_decay,if=spell_targets.death_and_decay>=2
-    if S.DeathandDecay:IsUsable() and (Cache.EnemiesCount[0] >= 2) then
+    if S.DeathandDecay:IsUsable() and (Cache.EnemiesCount[30] >= 2) then
       if AR.Cast(S.DeathandDecay) then return ""; end
     end
     -- epidemic,if=spell_targets.epidemic>4
-    if S.Epidemic:IsCastableP() and (Cache.EnemiesCount[0] > 4) then
+    if S.Epidemic:IsCastableP() and (Cache.EnemiesCount[10] > 4) then
       if AR.Cast(S.Epidemic) then return ""; end
     end
     -- scourge_strike,if=spell_targets.scourge_strike>=2&(death_and_decay.ticking|defile.ticking)
-    if S.ScourgeStrike:IsCastableP() and (Cache.EnemiesCount[0] >= 2 and (bool(death_and_decay.ticking) or bool(defile.ticking))) then
+    if S.ScourgeStrike:IsCastableP() and (Cache.EnemiesCount[8] >= 2 and (bool(death_and_decay.ticking) or bool(defile.ticking))) then
       if AR.Cast(S.ScourgeStrike) then return ""; end
     end
     -- clawing_shadows,if=spell_targets.clawing_shadows>=2&(death_and_decay.ticking|defile.ticking)
-    if S.ClawingShadows:IsCastableP() and (Cache.EnemiesCount[0] >= 2 and (bool(death_and_decay.ticking) or bool(defile.ticking))) then
+    if S.ClawingShadows:IsCastableP() and (Cache.EnemiesCount[8] >= 2 and (bool(death_and_decay.ticking) or bool(defile.ticking))) then
       if AR.Cast(S.ClawingShadows) then return ""; end
     end
     -- epidemic,if=spell_targets.epidemic>2
-    if S.Epidemic:IsCastableP() and (Cache.EnemiesCount[0] > 2) then
+    if S.Epidemic:IsCastableP() and (Cache.EnemiesCount[10] > 2) then
       if AR.Cast(S.Epidemic) then return ""; end
     end
   end
@@ -210,7 +210,7 @@ local function Apl()
       if AR.Cast(S.Defile) then return ""; end
     end
     -- call_action_list,name=aoe,if=active_enemies>=2
-    if (active_enemies >= 2) then
+    if (Cache.EnemiesCount[30] >= 2) then
       local ShouldReturn = Aoe(); if ShouldReturn then return ShouldReturn; end
     end
     -- festering_strike,if=(buff.blighted_rune_weapon.stack*2+debuff.festering_wound.stack)<=2|((buff.blighted_rune_weapon.stack*2+debuff.festering_wound.stack)<=4&talent.castigator.enabled)&(cooldown.army_of_the_dead.remains>5|rune.time_to_4<=gcd)
@@ -244,7 +244,7 @@ local function Apl()
       if AR.Cast(S.FesteringStrike) then return ""; end
     end
     -- call_action_list,name=aoe,if=active_enemies>=2
-    if (active_enemies >= 2) then
+    if (Cache.EnemiesCount[30] >= 2) then
       local ShouldReturn = Aoe(); if ShouldReturn then return ShouldReturn; end
     end
     -- festering_strike,if=debuff.festering_wound.stack<=4

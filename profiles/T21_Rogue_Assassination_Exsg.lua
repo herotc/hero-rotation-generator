@@ -104,11 +104,11 @@ local function Apl()
       if AR.Cast(S.Hemorrhage) then return ""; end
     end
     -- hemorrhage,cycle_targets=1,if=refreshable&dot.rupture.ticking&spell_targets.fan_of_knives<2+equipped.insignia_of_ravenholdt
-    if S.Hemorrhage:IsCastableP() and (bool(refreshable) and Target:DebuffP(S.RuptureDebuff) and Cache.EnemiesCount[0] < 2 + num(I.InsigniaofRavenholdt:IsEquipped())) then
+    if S.Hemorrhage:IsCastableP() and (bool(refreshable) and Target:DebuffP(S.RuptureDebuff) and Cache.EnemiesCount[10] < 2 + num(I.InsigniaofRavenholdt:IsEquipped())) then
       if AR.Cast(S.Hemorrhage) then return ""; end
     end
     -- fan_of_knives,if=spell_targets>=2+equipped.insignia_of_ravenholdt|buff.the_dreadlords_deceit.stack>=29
-    if S.FanofKnives:IsCastableP() and (Cache.EnemiesCount[0] >= 2 + num(I.InsigniaofRavenholdt:IsEquipped()) or Player:BuffStackP(S.TheDreadlordsDeceitBuff) >= 29) then
+    if S.FanofKnives:IsCastableP() and (Cache.EnemiesCount[10] >= 2 + num(I.InsigniaofRavenholdt:IsEquipped()) or Player:BuffStackP(S.TheDreadlordsDeceitBuff) >= 29) then
       if AR.Cast(S.FanofKnives) then return ""; end
     end
     -- mutilate,cycle_targets=1,if=dot.deadly_poison_dot.refreshable
@@ -166,7 +166,7 @@ local function Apl()
       if AR.Cast(S.Vanish) then return ""; end
     end
     -- vanish,if=talent.subterfuge.enabled&!equipped.mantle_of_the_master_assassin&!stealthed.rogue&dot.garrote.refreshable&((spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives)|(spell_targets.fan_of_knives>=4&combo_points.deficit>=4))
-    if S.Vanish:IsCastableP() and (S.Subterfuge:IsAvailable() and not I.MantleoftheMasterAssassin:IsEquipped() and not bool(stealthed.rogue) and bool(dot.garrote.refreshable) and ((Cache.EnemiesCount[0] <= 3 and Player:ComboPointsDeficit() >= 1 + Cache.EnemiesCount[0]) or (Cache.EnemiesCount[0] >= 4 and Player:ComboPointsDeficit() >= 4))) then
+    if S.Vanish:IsCastableP() and (S.Subterfuge:IsAvailable() and not I.MantleoftheMasterAssassin:IsEquipped() and not bool(stealthed.rogue) and bool(dot.garrote.refreshable) and ((Cache.EnemiesCount[10] <= 3 and Player:ComboPointsDeficit() >= 1 + Cache.EnemiesCount[10]) or (Cache.EnemiesCount[10] >= 4 and Player:ComboPointsDeficit() >= 4))) then
       if AR.Cast(S.Vanish) then return ""; end
     end
     -- vanish,if=talent.shadow_focus.enabled&variable.energy_time_to_max_combined>=2&combo_points.deficit>=4
@@ -265,7 +265,7 @@ local function Apl()
     local ShouldReturn = Maintain(); if ShouldReturn then return ShouldReturn; end
   end
   -- call_action_list,name=finish,if=(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)&(!dot.rupture.refreshable|(dot.rupture.exsanguinated&dot.rupture.remains>=3.5)|target.time_to_die-dot.rupture.remains<=6)&active_dot.rupture>=spell_targets.rupture
-  if ((not S.Exsanguinate:IsAvailable() or S.Exsanguinate:CooldownRemainsP() > 2) and (not bool(dot.rupture.refreshable) or (bool(dot.rupture.exsanguinated) and Target:DebuffRemainsP(S.RuptureDebuff) >= 3.5) or Target:TimeToDie() - Target:DebuffRemainsP(S.RuptureDebuff) <= 6) and active_dot.rupture >= Cache.EnemiesCount[0]) then
+  if ((not S.Exsanguinate:IsAvailable() or S.Exsanguinate:CooldownRemainsP() > 2) and (not bool(dot.rupture.refreshable) or (bool(dot.rupture.exsanguinated) and Target:DebuffRemainsP(S.RuptureDebuff) >= 3.5) or Target:TimeToDie() - Target:DebuffRemainsP(S.RuptureDebuff) <= 6) and active_dot.rupture >= Cache.EnemiesCount[5]) then
     local ShouldReturn = Finish(); if ShouldReturn then return ShouldReturn; end
   end
   -- call_action_list,name=build,if=combo_points.deficit>1|energy.deficit<=25+variable.energy_regen_combined

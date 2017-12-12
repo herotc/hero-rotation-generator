@@ -231,7 +231,7 @@ local function Apl()
       if AR.Cast(S.Regrowth) then return ""; end
     end
     -- brutal_slash,if=spell_targets.brutal_slash>desired_targets
-    if S.BrutalSlash:IsCastableP() and (Cache.EnemiesCount[0] > desired_targets) then
+    if S.BrutalSlash:IsCastableP() and (Cache.EnemiesCount[8] > desired_targets) then
       if AR.Cast(S.BrutalSlash) then return ""; end
     end
     -- pool_resource,for_next=1
@@ -239,7 +239,7 @@ local function Apl()
       if AR.Cast(S.PoolResource) then return ""; end
     end
     -- thrash_cat,if=refreshable&(spell_targets.thrash_cat>2)
-    if S.ThrashCat:IsCastableP() and (bool(refreshable) and (Cache.EnemiesCount[0] > 2)) then
+    if S.ThrashCat:IsCastableP() and (bool(refreshable) and (Cache.EnemiesCount[8] > 2)) then
       if AR.Cast(S.ThrashCat) then return ""; end
     end
     -- pool_resource,for_next=1
@@ -247,7 +247,7 @@ local function Apl()
       if AR.Cast(S.PoolResource) then return ""; end
     end
     -- thrash_cat,if=spell_targets.thrash_cat>3&equipped.luffa_wrappings&talent.brutal_slash.enabled
-    if S.ThrashCat:IsCastableP() and (Cache.EnemiesCount[0] > 3 and I.LuffaWrappings:IsEquipped() and S.BrutalSlash:IsAvailable()) then
+    if S.ThrashCat:IsCastableP() and (Cache.EnemiesCount[8] > 3 and I.LuffaWrappings:IsEquipped() and S.BrutalSlash:IsAvailable()) then
       if AR.Cast(S.ThrashCat) then return ""; end
     end
     -- pool_resource,for_next=1
@@ -279,7 +279,7 @@ local function Apl()
       if AR.Cast(S.PoolResource) then return ""; end
     end
     -- thrash_cat,if=refreshable&(variable.use_thrash=2|spell_targets.thrash_cat>1)
-    if S.ThrashCat:IsCastableP() and (bool(refreshable) and (UseThrash == 2 or Cache.EnemiesCount[0] > 1)) then
+    if S.ThrashCat:IsCastableP() and (bool(refreshable) and (UseThrash == 2 or Cache.EnemiesCount[8] > 1)) then
       if AR.Cast(S.ThrashCat) then return ""; end
     end
     -- thrash_cat,if=refreshable&variable.use_thrash=1&buff.clearcasting.react
@@ -291,7 +291,7 @@ local function Apl()
       if AR.Cast(S.PoolResource) then return ""; end
     end
     -- swipe_cat,if=spell_targets.swipe_cat>1
-    if S.SwipeCat:IsCastableP() and (Cache.EnemiesCount[0] > 1) then
+    if S.SwipeCat:IsCastableP() and (Cache.EnemiesCount[8] > 1) then
       if AR.Cast(S.SwipeCat) then return ""; end
     end
     -- shred,if=dot.rake.remains>(action.shred.cost+action.rake.cost-energy)%energy.regen|buff.clearcasting.react

@@ -182,11 +182,11 @@ local function Apl()
       if AR.Cast(S.LayOnHands) then return ""; end
     end
     -- potion,name=old_war,if=buff.avenging_wrath.up&talent.seraphim.enabled&active_enemies<3
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.AvengingWrathBuff) and S.Seraphim:IsAvailable() and active_enemies < 3) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.AvengingWrathBuff) and S.Seraphim:IsAvailable() and Cache.EnemiesCount[30] < 3) then
       if AR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- potion,name=prolonged_power,if=buff.avenging_wrath.up&talent.seraphim.enabled&active_enemies>=3
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.AvengingWrathBuff) and S.Seraphim:IsAvailable() and active_enemies >= 3) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.AvengingWrathBuff) and S.Seraphim:IsAvailable() and Cache.EnemiesCount[30] >= 3) then
       if AR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- potion,name=unbending_potion,if=!talent.seraphim.enabled
@@ -254,7 +254,7 @@ local function Apl()
       if AR.Cast(S.AvengersShield) then return ""; end
     end
     -- judgment,if=talent.seraphim.enabled&(active_enemies<2|set_bonus.tier20_2pc)
-    if S.Judgment:IsCastableP() and (S.Seraphim:IsAvailable() and (active_enemies < 2 or AC.Tier20_2Pc)) then
+    if S.Judgment:IsCastableP() and (S.Seraphim:IsAvailable() and (Cache.EnemiesCount[30] < 2 or AC.Tier20_2Pc)) then
       if AR.Cast(S.Judgment) then return ""; end
     end
     -- consecration,if=talent.seraphim.enabled&(buff.seraphim.remains>6|buff.seraphim.down)

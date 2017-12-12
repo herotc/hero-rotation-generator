@@ -100,11 +100,11 @@ local function Apl()
       if AR.Cast(S.ArcaneOrb) then return ""; end
     end
     -- arcane_missiles,if=active_enemies<3&(variable.arcane_missiles_procs=buff.arcane_missiles.max_stack|(variable.arcane_missiles_procs&mana.pct<=50&buff.arcane_charge.stack=3)),chain=1
-    if S.ArcaneMissiles:IsCastableP() and (active_enemies < 3 and (ArcaneMissilesProcs == buff.arcane_missiles.max_stack or (bool(ArcaneMissilesProcs) and Player:ManaPercentage() <= 50 and Player:BuffStackP(S.ArcaneChargeBuff) == 3))) then
+    if S.ArcaneMissiles:IsCastableP() and (Cache.EnemiesCount[40] < 3 and (ArcaneMissilesProcs == buff.arcane_missiles.max_stack or (bool(ArcaneMissilesProcs) and Player:ManaPercentage() <= 50 and Player:BuffStackP(S.ArcaneChargeBuff) == 3))) then
       if AR.Cast(S.ArcaneMissiles) then return ""; end
     end
     -- arcane_explosion,if=active_enemies>1
-    if S.ArcaneExplosion:IsCastableP() and (active_enemies > 1) then
+    if S.ArcaneExplosion:IsCastableP() and (Cache.EnemiesCount[10] > 1) then
       if AR.Cast(S.ArcaneExplosion) then return ""; end
     end
     -- arcane_blast
@@ -182,11 +182,11 @@ local function Apl()
       if AR.Cast(S.ArcaneOrb) then return ""; end
     end
     -- arcane_barrage,if=active_enemies>4&equipped.mantle_of_the_first_kirin_tor&buff.arcane_charge.stack=buff.arcane_charge.max_stack
-    if S.ArcaneBarrage:IsCastableP() and (active_enemies > 4 and I.MantleoftheFirstKirinTor:IsEquipped() and Player:BuffStackP(S.ArcaneChargeBuff) == buff.arcane_charge.max_stack) then
+    if S.ArcaneBarrage:IsCastableP() and (Cache.EnemiesCount[40] > 4 and I.MantleoftheFirstKirinTor:IsEquipped() and Player:BuffStackP(S.ArcaneChargeBuff) == buff.arcane_charge.max_stack) then
       if AR.Cast(S.ArcaneBarrage) then return ""; end
     end
     -- arcane_missiles,if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3,chain=1
-    if S.ArcaneMissiles:IsCastableP() and (ArcaneMissilesProcs == buff.arcane_missiles.max_stack and active_enemies < 3) then
+    if S.ArcaneMissiles:IsCastableP() and (ArcaneMissilesProcs == buff.arcane_missiles.max_stack and Cache.EnemiesCount[40] < 3) then
       if AR.Cast(S.ArcaneMissiles) then return ""; end
     end
     -- arcane_blast,if=buff.presence_of_mind.up
@@ -194,7 +194,7 @@ local function Apl()
       if AR.Cast(S.ArcaneBlast) then return ""; end
     end
     -- arcane_explosion,if=active_enemies>1
-    if S.ArcaneExplosion:IsCastableP() and (active_enemies > 1) then
+    if S.ArcaneExplosion:IsCastableP() and (Cache.EnemiesCount[10] > 1) then
       if AR.Cast(S.ArcaneExplosion) then return ""; end
     end
     -- arcane_missiles,if=variable.arcane_missiles_procs>1,chain=1
@@ -236,7 +236,7 @@ local function Apl()
       if AR.Cast(S.StrictSequence) then return ""; end
     end
     -- arcane_missiles,if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3,chain=1
-    if S.ArcaneMissiles:IsCastableP() and (ArcaneMissilesProcs == buff.arcane_missiles.max_stack and active_enemies < 3) then
+    if S.ArcaneMissiles:IsCastableP() and (ArcaneMissilesProcs == buff.arcane_missiles.max_stack and Cache.EnemiesCount[40] < 3) then
       if AR.Cast(S.ArcaneMissiles) then return ""; end
     end
     -- supernova
@@ -248,7 +248,7 @@ local function Apl()
       if AR.Cast(S.NetherTempest) then return ""; end
     end
     -- arcane_explosion,if=active_enemies>1&(mana.pct>=70-(10*equipped.mystic_kilt_of_the_rune_master))
-    if S.ArcaneExplosion:IsCastableP() and (active_enemies > 1 and (Player:ManaPercentage() >= 70 - (10 * num(I.MysticKiltoftheRuneMaster:IsEquipped())))) then
+    if S.ArcaneExplosion:IsCastableP() and (Cache.EnemiesCount[10] > 1 and (Player:ManaPercentage() >= 70 - (10 * num(I.MysticKiltoftheRuneMaster:IsEquipped())))) then
       if AR.Cast(S.ArcaneExplosion) then return ""; end
     end
     -- arcane_blast,if=mana.pct>=90|buff.rhonins_assaulting_armwraps.up|(buff.rune_of_power.remains>=cast_time&equipped.mystic_kilt_of_the_rune_master)
@@ -264,7 +264,7 @@ local function Apl()
       if AR.Cast(S.ArcaneBarrage) then return ""; end
     end
     -- arcane_explosion,if=active_enemies>1
-    if S.ArcaneExplosion:IsCastableP() and (active_enemies > 1) then
+    if S.ArcaneExplosion:IsCastableP() and (Cache.EnemiesCount[10] > 1) then
       if AR.Cast(S.ArcaneExplosion) then return ""; end
     end
     -- arcane_blast
@@ -315,7 +315,7 @@ local function Apl()
     local ShouldReturn = Variables(); if ShouldReturn then return ShouldReturn; end
   end
   -- cancel_buff,name=presence_of_mind,if=active_enemies>1&set_bonus.tier20_2pc
-  if (active_enemies > 1 and AC.Tier20_2Pc) then
+  if (Cache.EnemiesCount[40] > 1 and AC.Tier20_2Pc) then
     -- if AR.Cancel(S.PresenceofMindBuff) then return ""; end
   end
   -- call_action_list,name=build,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack&!burn_phase

@@ -151,7 +151,7 @@ local function Apl()
       if AR.Cast(S.Serenity) then return ""; end
     end
     -- rising_sun_kick,cycle_targets=1,if=active_enemies<3
-    if S.RisingSunKick:IsCastableP() and (active_enemies < 3) then
+    if S.RisingSunKick:IsCastableP() and (Cache.EnemiesCount[8] < 3) then
       if AR.Cast(S.RisingSunKick) then return ""; end
     end
     -- strike_of_the_windlord
@@ -159,19 +159,19 @@ local function Apl()
       if AR.Cast(S.StrikeoftheWindlord) then return ""; end
     end
     -- blackout_kick,cycle_targets=1,if=(!prev_gcd.1.blackout_kick)&(prev_gcd.1.strike_of_the_windlord|prev_gcd.1.fists_of_fury)&active_enemies<2
-    if S.BlackoutKick:IsCastableP() and ((not Player:PrevGCDP(1, S.BlackoutKick)) and (Player:PrevGCDP(1, S.StrikeoftheWindlord) or Player:PrevGCDP(1, S.FistsofFury)) and active_enemies < 2) then
+    if S.BlackoutKick:IsCastableP() and ((not Player:PrevGCDP(1, S.BlackoutKick)) and (Player:PrevGCDP(1, S.StrikeoftheWindlord) or Player:PrevGCDP(1, S.FistsofFury)) and Cache.EnemiesCount[8] < 2) then
       if AR.Cast(S.BlackoutKick) then return ""; end
     end
     -- fists_of_fury,if=((equipped.drinking_horn_cover&buff.pressure_point.remains<=2&set_bonus.tier20_4pc)&(cooldown.rising_sun_kick.remains>1|active_enemies>1)),interrupt=1
-    if S.FistsofFury:IsCastableP() and (((I.DrinkingHornCover:IsEquipped() and Player:BuffRemainsP(S.PressurePointBuff) <= 2 and AC.Tier20_4Pc) and (S.RisingSunKick:CooldownRemainsP() > 1 or active_enemies > 1))) then
+    if S.FistsofFury:IsCastableP() and (((I.DrinkingHornCover:IsEquipped() and Player:BuffRemainsP(S.PressurePointBuff) <= 2 and AC.Tier20_4Pc) and (S.RisingSunKick:CooldownRemainsP() > 1 or Cache.EnemiesCount[8] > 1))) then
       if AR.Cast(S.FistsofFury) then return ""; end
     end
     -- fists_of_fury,if=((!equipped.drinking_horn_cover|buff.bloodlust.up|buff.serenity.remains<1)&(cooldown.rising_sun_kick.remains>1|active_enemies>1)),interrupt=1
-    if S.FistsofFury:IsCastableP() and (((not I.DrinkingHornCover:IsEquipped() or Player:HasHeroism() or Player:BuffRemainsP(S.SerenityBuff) < 1) and (S.RisingSunKick:CooldownRemainsP() > 1 or active_enemies > 1))) then
+    if S.FistsofFury:IsCastableP() and (((not I.DrinkingHornCover:IsEquipped() or Player:HasHeroism() or Player:BuffRemainsP(S.SerenityBuff) < 1) and (S.RisingSunKick:CooldownRemainsP() > 1 or Cache.EnemiesCount[8] > 1))) then
       if AR.Cast(S.FistsofFury) then return ""; end
     end
     -- spinning_crane_kick,if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick
-    if S.SpinningCraneKick:IsCastableP() and (active_enemies >= 3 and not Player:PrevGCDP(1, S.SpinningCraneKick)) then
+    if S.SpinningCraneKick:IsCastableP() and (Cache.EnemiesCount[8] >= 3 and not Player:PrevGCDP(1, S.SpinningCraneKick)) then
       if AR.Cast(S.SpinningCraneKick) then return ""; end
     end
     -- rushing_jade_wind,if=!prev_gcd.1.rushing_jade_wind&buff.rushing_jade_wind.down&buff.serenity.remains>=4
@@ -179,11 +179,11 @@ local function Apl()
       if AR.Cast(S.RushingJadeWind) then return ""; end
     end
     -- rising_sun_kick,cycle_targets=1,if=active_enemies>=3
-    if S.RisingSunKick:IsCastableP() and (active_enemies >= 3) then
+    if S.RisingSunKick:IsCastableP() and (Cache.EnemiesCount[8] >= 3) then
       if AR.Cast(S.RisingSunKick) then return ""; end
     end
     -- rushing_jade_wind,if=!prev_gcd.1.rushing_jade_wind&buff.rushing_jade_wind.down&active_enemies>1
-    if S.RushingJadeWind:IsCastableP() and (not Player:PrevGCDP(1, S.RushingJadeWind) and Player:BuffDownP(S.RushingJadeWindBuff) and active_enemies > 1) then
+    if S.RushingJadeWind:IsCastableP() and (not Player:PrevGCDP(1, S.RushingJadeWind) and Player:BuffDownP(S.RushingJadeWindBuff) and Cache.EnemiesCount[8] > 1) then
       if AR.Cast(S.RushingJadeWind) then return ""; end
     end
     -- spinning_crane_kick,if=!prev_gcd.1.spinning_crane_kick
@@ -213,7 +213,7 @@ local function Apl()
       if AR.Cast(S.Serenity) then return ""; end
     end
     -- rising_sun_kick,cycle_targets=1,if=active_enemies<3&buff.serenity.up
-    if S.RisingSunKick:IsCastableP() and (active_enemies < 3 and Player:BuffP(S.SerenityBuff)) then
+    if S.RisingSunKick:IsCastableP() and (Cache.EnemiesCount[8] < 3 and Player:BuffP(S.SerenityBuff)) then
       if AR.Cast(S.RisingSunKick) then return ""; end
     end
     -- strike_of_the_windlord,if=buff.serenity.up
@@ -287,7 +287,7 @@ local function Apl()
       if AR.Cast(S.BlackoutKick) then return ""; end
     end
     -- spinning_crane_kick,if=(active_enemies>=3|(buff.bok_proc.up&chi.max-chi>=0))&!prev_gcd.1.spinning_crane_kick&set_bonus.tier21_4pc
-    if S.SpinningCraneKick:IsCastableP() and ((active_enemies >= 3 or (Player:BuffP(S.BokProcBuff) and Player:ChiMax() - Player:Chi() >= 0)) and not Player:PrevGCDP(1, S.SpinningCraneKick) and AC.Tier21_4Pc) then
+    if S.SpinningCraneKick:IsCastableP() and ((Cache.EnemiesCount[8] >= 3 or (Player:BuffP(S.BokProcBuff) and Player:ChiMax() - Player:Chi() >= 0)) and not Player:PrevGCDP(1, S.SpinningCraneKick) and AC.Tier21_4Pc) then
       if AR.Cast(S.SpinningCraneKick) then return ""; end
     end
     -- crackling_jade_lightning,if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=19&energy.time_to_max>3
@@ -299,7 +299,7 @@ local function Apl()
       if AR.Cast(S.CracklingJadeLightning) then return ""; end
     end
     -- spinning_crane_kick,if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick
-    if S.SpinningCraneKick:IsCastableP() and (active_enemies >= 3 and not Player:PrevGCDP(1, S.SpinningCraneKick)) then
+    if S.SpinningCraneKick:IsCastableP() and (Cache.EnemiesCount[8] >= 3 and not Player:PrevGCDP(1, S.SpinningCraneKick)) then
       if AR.Cast(S.SpinningCraneKick) then return ""; end
     end
     -- rushing_jade_wind,if=chi.max-chi>1&!prev_gcd.1.rushing_jade_wind

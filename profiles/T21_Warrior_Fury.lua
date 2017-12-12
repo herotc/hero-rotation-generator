@@ -101,7 +101,7 @@ local function Apl()
       if AR.Cast(S.Bloodthirst) then return ""; end
     end
     -- bladestorm,if=buff.enrage.remains>2&(raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)
-    if S.Bladestorm:IsCastableP() and (Player:BuffRemainsP(S.EnrageBuff) > 2 and (raid_event.adds.in > 90 or not bool(raid_event.adds.exists) or Cache.EnemiesCount[0] > desired_targets)) then
+    if S.Bladestorm:IsCastableP() and (Player:BuffRemainsP(S.EnrageBuff) > 2 and (raid_event.adds.in > 90 or not bool(raid_event.adds.exists) or Cache.EnemiesCount[5] > desired_targets)) then
       if AR.Cast(S.Bladestorm) then return ""; end
     end
     -- whirlwind,if=buff.meat_cleaver.down
@@ -329,7 +329,7 @@ local function Apl()
     if AR.Cast(S.BattleCry) then return ""; end
   end
   -- battle_cry,if=gcd.remains=0&talent.bladestorm.enabled&(raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)
-  if S.BattleCry:IsCastableP() and (Player:GCDRemains() == 0 and S.Bladestorm:IsAvailable() and (raid_event.adds.in > 90 or not bool(raid_event.adds.exists) or Cache.EnemiesCount[0] > desired_targets)) then
+  if S.BattleCry:IsCastableP() and (Player:GCDRemains() == 0 and S.Bladestorm:IsAvailable() and (raid_event.adds.in > 90 or not bool(raid_event.adds.exists) or Cache.EnemiesCount[5] > desired_targets)) then
     if AR.Cast(S.BattleCry) then return ""; end
   end
   -- battle_cry,if=gcd.remains=0&buff.dragon_roar.up&(cooldown.bloodthirst.remains=0|buff.enrage.remains>cooldown.bloodthirst.remains)
@@ -357,15 +357,15 @@ local function Apl()
     if AR.Cast(S.ArcaneTorrent, Settings.Fury.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
   end
   -- run_action_list,name=cooldowns,if=buff.battle_cry.up&spell_targets.whirlwind=1
-  if (Player:BuffP(S.BattleCryBuff) and Cache.EnemiesCount[0] == 1) then
+  if (Player:BuffP(S.BattleCryBuff) and Cache.EnemiesCount[5] == 1) then
     return Cooldowns();
   end
   -- run_action_list,name=three_targets,if=target.health.pct>20&(spell_targets.whirlwind=3|spell_targets.whirlwind=4)
-  if (Target:HealthPercentage() > 20 and (Cache.EnemiesCount[0] == 3 or Cache.EnemiesCount[0] == 4)) then
+  if (Target:HealthPercentage() > 20 and (Cache.EnemiesCount[5] == 3 or Cache.EnemiesCount[5] == 4)) then
     return ThreeTargets();
   end
   -- run_action_list,name=aoe,if=spell_targets.whirlwind>4
-  if (Cache.EnemiesCount[0] > 4) then
+  if (Cache.EnemiesCount[5] > 4) then
     return Aoe();
   end
   -- run_action_list,name=execute,if=target.health.pct<20

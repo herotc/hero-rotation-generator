@@ -6,7 +6,8 @@ Death Knight specific constants and functions.
 """
 
 from .constants import (SPELL, BUFF, DEBUFF, COMMON,
-                        GCDAOGCD, OGCDAOGCD, USABLE, INTERRUPT, MELEE, CD)
+                        GCDAOGCD, OGCDAOGCD, USABLE, INTERRUPT,
+                        MELEE, CD, RANGE)
 
 DEATHKNIGHT = 'deathknight'
 BLOOD = 'blood'
@@ -31,7 +32,8 @@ DK_SPELL_INFO = {
                                                  MELEE:     True},
             'death_and_decay':                  {SPELL:     43265,
                                                  BUFF:      188290,
-                                                 USABLE:    True},
+                                                 USABLE:    True,
+                                                 RANGE:     30},
             'chains_of_ice':                    {SPELL:     45524},
             'unholy_strength':                  {BUFF:      53365},
             'blood_plague':                     {SPELL:     55078},
@@ -78,7 +80,8 @@ DK_SPELL_INFO = {
             'bone_shield':                      {BUFF:      195181},
             'blood_boil':                       {SPELL:     50842},
             'ossuary':                          {SPELL:     219786},
-            'bonestorm':                        {SPELL:     194844},
+            'bonestorm':                        {SPELL:     194844,
+                                                 RANGE:     8},
             'blood_shield':                     {BUFF:      77535},
             'consumption':                      {SPELL:     205223},
             'heart_strike':                     {SPELL:     206930},
@@ -88,10 +91,12 @@ DK_SPELL_INFO = {
         },
         FROST: {
             'remorseless_winter':               {SPELL:     196770,
-                                                 BUFF:      196770},
+                                                 BUFF:      196770,
+                                                 RANGE:     8},
             'gathering_storm':                  {SPELL:     194912,
                                                  BUFF:      211805},
-            'howling_blast':                    {SPELL:     49184},
+            'howling_blast':                    {SPELL:     49184,
+                                                 RANGE:     30},
             'rime':                             {SPELL:     59052,
                                                  BUFF:      59052},
             'obliterate':                       {SPELL:     49020},
@@ -103,9 +108,11 @@ DK_SPELL_INFO = {
             'sindragosas_fury':                 {SPELL:     190778},
             'pillar_of_frost':                  {SPELL:     51271,
                                                  BUFF:      51271},
-            'frostscythe':                      {SPELL:     207230},
+            'frostscythe':                      {SPELL:     207230,
+                                                 RANGE:     8},
             'killing_machine':                  {BUFF:      51124},
-            'glacial_advance':                  {SPELL:     194913},
+            'glacial_advance':                  {SPELL:     194913,
+                                                 RANGE:     30},
             'empower_rune_weapon':              {SPELL:     47568},
             'horn_of_winter':                   {SPELL:     57330},
             'obliteration':                     {SPELL:     207256,
@@ -119,9 +126,12 @@ DK_SPELL_INFO = {
                                                  BUFF:      194879},
         },
         UNHOLY: {
-            'epidemic':                         {SPELL:     207317},
-            'scourge_strike':                   {SPELL:     55090},
-            'clawing_shadows':                  {SPELL:     207311},
+            'epidemic':                         {SPELL:     207317,
+                                                 RANGE:     10},
+            'scourge_strike':                   {SPELL:     55090,
+                                                 RANGE:     8},
+            'clawing_shadows':                  {SPELL:     207311,
+                                                 RANGE:     8},
             'master_of_ghouls':                 {BUFF:      246995},
             'soul_reaper':                      {SPELL:     130736,
                                                  DEBUFF:    130736},

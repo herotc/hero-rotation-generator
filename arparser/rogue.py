@@ -5,7 +5,7 @@ Rogue specific constants and functions.
 @author: skasch
 """
 
-from .constants import COMMON, SPELL, BUFF, DEBUFF
+from .constants import COMMON, SPELL, BUFF, DEBUFF, RANGE
 
 ROGUE = 'rogue'
 ASSASSINATION = 'assassination'
@@ -25,14 +25,16 @@ RG_POTION = {
 RG_SPELL_INFO = {
     ROGUE: {
         COMMON: {
-            'fan_of_knives':                        {SPELL:     51723},
+            'fan_of_knives':                        {SPELL:     51723,
+                                                     RANGE:     10},
             'subterfuge':                           {SPELL:     108208,
                                                      BUFF:      108208},
             'nightstalker':                         {SPELL:     14062},
             'shadow_focus':                         {SPELL:     108209},
             'marked_for_death':                     {SPELL:     137619},
             'death_from_above':                     {SPELL:     152150,
-                                                     BUFF:      163786},
+                                                     BUFF:      163786,
+                                                     RANGE:     15},
             'deeper_stratagem':                     {SPELL:     193531},
             'anticipation':                         {SPELL:     114015},
             'vanish':                               {SPELL:     1856,
@@ -46,7 +48,8 @@ RG_SPELL_INFO = {
         ASSASSINATION: {
             'hemorrhage':                           {SPELL:     16511},
             'rupture':                              {SPELL:     1943,
-                                                     DEBUFF:    1943},
+                                                     DEBUFF:    1943,
+                                                     RANGE:     5},
             'mutilate':                             {SPELL:     1329},
             'deadly_poison_dot':                    {DEBUFF:    177918},
             'vendetta':                             {SPELL:     79140,
@@ -67,7 +70,8 @@ RG_SPELL_INFO = {
         },
         OUTLAW: {
             'blade_flurry':                         {SPELL:     13877,
-                                                     BUFF:      13877},
+                                                     BUFF:      13877,
+                                                     RANGE:     8},
             'ghostly_strike':                       {SPELL:     196937,
                                                      DEBUFF:    196937},
             'broadsides':                           {BUFF:      193356},
@@ -80,7 +84,8 @@ RG_SPELL_INFO = {
             'saber_slash':                          {SPELL:     193315},
             'adrenaline_rush':                      {SPELL:     13750,
                                                      BUFF:      13750},
-            'cannonball_barrage':                   {SPELL:     185767},
+            'cannonball_barrage':                   {SPELL:     185767,
+                                                     RANGE:     35},
             'true_bearing':                         {BUFF:      193359},
             'curse_of_the_dreadblades':             {SPELL:     202665},
             'between_the_eyes':                     {SPELL:     199804},
@@ -97,7 +102,8 @@ RG_SPELL_INFO = {
             'dirty_tricks':                         {SPELL:     108216},
         },
         SUBTLETY: {
-            'shuriken_storm':                       {SPELL:     197835},
+            'shuriken_storm':                       {SPELL:     197835,
+                                                     RANGE:     10},
             'gloomblade':                           {SPELL:     200758},
             'backstab':                             {SPELL:     53},
             'shadow_blades':                        {SPELL:     121471,

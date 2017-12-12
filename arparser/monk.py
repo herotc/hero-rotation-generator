@@ -5,7 +5,7 @@ Monk specific constants and functions.
 @author: skasch
 """
 
-from .constants import COMMON, SPELL, BUFF, INTERRUPT
+from .constants import COMMON, SPELL, BUFF, INTERRUPT, RANGE
 
 MONK = 'monk'
 BREWMASTER = 'brewmaster'
@@ -28,7 +28,8 @@ MK_SPELL_INFO = {
             'tiger_palm':                       {SPELL:     100780},
             'blackout_kick':                    {SPELL:     100784},
             'rushing_jade_wind':                {SPELL:     116847,
-                                                 BUFF:      116847},
+                                                 BUFF:      116847,
+                                                 RANGE:     8},
             'spear_hand_strike':                {SPELL:     116705,
                                                  INTERRUPT: True},
             # Legendaries
@@ -55,12 +56,14 @@ MK_SPELL_INFO = {
             'serenity':                         {SPELL:     152173,
                                                  BUFF:      152173},
             'strike_of_the_windlord':           {SPELL:     205320},
-            'fists_of_fury':                    {SPELL:     113656},
+            'fists_of_fury':                    {SPELL:     113656,
+                                                 RANGE:     8},
             'rising_sun_kick':                  {SPELL:     107428},
             'storm_earth_and_fire':             {SPELL:     137639,
                                                  BUFF:      137639},
             'pressure_point':                   {BUFF:      247255},
-            'spinning_crane_kick':              {SPELL:     107270},
+            'spinning_crane_kick':              {SPELL:     107270,
+                                                 RANGE:     8},
             'energizing_elixir':                {SPELL:     115288},
             'whirling_dragon_punch':            {SPELL:     152175},
             'crackling_jade_lightning':         {SPELL:     117952},
