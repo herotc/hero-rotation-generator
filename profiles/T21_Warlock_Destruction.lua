@@ -21,42 +21,42 @@ local AR     = AethysRotation
 -- Spells
 if not Spell.Warlock then Spell.Warlock = {} end
 Spell.Warlock.Destruction = {
-  Immolate                              = Spell(),
-  RoaringBlaze                          = Spell(),
-  Havoc                                 = Spell(),
-  ImmolateDebuff                        = Spell(),
+  Immolate                              = Spell(348),
+  RoaringBlaze                          = Spell(205184),
+  Havoc                                 = Spell(80240),
+  ImmolateDebuff                        = Spell(157736),
   ActiveHavocBuff                       = Spell(),
-  WreakHavoc                            = Spell(),
-  HavocDebuff                           = Spell(),
-  DimensionalRift                       = Spell(),
-  Cataclysm                             = Spell(),
-  FireandBrimstone                      = Spell(),
-  RoaringBlazeDebuff                    = Spell(),
-  Conflagrate                           = Spell(),
+  WreakHavoc                            = Spell(196410),
+  HavocDebuff                           = Spell(80240),
+  DimensionalRift                       = Spell(196586),
+  Cataclysm                             = Spell(152108),
+  FireandBrimstone                      = Spell(196408),
+  RoaringBlazeDebuff                    = Spell(205690),
+  Conflagrate                           = Spell(17962),
   Berserking                            = Spell(26297),
   BloodFury                             = Spell(20572),
   UseItems                              = Spell(),
-  SoulHarvestBuff                       = Spell(),
-  Shadowburn                            = Spell(),
-  ConflagrationofChaosBuff              = Spell(),
-  ChaosBolt                             = Spell(),
-  BackdraftBuff                         = Spell(),
-  LifeTap                               = Spell(),
-  EmpoweredLifeTap                      = Spell(),
-  EmpoweredLifeTapBuff                  = Spell(),
-  LessonsofSpacetimeBuff                = Spell(),
-  GrimoireofSupremacy                   = Spell(),
-  SummonDoomguard                       = Spell(),
-  GrimoireofService                     = Spell(),
+  SoulHarvestBuff                       = Spell(196098),
+  Shadowburn                            = Spell(17877),
+  ConflagrationofChaosBuff              = Spell(196546),
+  ChaosBolt                             = Spell(116858),
+  BackdraftBuff                         = Spell(117828),
+  LifeTap                               = Spell(1454),
+  EmpoweredLifeTap                      = Spell(235157),
+  EmpoweredLifeTapBuff                  = Spell(235156),
+  LessonsofSpacetimeBuff                = Spell(236174),
+  GrimoireofSupremacy                   = Spell(152107),
+  SummonDoomguard                       = Spell(18540),
+  GrimoireofService                     = Spell(108501),
   ServicePet                            = Spell(),
-  SoulHarvest                           = Spell(),
-  SummonInfernal                        = Spell(),
-  LordofFlames                          = Spell(),
-  LordofFlamesBuff                      = Spell(),
+  SoulHarvest                           = Spell(196098),
+  SummonInfernal                        = Spell(1122),
+  LordofFlames                          = Spell(224103),
+  LordofFlamesBuff                      = Spell(226802),
   SindoreiSpiteIcd                      = Spell(),
-  ChannelDemonfire                      = Spell(),
-  RainofFire                            = Spell(),
-  Incinerate                            = Spell()
+  ChannelDemonfire                      = Spell(196447),
+  RainofFire                            = Spell(5740),
+  Incinerate                            = Spell(29722)
 };
 local S = Spell.Warlock.Destruction;
 
@@ -110,15 +110,15 @@ local function Apl()
     if AR.Cast(S.Cataclysm) then return ""; end
   end
   -- immolate,if=(active_enemies<5|!talent.fire_and_brimstone.enabled)&remains<=tick_time
-  if S.Immolate:IsCastableP() and ((Cache.EnemiesCount[5] < 5 or not S.FireandBrimstone:IsAvailable()) and Player:BuffRemainsP(S.Immolate) <= S.Immolate:TickTime()) then
+  if S.Immolate:IsCastableP() and ((Cache.EnemiesCount[5] < 5 or not S.FireandBrimstone:IsAvailable()) and Target:DebuffRemainsP(S.Immolate) <= S.Immolate:TickTime()) then
     if AR.Cast(S.Immolate) then return ""; end
   end
   -- immolate,cycle_targets=1,if=(active_enemies<5|!talent.fire_and_brimstone.enabled)&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>=action.immolate.cast_time*active_enemies)&active_enemies>1&remains<=tick_time&(!talent.roaring_blaze.enabled|(!debuff.roaring_blaze.remains&action.conflagrate.charges<2+set_bonus.tier19_4pc))
-  if S.Immolate:IsCastableP() and ((Cache.EnemiesCount[5] < 5 or not S.FireandBrimstone:IsAvailable()) and (not S.Cataclysm:IsAvailable() or S.Cataclysm:CooldownRemainsP() >= S.Immolate:CastTime() * Cache.EnemiesCount[5]) and Cache.EnemiesCount[5] > 1 and Player:BuffRemainsP(S.Immolate) <= S.Immolate:TickTime() and (not S.RoaringBlaze:IsAvailable() or (not bool(Target:DebuffRemainsP(S.RoaringBlazeDebuff)) and S.Conflagrate:ChargesP() < 2 + num(AC.Tier19_4Pc)))) then
+  if S.Immolate:IsCastableP() and ((Cache.EnemiesCount[5] < 5 or not S.FireandBrimstone:IsAvailable()) and (not S.Cataclysm:IsAvailable() or S.Cataclysm:CooldownRemainsP() >= S.Immolate:CastTime() * Cache.EnemiesCount[5]) and Cache.EnemiesCount[5] > 1 and Target:DebuffRemainsP(S.Immolate) <= S.Immolate:TickTime() and (not S.RoaringBlaze:IsAvailable() or (not bool(Target:DebuffRemainsP(S.RoaringBlazeDebuff)) and S.Conflagrate:ChargesP() < 2 + num(AC.Tier19_4Pc)))) then
     if AR.Cast(S.Immolate) then return ""; end
   end
   -- immolate,if=talent.roaring_blaze.enabled&remains<=duration&!debuff.roaring_blaze.remains&target.time_to_die>10&(action.conflagrate.charges=2+set_bonus.tier19_4pc|(action.conflagrate.charges>=1+set_bonus.tier19_4pc&action.conflagrate.recharge_time<cast_time+gcd)|target.time_to_die<24)
-  if S.Immolate:IsCastableP() and (S.RoaringBlaze:IsAvailable() and Player:BuffRemainsP(S.Immolate) <= S.Immolate:BaseDuration() and not bool(Target:DebuffRemainsP(S.RoaringBlazeDebuff)) and Target:TimeToDie() > 10 and (S.Conflagrate:ChargesP() == 2 + num(AC.Tier19_4Pc) or (S.Conflagrate:ChargesP() >= 1 + num(AC.Tier19_4Pc) and S.Conflagrate:RechargeP() < S.Immolate:CastTime() + Player:GCD()) or Target:TimeToDie() < 24)) then
+  if S.Immolate:IsCastableP() and (S.RoaringBlaze:IsAvailable() and Target:DebuffRemainsP(S.Immolate) <= S.Immolate:BaseDuration() and not bool(Target:DebuffRemainsP(S.RoaringBlazeDebuff)) and Target:TimeToDie() > 10 and (S.Conflagrate:ChargesP() == 2 + num(AC.Tier19_4Pc) or (S.Conflagrate:ChargesP() >= 1 + num(AC.Tier19_4Pc) and S.Conflagrate:RechargeP() < S.Immolate:CastTime() + Player:GCD()) or Target:TimeToDie() < 24)) then
     if AR.Cast(S.Immolate) then return ""; end
   end
   -- berserking
@@ -238,7 +238,7 @@ local function Apl()
     if AR.Cast(S.Conflagrate) then return ""; end
   end
   -- immolate,cycle_targets=1,if=(active_enemies<5|!talent.fire_and_brimstone.enabled)&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>=action.immolate.cast_time*active_enemies)&!talent.roaring_blaze.enabled&remains<=duration*0.3
-  if S.Immolate:IsCastableP() and ((Cache.EnemiesCount[5] < 5 or not S.FireandBrimstone:IsAvailable()) and (not S.Cataclysm:IsAvailable() or S.Cataclysm:CooldownRemainsP() >= S.Immolate:CastTime() * Cache.EnemiesCount[5]) and not S.RoaringBlaze:IsAvailable() and Player:BuffRemainsP(S.Immolate) <= S.Immolate:BaseDuration() * 0.3) then
+  if S.Immolate:IsCastableP() and ((Cache.EnemiesCount[5] < 5 or not S.FireandBrimstone:IsAvailable()) and (not S.Cataclysm:IsAvailable() or S.Cataclysm:CooldownRemainsP() >= S.Immolate:CastTime() * Cache.EnemiesCount[5]) and not S.RoaringBlaze:IsAvailable() and Target:DebuffRemainsP(S.Immolate) <= S.Immolate:BaseDuration() * 0.3) then
     if AR.Cast(S.Immolate) then return ""; end
   end
   -- incinerate

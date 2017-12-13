@@ -21,37 +21,37 @@ local AR     = AethysRotation
 -- Spells
 if not Spell.Warlock then Spell.Warlock = {} end
 Spell.Warlock.Demonology = {
-  Implosion                             = Spell(),
-  ShadowBolt                            = Spell(),
-  DemonicSynergyBuff                    = Spell(),
-  SoulConduit                           = Spell(),
-  HandofGuldan                          = Spell(),
-  Shadowflame                           = Spell(),
-  ShadowflameDebuff                     = Spell(),
-  SummonInfernal                        = Spell(),
-  GrimoireofSupremacy                   = Spell(),
-  SummonDoomguard                       = Spell(),
-  CallDreadstalkers                     = Spell(),
-  SummonDarkglare                       = Spell(),
-  PowerTrip                             = Spell(),
-  DemonicCallingBuff                    = Spell(),
-  Doom                                  = Spell(),
-  HandofDoom                            = Spell(),
+  Implosion                             = Spell(196277),
+  ShadowBolt                            = Spell(686),
+  DemonicSynergyBuff                    = Spell(171982),
+  SoulConduit                           = Spell(215941),
+  HandofGuldan                          = Spell(105174),
+  Shadowflame                           = Spell(205181),
+  ShadowflameDebuff                     = Spell(205181),
+  SummonInfernal                        = Spell(1122),
+  GrimoireofSupremacy                   = Spell(152107),
+  SummonDoomguard                       = Spell(18540),
+  CallDreadstalkers                     = Spell(104316),
+  SummonDarkglare                       = Spell(205180),
+  PowerTrip                             = Spell(196605),
+  DemonicCallingBuff                    = Spell(205146),
+  Doom                                  = Spell(603),
+  HandofDoom                            = Spell(196283),
   ServicePet                            = Spell(),
   SindoreiSpiteIcd                      = Spell(),
-  ShadowyInspirationBuff                = Spell(),
-  ShadowyInspiration                    = Spell(),
-  ThalkielsAscendance                   = Spell(),
-  DemonicEmpowerment                    = Spell(),
+  ShadowyInspirationBuff                = Spell(196606),
+  ShadowyInspiration                    = Spell(196269),
+  ThalkielsAscendance                   = Spell(238145),
+  DemonicEmpowerment                    = Spell(193396),
   UseItems                              = Spell(),
   Berserking                            = Spell(26297),
   BloodFury                             = Spell(20572),
-  SoulHarvest                           = Spell(),
-  SoulHarvestBuff                       = Spell(),
-  ThalkielsConsumption                  = Spell(),
-  LifeTap                               = Spell(),
-  Demonwrath                            = Spell(),
-  Demonbolt                             = Spell()
+  SoulHarvest                           = Spell(196098),
+  SoulHarvestBuff                       = Spell(196098),
+  ThalkielsConsumption                  = Spell(211714),
+  LifeTap                               = Spell(1454),
+  Demonwrath                            = Spell(193440),
+  Demonbolt                             = Spell(157695)
 };
 local S = Spell.Warlock.Demonology;
 
@@ -112,7 +112,7 @@ local function Apl()
     if AR.Cast(S.Implosion) then return ""; end
   end
   -- shadowflame,if=(debuff.shadowflame.stack>0&remains<action.shadow_bolt.cast_time+travel_time)&spell_targets.demonwrath<5
-  if S.Shadowflame:IsCastableP() and ((Target:DebuffStackP(S.ShadowflameDebuff) > 0 and Player:BuffRemainsP(S.Shadowflame) < S.ShadowBolt:CastTime() + S.Shadowflame:TravelTime()) and Cache.EnemiesCount[5] < 5) then
+  if S.Shadowflame:IsCastableP() and ((Target:DebuffStackP(S.ShadowflameDebuff) > 0 and Target:DebuffRemainsP(S.Shadowflame) < S.ShadowBolt:CastTime() + S.Shadowflame:TravelTime()) and Cache.EnemiesCount[5] < 5) then
     if AR.Cast(S.Shadowflame) then return ""; end
   end
   -- summon_infernal,if=(!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>2)&equipped.132369
@@ -128,7 +128,7 @@ local function Apl()
     if AR.Cast(S.CallDreadstalkers) then return ""; end
   end
   -- doom,cycle_targets=1,if=(!talent.hand_of_doom.enabled&target.time_to_die>duration&(!ticking|remains<duration*0.3))&!(variable.no_de1|prev_gcd.1.hand_of_guldan)
-  if S.Doom:IsCastableP() and ((not S.HandofDoom:IsAvailable() and Target:TimeToDie() > S.Doom:BaseDuration() and (not Player:BuffP(S.Doom) or Player:BuffRemainsP(S.Doom) < S.Doom:BaseDuration() * 0.3)) and not (bool(NoDe1) or Player:PrevGCDP(1, S.HandofGuldan))) then
+  if S.Doom:IsCastableP() and ((not S.HandofDoom:IsAvailable() and Target:TimeToDie() > S.Doom:BaseDuration() and (not Target:DebuffP(S.Doom) or Target:DebuffRemainsP(S.Doom) < S.Doom:BaseDuration() * 0.3)) and not (bool(NoDe1) or Player:PrevGCDP(1, S.HandofGuldan))) then
     if AR.Cast(S.Doom) then return ""; end
   end
   -- shadowflame,if=(charges=2&soul_shard<5)&spell_targets.demonwrath<5&!variable.no_de1
