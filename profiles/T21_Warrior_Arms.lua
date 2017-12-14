@@ -21,40 +21,40 @@ local AR     = AethysRotation
 -- Spells
 if not Spell.Warrior then Spell.Warrior = {} end
 Spell.Warrior.Arms = {
-  Warbreaker                            = Spell(),
-  Bladestorm                            = Spell(),
-  BattleCry                             = Spell(),
-  BattleCryBuff                         = Spell(),
-  Ravager                               = Spell(),
-  ColossusSmashDebuff                   = Spell(),
-  ColossusSmash                         = Spell(),
-  InFortheKillBuff                      = Spell(),
-  InFortheKill                          = Spell(),
-  Cleave                                = Spell(),
-  Whirlwind                             = Spell(),
-  CleaveBuff                            = Spell(),
-  ShatteredDefensesBuff                 = Spell(),
-  Execute                               = Spell(),
-  StoneHeartBuff                        = Spell(),
-  MortalStrike                          = Spell(),
-  ExecutionersPrecisionBuff             = Spell(),
-  Rend                                  = Spell(),
-  FocusedRage                           = Spell(),
-  FocusedRageBuff                       = Spell(),
-  FervorofBattle                        = Spell(),
-  WeightedBladeBuff                     = Spell(),
-  Overpower                             = Spell(),
-  Dauntless                             = Spell(),
+  Warbreaker                            = Spell(209577),
+  Bladestorm                            = Spell(227847),
+  BattleCry                             = Spell(1719),
+  BattleCryBuff                         = Spell(1719),
+  Ravager                               = Spell(152277),
+  ColossusSmashDebuff                   = Spell(198804),
+  ColossusSmash                         = Spell(167105),
+  InFortheKillBuff                      = Spell(248622),
+  InFortheKill                          = Spell(248621),
+  Cleave                                = Spell(845),
+  Whirlwind                             = Spell(1680),
+  CleaveBuff                            = Spell(231833),
+  ShatteredDefensesBuff                 = Spell(248625),
+  Execute                               = Spell(163201),
+  StoneHeartBuff                        = Spell(225947),
+  MortalStrike                          = Spell(12294),
+  ExecutionersPrecisionBuff             = Spell(242188),
+  Rend                                  = Spell(772),
+  FocusedRage                           = Spell(207982),
+  FocusedRageBuff                       = Spell(207982),
+  FervorofBattle                        = Spell(202316),
+  WeightedBladeBuff                     = Spell(253383),
+  Overpower                             = Spell(7384),
+  Dauntless                             = Spell(202297),
   BattleCryDeadlyCalmBuff               = Spell(),
-  AngerManagement                       = Spell(),
-  Slam                                  = Spell(),
-  Charge                                = Spell(),
-  Avatar                                = Spell(),
-  AvatarBuff                            = Spell(),
+  AngerManagement                       = Spell(152278),
+  Slam                                  = Spell(1464),
+  Charge                                = Spell(100),
+  Avatar                                = Spell(107574),
+  AvatarBuff                            = Spell(107574),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
   ArcaneTorrent                         = Spell(50613),
-  RendDebuff                            = Spell(),
+  RendDebuff                            = Spell(772),
   UseItems                              = Spell()
 };
 local S = Spell.Warrior.Arms;
@@ -63,8 +63,8 @@ local S = Spell.Warrior.Arms;
 if not Item.Warrior then Item.Warrior = {} end
 Item.Warrior.Arms = {
   ProlongedPower                   = Item(142117),
-  TheGreatStormsEye                = Item(),
-  ArchavonsHeavyHand               = Item()
+  TheGreatStormsEye                = Item(151823),
+  ArchavonsHeavyHand               = Item(137060)
 };
 local I = Item.Warrior.Arms;
 
@@ -119,19 +119,19 @@ local function Apl()
       if AR.Cast(S.ColossusSmash) then return ""; end
     end
     -- colossus_smash,cycle_targets=1,if=debuff.colossus_smash.down&spell_targets.whirlwind<=10
-    if S.ColossusSmash:IsCastableP() and (Target:DebuffDownP(S.ColossusSmashDebuff) and Cache.EnemiesCount[5] <= 10) then
+    if S.ColossusSmash:IsCastableP() and (Target:DebuffDownP(S.ColossusSmashDebuff) and Cache.EnemiesCount[8] <= 10) then
       if AR.Cast(S.ColossusSmash) then return ""; end
     end
     -- cleave,if=spell_targets.whirlwind>=5
-    if S.Cleave:IsCastableP() and (Cache.EnemiesCount[5] >= 5) then
+    if S.Cleave:IsCastableP() and (Cache.EnemiesCount[8] >= 5) then
       if AR.Cast(S.Cleave) then return ""; end
     end
     -- whirlwind,if=spell_targets.whirlwind>=5&buff.cleave.up
-    if S.Whirlwind:IsCastableP() and (Cache.EnemiesCount[5] >= 5 and Player:BuffP(S.CleaveBuff)) then
+    if S.Whirlwind:IsCastableP() and (Cache.EnemiesCount[8] >= 5 and Player:BuffP(S.CleaveBuff)) then
       if AR.Cast(S.Whirlwind) then return ""; end
     end
     -- whirlwind,if=spell_targets.whirlwind>=7
-    if S.Whirlwind:IsCastableP() and (Cache.EnemiesCount[5] >= 7) then
+    if S.Whirlwind:IsCastableP() and (Cache.EnemiesCount[8] >= 7) then
       if AR.Cast(S.Whirlwind) then return ""; end
     end
     -- colossus_smash,if=buff.shattered_defenses.down
@@ -147,7 +147,7 @@ local function Apl()
       if AR.Cast(S.MortalStrike) then return ""; end
     end
     -- rend,cycle_targets=1,if=remains<=duration*0.3&spell_targets.whirlwind<=3
-    if S.Rend:IsCastableP() and (Player:BuffRemainsP(S.Rend) <= S.Rend:BaseDuration() * 0.3 and Cache.EnemiesCount[5] <= 3) then
+    if S.Rend:IsCastableP() and (Target:DebuffRemainsP(S.Rend) <= S.Rend:BaseDuration() * 0.3 and Cache.EnemiesCount[8] <= 3) then
       if AR.Cast(S.Rend) then return ""; end
     end
     -- cleave
@@ -181,7 +181,7 @@ local function Apl()
       if AR.Cast(S.FocusedRage) then return ""; end
     end
     -- rend,cycle_targets=1,if=remains<=duration*0.3
-    if S.Rend:IsCastableP() and (Player:BuffRemainsP(S.Rend) <= S.Rend:BaseDuration() * 0.3) then
+    if S.Rend:IsCastableP() and (Target:DebuffRemainsP(S.Rend) <= S.Rend:BaseDuration() * 0.3) then
       if AR.Cast(S.Rend) then return ""; end
     end
     -- mortal_strike
@@ -219,7 +219,7 @@ local function Apl()
       if AR.Cast(S.FocusedRage) then return ""; end
     end
     -- rend,if=remains<5&cooldown.battle_cry.remains<2&(cooldown.bladestorm.remains<2|!set_bonus.tier20_4pc)
-    if S.Rend:IsCastableP() and (Player:BuffRemainsP(S.Rend) < 5 and S.BattleCry:CooldownRemainsP() < 2 and (S.Bladestorm:CooldownRemainsP() < 2 or not AC.Tier20_4Pc)) then
+    if S.Rend:IsCastableP() and (Target:DebuffRemainsP(S.Rend) < 5 and S.BattleCry:CooldownRemainsP() < 2 and (S.Bladestorm:CooldownRemainsP() < 2 or not AC.Tier20_4Pc)) then
       if AR.Cast(S.Rend) then return ""; end
     end
     -- ravager,if=cooldown.battle_cry.remains<=gcd&debuff.colossus_smash.remains>6
@@ -265,7 +265,7 @@ local function Apl()
       if AR.Cast(S.FocusedRage) then return ""; end
     end
     -- rend,if=remains<=gcd.max|remains<5&cooldown.battle_cry.remains<2&(cooldown.bladestorm.remains<2|!set_bonus.tier20_4pc)
-    if S.Rend:IsCastableP() and (Player:BuffRemainsP(S.Rend) <= Player:GCD() or Player:BuffRemainsP(S.Rend) < 5 and S.BattleCry:CooldownRemainsP() < 2 and (S.Bladestorm:CooldownRemainsP() < 2 or not AC.Tier20_4Pc)) then
+    if S.Rend:IsCastableP() and (Target:DebuffRemainsP(S.Rend) <= Player:GCD() or Target:DebuffRemainsP(S.Rend) < 5 and S.BattleCry:CooldownRemainsP() < 2 and (S.Bladestorm:CooldownRemainsP() < 2 or not AC.Tier20_4Pc)) then
       if AR.Cast(S.Rend) then return ""; end
     end
     -- ravager,if=cooldown.battle_cry.remains<=gcd&debuff.colossus_smash.remains>6
@@ -285,7 +285,7 @@ local function Apl()
       if AR.Cast(S.MortalStrike) then return ""; end
     end
     -- rend,if=remains<=duration*0.3
-    if S.Rend:IsCastableP() and (Player:BuffRemainsP(S.Rend) <= S.Rend:BaseDuration() * 0.3) then
+    if S.Rend:IsCastableP() and (Target:DebuffRemainsP(S.Rend) <= S.Rend:BaseDuration() * 0.3) then
       if AR.Cast(S.Rend) then return ""; end
     end
     -- cleave,if=talent.fervor_of_battle.enabled&buff.cleave.down&!equipped.archavons_heavy_hand
@@ -293,11 +293,11 @@ local function Apl()
       if AR.Cast(S.Cleave) then return ""; end
     end
     -- whirlwind,if=spell_targets.whirlwind>1|talent.fervor_of_battle.enabled
-    if S.Whirlwind:IsCastableP() and (Cache.EnemiesCount[5] > 1 or S.FervorofBattle:IsAvailable()) then
+    if S.Whirlwind:IsCastableP() and (Cache.EnemiesCount[8] > 1 or S.FervorofBattle:IsAvailable()) then
       if AR.Cast(S.Whirlwind) then return ""; end
     end
     -- slam,if=spell_targets.whirlwind=1&!talent.fervor_of_battle.enabled&(rage>=52|!talent.rend.enabled|!talent.ravager.enabled)
-    if S.Slam:IsCastableP() and (Cache.EnemiesCount[5] == 1 and not S.FervorofBattle:IsAvailable() and (rage >= 52 or not S.Rend:IsAvailable() or not S.Ravager:IsAvailable())) then
+    if S.Slam:IsCastableP() and (Cache.EnemiesCount[8] == 1 and not S.FervorofBattle:IsAvailable() and (rage >= 52 or not S.Rend:IsAvailable() or not S.Ravager:IsAvailable())) then
       if AR.Cast(S.Slam) then return ""; end
     end
     -- overpower
@@ -351,11 +351,11 @@ local function Apl()
     return Execute();
   end
   -- run_action_list,name=aoe,if=spell_targets.whirlwind>=4
-  if (Cache.EnemiesCount[5] >= 4) then
+  if (Cache.EnemiesCount[8] >= 4) then
     return Aoe();
   end
   -- run_action_list,name=cleave,if=spell_targets.whirlwind>=2
-  if (Cache.EnemiesCount[5] >= 2) then
+  if (Cache.EnemiesCount[8] >= 2) then
     return Cleave();
   end
   -- run_action_list,name=single,if=target.health.pct>20

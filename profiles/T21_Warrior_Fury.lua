@@ -21,41 +21,41 @@ local AR     = AethysRotation
 -- Spells
 if not Spell.Warrior then Spell.Warrior = {} end
 Spell.Warrior.Fury = {
-  Bloodthirst                           = Spell(),
-  EnrageBuff                            = Spell(),
-  Bladestorm                            = Spell(),
-  Whirlwind                             = Spell(),
-  MeatCleaverBuff                       = Spell(),
-  Rampage                               = Spell(),
-  FrothingBerserker                     = Spell(),
-  MassacreBuff                          = Spell(),
-  Execute                               = Spell(),
-  RagingBlow                            = Spell(),
-  InnerRage                             = Spell(),
-  OdynsFury                             = Spell(),
-  BerserkerRage                         = Spell(),
-  Outburst                              = Spell(),
-  BattleCryBuff                         = Spell(),
-  WreckingBallBuff                      = Spell(),
-  FuriousSlash                          = Spell(),
-  FujiedasFuryBuff                      = Spell(),
-  Juggernaut                            = Spell(),
-  JuggernautBuff                        = Spell(),
-  StoneHeartBuff                        = Spell(),
-  Frenzy                                = Spell(),
-  FrenzyBuff                            = Spell(),
-  HeroicLeap                            = Spell(),
-  BattleCry                             = Spell(),
-  Bloodbath                             = Spell(),
-  Carnage                               = Spell(),
-  Charge                                = Spell(),
-  AvatarBuff                            = Spell(),
-  Avatar                                = Spell(),
-  DragonRoar                            = Spell(),
-  BloodbathBuff                         = Spell(),
+  Bloodthirst                           = Spell(23881),
+  EnrageBuff                            = Spell(184362),
+  Bladestorm                            = Spell(46924),
+  Whirlwind                             = Spell(190411),
+  MeatCleaverBuff                       = Spell(85739),
+  Rampage                               = Spell(184367),
+  FrothingBerserker                     = Spell(215571),
+  MassacreBuff                          = Spell(206316),
+  Execute                               = Spell(5308),
+  RagingBlow                            = Spell(85288),
+  InnerRage                             = Spell(215573),
+  OdynsFury                             = Spell(205545),
+  BerserkerRage                         = Spell(18499),
+  Outburst                              = Spell(206320),
+  BattleCryBuff                         = Spell(1719),
+  WreckingBallBuff                      = Spell(215570),
+  FuriousSlash                          = Spell(100130),
+  FujiedasFuryBuff                      = Spell(207775),
+  Juggernaut                            = Spell(200875),
+  JuggernautBuff                        = Spell(201009),
+  StoneHeartBuff                        = Spell(225947),
+  Frenzy                                = Spell(206313),
+  FrenzyBuff                            = Spell(202539),
+  HeroicLeap                            = Spell(6544),
+  BattleCry                             = Spell(1719),
+  Bloodbath                             = Spell(12292),
+  Carnage                               = Spell(202922),
+  Charge                                = Spell(100),
+  AvatarBuff                            = Spell(107574),
+  Avatar                                = Spell(107574),
+  DragonRoar                            = Spell(118000),
+  BloodbathBuff                         = Spell(12292),
   UseItem                               = Spell(),
-  RecklessAbandon                       = Spell(),
-  DragonRoarBuff                        = Spell(),
+  RecklessAbandon                       = Spell(202751),
+  DragonRoarBuff                        = Spell(118000),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
   ArcaneTorrent                         = Spell(50613)
@@ -67,8 +67,8 @@ if not Item.Warrior then Item.Warrior = {} end
 Item.Warrior.Fury = {
   OldWar                           = Item(127844),
   ConvergenceofFates               = Item(140806),
-  UmbralMoonglaives                = Item(),
-  KazzalaxFujiedasFury             = Item()
+  UmbralMoonglaives                = Item(147012),
+  KazzalaxFujiedasFury             = Item(137053)
 };
 local I = Item.Warrior.Fury;
 
@@ -371,15 +371,15 @@ local function Apl()
     if AR.Cast(S.ArcaneTorrent, Settings.Fury.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
   end
   -- run_action_list,name=cooldowns,if=buff.battle_cry.up&spell_targets.whirlwind=1
-  if (Player:BuffP(S.BattleCryBuff) and Cache.EnemiesCount[5] == 1) then
+  if (Player:BuffP(S.BattleCryBuff) and Cache.EnemiesCount[8] == 1) then
     return Cooldowns();
   end
   -- run_action_list,name=three_targets,if=target.health.pct>20&(spell_targets.whirlwind=3|spell_targets.whirlwind=4)
-  if (Target:HealthPercentage() > 20 and (Cache.EnemiesCount[5] == 3 or Cache.EnemiesCount[5] == 4)) then
+  if (Target:HealthPercentage() > 20 and (Cache.EnemiesCount[8] == 3 or Cache.EnemiesCount[8] == 4)) then
     return ThreeTargets();
   end
   -- run_action_list,name=aoe,if=spell_targets.whirlwind>4
-  if (Cache.EnemiesCount[5] > 4) then
+  if (Cache.EnemiesCount[8] > 4) then
     return Aoe();
   end
   -- run_action_list,name=execute,if=target.health.pct<20
