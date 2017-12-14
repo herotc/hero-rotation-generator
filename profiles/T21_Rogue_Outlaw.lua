@@ -89,10 +89,10 @@ local Settings = {
 };
 
 -- Variables
-local AmbushCondition = 0;
-local RtbReroll = 0;
-local SsUseableNoreroll = 0;
-local SsUseable = 0;
+local VarSsUseable = 0;
+local VarAmbushCondition = 0;
+local VarRtbReroll = 0;
+local VarSsUseableNoreroll = 0;
 
 local function num(val)
   if val then return 1 else return 0 end
@@ -128,7 +128,7 @@ local function Apl()
       if AR.Cast(S.PistolShot) then return ""; end
     end
     -- saber_slash,if=variable.ss_useable
-    if S.SaberSlash:IsCastableP() and (bool(SsUseable)) then
+    if S.SaberSlash:IsCastableP() and (bool(VarSsUseable)) then
       if AR.Cast(S.SaberSlash) then return ""; end
     end
   end
@@ -162,11 +162,11 @@ local function Apl()
       if AR.Cast(S.MarkedForDeath) then return ""; end
     end
     -- sprint,if=!talent.death_from_above.enabled&equipped.thraxis_tricksy_treads&!variable.ss_useable
-    if S.Sprint:IsCastableP() and (not S.DeathFromAbove:IsAvailable() and I.ThraxisTricksyTreads:IsEquipped() and not bool(SsUseable)) then
+    if S.Sprint:IsCastableP() and (not S.DeathFromAbove:IsAvailable() and I.ThraxisTricksyTreads:IsEquipped() and not bool(VarSsUseable)) then
       if AR.Cast(S.Sprint) then return ""; end
     end
     -- darkflight,if=equipped.thraxis_tricksy_treads&!variable.ss_useable&buff.sprint.down
-    if S.Darkflight:IsCastableP() and (I.ThraxisTricksyTreads:IsEquipped() and not bool(SsUseable) and Player:BuffDownP(S.SprintBuff)) then
+    if S.Darkflight:IsCastableP() and (I.ThraxisTricksyTreads:IsEquipped() and not bool(VarSsUseable) and Player:BuffDownP(S.SprintBuff)) then
       if AR.Cast(S.Darkflight) then return ""; end
     end
     -- curse_of_the_dreadblades,if=combo_points.deficit>=4&(buff.true_bearing.up|buff.adrenaline_rush.up|time_to_die<20)
@@ -187,32 +187,32 @@ local function Apl()
   local function Stealth()
     -- variable,name=ambush_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadsides.up&energy>60&!buff.jolly_roger.up&!buff.hidden_blade.up
     if (true) then
-      AmbushCondition = num(Player:ComboPointsDeficit() >= 2 + 2 * num((S.GhostlyStrike:IsAvailable() and not Target:DebuffP(S.GhostlyStrikeDebuff))) + num(Player:BuffP(S.BroadsidesBuff)) and Player:Energy() > 60 and not Player:BuffP(S.JollyRogerBuff) and not Player:BuffP(S.HiddenBladeBuff))
+      VarAmbushCondition = num(Player:ComboPointsDeficit() >= 2 + 2 * num((S.GhostlyStrike:IsAvailable() and not Target:DebuffP(S.GhostlyStrikeDebuff))) + num(Player:BuffP(S.BroadsidesBuff)) and Player:Energy() > 60 and not Player:BuffP(S.JollyRogerBuff) and not Player:BuffP(S.HiddenBladeBuff))
     end
     -- ambush,if=variable.ambush_condition
-    if S.Ambush:IsCastableP() and (bool(AmbushCondition)) then
+    if S.Ambush:IsCastableP() and (bool(VarAmbushCondition)) then
       if AR.Cast(S.Ambush) then return ""; end
     end
     -- vanish,if=(variable.ambush_condition|equipped.mantle_of_the_master_assassin&!variable.rtb_reroll&!variable.ss_useable)&mantle_duration=0
-    if S.Vanish:IsCastableP() and ((bool(AmbushCondition) or I.MantleoftheMasterAssassin:IsEquipped() and not bool(RtbReroll) and not bool(SsUseable)) and mantle_duration == 0) then
+    if S.Vanish:IsCastableP() and ((bool(VarAmbushCondition) or I.MantleoftheMasterAssassin:IsEquipped() and not bool(VarRtbReroll) and not bool(VarSsUseable)) and mantle_duration == 0) then
       if AR.Cast(S.Vanish) then return ""; end
     end
     -- shadowmeld,if=variable.ambush_condition
-    if S.Shadowmeld:IsCastableP() and (bool(AmbushCondition)) then
+    if S.Shadowmeld:IsCastableP() and (bool(VarAmbushCondition)) then
       if AR.Cast(S.Shadowmeld) then return ""; end
     end
   end
   -- variable,name=rtb_reroll,value=!talent.slice_and_dice.enabled&buff.loaded_dice.up&(rtb_buffs<2|(rtb_buffs<4&!buff.true_bearing.up))
   if (true) then
-    RtbReroll = num(not S.SliceandDice:IsAvailable() and Player:BuffP(S.LoadedDiceBuff) and (rtb_buffs < 2 or (rtb_buffs < 4 and not Player:BuffP(S.TrueBearingBuff))))
+    VarRtbReroll = num(not S.SliceandDice:IsAvailable() and Player:BuffP(S.LoadedDiceBuff) and (rtb_buffs < 2 or (rtb_buffs < 4 and not Player:BuffP(S.TrueBearingBuff))))
   end
   -- variable,name=ss_useable_noreroll,value=(combo_points<4+talent.deeper_stratagem.enabled)
   if (true) then
-    SsUseableNoreroll = num((Player:ComboPoints() < 4 + num(S.DeeperStratagem:IsAvailable())))
+    VarSsUseableNoreroll = num((Player:ComboPoints() < 4 + num(S.DeeperStratagem:IsAvailable())))
   end
   -- variable,name=ss_useable,value=(talent.anticipation.enabled&combo_points<5)|(!talent.anticipation.enabled&((variable.rtb_reroll&combo_points<4+talent.deeper_stratagem.enabled)|(!variable.rtb_reroll&variable.ss_useable_noreroll)))
   if (true) then
-    SsUseable = num((S.Anticipation:IsAvailable() and Player:ComboPoints() < 5) or (not S.Anticipation:IsAvailable() and ((bool(RtbReroll) and Player:ComboPoints() < 4 + num(S.DeeperStratagem:IsAvailable())) or (not bool(RtbReroll) and bool(SsUseableNoreroll)))))
+    VarSsUseable = num((S.Anticipation:IsAvailable() and Player:ComboPoints() < 5) or (not S.Anticipation:IsAvailable() and ((bool(VarRtbReroll) and Player:ComboPoints() < 4 + num(S.DeeperStratagem:IsAvailable())) or (not bool(VarRtbReroll) and bool(VarSsUseableNoreroll)))))
   end
   -- call_action_list,name=bf
   if (true) then
@@ -227,7 +227,7 @@ local function Apl()
     local ShouldReturn = Stealth(); if ShouldReturn then return ShouldReturn; end
   end
   -- death_from_above,if=energy.time_to_max>2&!variable.ss_useable_noreroll
-  if S.DeathFromAbove:IsCastableP() and (energy.time_to_max > 2 and not bool(SsUseableNoreroll)) then
+  if S.DeathFromAbove:IsCastableP() and (energy.time_to_max > 2 and not bool(VarSsUseableNoreroll)) then
     if AR.Cast(S.DeathFromAbove) then return ""; end
   end
   -- sprint,if=equipped.thraxis_tricksy_treads&buff.death_from_above.up&buff.death_from_above.remains<=0.15
@@ -239,7 +239,7 @@ local function Apl()
     if AR.Cast(S.AdrenalineRush) then return ""; end
   end
   -- slice_and_dice,if=!variable.ss_useable&buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8&!buff.slice_and_dice.improved&!buff.loaded_dice.up
-  if S.SliceandDice:IsCastableP() and (not bool(SsUseable) and Player:BuffRemainsP(S.SliceandDiceBuff) < Target:TimeToDie() and Player:BuffRemainsP(S.SliceandDiceBuff) < (1 + Player:ComboPoints()) * 1.8 and not bool(buff.slice_and_dice.improved) and not Player:BuffP(S.LoadedDiceBuff)) then
+  if S.SliceandDice:IsCastableP() and (not bool(VarSsUseable) and Player:BuffRemainsP(S.SliceandDiceBuff) < Target:TimeToDie() and Player:BuffRemainsP(S.SliceandDiceBuff) < (1 + Player:ComboPoints()) * 1.8 and not bool(buff.slice_and_dice.improved) and not Player:BuffP(S.LoadedDiceBuff)) then
     if AR.Cast(S.SliceandDice) then return ""; end
   end
   -- slice_and_dice,if=buff.loaded_dice.up&combo_points>=cp_max_spend&(!buff.slice_and_dice.improved|buff.slice_and_dice.remains<4)
@@ -251,7 +251,7 @@ local function Apl()
     if AR.Cast(S.SliceandDice) then return ""; end
   end
   -- roll_the_bones,if=!variable.ss_useable&(target.time_to_die>20|buff.roll_the_bones.remains<target.time_to_die)&(buff.roll_the_bones.remains<=3|variable.rtb_reroll)
-  if S.RolltheBones:IsCastableP() and (not bool(SsUseable) and (Target:TimeToDie() > 20 or Player:BuffRemainsP(S.RolltheBonesBuff) < Target:TimeToDie()) and (Player:BuffRemainsP(S.RolltheBonesBuff) <= 3 or bool(RtbReroll))) then
+  if S.RolltheBones:IsCastableP() and (not bool(VarSsUseable) and (Target:TimeToDie() > 20 or Player:BuffRemainsP(S.RolltheBonesBuff) < Target:TimeToDie()) and (Player:BuffRemainsP(S.RolltheBonesBuff) <= 3 or bool(VarRtbReroll))) then
     if AR.Cast(S.RolltheBones) then return ""; end
   end
   -- killing_spree,if=energy.time_to_max>5|energy<15
@@ -263,7 +263,7 @@ local function Apl()
     local ShouldReturn = Build(); if ShouldReturn then return ShouldReturn; end
   end
   -- call_action_list,name=finish,if=!variable.ss_useable
-  if (not bool(SsUseable)) then
+  if (not bool(VarSsUseable)) then
     local ShouldReturn = Finish(); if ShouldReturn then return ShouldReturn; end
   end
   -- gouge,if=talent.dirty_tricks.enabled&combo_points.deficit>=1

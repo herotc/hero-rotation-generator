@@ -74,8 +74,8 @@ local Settings = {
 };
 
 -- Variables
-local Frizzosequipped = 0;
-local Moktalented = 0;
+local VarMoktalented = 0;
+local VarFrizzosequipped = 0;
 
 local function num(val)
   if val then return 1 else return 0 end
@@ -145,7 +145,7 @@ local function Apl()
       if AR.Cast(S.MongooseBite) then return ""; end
     end
     -- fury_of_the_eagle,if=(!variable.mokTalented|(buff.moknathal_tactics.remains>(gcd*(8%3))))&!buff.aspect_of_the_eagle.up,interrupt_immediate=1,interrupt_if=cooldown.mongoose_bite.charges=3|(ticks_remain<=1&buff.moknathal_tactics.remains<0.7)
-    if S.FuryoftheEagle:IsCastableP() and ((not bool(Moktalented) or (Player:BuffRemainsP(S.MoknathalTacticsBuff) > (Player:GCD() * (8 / 3)))) and not Player:BuffP(S.AspectoftheEagleBuff)) then
+    if S.FuryoftheEagle:IsCastableP() and ((not bool(VarMoktalented) or (Player:BuffRemainsP(S.MoknathalTacticsBuff) > (Player:GCD() * (8 / 3)))) and not Player:BuffP(S.AspectoftheEagleBuff)) then
       if AR.Cast(S.FuryoftheEagle) then return ""; end
     end
     -- lacerate,if=dot.lacerate.refreshable&(focus>((50+35)-((cooldown.flanking_strike.remains%gcd)*(focus.regen*gcd))))
@@ -209,7 +209,7 @@ local function Apl()
       if AR.Cast(S.Lacerate) then return ""; end
     end
     -- raptor_strike,if=buff.t21_2p_exposed_flank.up&!variable.mokTalented
-    if S.RaptorStrike:IsCastableP() and (Player:BuffP(S.T212PExposedFlankBuff) and not bool(Moktalented)) then
+    if S.RaptorStrike:IsCastableP() and (Player:BuffP(S.T212PExposedFlankBuff) and not bool(VarMoktalented)) then
       if AR.Cast(S.RaptorStrike) then return ""; end
     end
     -- raptor_strike,if=(talent.serpent_sting.enabled&!dot.serpent_sting.ticking)
@@ -229,11 +229,11 @@ local function Apl()
       if AR.Cast(S.ExplosiveTrap) then return ""; end
     end
     -- butchery,if=variable.frizzosEquipped&dot.lacerate.refreshable&(focus>((50+40)-((cooldown.flanking_strike.remains%gcd)*(focus.regen*gcd))))
-    if S.Butchery:IsCastableP() and (bool(Frizzosequipped) and bool(dot.lacerate.refreshable) and (Player:Focus() > ((50 + 40) - ((S.FlankingStrike:CooldownRemainsP() / Player:GCD()) * (Player:FocusRegen() * Player:GCD()))))) then
+    if S.Butchery:IsCastableP() and (bool(VarFrizzosequipped) and bool(dot.lacerate.refreshable) and (Player:Focus() > ((50 + 40) - ((S.FlankingStrike:CooldownRemainsP() / Player:GCD()) * (Player:FocusRegen() * Player:GCD()))))) then
       if AR.Cast(S.Butchery) then return ""; end
     end
     -- carve,if=variable.frizzosEquipped&dot.lacerate.refreshable&(focus>((50+40)-((cooldown.flanking_strike.remains%gcd)*(focus.regen*gcd))))
-    if S.Carve:IsCastableP() and (bool(Frizzosequipped) and bool(dot.lacerate.refreshable) and (Player:Focus() > ((50 + 40) - ((S.FlankingStrike:CooldownRemainsP() / Player:GCD()) * (Player:FocusRegen() * Player:GCD()))))) then
+    if S.Carve:IsCastableP() and (bool(VarFrizzosequipped) and bool(dot.lacerate.refreshable) and (Player:Focus() > ((50 + 40) - ((S.FlankingStrike:CooldownRemainsP() / Player:GCD()) * (Player:FocusRegen() * Player:GCD()))))) then
       if AR.Cast(S.Carve) then return ""; end
     end
     -- flanking_strike
@@ -241,7 +241,7 @@ local function Apl()
       if AR.Cast(S.FlankingStrike) then return ""; end
     end
     -- raptor_strike,if=(variable.mokTalented&buff.moknathal_tactics.remains<gcd*4)|(focus>((75-focus.regen*gcd)))
-    if S.RaptorStrike:IsCastableP() and ((bool(Moktalented) and Player:BuffRemainsP(S.MoknathalTacticsBuff) < Player:GCD() * 4) or (Player:Focus() > ((75 - Player:FocusRegen() * Player:GCD())))) then
+    if S.RaptorStrike:IsCastableP() and ((bool(VarMoktalented) and Player:BuffRemainsP(S.MoknathalTacticsBuff) < Player:GCD() * 4) or (Player:Focus() > ((75 - Player:FocusRegen() * Player:GCD())))) then
       if AR.Cast(S.RaptorStrike) then return ""; end
     end
   end
@@ -253,11 +253,11 @@ local function Apl()
   end
   -- variable,name=frizzosEquipped,value=(equipped.137043)
   if (true) then
-    Frizzosequipped = num((I.Item137043:IsEquipped()))
+    VarFrizzosequipped = num((I.Item137043:IsEquipped()))
   end
   -- variable,name=mokTalented,value=(talent.way_of_the_moknathal.enabled)
   if (true) then
-    Moktalented = num((S.WayoftheMoknathal:IsAvailable()))
+    VarMoktalented = num((S.WayoftheMoknathal:IsAvailable()))
   end
   -- use_items
   if S.UseItems:IsCastableP() and (true) then
@@ -269,7 +269,7 @@ local function Apl()
   end
   -- auto_attack
   -- call_action_list,name=mokMaintain,if=variable.mokTalented
-  if (bool(Moktalented)) then
+  if (bool(VarMoktalented)) then
     local ShouldReturn = Mokmaintain(); if ShouldReturn then return ShouldReturn; end
   end
   -- call_action_list,name=CDs

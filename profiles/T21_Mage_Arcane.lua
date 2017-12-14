@@ -79,10 +79,11 @@ local Settings = {
 };
 
 -- Variables
-local TotalBurns = 0;
-local AverageBurnLength = 0;
-local ArcaneMissilesProcs = 0;
-local TimeUntilBurn = 0;
+local VarArcaneMissilesProcs = 0;
+local VarTotalBurns = 0;
+local VarAverageBurnLength = 0;
+local VarTimeUntilBurn = 0;
+local VarTimeUntilBurn:ArcaneBarrage:ChargedUp = 0;
 
 local function num(val)
   if val then return 1 else return 0 end
@@ -100,7 +101,7 @@ local function Apl()
       if AR.Cast(S.ArcaneOrb) then return ""; end
     end
     -- arcane_missiles,if=active_enemies<3&(variable.arcane_missiles_procs=buff.arcane_missiles.max_stack|(variable.arcane_missiles_procs&mana.pct<=50&buff.arcane_charge.stack=3)),chain=1
-    if S.ArcaneMissiles:IsCastableP() and (Cache.EnemiesCount[40] < 3 and (ArcaneMissilesProcs == buff.arcane_missiles.max_stack or (bool(ArcaneMissilesProcs) and Player:ManaPercentage() <= 50 and Player:BuffStackP(S.ArcaneChargeBuff) == 3))) then
+    if S.ArcaneMissiles:IsCastableP() and (Cache.EnemiesCount[40] < 3 and (VarArcaneMissilesProcs == buff.arcane_missiles.max_stack or (bool(VarArcaneMissilesProcs) and Player:ManaPercentage() <= 50 and Player:BuffStackP(S.ArcaneChargeBuff) == 3))) then
       if AR.Cast(S.ArcaneMissiles) then return ""; end
     end
     -- arcane_explosion,if=active_enemies>1
@@ -115,7 +116,7 @@ local function Apl()
   local function Burn()
     -- variable,name=total_burns,op=add,value=1,if=!burn_phase
     if (not bool(burn_phase)) then
-      TotalBurns = TotalBurns + 1
+      VarTotalBurns = VarTotalBurns + 1
     end
     -- start_burn_phase,if=!burn_phase
     if S.StartBurnPhase:IsCastableP() and (not bool(burn_phase)) then
@@ -186,7 +187,7 @@ local function Apl()
       if AR.Cast(S.ArcaneBarrage) then return ""; end
     end
     -- arcane_missiles,if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3,chain=1
-    if S.ArcaneMissiles:IsCastableP() and (ArcaneMissilesProcs == buff.arcane_missiles.max_stack and Cache.EnemiesCount[40] < 3) then
+    if S.ArcaneMissiles:IsCastableP() and (VarArcaneMissilesProcs == buff.arcane_missiles.max_stack and Cache.EnemiesCount[40] < 3) then
       if AR.Cast(S.ArcaneMissiles) then return ""; end
     end
     -- arcane_blast,if=buff.presence_of_mind.up
@@ -198,7 +199,7 @@ local function Apl()
       if AR.Cast(S.ArcaneExplosion) then return ""; end
     end
     -- arcane_missiles,if=variable.arcane_missiles_procs>1,chain=1
-    if S.ArcaneMissiles:IsCastableP() and (ArcaneMissilesProcs > 1) then
+    if S.ArcaneMissiles:IsCastableP() and (VarArcaneMissilesProcs > 1) then
       if AR.Cast(S.ArcaneMissiles) then return ""; end
     end
     -- arcane_blast
@@ -207,7 +208,7 @@ local function Apl()
     end
     -- variable,name=average_burn_length,op=set,value=(variable.average_burn_length*variable.total_burns-variable.average_burn_length+burn_phase_duration)%variable.total_burns
     if (true) then
-      AverageBurnLength = (AverageBurnLength * TotalBurns - AverageBurnLength + burn_phase_duration) / TotalBurns
+      VarAverageBurnLength = (VarAverageBurnLength * VarTotalBurns - VarAverageBurnLength + burn_phase_duration) / VarTotalBurns
     end
     -- evocation,interrupt_if=ticks=2|mana.pct>=85,interrupt_immediate=1
     if S.Evocation:IsCastableP() and (true) then
@@ -216,7 +217,7 @@ local function Apl()
   end
   local function Conserve()
     -- mirror_image,if=variable.time_until_burn>recharge_time|variable.time_until_burn>target.time_to_die
-    if S.MirrorImage:IsCastableP() and (TimeUntilBurn > S.MirrorImage:RechargeP() or TimeUntilBurn > Target:TimeToDie()) then
+    if S.MirrorImage:IsCastableP() and (VarTimeUntilBurn > S.MirrorImage:RechargeP() or VarTimeUntilBurn > Target:TimeToDie()) then
       if AR.Cast(S.MirrorImage) then return ""; end
     end
     -- mark_of_aluneth,if=mana.pct<85
@@ -224,7 +225,7 @@ local function Apl()
       if AR.Cast(S.MarkofAluneth) then return ""; end
     end
     -- strict_sequence,name=miniburn,if=talent.rune_of_power.enabled&set_bonus.tier20_4pc&variable.time_until_burn>30:rune_of_power:arcane_barrage:presence_of_mind
-    if S.StrictSequence:IsCastableP() and (S.RuneofPower:IsAvailable() and AC.Tier20_4Pc and TimeUntilBurn > 30:rune_of_power:arcane_barrage:presence_of_mind) then
+    if S.StrictSequence:IsCastableP() and (S.RuneofPower:IsAvailable() and AC.Tier20_4Pc and VarTimeUntilBurn > 30:rune_of_power:arcane_barrage:presence_of_mind) then
       if AR.Cast(S.StrictSequence) then return ""; end
     end
     -- rune_of_power,if=full_recharge_time<=execute_time|prev_gcd.1.mark_of_aluneth
@@ -232,11 +233,11 @@ local function Apl()
       if AR.Cast(S.RuneofPower) then return ""; end
     end
     -- strict_sequence,name=abarr_cu_combo,if=talent.charged_up.enabled&cooldown.charged_up.recharge_time<variable.time_until_burn:arcane_barrage:charged_up
-    if S.StrictSequence:IsCastableP() and (S.ChargedUp:IsAvailable() and S.ChargedUp:RechargeP() < TimeUntilBurn:ArcaneBarrage:ChargedUp) then
+    if S.StrictSequence:IsCastableP() and (S.ChargedUp:IsAvailable() and S.ChargedUp:RechargeP() < VarTimeUntilBurn:ArcaneBarrage:ChargedUp) then
       if AR.Cast(S.StrictSequence) then return ""; end
     end
     -- arcane_missiles,if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3,chain=1
-    if S.ArcaneMissiles:IsCastableP() and (ArcaneMissilesProcs == buff.arcane_missiles.max_stack and Cache.EnemiesCount[40] < 3) then
+    if S.ArcaneMissiles:IsCastableP() and (VarArcaneMissilesProcs == buff.arcane_missiles.max_stack and Cache.EnemiesCount[40] < 3) then
       if AR.Cast(S.ArcaneMissiles) then return ""; end
     end
     -- supernova
@@ -256,7 +257,7 @@ local function Apl()
       if AR.Cast(S.ArcaneBlast) then return ""; end
     end
     -- arcane_missiles,if=variable.arcane_missiles_procs,chain=1
-    if S.ArcaneMissiles:IsCastableP() and (bool(ArcaneMissilesProcs)) then
+    if S.ArcaneMissiles:IsCastableP() and (bool(VarArcaneMissilesProcs)) then
       if AR.Cast(S.ArcaneMissiles) then return ""; end
     end
     -- arcane_barrage
@@ -275,31 +276,31 @@ local function Apl()
   local function Variables()
     -- variable,name=arcane_missiles_procs,op=set,value=buff.arcane_missiles.react
     if (true) then
-      ArcaneMissilesProcs = Player:BuffStackP(S.ArcaneMissilesBuff)
+      VarArcaneMissilesProcs = Player:BuffStackP(S.ArcaneMissilesBuff)
     end
     -- variable,name=time_until_burn,op=set,value=cooldown.arcane_power.remains
     if (true) then
-      TimeUntilBurn = S.ArcanePower:CooldownRemainsP()
+      VarTimeUntilBurn = S.ArcanePower:CooldownRemainsP()
     end
     -- variable,name=time_until_burn,op=max,value=cooldown.evocation.remains-variable.average_burn_length
     if (true) then
-      TimeUntilBurn = math.max(TimeUntilBurn, S.Evocation:CooldownRemainsP() - AverageBurnLength)
+      VarTimeUntilBurn = math.max(VarTimeUntilBurn, S.Evocation:CooldownRemainsP() - VarAverageBurnLength)
     end
     -- variable,name=time_until_burn,op=max,value=cooldown.presence_of_mind.remains,if=set_bonus.tier20_2pc
     if (AC.Tier20_2Pc) then
-      TimeUntilBurn = math.max(TimeUntilBurn, S.PresenceofMind:CooldownRemainsP())
+      VarTimeUntilBurn = math.max(VarTimeUntilBurn, S.PresenceofMind:CooldownRemainsP())
     end
     -- variable,name=time_until_burn,op=max,value=action.rune_of_power.usable_in,if=talent.rune_of_power.enabled
     if (S.RuneofPower:IsAvailable()) then
-      TimeUntilBurn = math.max(TimeUntilBurn, S.RuneofPower:UsableInP())
+      VarTimeUntilBurn = math.max(VarTimeUntilBurn, S.RuneofPower:UsableInP())
     end
     -- variable,name=time_until_burn,op=max,value=cooldown.charged_up.remains,if=talent.charged_up.enabled&set_bonus.tier21_2pc
     if (S.ChargedUp:IsAvailable() and AC.Tier21_2Pc) then
-      TimeUntilBurn = math.max(TimeUntilBurn, S.ChargedUp:CooldownRemainsP())
+      VarTimeUntilBurn = math.max(VarTimeUntilBurn, S.ChargedUp:CooldownRemainsP())
     end
     -- variable,name=time_until_burn,op=reset,if=target.time_to_die<variable.average_burn_length
-    if (Target:TimeToDie() < AverageBurnLength) then
-      TimeUntilBurn = 0
+    if (Target:TimeToDie() < VarAverageBurnLength) then
+      VarTimeUntilBurn = 0
     end
   end
   -- counterspell,if=target.debuff.casting.react
@@ -323,7 +324,7 @@ local function Apl()
     local ShouldReturn = Build(); if ShouldReturn then return ShouldReturn; end
   end
   -- call_action_list,name=burn,if=(buff.arcane_charge.stack=buff.arcane_charge.max_stack&variable.time_until_burn=0)|burn_phase
-  if ((Player:BuffStackP(S.ArcaneChargeBuff) == buff.arcane_charge.max_stack and TimeUntilBurn == 0) or bool(burn_phase)) then
+  if ((Player:BuffStackP(S.ArcaneChargeBuff) == buff.arcane_charge.max_stack and VarTimeUntilBurn == 0) or bool(burn_phase)) then
     local ShouldReturn = Burn(); if ShouldReturn then return ShouldReturn; end
   end
   -- call_action_list,name=conserve

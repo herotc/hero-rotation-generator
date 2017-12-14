@@ -79,7 +79,7 @@ local Settings = {
 };
 
 -- Variables
-local DsCastable = 0;
+local VarDsCastable = 0;
 
 local function num(val)
   if val then return 1 else return 0 end
@@ -131,11 +131,11 @@ local function Apl()
       if AR.Cast(S.ExecutionSentence) then return ""; end
     end
     -- divine_storm,if=debuff.judgment.up&variable.ds_castable&buff.divine_purpose.react
-    if S.DivineStorm:IsCastableP() and (Target:DebuffP(S.JudgmentDebuff) and bool(DsCastable) and bool(Player:BuffStackP(S.DivinePurposeBuff))) then
+    if S.DivineStorm:IsCastableP() and (Target:DebuffP(S.JudgmentDebuff) and bool(VarDsCastable) and bool(Player:BuffStackP(S.DivinePurposeBuff))) then
       if AR.Cast(S.DivineStorm) then return ""; end
     end
     -- divine_storm,if=debuff.judgment.up&variable.ds_castable&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)
-    if S.DivineStorm:IsCastableP() and (Target:DebuffP(S.JudgmentDebuff) and bool(DsCastable) and (not S.Crusade:IsAvailable() or S.Crusade:CooldownRemainsP() > Player:GCD() * 2)) then
+    if S.DivineStorm:IsCastableP() and (Target:DebuffP(S.JudgmentDebuff) and bool(VarDsCastable) and (not S.Crusade:IsAvailable() or S.Crusade:CooldownRemainsP() > Player:GCD() * 2)) then
       if AR.Cast(S.DivineStorm) then return ""; end
     end
     -- justicars_vengeance,if=debuff.judgment.up&buff.divine_purpose.react&!equipped.137020
@@ -154,7 +154,7 @@ local function Apl()
   local function Generators()
     -- variable,name=ds_castable,value=spell_targets.divine_storm>=2|(buff.scarlet_inquisitors_expurgation.stack>=29&(equipped.144358&(dot.wake_of_ashes.ticking&time>10|dot.wake_of_ashes.remains<gcd))|(buff.scarlet_inquisitors_expurgation.stack>=29&(buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=15|cooldown.crusade.remains>15&!buff.crusade.up)|cooldown.avenging_wrath.remains>15)&!equipped.144358)
     if (true) then
-      DsCastable = num(Cache.EnemiesCount[8] >= 2 or (Player:BuffStackP(S.ScarletInquisitorsExpurgationBuff) >= 29 and (I.Item144358:IsEquipped() and (Target:DebuffP(S.WakeofAshesDebuff) and AC.CombatTime() > 10 or Target:DebuffRemainsP(S.WakeofAshesDebuff) < Player:GCD())) or (Player:BuffStackP(S.ScarletInquisitorsExpurgationBuff) >= 29 and (Player:BuffP(S.AvengingWrathBuff) or Player:BuffP(S.CrusadeBuff) and Player:BuffStackP(S.CrusadeBuff) >= 15 or S.Crusade:CooldownRemainsP() > 15 and not Player:BuffP(S.CrusadeBuff)) or S.AvengingWrath:CooldownRemainsP() > 15) and not I.Item144358:IsEquipped()))
+      VarDsCastable = num(Cache.EnemiesCount[8] >= 2 or (Player:BuffStackP(S.ScarletInquisitorsExpurgationBuff) >= 29 and (I.Item144358:IsEquipped() and (Target:DebuffP(S.WakeofAshesDebuff) and AC.CombatTime() > 10 or Target:DebuffRemainsP(S.WakeofAshesDebuff) < Player:GCD())) or (Player:BuffStackP(S.ScarletInquisitorsExpurgationBuff) >= 29 and (Player:BuffP(S.AvengingWrathBuff) or Player:BuffP(S.CrusadeBuff) and Player:BuffStackP(S.CrusadeBuff) >= 15 or S.Crusade:CooldownRemainsP() > 15 and not Player:BuffP(S.CrusadeBuff)) or S.AvengingWrath:CooldownRemainsP() > 15) and not I.Item144358:IsEquipped()))
     end
     -- call_action_list,name=finishers,if=(buff.crusade.up&buff.crusade.stack<15|buff.liadrins_fury_unleashed.up)|(artifact.ashes_to_ashes.enabled&cooldown.wake_of_ashes.remains<gcd*2)
     if ((Player:BuffP(S.CrusadeBuff) and Player:BuffStackP(S.CrusadeBuff) < 15 or Player:BuffP(S.LiadrinsFuryUnleashedBuff)) or (S.AshesToAshes:ArtifactEnabled() and S.WakeofAshes:CooldownRemainsP() < Player:GCD() * 2)) then

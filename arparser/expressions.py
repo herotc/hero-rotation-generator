@@ -6,7 +6,7 @@ Define the objects representing simc expressions.
 """
 
 from .lua import LuaExpression, BuildExpression, Method, Literal
-from .executions import Spell, Item
+from .executions import Spell, Item, Variable
 from .resources import (Rune, AstralPower, HolyPower, Insanity, Pain, Focus,
                         Maelstrom, Energy, ComboPoints, SoulShards,
                         ArcaneCharges, Chi, RunicPower, Fury, Mana)
@@ -273,7 +273,7 @@ class Expression:
         """
         Return the condition when the prefix is variable.
         """
-        return Literal(self.condition_list[1], convert=True)
+        return Variable(self.parent_action, self.condition_list[1])
 
 
 class Expires:

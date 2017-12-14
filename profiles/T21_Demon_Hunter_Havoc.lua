@@ -78,12 +78,12 @@ local Settings = {
 };
 
 -- Variables
-local WaitingForNemesis = 0;
-local WaitingForChaosBlades = 0;
-local PoolingForMeta = 0;
-local BladeDance = 0;
-local PoolingForBladeDance = 0;
-local PoolingForChaosStrike = 0;
+local VarPoolingForMeta = 0;
+local VarWaitingForNemesis = 0;
+local VarWaitingForChaosBlades = 0;
+local VarBladeDance = 0;
+local VarPoolingForBladeDance = 0;
+local VarPoolingForChaosStrike = 0;
 
 local function num(val)
   if val then return 1 else return 0 end
@@ -106,7 +106,7 @@ end
 local function Apl()
   local function Cooldown()
     -- metamorphosis,if=!(talent.demonic.enabled|variable.pooling_for_meta|variable.waiting_for_nemesis|variable.waiting_for_chaos_blades)|target.time_to_die<25
-    if S.Metamorphosis:IsCastableP() and (not (S.Demonic:IsAvailable() or bool(PoolingForMeta) or bool(WaitingForNemesis) or bool(WaitingForChaosBlades)) or Target:TimeToDie() < 25) then
+    if S.Metamorphosis:IsCastableP() and (not (S.Demonic:IsAvailable() or bool(VarPoolingForMeta) or bool(VarWaitingForNemesis) or bool(VarWaitingForChaosBlades)) or Target:TimeToDie() < 25) then
       if AR.Cast(S.Metamorphosis) then return ""; end
     end
     -- metamorphosis,if=talent.demonic.enabled&buff.metamorphosis.up&fury<40
@@ -148,7 +148,7 @@ local function Apl()
       if AR.Cast(S.ThrowGlaive) then return ""; end
     end
     -- death_sweep,if=variable.blade_dance
-    if S.DeathSweep:IsCastableP() and (bool(BladeDance)) then
+    if S.DeathSweep:IsCastableP() and (bool(VarBladeDance)) then
       if AR.Cast(S.DeathSweep) then return ""; end
     end
     -- fel_eruption
@@ -160,7 +160,7 @@ local function Apl()
       if AR.Cast(S.FuryoftheIllidari) then return ""; end
     end
     -- blade_dance,if=variable.blade_dance&cooldown.eye_beam.remains>5&!cooldown.metamorphosis.ready
-    if S.BladeDance:IsCastableP() and (bool(BladeDance) and S.EyeBeam:CooldownRemainsP() > 5 and not S.Metamorphosis:CooldownUpP()) then
+    if S.BladeDance:IsCastableP() and (bool(VarBladeDance) and S.EyeBeam:CooldownRemainsP() > 5 and not S.Metamorphosis:CooldownUpP()) then
       if AR.Cast(S.BladeDance) then return ""; end
     end
     -- throw_glaive,if=talent.bloodlet.enabled&spell_targets>=2&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&(spell_targets>=3|raid_event.adds.in>recharge_time+cooldown)
@@ -176,7 +176,7 @@ local function Apl()
       if AR.Cast(S.EyeBeam) then return ""; end
     end
     -- annihilation,if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance
-    if S.Annihilation:IsCastableP() and IsInMeleeRange() and ((not S.Momentum:IsAvailable() or Player:BuffP(S.MomentumBuff) or Player:FuryDeficit() < 30 + num(Player:BuffP(S.PreparedBuff)) * 8 or Player:BuffRemainsP(S.MetamorphosisBuff) < 5) and not bool(PoolingForBladeDance)) then
+    if S.Annihilation:IsCastableP() and IsInMeleeRange() and ((not S.Momentum:IsAvailable() or Player:BuffP(S.MomentumBuff) or Player:FuryDeficit() < 30 + num(Player:BuffP(S.PreparedBuff)) * 8 or Player:BuffRemainsP(S.MetamorphosisBuff) < 5) and not bool(VarPoolingForBladeDance)) then
       if AR.Cast(S.Annihilation) then return ""; end
     end
     -- throw_glaive,if=talent.bloodlet.enabled&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&raid_event.adds.in>recharge_time+cooldown
@@ -184,7 +184,7 @@ local function Apl()
       if AR.Cast(S.ThrowGlaive) then return ""; end
     end
     -- chaos_strike,if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8)&!variable.pooling_for_chaos_strike&!variable.pooling_for_meta&!variable.pooling_for_blade_dance
-    if S.ChaosStrike:IsCastableP() and IsInMeleeRange() and ((not S.Momentum:IsAvailable() or Player:BuffP(S.MomentumBuff) or Player:FuryDeficit() < 30 + num(Player:BuffP(S.PreparedBuff)) * 8) and not bool(PoolingForChaosStrike) and not bool(PoolingForMeta) and not bool(PoolingForBladeDance)) then
+    if S.ChaosStrike:IsCastableP() and IsInMeleeRange() and ((not S.Momentum:IsAvailable() or Player:BuffP(S.MomentumBuff) or Player:FuryDeficit() < 30 + num(Player:BuffP(S.PreparedBuff)) * 8) and not bool(VarPoolingForChaosStrike) and not bool(VarPoolingForMeta) and not bool(VarPoolingForBladeDance)) then
       if AR.Cast(S.ChaosStrike) then return ""; end
     end
     -- fel_rush,if=!talent.momentum.enabled&!cooldown.eye_beam.ready&(buff.metamorphosis.down|talent.demon_blades.enabled)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
@@ -234,7 +234,7 @@ local function Apl()
       if AR.Cast(S.Felblade) then return ""; end
     end
     -- death_sweep,if=variable.blade_dance
-    if S.DeathSweep:IsCastableP() and (bool(BladeDance)) then
+    if S.DeathSweep:IsCastableP() and (bool(VarBladeDance)) then
       if AR.Cast(S.DeathSweep) then return ""; end
     end
     -- fel_rush,if=charges=2&!talent.momentum.enabled&!talent.fel_mastery.enabled&!buff.metamorphosis.up
@@ -250,7 +250,7 @@ local function Apl()
       if AR.Cast(S.FuryoftheIllidari) then return ""; end
     end
     -- blade_dance,if=variable.blade_dance
-    if S.BladeDance:IsCastableP() and (bool(BladeDance)) then
+    if S.BladeDance:IsCastableP() and (bool(VarBladeDance)) then
       if AR.Cast(S.BladeDance) then return ""; end
     end
     -- throw_glaive,if=talent.bloodlet.enabled&spell_targets>=2&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&(spell_targets>=3|raid_event.adds.in>recharge_time+cooldown)
@@ -266,7 +266,7 @@ local function Apl()
       if AR.Cast(S.EyeBeam) then return ""; end
     end
     -- annihilation,if=(talent.demon_blades.enabled|!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance
-    if S.Annihilation:IsCastableP() and IsInMeleeRange() and ((S.DemonBlades:IsAvailable() or not S.Momentum:IsAvailable() or Player:BuffP(S.MomentumBuff) or Player:FuryDeficit() < 30 + num(Player:BuffP(S.PreparedBuff)) * 8 or Player:BuffRemainsP(S.MetamorphosisBuff) < 5) and not bool(PoolingForBladeDance)) then
+    if S.Annihilation:IsCastableP() and IsInMeleeRange() and ((S.DemonBlades:IsAvailable() or not S.Momentum:IsAvailable() or Player:BuffP(S.MomentumBuff) or Player:FuryDeficit() < 30 + num(Player:BuffP(S.PreparedBuff)) * 8 or Player:BuffRemainsP(S.MetamorphosisBuff) < 5) and not bool(VarPoolingForBladeDance)) then
       if AR.Cast(S.Annihilation) then return ""; end
     end
     -- throw_glaive,if=talent.bloodlet.enabled&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&raid_event.adds.in>recharge_time+cooldown
@@ -278,7 +278,7 @@ local function Apl()
       if AR.Cast(S.ThrowGlaive) then return ""; end
     end
     -- chaos_strike,if=(talent.demon_blades.enabled|!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8)&!variable.pooling_for_chaos_strike&!variable.pooling_for_meta&!variable.pooling_for_blade_dance
-    if S.ChaosStrike:IsCastableP() and IsInMeleeRange() and ((S.DemonBlades:IsAvailable() or not S.Momentum:IsAvailable() or Player:BuffP(S.MomentumBuff) or Player:FuryDeficit() < 30 + num(Player:BuffP(S.PreparedBuff)) * 8) and not bool(PoolingForChaosStrike) and not bool(PoolingForMeta) and not bool(PoolingForBladeDance)) then
+    if S.ChaosStrike:IsCastableP() and IsInMeleeRange() and ((S.DemonBlades:IsAvailable() or not S.Momentum:IsAvailable() or Player:BuffP(S.MomentumBuff) or Player:FuryDeficit() < 30 + num(Player:BuffP(S.PreparedBuff)) * 8) and not bool(VarPoolingForChaosStrike) and not bool(VarPoolingForMeta) and not bool(VarPoolingForBladeDance)) then
       if AR.Cast(S.ChaosStrike) then return ""; end
     end
     -- fel_rush,if=!talent.momentum.enabled&raid_event.movement.in>charges*10&(talent.demon_blades.enabled|buff.metamorphosis.down)
@@ -313,27 +313,27 @@ local function Apl()
   -- auto_attack
   -- variable,name=waiting_for_nemesis,value=!(!talent.nemesis.enabled|cooldown.nemesis.ready|cooldown.nemesis.remains>target.time_to_die|cooldown.nemesis.remains>60)
   if (true) then
-    WaitingForNemesis = num(not (not S.Nemesis:IsAvailable() or S.Nemesis:CooldownUpP() or S.Nemesis:CooldownRemainsP() > Target:TimeToDie() or S.Nemesis:CooldownRemainsP() > 60))
+    VarWaitingForNemesis = num(not (not S.Nemesis:IsAvailable() or S.Nemesis:CooldownUpP() or S.Nemesis:CooldownRemainsP() > Target:TimeToDie() or S.Nemesis:CooldownRemainsP() > 60))
   end
   -- variable,name=waiting_for_chaos_blades,value=!(!talent.chaos_blades.enabled|cooldown.chaos_blades.ready|cooldown.chaos_blades.remains>target.time_to_die|cooldown.chaos_blades.remains>60)
   if (true) then
-    WaitingForChaosBlades = num(not (not S.ChaosBlades:IsAvailable() or S.ChaosBlades:CooldownUpP() or S.ChaosBlades:CooldownRemainsP() > Target:TimeToDie() or S.ChaosBlades:CooldownRemainsP() > 60))
+    VarWaitingForChaosBlades = num(not (not S.ChaosBlades:IsAvailable() or S.ChaosBlades:CooldownUpP() or S.ChaosBlades:CooldownRemainsP() > Target:TimeToDie() or S.ChaosBlades:CooldownRemainsP() > 60))
   end
   -- variable,name=pooling_for_meta,value=!talent.demonic.enabled&cooldown.metamorphosis.remains<6&fury.deficit>30&(!variable.waiting_for_nemesis|cooldown.nemesis.remains<10)&(!variable.waiting_for_chaos_blades|cooldown.chaos_blades.remains<6)
   if (true) then
-    PoolingForMeta = num(not S.Demonic:IsAvailable() and S.Metamorphosis:CooldownRemainsP() < 6 and Player:FuryDeficit() > 30 and (not bool(WaitingForNemesis) or S.Nemesis:CooldownRemainsP() < 10) and (not bool(WaitingForChaosBlades) or S.ChaosBlades:CooldownRemainsP() < 6))
+    VarPoolingForMeta = num(not S.Demonic:IsAvailable() and S.Metamorphosis:CooldownRemainsP() < 6 and Player:FuryDeficit() > 30 and (not bool(VarWaitingForNemesis) or S.Nemesis:CooldownRemainsP() < 10) and (not bool(VarWaitingForChaosBlades) or S.ChaosBlades:CooldownRemainsP() < 6))
   end
   -- variable,name=blade_dance,value=talent.first_blood.enabled|set_bonus.tier20_4pc|spell_targets.blade_dance1>=3+(talent.chaos_cleave.enabled*3)
   if (true) then
-    BladeDance = num(S.FirstBlood:IsAvailable() or AC.Tier20_4Pc or Cache.EnemiesCount[8] >= 3 + (num(S.ChaosCleave:IsAvailable()) * 3))
+    VarBladeDance = num(S.FirstBlood:IsAvailable() or AC.Tier20_4Pc or Cache.EnemiesCount[8] >= 3 + (num(S.ChaosCleave:IsAvailable()) * 3))
   end
   -- variable,name=pooling_for_blade_dance,value=variable.blade_dance&(fury<75-talent.first_blood.enabled*20)
   if (true) then
-    PoolingForBladeDance = num(bool(BladeDance) and (Player:Fury() < 75 - num(S.FirstBlood:IsAvailable()) * 20))
+    VarPoolingForBladeDance = num(bool(VarBladeDance) and (Player:Fury() < 75 - num(S.FirstBlood:IsAvailable()) * 20))
   end
   -- variable,name=pooling_for_chaos_strike,value=talent.chaos_cleave.enabled&fury.deficit>40&!raid_event.adds.up&raid_event.adds.in<2*gcd
   if (true) then
-    PoolingForChaosStrike = num(S.ChaosCleave:IsAvailable() and Player:FuryDeficit() > 40 and not bool(raid_event.adds.up) and raid_event.adds.in < 2 * Player:GCD())
+    VarPoolingForChaosStrike = num(S.ChaosCleave:IsAvailable() and Player:FuryDeficit() > 40 and not bool(raid_event.adds.up) and raid_event.adds.in < 2 * Player:GCD())
   end
   -- consume_magic
   if S.ConsumeMagic:IsCastableP() and (true) then

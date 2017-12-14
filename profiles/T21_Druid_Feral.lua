@@ -87,6 +87,7 @@ local Settings = {
 };
 
 -- Variables
+local VarUseThrash = 0;
 
 local function num(val)
   if val then return 1 else return 0 end
@@ -279,11 +280,11 @@ local function Apl()
       if AR.Cast(S.PoolResource) then return ""; end
     end
     -- thrash_cat,if=refreshable&(variable.use_thrash=2|spell_targets.thrash_cat>1)
-    if S.ThrashCat:IsCastableP() and (bool(refreshable) and (UseThrash == 2 or Cache.EnemiesCount[8] > 1)) then
+    if S.ThrashCat:IsCastableP() and (bool(refreshable) and (VarUseThrash == 2 or Cache.EnemiesCount[8] > 1)) then
       if AR.Cast(S.ThrashCat) then return ""; end
     end
     -- thrash_cat,if=refreshable&variable.use_thrash=1&buff.clearcasting.react
-    if S.ThrashCat:IsCastableP() and (bool(refreshable) and UseThrash == 1 and bool(Player:BuffStackP(S.ClearcastingBuff))) then
+    if S.ThrashCat:IsCastableP() and (bool(refreshable) and VarUseThrash == 1 and bool(Player:BuffStackP(S.ClearcastingBuff))) then
       if AR.Cast(S.ThrashCat) then return ""; end
     end
     -- pool_resource,for_next=1
@@ -345,7 +346,7 @@ local function Apl()
     if AR.Cast(S.Rip) then return ""; end
   end
   -- thrash_cat,if=!ticking&variable.use_thrash>0
-  if S.ThrashCat:IsCastableP() and (not Target:DebuffP(S.ThrashCat) and UseThrash > 0) then
+  if S.ThrashCat:IsCastableP() and (not Target:DebuffP(S.ThrashCat) and VarUseThrash > 0) then
     if AR.Cast(S.ThrashCat) then return ""; end
   end
   -- shred

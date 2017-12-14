@@ -5,11 +5,11 @@ Define the objects representing simc executions.
 @author: skasch
 """
 
-from .lua import LuaNamed, LuaExpression, Literal, Method
+from .lua import LuaNamed, LuaTyped, LuaExpression, Literal, Method
 from .demonhunter import havoc_melee_condition
 from .druid import guardian_swipe_thrash_value
 from .constants import (IGNORED_EXECUTIONS, SPELL, BUFF, DEBUFF,
-                        USABLE, INTERRUPT, CD, GCDAOGCD, OGCDAOGCD)
+                        USABLE, INTERRUPT, CD, GCDAOGCD, OGCDAOGCD, NUM)
 
 
 class Castable:
@@ -174,7 +174,7 @@ class CallActionList(LuaNamed, Castable):
                 'if ShouldReturn then return ShouldReturn; end')
 
 
-class Variable(LuaNamed, Castable):
+class Variable(LuaNamed, LuaTyped, Castable):
     """
     The class to handle a variable action; this creates a new variable as a
     local function to compute a value used afterwards.
@@ -183,6 +183,7 @@ class Variable(LuaNamed, Castable):
     def __init__(self, action, simc):
         super().__init__(simc)
         self.action = action
+        self.type_ = NUM
         if 'default' in action.properties():
             self.default = action.properties()['default']
         else:
@@ -192,8 +193,17 @@ class Variable(LuaNamed, Castable):
     def print_conditions(self):
         return ''
 
+    def lua_name(self):
+        return f'Var{super().lua_name()}'
+
     def print_cast(self):
         return f'{self.lua_name()}'
+
+    def print_lua(self):
+        """
+        Print the lua representation of the variable in expressions.
+        """
+        return self.print_cast()
 
 
 class CancelBuff(LuaNamed, Castable):

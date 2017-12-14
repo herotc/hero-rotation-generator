@@ -84,8 +84,15 @@ local Settings = {
 };
 
 -- Variables
-local ActorsFightTimeMod = 0;
-local S2Mcheck = 0;
+local VarActorsFightTimeMod = 0;
+local VarS2Mcheck = 0;
+local VarS2MsetupTime = 0;
+local VarEruptEval = 0;
+local VarDotVtDpgcd = 0;
+local VarSearDpgcd = 0;
+local VarDotSwpDpgcd = 0;
+local VarCdTime = 0;
+local VarHasteEval = 0;
 
 local function num(val)
   if val then return 1 else return 0 end
@@ -100,28 +107,28 @@ local function Apl()
   local function Check()
     -- variable,op=set,name=actors_fight_time_mod,value=0
     if (true) then
-      ActorsFightTimeMod = 0
+      VarActorsFightTimeMod = 0
     end
     -- variable,op=set,name=actors_fight_time_mod,value=-((-(450)+(time+target.time_to_die))%10),if=time+target.time_to_die>450&time+target.time_to_die<600
     if (AC.CombatTime() + Target:TimeToDie() > 450 and AC.CombatTime() + Target:TimeToDie() < 600) then
-      ActorsFightTimeMod = num(true) - ((num(true) - (450) + (AC.CombatTime() + Target:TimeToDie())) / 10)
+      VarActorsFightTimeMod = num(true) - ((num(true) - (450) + (AC.CombatTime() + Target:TimeToDie())) / 10)
     end
     -- variable,op=set,name=actors_fight_time_mod,value=((450-(time+target.time_to_die))%5),if=time+target.time_to_die<=450
     if (AC.CombatTime() + Target:TimeToDie() <= 450) then
-      ActorsFightTimeMod = ((450 - (AC.CombatTime() + Target:TimeToDie())) / 5)
+      VarActorsFightTimeMod = ((450 - (AC.CombatTime() + Target:TimeToDie())) / 5)
     end
     -- variable,op=set,name=s2mcheck,value=variable.s2msetup_time-(variable.actors_fight_time_mod*nonexecute_actors_pct)
     if (true) then
-      S2Mcheck = S2MsetupTime - (ActorsFightTimeMod * nonexecute_actors_pct)
+      VarS2Mcheck = VarS2MsetupTime - (VarActorsFightTimeMod * nonexecute_actors_pct)
     end
     -- variable,op=min,name=s2mcheck,value=180
     if (true) then
-      S2Mcheck = math.min(S2Mcheck, 180)
+      VarS2Mcheck = math.min(VarS2Mcheck, 180)
     end
   end
   local function Main()
     -- surrender_to_madness,if=talent.surrender_to_madness.enabled&target.time_to_die<=variable.s2mcheck
-    if S.SurrenderToMadness:IsCastableP() and (S.SurrenderToMadness:IsAvailable() and Target:TimeToDie() <= S2Mcheck) then
+    if S.SurrenderToMadness:IsCastableP() and (S.SurrenderToMadness:IsAvailable() and Target:TimeToDie() <= VarS2Mcheck) then
       if AR.Cast(S.SurrenderToMadness) then return ""; end
     end
     -- shadow_word_death,if=equipped.zeks_exterminatus&equipped.mangazas_madness&buff.zeks_exterminatus.react
@@ -145,7 +152,7 @@ local function Apl()
       if AR.Cast(S.VampiricTouch) then return ""; end
     end
     -- void_eruption,if=(talent.mindbender.enabled&cooldown.mindbender.remains<(variable.erupt_eval+gcd.max*4%3))|!talent.mindbender.enabled|set_bonus.tier20_4pc
-    if S.VoidEruption:IsCastableP() and ((S.Mindbender:IsAvailable() and S.Mindbender:CooldownRemainsP() < (EruptEval + Player:GCD() * 4 / 3)) or not S.Mindbender:IsAvailable() or AC.Tier20_4Pc) then
+    if S.VoidEruption:IsCastableP() and ((S.Mindbender:IsAvailable() and S.Mindbender:CooldownRemainsP() < (VarEruptEval + Player:GCD() * 4 / 3)) or not S.Mindbender:IsAvailable() or AC.Tier20_4Pc) then
       if AR.Cast(S.VoidEruption) then return ""; end
     end
     -- shadow_crash,if=talent.shadow_crash.enabled
@@ -169,11 +176,11 @@ local function Apl()
       if AR.Cast(S.ShadowWordPain) then return ""; end
     end
     -- vampiric_touch,if=active_enemies>1&!talent.misery.enabled&!ticking&(variable.dot_vt_dpgcd*target.time_to_die%(gcd.max*(156+variable.sear_dpgcd*(active_enemies-1))))>1,cycle_targets=1
-    if S.VampiricTouch:IsCastableP() and (Cache.EnemiesCount[40] > 1 and not S.Misery:IsAvailable() and not Target:DebuffP(S.VampiricTouch) and (DotVtDpgcd * Target:TimeToDie() / (Player:GCD() * (156 + SearDpgcd * (Cache.EnemiesCount[40] - 1)))) > 1) then
+    if S.VampiricTouch:IsCastableP() and (Cache.EnemiesCount[40] > 1 and not S.Misery:IsAvailable() and not Target:DebuffP(S.VampiricTouch) and (VarDotVtDpgcd * Target:TimeToDie() / (Player:GCD() * (156 + VarSearDpgcd * (Cache.EnemiesCount[40] - 1)))) > 1) then
       if AR.Cast(S.VampiricTouch) then return ""; end
     end
     -- shadow_word_pain,if=active_enemies>1&!talent.misery.enabled&!ticking&(variable.dot_swp_dpgcd*target.time_to_die%(gcd.max*(118+variable.sear_dpgcd*(active_enemies-1))))>1,cycle_targets=1
-    if S.ShadowWordPain:IsCastableP() and (Cache.EnemiesCount[40] > 1 and not S.Misery:IsAvailable() and not Target:DebuffP(S.ShadowWordPain) and (DotSwpDpgcd * Target:TimeToDie() / (Player:GCD() * (118 + SearDpgcd * (Cache.EnemiesCount[40] - 1)))) > 1) then
+    if S.ShadowWordPain:IsCastableP() and (Cache.EnemiesCount[40] > 1 and not S.Misery:IsAvailable() and not Target:DebuffP(S.ShadowWordPain) and (VarDotSwpDpgcd * Target:TimeToDie() / (Player:GCD() * (118 + VarSearDpgcd * (Cache.EnemiesCount[40] - 1)))) > 1) then
       if AR.Cast(S.ShadowWordPain) then return ""; end
     end
     -- shadow_word_void,if=talent.shadow_word_void.enabled&(insanity<=75-10*talent.legacy_of_the_void.enabled)
@@ -297,7 +304,7 @@ local function Apl()
   end
   local function Vf()
     -- surrender_to_madness,if=talent.surrender_to_madness.enabled&insanity>=25&(cooldown.void_bolt.up|cooldown.void_torrent.up|cooldown.shadow_word_death.up|buff.shadowy_insight.up)&target.time_to_die<=variable.s2mcheck-(buff.insanity_drain_stacks.value)
-    if S.SurrenderToMadness:IsCastableP() and (S.SurrenderToMadness:IsAvailable() and Player:Insanity() >= 25 and (S.VoidBolt:CooldownUpP() or S.VoidTorrent:CooldownUpP() or S.ShadowWordDeath:CooldownUpP() or Player:BuffP(S.ShadowyInsightBuff)) and Target:TimeToDie() <= S2Mcheck - (buff.insanity_drain_stacks.value)) then
+    if S.SurrenderToMadness:IsCastableP() and (S.SurrenderToMadness:IsAvailable() and Player:Insanity() >= 25 and (S.VoidBolt:CooldownUpP() or S.VoidTorrent:CooldownUpP() or S.ShadowWordDeath:CooldownUpP() or Player:BuffP(S.ShadowyInsightBuff)) and Target:TimeToDie() <= VarS2Mcheck - (buff.insanity_drain_stacks.value)) then
       if AR.Cast(S.SurrenderToMadness) then return ""; end
     end
     -- silence,if=equipped.sephuzs_secret&(target.is_add|target.debuff.casting.react)&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up&buff.insanity_drain_stacks.value>10,cycle_targets=1
@@ -321,19 +328,19 @@ local function Apl()
       if AR.Cast(S.ShadowCrash) then return ""; end
     end
     -- void_torrent,if=dot.shadow_word_pain.remains>5.5&dot.vampiric_touch.remains>5.5&(!talent.surrender_to_madness.enabled|(talent.surrender_to_madness.enabled&target.time_to_die>variable.s2mcheck-(buff.insanity_drain_stacks.value)+60))
-    if S.VoidTorrent:IsCastableP() and (Target:DebuffRemainsP(S.ShadowWordPainDebuff) > 5.5 and Target:DebuffRemainsP(S.VampiricTouchDebuff) > 5.5 and (not S.SurrenderToMadness:IsAvailable() or (S.SurrenderToMadness:IsAvailable() and Target:TimeToDie() > S2Mcheck - (buff.insanity_drain_stacks.value) + 60))) then
+    if S.VoidTorrent:IsCastableP() and (Target:DebuffRemainsP(S.ShadowWordPainDebuff) > 5.5 and Target:DebuffRemainsP(S.VampiricTouchDebuff) > 5.5 and (not S.SurrenderToMadness:IsAvailable() or (S.SurrenderToMadness:IsAvailable() and Target:TimeToDie() > VarS2Mcheck - (buff.insanity_drain_stacks.value) + 60))) then
       if AR.Cast(S.VoidTorrent) then return ""; end
     end
     -- mindbender,if=buff.insanity_drain_stacks.value>=(variable.cd_time+(variable.haste_eval*!set_bonus.tier20_4pc)-(3*set_bonus.tier20_4pc*(raid_event.movement.in<15)*((active_enemies-(raid_event.adds.count*(raid_event.adds.remains>0)))=1))+(5-3*set_bonus.tier20_4pc)*buff.bloodlust.up+2*talent.fortress_of_the_mind.enabled*set_bonus.tier20_4pc)&(!talent.surrender_to_madness.enabled|(talent.surrender_to_madness.enabled&target.time_to_die>variable.s2mcheck-buff.insanity_drain_stacks.value))
-    if S.Mindbender:IsCastableP() and (buff.insanity_drain_stacks.value >= (CdTime + (HasteEval * num(not AC.Tier20_4Pc)) - (3 * num(AC.Tier20_4Pc) * num((raid_event.movement.in < 15)) * num(((Cache.EnemiesCount[40] - (raid_event.adds.count * num((raid_event.adds.remains > 0)))) == 1))) + (5 - 3 * num(AC.Tier20_4Pc)) * num(Player:HasHeroism()) + 2 * num(S.FortressoftheMind:IsAvailable()) * num(AC.Tier20_4Pc)) and (not S.SurrenderToMadness:IsAvailable() or (S.SurrenderToMadness:IsAvailable() and Target:TimeToDie() > S2Mcheck - buff.insanity_drain_stacks.value))) then
+    if S.Mindbender:IsCastableP() and (buff.insanity_drain_stacks.value >= (VarCdTime + (VarHasteEval * num(not AC.Tier20_4Pc)) - (3 * num(AC.Tier20_4Pc) * num((raid_event.movement.in < 15)) * num(((Cache.EnemiesCount[40] - (raid_event.adds.count * num((raid_event.adds.remains > 0)))) == 1))) + (5 - 3 * num(AC.Tier20_4Pc)) * num(Player:HasHeroism()) + 2 * num(S.FortressoftheMind:IsAvailable()) * num(AC.Tier20_4Pc)) and (not S.SurrenderToMadness:IsAvailable() or (S.SurrenderToMadness:IsAvailable() and Target:TimeToDie() > VarS2Mcheck - buff.insanity_drain_stacks.value))) then
       if AR.Cast(S.Mindbender) then return ""; end
     end
     -- power_infusion,if=buff.insanity_drain_stacks.value>=(variable.cd_time+5*buff.bloodlust.up*(1+1*set_bonus.tier20_4pc))&(!talent.surrender_to_madness.enabled|(talent.surrender_to_madness.enabled&target.time_to_die>variable.s2mcheck-(buff.insanity_drain_stacks.value)+61))
-    if S.PowerInfusion:IsCastableP() and (buff.insanity_drain_stacks.value >= (CdTime + 5 * num(Player:HasHeroism()) * (1 + 1 * num(AC.Tier20_4Pc))) and (not S.SurrenderToMadness:IsAvailable() or (S.SurrenderToMadness:IsAvailable() and Target:TimeToDie() > S2Mcheck - (buff.insanity_drain_stacks.value) + 61))) then
+    if S.PowerInfusion:IsCastableP() and (buff.insanity_drain_stacks.value >= (VarCdTime + 5 * num(Player:HasHeroism()) * (1 + 1 * num(AC.Tier20_4Pc))) and (not S.SurrenderToMadness:IsAvailable() or (S.SurrenderToMadness:IsAvailable() and Target:TimeToDie() > VarS2Mcheck - (buff.insanity_drain_stacks.value) + 61))) then
       if AR.Cast(S.PowerInfusion) then return ""; end
     end
     -- berserking,if=buff.voidform.stack>=10&buff.insanity_drain_stacks.value<=20&(!talent.surrender_to_madness.enabled|(talent.surrender_to_madness.enabled&target.time_to_die>variable.s2mcheck-(buff.insanity_drain_stacks.value)+60))
-    if S.Berserking:IsCastableP() and AR.CDsON() and (Player:BuffStackP(S.VoidformBuff) >= 10 and buff.insanity_drain_stacks.value <= 20 and (not S.SurrenderToMadness:IsAvailable() or (S.SurrenderToMadness:IsAvailable() and Target:TimeToDie() > S2Mcheck - (buff.insanity_drain_stacks.value) + 60))) then
+    if S.Berserking:IsCastableP() and AR.CDsON() and (Player:BuffStackP(S.VoidformBuff) >= 10 and buff.insanity_drain_stacks.value <= 20 and (not S.SurrenderToMadness:IsAvailable() or (S.SurrenderToMadness:IsAvailable() and Target:TimeToDie() > VarS2Mcheck - (buff.insanity_drain_stacks.value) + 60))) then
       if AR.Cast(S.Berserking, Settings.Shadow.OffGCDasOffGCD.Berserking) then return ""; end
     end
     -- shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls.enabled&active_enemies<=2))&current_insanity_drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+(15+15*talent.reaper_of_souls.enabled))<100
@@ -381,11 +388,11 @@ local function Apl()
       if AR.Cast(S.VampiricTouch) then return ""; end
     end
     -- vampiric_touch,if=active_enemies>1&!talent.misery.enabled&!ticking&((1+0.02*buff.voidform.stack)*variable.dot_vt_dpgcd*target.time_to_die%(gcd.max*(156+variable.sear_dpgcd*(active_enemies-1))))>1,cycle_targets=1
-    if S.VampiricTouch:IsCastableP() and (Cache.EnemiesCount[40] > 1 and not S.Misery:IsAvailable() and not Target:DebuffP(S.VampiricTouch) and ((1 + 0.02 * Player:BuffStackP(S.VoidformBuff)) * DotVtDpgcd * Target:TimeToDie() / (Player:GCD() * (156 + SearDpgcd * (Cache.EnemiesCount[40] - 1)))) > 1) then
+    if S.VampiricTouch:IsCastableP() and (Cache.EnemiesCount[40] > 1 and not S.Misery:IsAvailable() and not Target:DebuffP(S.VampiricTouch) and ((1 + 0.02 * Player:BuffStackP(S.VoidformBuff)) * VarDotVtDpgcd * Target:TimeToDie() / (Player:GCD() * (156 + VarSearDpgcd * (Cache.EnemiesCount[40] - 1)))) > 1) then
       if AR.Cast(S.VampiricTouch) then return ""; end
     end
     -- shadow_word_pain,if=active_enemies>1&!talent.misery.enabled&!ticking&((1+0.02*buff.voidform.stack)*variable.dot_swp_dpgcd*target.time_to_die%(gcd.max*(118+variable.sear_dpgcd*(active_enemies-1))))>1,cycle_targets=1
-    if S.ShadowWordPain:IsCastableP() and (Cache.EnemiesCount[40] > 1 and not S.Misery:IsAvailable() and not Target:DebuffP(S.ShadowWordPain) and ((1 + 0.02 * Player:BuffStackP(S.VoidformBuff)) * DotSwpDpgcd * Target:TimeToDie() / (Player:GCD() * (118 + SearDpgcd * (Cache.EnemiesCount[40] - 1)))) > 1) then
+    if S.ShadowWordPain:IsCastableP() and (Cache.EnemiesCount[40] > 1 and not S.Misery:IsAvailable() and not Target:DebuffP(S.ShadowWordPain) and ((1 + 0.02 * Player:BuffStackP(S.VoidformBuff)) * VarDotSwpDpgcd * Target:TimeToDie() / (Player:GCD() * (118 + VarSearDpgcd * (Cache.EnemiesCount[40] - 1)))) > 1) then
       if AR.Cast(S.ShadowWordPain) then return ""; end
     end
     -- mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(action.void_bolt.usable|(current_insanity_drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+30)<100&cooldown.shadow_word_death.charges>=1))

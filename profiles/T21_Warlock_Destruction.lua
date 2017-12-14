@@ -94,11 +94,11 @@ end
 local function Apl()
 
   -- immolate,cycle_targets=1,if=active_enemies=2&talent.roaring_blaze.enabled&!cooldown.havoc.remains&dot.immolate.remains<=buff.active_havoc.duration
-  if S.Immolate:IsCastableP() and (Cache.EnemiesCount[5] == 2 and S.RoaringBlaze:IsAvailable() and not bool(S.Havoc:CooldownRemainsP()) and Target:DebuffRemainsP(S.ImmolateDebuff) <= S.ActiveHavocBuff:BaseDuration()) then
+  if S.Immolate:IsCastableP() and (Cache.EnemiesCount[40] == 2 and S.RoaringBlaze:IsAvailable() and not bool(S.Havoc:CooldownRemainsP()) and Target:DebuffRemainsP(S.ImmolateDebuff) <= S.ActiveHavocBuff:BaseDuration()) then
     if AR.Cast(S.Immolate) then return ""; end
   end
   -- havoc,target=2,if=active_enemies>1&(active_enemies<4|talent.wreak_havoc.enabled&active_enemies<6)&!debuff.havoc.remains
-  if S.Havoc:IsCastableP() and (Cache.EnemiesCount[5] > 1 and (Cache.EnemiesCount[5] < 4 or S.WreakHavoc:IsAvailable() and Cache.EnemiesCount[5] < 6) and not bool(Target:DebuffRemainsP(S.HavocDebuff))) then
+  if S.Havoc:IsCastableP() and (Cache.EnemiesCount[40] > 1 and (Cache.EnemiesCount[40] < 4 or S.WreakHavoc:IsAvailable() and Cache.EnemiesCount[40] < 6) and not bool(Target:DebuffRemainsP(S.HavocDebuff))) then
     if AR.Cast(S.Havoc) then return ""; end
   end
   -- dimensional_rift,if=charges=3
@@ -106,15 +106,15 @@ local function Apl()
     if AR.Cast(S.DimensionalRift) then return ""; end
   end
   -- cataclysm,if=spell_targets.cataclysm>=3
-  if S.Cataclysm:IsCastableP() and (Cache.EnemiesCount[5] >= 3) then
+  if S.Cataclysm:IsCastableP() and (Cache.EnemiesCount[40] >= 3) then
     if AR.Cast(S.Cataclysm) then return ""; end
   end
   -- immolate,if=(active_enemies<5|!talent.fire_and_brimstone.enabled)&remains<=tick_time
-  if S.Immolate:IsCastableP() and ((Cache.EnemiesCount[5] < 5 or not S.FireandBrimstone:IsAvailable()) and Target:DebuffRemainsP(S.Immolate) <= S.Immolate:TickTime()) then
+  if S.Immolate:IsCastableP() and ((Cache.EnemiesCount[40] < 5 or not S.FireandBrimstone:IsAvailable()) and Target:DebuffRemainsP(S.Immolate) <= S.Immolate:TickTime()) then
     if AR.Cast(S.Immolate) then return ""; end
   end
   -- immolate,cycle_targets=1,if=(active_enemies<5|!talent.fire_and_brimstone.enabled)&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>=action.immolate.cast_time*active_enemies)&active_enemies>1&remains<=tick_time&(!talent.roaring_blaze.enabled|(!debuff.roaring_blaze.remains&action.conflagrate.charges<2+set_bonus.tier19_4pc))
-  if S.Immolate:IsCastableP() and ((Cache.EnemiesCount[5] < 5 or not S.FireandBrimstone:IsAvailable()) and (not S.Cataclysm:IsAvailable() or S.Cataclysm:CooldownRemainsP() >= S.Immolate:CastTime() * Cache.EnemiesCount[5]) and Cache.EnemiesCount[5] > 1 and Target:DebuffRemainsP(S.Immolate) <= S.Immolate:TickTime() and (not S.RoaringBlaze:IsAvailable() or (not bool(Target:DebuffRemainsP(S.RoaringBlazeDebuff)) and S.Conflagrate:ChargesP() < 2 + num(AC.Tier19_4Pc)))) then
+  if S.Immolate:IsCastableP() and ((Cache.EnemiesCount[40] < 5 or not S.FireandBrimstone:IsAvailable()) and (not S.Cataclysm:IsAvailable() or S.Cataclysm:CooldownRemainsP() >= S.Immolate:CastTime() * Cache.EnemiesCount[40]) and Cache.EnemiesCount[40] > 1 and Target:DebuffRemainsP(S.Immolate) <= S.Immolate:TickTime() and (not S.RoaringBlaze:IsAvailable() or (not bool(Target:DebuffRemainsP(S.RoaringBlazeDebuff)) and S.Conflagrate:ChargesP() < 2 + num(AC.Tier19_4Pc)))) then
     if AR.Cast(S.Immolate) then return ""; end
   end
   -- immolate,if=talent.roaring_blaze.enabled&remains<=duration&!debuff.roaring_blaze.remains&target.time_to_die>10&(action.conflagrate.charges=2+set_bonus.tier19_4pc|(action.conflagrate.charges>=1+set_bonus.tier19_4pc&action.conflagrate.recharge_time<cast_time+gcd)|target.time_to_die<24)
@@ -150,7 +150,7 @@ local function Apl()
     if AR.Cast(S.Conflagrate) then return ""; end
   end
   -- conflagrate,if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack>0&dot.immolate.remains>dot.immolate.duration*0.3&(active_enemies=1|soul_shard<3)&soul_shard<5
-  if S.Conflagrate:IsCastableP() and (S.RoaringBlaze:IsAvailable() and Target:DebuffStackP(S.RoaringBlazeDebuff) > 0 and Target:DebuffRemainsP(S.ImmolateDebuff) > S.ImmolateDebuff:BaseDuration() * 0.3 and (Cache.EnemiesCount[5] == 1 or soul_shard < 3) and soul_shard < 5) then
+  if S.Conflagrate:IsCastableP() and (S.RoaringBlaze:IsAvailable() and Target:DebuffStackP(S.RoaringBlazeDebuff) > 0 and Target:DebuffRemainsP(S.ImmolateDebuff) > S.ImmolateDebuff:BaseDuration() * 0.3 and (Cache.EnemiesCount[40] == 1 or soul_shard < 3) and soul_shard < 5) then
     if AR.Cast(S.Conflagrate) then return ""; end
   end
   -- conflagrate,if=!talent.roaring_blaze.enabled&buff.backdraft.stack<3&(charges=1+set_bonus.tier19_4pc&recharge_time<action.chaos_bolt.cast_time|charges=2+set_bonus.tier19_4pc)&soul_shard<5
@@ -174,23 +174,23 @@ local function Apl()
     if AR.Cast(S.SummonInfernal) then return ""; end
   end
   -- summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<=2&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)
-  if S.SummonDoomguard:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[5] <= 2 and (Target:TimeToDie() > 180 or Target:HealthPercentage() <= 20 or Target:TimeToDie() < 30)) then
+  if S.SummonDoomguard:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[40] <= 2 and (Target:TimeToDie() > 180 or Target:HealthPercentage() <= 20 or Target:TimeToDie() < 30)) then
     if AR.Cast(S.SummonDoomguard) then return ""; end
   end
   -- summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>2
-  if S.SummonInfernal:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[5] > 2) then
+  if S.SummonInfernal:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[40] > 2) then
     if AR.Cast(S.SummonInfernal) then return ""; end
   end
   -- summon_doomguard,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal=1&artifact.lord_of_flames.rank>0&buff.lord_of_flames.remains&!pet.doomguard.active
-  if S.SummonDoomguard:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[5] == 1 and S.LordofFlames:ArtifactRank() > 0 and bool(Player:BuffRemainsP(S.LordofFlamesBuff)) and not bool(pet.doomguard.active)) then
+  if S.SummonDoomguard:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[30] == 1 and S.LordofFlames:ArtifactRank() > 0 and bool(Player:BuffRemainsP(S.LordofFlamesBuff)) and not bool(pet.doomguard.active)) then
     if AR.Cast(S.SummonDoomguard) then return ""; end
   end
   -- summon_doomguard,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal=1&equipped.132379&!cooldown.sindorei_spite_icd.remains
-  if S.SummonDoomguard:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[5] == 1 and I.Item132379:IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
+  if S.SummonDoomguard:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[30] == 1 and I.Item132379:IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
     if AR.Cast(S.SummonDoomguard) then return ""; end
   end
   -- summon_infernal,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>1&equipped.132379&!cooldown.sindorei_spite_icd.remains
-  if S.SummonInfernal:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[5] > 1 and I.Item132379:IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
+  if S.SummonInfernal:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[30] > 1 and I.Item132379:IsEquipped() and not bool(S.SindoreiSpiteIcd:CooldownRemainsP())) then
     if AR.Cast(S.SummonInfernal) then return ""; end
   end
   -- soul_harvest,if=!buff.soul_harvest.remains
@@ -198,19 +198,19 @@ local function Apl()
     if AR.Cast(S.SoulHarvest) then return ""; end
   end
   -- chaos_bolt,if=active_enemies<4&buff.active_havoc.remains>cast_time
-  if S.ChaosBolt:IsCastableP() and (Cache.EnemiesCount[5] < 4 and Player:BuffRemainsP(S.ActiveHavocBuff) > S.ChaosBolt:CastTime()) then
+  if S.ChaosBolt:IsCastableP() and (Cache.EnemiesCount[40] < 4 and Player:BuffRemainsP(S.ActiveHavocBuff) > S.ChaosBolt:CastTime()) then
     if AR.Cast(S.ChaosBolt) then return ""; end
   end
   -- channel_demonfire,if=dot.immolate.remains>cast_time&(active_enemies=1|buff.active_havoc.remains<action.chaos_bolt.cast_time)
-  if S.ChannelDemonfire:IsCastableP() and (Target:DebuffRemainsP(S.ImmolateDebuff) > S.ChannelDemonfire:CastTime() and (Cache.EnemiesCount[5] == 1 or Player:BuffRemainsP(S.ActiveHavocBuff) < S.ChaosBolt:CastTime())) then
+  if S.ChannelDemonfire:IsCastableP() and (Target:DebuffRemainsP(S.ImmolateDebuff) > S.ChannelDemonfire:CastTime() and (Cache.EnemiesCount[40] == 1 or Player:BuffRemainsP(S.ActiveHavocBuff) < S.ChaosBolt:CastTime())) then
     if AR.Cast(S.ChannelDemonfire) then return ""; end
   end
   -- rain_of_fire,if=active_enemies>=3
-  if S.RainofFire:IsCastableP() and (Cache.EnemiesCount[5] >= 3) then
+  if S.RainofFire:IsCastableP() and (Cache.EnemiesCount[35] >= 3) then
     if AR.Cast(S.RainofFire) then return ""; end
   end
   -- rain_of_fire,if=active_enemies>=6&talent.wreak_havoc.enabled
-  if S.RainofFire:IsCastableP() and (Cache.EnemiesCount[5] >= 6 and S.WreakHavoc:IsAvailable()) then
+  if S.RainofFire:IsCastableP() and (Cache.EnemiesCount[35] >= 6 and S.WreakHavoc:IsAvailable()) then
     if AR.Cast(S.RainofFire) then return ""; end
   end
   -- dimensional_rift,if=target.time_to_die<=32|!equipped.144369|charges>1|(!equipped.144369&(!talent.grimoire_of_service.enabled|recharge_time<cooldown.service_pet.remains)&(!talent.soul_harvest.enabled|recharge_time<cooldown.soul_harvest.remains)&(!talent.grimoire_of_supremacy.enabled|recharge_time<cooldown.summon_doomguard.remains))
@@ -226,7 +226,7 @@ local function Apl()
     if AR.Cast(S.Cataclysm) then return ""; end
   end
   -- chaos_bolt,if=active_enemies<3&(cooldown.havoc.remains>12&cooldown.havoc.remains|active_enemies=1|soul_shard>=5-spell_targets.infernal_awakening*1.5|target.time_to_die<=10)
-  if S.ChaosBolt:IsCastableP() and (Cache.EnemiesCount[5] < 3 and (S.Havoc:CooldownRemainsP() > 12 and bool(S.Havoc:CooldownRemainsP()) or Cache.EnemiesCount[5] == 1 or soul_shard >= 5 - Cache.EnemiesCount[5] * 1.5 or Target:TimeToDie() <= 10)) then
+  if S.ChaosBolt:IsCastableP() and (Cache.EnemiesCount[40] < 3 and (S.Havoc:CooldownRemainsP() > 12 and bool(S.Havoc:CooldownRemainsP()) or Cache.EnemiesCount[40] == 1 or soul_shard >= 5 - Cache.EnemiesCount[40] * 1.5 or Target:TimeToDie() <= 10)) then
     if AR.Cast(S.ChaosBolt) then return ""; end
   end
   -- shadowburn
@@ -238,7 +238,7 @@ local function Apl()
     if AR.Cast(S.Conflagrate) then return ""; end
   end
   -- immolate,cycle_targets=1,if=(active_enemies<5|!talent.fire_and_brimstone.enabled)&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>=action.immolate.cast_time*active_enemies)&!talent.roaring_blaze.enabled&remains<=duration*0.3
-  if S.Immolate:IsCastableP() and ((Cache.EnemiesCount[5] < 5 or not S.FireandBrimstone:IsAvailable()) and (not S.Cataclysm:IsAvailable() or S.Cataclysm:CooldownRemainsP() >= S.Immolate:CastTime() * Cache.EnemiesCount[5]) and not S.RoaringBlaze:IsAvailable() and Target:DebuffRemainsP(S.Immolate) <= S.Immolate:BaseDuration() * 0.3) then
+  if S.Immolate:IsCastableP() and ((Cache.EnemiesCount[40] < 5 or not S.FireandBrimstone:IsAvailable()) and (not S.Cataclysm:IsAvailable() or S.Cataclysm:CooldownRemainsP() >= S.Immolate:CastTime() * Cache.EnemiesCount[40]) and not S.RoaringBlaze:IsAvailable() and Target:DebuffRemainsP(S.Immolate) <= S.Immolate:BaseDuration() * 0.3) then
     if AR.Cast(S.Immolate) then return ""; end
   end
   -- incinerate

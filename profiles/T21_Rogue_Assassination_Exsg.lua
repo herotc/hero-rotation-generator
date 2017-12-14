@@ -85,8 +85,8 @@ local Settings = {
 };
 
 -- Variables
-local EnergyRegenCombined = 0;
-local EnergyTimeToMaxCombined = 0;
+local VarEnergyRegenCombined = 0;
+local VarEnergyTimeToMaxCombined = 0;
 
 local function num(val)
   if val then return 1 else return 0 end
@@ -134,7 +134,7 @@ local function Apl()
       if AR.Cast(S.Berserking, Settings.Assassination.OffGCDasOffGCD.Berserking) then return ""; end
     end
     -- arcane_torrent,if=dot.kingsbane.ticking&!buff.envenom.up&energy.deficit>=15+variable.energy_regen_combined*gcd.remains*1.1
-    if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (Target:DebuffP(S.KingsbaneDebuff) and not Player:BuffP(S.EnvenomBuff) and Player:EnergyDeficit() >= 15 + EnergyRegenCombined * Player:GCDRemains() * 1.1) then
+    if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (Target:DebuffP(S.KingsbaneDebuff) and not Player:BuffP(S.EnvenomBuff) and Player:EnergyDeficit() >= 15 + VarEnergyRegenCombined * Player:GCDRemains() * 1.1) then
       if AR.Cast(S.ArcaneTorrent, Settings.Assassination.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
     end
     -- marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit*1.5|(raid_event.adds.in>40&combo_points.deficit>=cp_max_spend)
@@ -170,7 +170,7 @@ local function Apl()
       if AR.Cast(S.Vanish) then return ""; end
     end
     -- vanish,if=talent.shadow_focus.enabled&variable.energy_time_to_max_combined>=2&combo_points.deficit>=4
-    if S.Vanish:IsCastableP() and (S.ShadowFocus:IsAvailable() and EnergyTimeToMaxCombined >= 2 and Player:ComboPointsDeficit() >= 4) then
+    if S.Vanish:IsCastableP() and (S.ShadowFocus:IsAvailable() and VarEnergyTimeToMaxCombined >= 2 and Player:ComboPointsDeficit() >= 4) then
       if AR.Cast(S.Vanish) then return ""; end
     end
     -- toxic_blade,if=combo_points.deficit>=1+(mantle_duration>=0.2)&dot.rupture.remains>8&cooldown.vendetta.remains>10
@@ -184,7 +184,7 @@ local function Apl()
       if AR.Cast(S.DeathFromAbove) then return ""; end
     end
     -- envenom,if=combo_points>=4+(talent.deeper_stratagem.enabled&!set_bonus.tier19_4pc)&(debuff.vendetta.up|mantle_duration>=0.2|debuff.surge_of_toxins.remains<0.2|energy.deficit<=25+variable.energy_regen_combined)
-    if S.Envenom:IsCastableP() and (Player:ComboPoints() >= 4 + num((S.DeeperStratagem:IsAvailable() and not AC.Tier19_4Pc)) and (Target:DebuffP(S.VendettaDebuff) or mantle_duration >= 0.2 or Target:DebuffRemainsP(S.SurgeofToxinsDebuff) < 0.2 or Player:EnergyDeficit() <= 25 + EnergyRegenCombined)) then
+    if S.Envenom:IsCastableP() and (Player:ComboPoints() >= 4 + num((S.DeeperStratagem:IsAvailable() and not AC.Tier19_4Pc)) and (Target:DebuffP(S.VendettaDebuff) or mantle_duration >= 0.2 or Target:DebuffRemainsP(S.SurgeofToxinsDebuff) < 0.2 or Player:EnergyDeficit() <= 25 + VarEnergyRegenCombined)) then
       if AR.Cast(S.Envenom) then return ""; end
     end
     -- envenom,if=talent.elaborate_planning.enabled&combo_points>=3+!talent.exsanguinate.enabled&buff.elaborate_planning.remains<0.2
@@ -250,11 +250,11 @@ local function Apl()
   end
   -- variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*(7+talent.venom_rush.enabled*3)%2
   if (true) then
-    EnergyRegenCombined = Player:EnergyRegen() + poisoned_bleeds * (7 + num(S.VenomRush:IsAvailable()) * 3) / 2
+    VarEnergyRegenCombined = Player:EnergyRegen() + poisoned_bleeds * (7 + num(S.VenomRush:IsAvailable()) * 3) / 2
   end
   -- variable,name=energy_time_to_max_combined,value=energy.deficit%variable.energy_regen_combined
   if (true) then
-    EnergyTimeToMaxCombined = Player:EnergyDeficit() / EnergyRegenCombined
+    VarEnergyTimeToMaxCombined = Player:EnergyDeficit() / VarEnergyRegenCombined
   end
   -- call_action_list,name=cds
   if (true) then
@@ -269,7 +269,7 @@ local function Apl()
     local ShouldReturn = Finish(); if ShouldReturn then return ShouldReturn; end
   end
   -- call_action_list,name=build,if=combo_points.deficit>1|energy.deficit<=25+variable.energy_regen_combined
-  if (Player:ComboPointsDeficit() > 1 or Player:EnergyDeficit() <= 25 + EnergyRegenCombined) then
+  if (Player:ComboPointsDeficit() > 1 or Player:EnergyDeficit() <= 25 + VarEnergyRegenCombined) then
     local ShouldReturn = Build(); if ShouldReturn then return ShouldReturn; end
   end
 end
