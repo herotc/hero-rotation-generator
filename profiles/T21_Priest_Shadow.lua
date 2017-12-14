@@ -21,7 +21,21 @@ local AR     = AethysRotation
 -- Spells
 if not Spell.Priest then Spell.Priest = {} end
 Spell.Priest.Shadow = {
+  FortressoftheMind                     = Spell(193195),
+  Sanlayn                               = Spell(),
+  ShadowyInsight                        = Spell(),
+  Mindbender                            = Spell(200174),
+  LashofInsanity                        = Spell(),
+  TothePain                             = Spell(),
+  Sanlayn                               = Spell(199855),
+  TouchofDarkness                       = Spell(),
+  VoidCorruption                        = Spell(),
+  ReaperofSouls                         = Spell(199853),
+  MassHysteria                          = Spell(),
   SurrenderToMadness                    = Spell(193223),
+  Shadowform                            = Spell(),
+  ShadowformBuff                        = Spell(),
+  MindBlast                             = Spell(8092),
   ShadowWordDeath                       = Spell(32379),
   ZeksExterminatusBuff                  = Spell(236546),
   ShadowWordPain                        = Spell(589),
@@ -30,12 +44,8 @@ Spell.Priest.Shadow = {
   VampiricTouch                         = Spell(34914),
   VampiricTouchDebuff                   = Spell(34914),
   VoidEruption                          = Spell(228260),
-  Mindbender                            = Spell(200174),
   ShadowCrash                           = Spell(205385),
-  ReaperofSouls                         = Spell(199853),
-  MindBlast                             = Spell(8092),
   LegacyoftheVoid                       = Spell(193225),
-  FortressoftheMind                     = Spell(193195),
   AuspiciousSpirits                     = Spell(155271),
   ShadowyInsight                        = Spell(162452),
   ShadowWordVoid                        = Spell(205351),
@@ -55,7 +65,6 @@ Spell.Priest.Shadow = {
   Dispersion                            = Spell(47585),
   Shadowfiend                           = Spell(34433),
   SphereofInsanity                      = Spell(),
-  Sanlayn                               = Spell(199855),
   UnleashtheShadows                     = Spell(),
   ShadowyInsightBuff                    = Spell(124430),
   SurrenderToMadnessBuff                = Spell(193223)
@@ -65,10 +74,10 @@ local S = Spell.Priest.Shadow;
 -- Items
 if not Item.Priest then Item.Priest = {} end
 Item.Priest.Shadow = {
-  ZeksExterminatus                 = Item(144438),
   MangazasMadness                  = Item(132864),
-  SephuzsSecret                    = Item(132452),
-  ProlongedPower                   = Item(142117)
+  ProlongedPower                   = Item(142117),
+  ZeksExterminatus                 = Item(144438),
+  SephuzsSecret                    = Item(132452)
 };
 local I = Item.Priest.Shadow;
 
@@ -84,15 +93,15 @@ local Settings = {
 };
 
 -- Variables
-local VarActorsFightTimeMod = 0;
-local VarS2Mcheck = 0;
-local VarS2MsetupTime = 0;
+local VarHasteEval = 0;
 local VarEruptEval = 0;
+local VarCdTime = 0;
+local VarDotSwpDpgcd = 0;
 local VarDotVtDpgcd = 0;
 local VarSearDpgcd = 0;
-local VarDotSwpDpgcd = 0;
-local VarCdTime = 0;
-local VarHasteEval = 0;
+local VarS2MsetupTime = 0;
+local VarActorsFightTimeMod = 0;
+local VarS2Mcheck = 0;
 
 local function num(val)
   if val then return 1 else return 0 end
@@ -104,6 +113,56 @@ end
 
 --- ======= ACTION LISTS =======
 local function Apl()
+  local function Precombat()
+    -- flask
+    -- food
+    -- augmentation
+    -- snapshot_stats
+    -- variable,name=haste_eval,op=set,value=(raw_haste_pct-0.3)*(10+10*equipped.mangazas_madness+5*talent.fortress_of_the_mind.enabled)
+    if (true) then
+      VarHasteEval = (raw_haste_pct - 0.3) * (10 + 10 * num(I.MangazasMadness:IsEquipped()) + 5 * num(S.FortressoftheMind:IsAvailable()))
+    end
+    -- variable,name=haste_eval,op=max,value=0
+    if (true) then
+      VarHasteEval = math.max(VarHasteEval, 0)
+    end
+    -- variable,name=erupt_eval,op=set,value=26+1*talent.fortress_of_the_mind.enabled-4*talent.Sanlayn.enabled-3*talent.Shadowy_insight.enabled+variable.haste_eval*1.5
+    if (true) then
+      VarEruptEval = 26 + 1 * num(S.FortressoftheMind:IsAvailable()) - 4 * num(S.Sanlayn:IsAvailable()) - 3 * num(S.ShadowyInsight:IsAvailable()) + VarHasteEval * 1.5
+    end
+    -- variable,name=cd_time,op=set,value=(12+(2-2*talent.mindbender.enabled*set_bonus.tier20_4pc)*set_bonus.tier19_2pc+(1-3*talent.mindbender.enabled*set_bonus.tier20_4pc)*equipped.mangazas_madness+(6+5*talent.mindbender.enabled)*set_bonus.tier20_4pc+2*artifact.lash_of_insanity.rank)
+    if (true) then
+      VarCdTime = (12 + (2 - 2 * num(S.Mindbender:IsAvailable()) * num(AC.Tier20_4Pc)) * num(AC.Tier19_2Pc) + (1 - 3 * num(S.Mindbender:IsAvailable()) * num(AC.Tier20_4Pc)) * num(I.MangazasMadness:IsEquipped()) + (6 + 5 * num(S.Mindbender:IsAvailable())) * num(AC.Tier20_4Pc) + 2 * S.LashofInsanity:ArtifactRank())
+    end
+    -- variable,name=dot_swp_dpgcd,op=set,value=36.5*1.2*(1+0.06*artifact.to_the_pain.rank)*(1+0.2+stat.mastery_rating%16000)*0.75
+    if (true) then
+      VarDotSwpDpgcd = 36.5 * 1.2 * (1 + 0.06 * S.TothePain:ArtifactRank()) * (1 + 0.2 + stat.mastery_rating / 16000) * 0.75
+    end
+    -- variable,name=dot_vt_dpgcd,op=set,value=68*1.2*(1+0.2*talent.sanlayn.enabled)*(1+0.05*artifact.touch_of_darkness.rank)*(1+0.2+stat.mastery_rating%16000)*0.5
+    if (true) then
+      VarDotVtDpgcd = 68 * 1.2 * (1 + 0.2 * num(S.Sanlayn:IsAvailable())) * (1 + 0.05 * S.TouchofDarkness:ArtifactRank()) * (1 + 0.2 + stat.mastery_rating / 16000) * 0.5
+    end
+    -- variable,name=sear_dpgcd,op=set,value=120*1.2*(1+0.05*artifact.void_corruption.rank)
+    if (true) then
+      VarSearDpgcd = 120 * 1.2 * (1 + 0.05 * S.VoidCorruption:ArtifactRank())
+    end
+    -- variable,name=s2msetup_time,op=set,value=(0.8*(83+(20+20*talent.fortress_of_the_mind.enabled)*set_bonus.tier20_4pc-(5*talent.sanlayn.enabled)+((33-13*set_bonus.tier20_4pc)*talent.reaper_of_souls.enabled)+set_bonus.tier19_2pc*4+8*equipped.mangazas_madness+(raw_haste_pct*10*(1+0.7*set_bonus.tier20_4pc))*(2+(0.8*set_bonus.tier19_2pc)+(1*talent.reaper_of_souls.enabled)+(2*artifact.mass_hysteria.rank)-(1*talent.sanlayn.enabled)))),if=talent.surrender_to_madness.enabled
+    if (S.SurrenderToMadness:IsAvailable()) then
+      VarS2MsetupTime = (0.8 * (83 + (20 + 20 * num(S.FortressoftheMind:IsAvailable())) * num(AC.Tier20_4Pc) - (5 * num(S.Sanlayn:IsAvailable())) + ((33 - 13 * num(AC.Tier20_4Pc)) * num(S.ReaperofSouls:IsAvailable())) + num(AC.Tier19_2Pc) * 4 + 8 * num(I.MangazasMadness:IsEquipped()) + (raw_haste_pct * 10 * (1 + 0.7 * num(AC.Tier20_4Pc))) * (2 + (0.8 * num(AC.Tier19_2Pc)) + (1 * num(S.ReaperofSouls:IsAvailable())) + (2 * S.MassHysteria:ArtifactRank()) - (1 * num(S.Sanlayn:IsAvailable())))))
+    end
+    -- potion
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+      if AR.CastSuggested(I.ProlongedPower) then return ""; end
+    end
+    -- shadowform,if=!buff.shadowform.up
+    if S.Shadowform:IsCastableP() and (not Player:BuffP(S.ShadowformBuff)) then
+      if AR.Cast(S.Shadowform) then return ""; end
+    end
+    -- mind_blast
+    if S.MindBlast:IsCastableP() and (true) then
+      if AR.Cast(S.MindBlast) then return ""; end
+    end
+  end
   local function Check()
     -- variable,op=set,name=actors_fight_time_mod,value=0
     if (true) then
@@ -403,6 +462,10 @@ local function Apl()
     if S.ShadowWordPain:IsCastableP() and (true) then
       if AR.Cast(S.ShadowWordPain) then return ""; end
     end
+  end
+  -- call precombat
+  if not Player:AffectingCombat() then
+    local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- potion,if=buff.bloodlust.react|target.time_to_die<=80|(target.health.pct<35&cooldown.power_infusion.remains<30)
   if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:HasHeroism() or Target:TimeToDie() <= 80 or (Target:HealthPercentage() < 35 and S.PowerInfusion:CooldownRemainsP() < 30)) then

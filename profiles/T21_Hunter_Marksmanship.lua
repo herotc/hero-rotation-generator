@@ -21,6 +21,8 @@ local AR     = AethysRotation
 -- Spells
 if not Spell.Hunter then Spell.Hunter = {} end
 Spell.Hunter.Marksmanship = {
+  SummonPet                             = Spell(),
+  Windburst                             = Spell(204147),
   ArcaneTorrent                         = Spell(50613),
   Sidewinders                           = Spell(214579),
   Berserking                            = Spell(26297),
@@ -43,7 +45,6 @@ Spell.Hunter.Marksmanship = {
   HuntersMarkDebuff                     = Spell(185365),
   BlackArrow                            = Spell(194599),
   AMurderofCrows                        = Spell(131894),
-  Windburst                             = Spell(204147),
   Barrage                               = Spell(120360),
   ArcaneShot                            = Spell(185358),
   CounterShot                           = Spell(147362),
@@ -90,6 +91,24 @@ end
 
 --- ======= ACTION LISTS =======
 local function Apl()
+  local function Precombat()
+    -- flask
+    -- augmentation
+    -- food
+    -- summon_pet
+    if S.SummonPet:IsCastableP() and (true) then
+      if AR.Cast(S.SummonPet) then return ""; end
+    end
+    -- snapshot_stats
+    -- potion
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+      if AR.CastSuggested(I.ProlongedPower) then return ""; end
+    end
+    -- windburst
+    if S.Windburst:IsCastableP() and (true) then
+      if AR.Cast(S.Windburst) then return ""; end
+    end
+  end
   local function Cooldowns()
     -- arcane_torrent,if=focus.deficit>=30&(!talent.sidewinders.enabled|cooldown.sidewinders.charges<2)
     if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (Player:FocusDeficit() >= 30 and (not S.Sidewinders:IsAvailable() or S.Sidewinders:ChargesP() < 2)) then
@@ -333,6 +352,10 @@ local function Apl()
     if S.Sidewinders:IsCastableP() and (true) then
       if AR.Cast(S.Sidewinders) then return ""; end
     end
+  end
+  -- call precombat
+  if not Player:AffectingCombat() then
+    local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- auto_shot
   -- counter_shot,if=target.debuff.casting.react

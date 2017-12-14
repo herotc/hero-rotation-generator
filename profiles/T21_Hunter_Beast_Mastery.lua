@@ -21,6 +21,7 @@ local AR     = AethysRotation
 -- Spells
 if not Spell.Hunter then Spell.Hunter = {} end
 Spell.Hunter.BeastMastery = {
+  SummonPet                             = Spell(),
   CounterShot                           = Spell(147362),
   UseItems                              = Spell(),
   ArcaneTorrent                         = Spell(50613),
@@ -83,7 +84,24 @@ end
 
 --- ======= ACTION LISTS =======
 local function Apl()
-
+  local function Precombat()
+    -- flask
+    -- augmentation
+    -- food
+    -- summon_pet
+    if S.SummonPet:IsCastableP() and (true) then
+      if AR.Cast(S.SummonPet) then return ""; end
+    end
+    -- snapshot_stats
+    -- potion
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+      if AR.CastSuggested(I.ProlongedPower) then return ""; end
+    end
+  end
+  -- call precombat
+  if not Player:AffectingCombat() then
+    local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
+  end
   -- auto_shot
   -- counter_shot,if=target.debuff.casting.react
   if S.CounterShot:IsCastableP() and (bool(target.debuff.casting.react)) then

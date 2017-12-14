@@ -62,9 +62,9 @@ local S = Spell.Warrior.Arms;
 -- Items
 if not Item.Warrior then Item.Warrior = {} end
 Item.Warrior.Arms = {
+  ProlongedPower                   = Item(142117),
   TheGreatStormsEye                = Item(),
-  ArchavonsHeavyHand               = Item(),
-  ProlongedPower                   = Item(142117)
+  ArchavonsHeavyHand               = Item()
 };
 local I = Item.Warrior.Arms;
 
@@ -91,6 +91,16 @@ end
 
 --- ======= ACTION LISTS =======
 local function Apl()
+  local function Precombat()
+    -- flask,type=countless_armies
+    -- food,type=nightborne_delicacy_platter
+    -- augmentation,type=defiled
+    -- snapshot_stats
+    -- potion,name=old_war
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+      if AR.CastSuggested(I.ProlongedPower) then return ""; end
+    end
+  end
   local function Aoe()
     -- warbreaker,if=(cooldown.bladestorm.up|cooldown.bladestorm.remains<=gcd)&(cooldown.battle_cry.up|cooldown.battle_cry.remains<=gcd)
     if S.Warbreaker:IsCastableP() and ((S.Bladestorm:CooldownUpP() or S.Bladestorm:CooldownRemainsP() <= Player:GCD()) and (S.BattleCry:CooldownUpP() or S.BattleCry:CooldownRemainsP() <= Player:GCD())) then
@@ -298,6 +308,10 @@ local function Apl()
     if S.Bladestorm:IsCastableP() and ((raid_event.adds.in > 90 or not bool(raid_event.adds.exists)) and not AC.Tier20_4Pc) then
       if AR.Cast(S.Bladestorm) then return ""; end
     end
+  end
+  -- call precombat
+  if not Player:AffectingCombat() then
+    local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- charge
   if S.Charge:IsCastableP() and (true) then

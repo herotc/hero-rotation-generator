@@ -95,6 +95,16 @@ end
 
 --- ======= ACTION LISTS =======
 local function Apl()
+  local function Precombat()
+    -- flask,type=countless_armies
+    -- food,type=nightborne_delicacy_platter
+    -- augmentation,type=defiled
+    -- snapshot_stats
+    -- potion,name=old_war
+    if I.OldWar:IsReady() and Settings.Commons.UsePotions and (true) then
+      if AR.CastSuggested(I.OldWar) then return ""; end
+    end
+  end
   local function Aoe()
     -- bloodthirst,if=buff.enrage.down|rage<90
     if S.Bloodthirst:IsCastableP() and (Player:BuffDownP(S.EnrageBuff) or rage < 90) then
@@ -282,6 +292,10 @@ local function Apl()
     if S.Whirlwind:IsCastableP() and (true) then
       if AR.Cast(S.Whirlwind) then return ""; end
     end
+  end
+  -- call precombat
+  if not Player:AffectingCombat() then
+    local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- auto_attack
   -- charge

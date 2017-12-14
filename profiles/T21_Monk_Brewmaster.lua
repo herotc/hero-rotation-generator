@@ -21,6 +21,9 @@ local AR     = AethysRotation
 -- Spells
 if not Spell.Monk then Spell.Monk = {} end
 Spell.Monk.Brewmaster = {
+  DampenHarm                            = Spell(122278),
+  ChiBurst                              = Spell(),
+  ChiWave                               = Spell(),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
   ExplodingKeg                          = Spell(214326),
@@ -39,7 +42,6 @@ Spell.Monk.Brewmaster = {
   BlackoutCombo                         = Spell(196736),
   GreaterGiftoftheOx                    = Spell(),
   GiftoftheOx                           = Spell(124507),
-  DampenHarm                            = Spell(122278),
   FortifyingBrewBuff                    = Spell(115203),
   FortifyingBrew                        = Spell(115203),
   DampenHarmBuff                        = Spell(122278),
@@ -78,6 +80,28 @@ end
 
 --- ======= ACTION LISTS =======
 local function Apl()
+  local function Precombat()
+    -- flask
+    -- food
+    -- augmentation
+    -- snapshot_stats
+    -- potion
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+      if AR.CastSuggested(I.ProlongedPower) then return ""; end
+    end
+    -- dampen_harm
+    if S.DampenHarm:IsCastableP() and (true) then
+      if AR.Cast(S.DampenHarm) then return ""; end
+    end
+    -- chi_burst
+    if S.ChiBurst:IsCastableP() and (true) then
+      if AR.Cast(S.ChiBurst) then return ""; end
+    end
+    -- chi_wave
+    if S.ChiWave:IsCastableP() and (true) then
+      if AR.Cast(S.ChiWave) then return ""; end
+    end
+  end
   local function St()
     -- potion
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
@@ -135,6 +159,10 @@ local function Apl()
     if S.TigerPalm:IsCastableP() and (not S.BlackoutCombo:IsAvailable() and S.KegSmash:CooldownRemainsP() >= Player:GCD() and (Player:Energy() + (Player:EnergyRegen() * (S.KegSmash:CooldownRemainsP()))) >= 55) then
       if AR.Cast(S.TigerPalm) then return ""; end
     end
+  end
+  -- call precombat
+  if not Player:AffectingCombat() then
+    local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- auto_attack
   -- greater_gift_of_the_ox

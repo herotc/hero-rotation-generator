@@ -21,6 +21,9 @@ local AR     = AethysRotation
 -- Spells
 if not Spell.Druid then Spell.Druid = {} end
 Spell.Druid.Balance = {
+  MoonkinForm                           = Spell(24858),
+  BlessingofElune                       = Spell(202737),
+  NewMoon                               = Spell(202767),
   Starfall                              = Spell(191034),
   StellarEmpowermentDebuff              = Spell(197637),
   CelestialAlignmentBuff                = Spell(194223),
@@ -32,7 +35,6 @@ Spell.Druid.Balance = {
   Starsurge                             = Spell(78674),
   OnethsIntuitionBuff                   = Spell(209406),
   AstralAccelerationBuff                = Spell(242232),
-  NewMoon                               = Spell(202767),
   HalfMoon                              = Spell(202768),
   FullMoon                              = Spell(202771),
   LunarStrike                           = Spell(194153),
@@ -53,7 +55,6 @@ Spell.Druid.Balance = {
   FuryofEluneBuff                       = Spell(202770),
   WarriorofElune                        = Spell(202425),
   SolarSolsticeBuff                     = Spell(252767),
-  BlessingofElune                       = Spell(202737),
   BlessingoftheAncients                 = Spell(202360),
   BlessingofEluneBuff                   = Spell(202737),
   BlessingofAnsheBuff                   = Spell(202739),
@@ -68,9 +69,9 @@ local S = Spell.Druid.Balance;
 -- Items
 if not Item.Druid then Item.Druid = {} end
 Item.Druid.Balance = {
+  ProlongedPower                   = Item(142117),
   LadyandtheChild                  = Item(144295),
   RadiantMoonlight                 = Item(151800),
-  ProlongedPower                   = Item(142117),
   TheEmeraldDreamcatcher           = Item(137062)
 };
 local I = Item.Druid.Balance;
@@ -125,6 +126,28 @@ end
 
 --- ======= ACTION LISTS =======
 local function Apl()
+  local function Precombat()
+    -- flask
+    -- food
+    -- augmentation
+    -- moonkin_form
+    if S.MoonkinForm:IsCastableP() and (true) then
+      if AR.Cast(S.MoonkinForm) then return ""; end
+    end
+    -- blessing_of_elune
+    if S.BlessingofElune:IsCastableP() and (true) then
+      if AR.Cast(S.BlessingofElune) then return ""; end
+    end
+    -- snapshot_stats
+    -- potion
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+      if AR.CastSuggested(I.ProlongedPower) then return ""; end
+    end
+    -- new_moon
+    if S.NewMoon:IsCastableP() and (true) then
+      if AR.Cast(S.NewMoon) then return ""; end
+    end
+  end
   local function Aoe()
     -- starfall,if=debuff.stellar_empowerment.remains<gcd.max*2|astral_power.deficit<22.5|(buff.celestial_alignment.remains>8|buff.incarnation.remains>8)|target.time_to_die<8
     if S.Starfall:IsCastableP() and (Target:DebuffRemainsP(S.StellarEmpowermentDebuff) < Player:GCD() * 2 or Player:AstralPowerDeficit() < 22.5 or (Player:BuffRemainsP(S.CelestialAlignmentBuff) > 8 or Player:BuffRemainsP(S.IncarnationBuff) > 8) or Target:TimeToDie() < 8) then
@@ -432,6 +455,10 @@ local function Apl()
     if S.SolarWrath:IsCastableP() and (true) then
       if AR.Cast(S.SolarWrath) then return ""; end
     end
+  end
+  -- call precombat
+  if not Player:AffectingCombat() then
+    local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- potion,name=potion_of_prolonged_power,if=buff.celestial_alignment.up|buff.incarnation.up
   if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.CelestialAlignmentBuff) or Player:BuffP(S.IncarnationBuff)) then

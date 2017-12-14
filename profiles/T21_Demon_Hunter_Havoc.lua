@@ -22,6 +22,7 @@ local AR     = AethysRotation
 if not Spell.DemonHunter then Spell.DemonHunter = {} end
 Spell.DemonHunter.Havoc = {
   Metamorphosis                         = Spell(191427),
+  DemonReborn                           = Spell(193897),
   Demonic                               = Spell(213410),
   MetamorphosisBuff                     = Spell(162264),
   Nemesis                               = Spell(206491),
@@ -104,6 +105,20 @@ end
 
 --- ======= ACTION LISTS =======
 local function Apl()
+  local function Precombat()
+    -- flask
+    -- augmentation
+    -- food
+    -- snapshot_stats
+    -- potion
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+      if AR.CastSuggested(I.ProlongedPower) then return ""; end
+    end
+    -- metamorphosis,if=!(talent.demon_reborn.enabled&talent.demonic.enabled)
+    if S.Metamorphosis:IsCastableP() and (not (S.DemonReborn:IsAvailable() and S.Demonic:IsAvailable())) then
+      if AR.Cast(S.Metamorphosis) then return ""; end
+    end
+  end
   local function Cooldown()
     -- metamorphosis,if=!(talent.demonic.enabled|variable.pooling_for_meta|variable.waiting_for_nemesis|variable.waiting_for_chaos_blades)|target.time_to_die<25
     if S.Metamorphosis:IsCastableP() and (not (S.Demonic:IsAvailable() or bool(VarPoolingForMeta) or bool(VarWaitingForNemesis) or bool(VarWaitingForChaosBlades)) or Target:TimeToDie() < 25) then
@@ -309,6 +324,10 @@ local function Apl()
     if S.ThrowGlaive:IsCastableP() and (not S.Bloodlet:IsAvailable()) then
       if AR.Cast(S.ThrowGlaive) then return ""; end
     end
+  end
+  -- call precombat
+  if not Player:AffectingCombat() then
+    local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- auto_attack
   -- variable,name=waiting_for_nemesis,value=!(!talent.nemesis.enabled|cooldown.nemesis.ready|cooldown.nemesis.remains>target.time_to_die|cooldown.nemesis.remains>60)

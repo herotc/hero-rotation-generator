@@ -21,6 +21,8 @@ local AR     = AethysRotation
 -- Spells
 if not Spell.Mage then Spell.Mage = {} end
 Spell.Mage.Fire = {
+  MirrorImage                           = Spell(55342),
+  Pyroblast                             = Spell(11366),
   BlastWave                             = Spell(157981),
   CombustionBuff                        = Spell(190319),
   FireBlast                             = Spell(108853),
@@ -40,14 +42,12 @@ Spell.Mage.Fire = {
   UseItems                              = Spell(),
   Flamestrike                           = Spell(2120),
   FlamePatch                            = Spell(205037),
-  Pyroblast                             = Spell(11366),
   KaelthasUltimateAbilityBuff           = Spell(209455),
   HeatingUpBuff                         = Spell(48107),
   Scorch                                = Spell(2948),
   Fireball                              = Spell(133),
   Kindling                              = Spell(155148),
   IncantersFlowBuff                     = Spell(1463),
-  MirrorImage                           = Spell(55342),
   PhoenixReborn                         = Spell(),
   Counterspell                          = Spell(2139),
   TimeWarp                              = Spell(80353),
@@ -59,8 +59,8 @@ local S = Spell.Mage.Fire;
 -- Items
 if not Item.Mage then Item.Mage = {} end
 Item.Mage.Fire = {
-  Item132863                       = Item(132863),
   ProlongedPower                   = Item(142117),
+  Item132863                       = Item(132863),
   Item132454                       = Item(132454),
   Item132410                       = Item(132410)
 };
@@ -89,6 +89,24 @@ end
 
 --- ======= ACTION LISTS =======
 local function Apl()
+  local function Precombat()
+    -- flask
+    -- food
+    -- augmentation
+    -- snapshot_stats
+    -- mirror_image
+    if S.MirrorImage:IsCastableP() and (true) then
+      if AR.Cast(S.MirrorImage) then return ""; end
+    end
+    -- potion
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+      if AR.CastSuggested(I.ProlongedPower) then return ""; end
+    end
+    -- pyroblast
+    if S.Pyroblast:IsCastableP() and (true) then
+      if AR.Cast(S.Pyroblast) then return ""; end
+    end
+  end
   local function ActiveTalents()
     -- blast_wave,if=(buff.combustion.down)|(buff.combustion.up&action.fire_blast.charges<1&action.phoenixs_flames.charges<1)
     if S.BlastWave:IsCastableP() and ((Player:BuffDownP(S.CombustionBuff)) or (Player:BuffP(S.CombustionBuff) and S.FireBlast:ChargesP() < 1 and S.PhoenixsFlames:ChargesP() < 1)) then
@@ -300,6 +318,10 @@ local function Apl()
     if S.Scorch:IsCastableP() and (true) then
       if AR.Cast(S.Scorch) then return ""; end
     end
+  end
+  -- call precombat
+  if not Player:AffectingCombat() then
+    local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- counterspell,if=target.debuff.casting.react
   if S.Counterspell:IsCastableP() and (bool(target.debuff.casting.react)) then

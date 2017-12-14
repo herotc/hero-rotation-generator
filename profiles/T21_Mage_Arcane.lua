@@ -21,18 +21,19 @@ local AR     = AethysRotation
 -- Spells
 if not Spell.Mage then Spell.Mage = {} end
 Spell.Mage.Arcane = {
+  SummonArcaneFamiliar                  = Spell(),
+  MirrorImage                           = Spell(55342),
+  ArcaneBlast                           = Spell(30451),
   ArcaneOrb                             = Spell(153626),
   ArcaneMissiles                        = Spell(5143),
   ArcaneMissilesBuff                    = Spell(79683),
   ArcaneChargeBuff                      = Spell(36032),
   ArcaneExplosion                       = Spell(1449),
-  ArcaneBlast                           = Spell(30451),
   StartBurnPhase                        = Spell(),
   StopBurnPhase                         = Spell(),
   Evocation                             = Spell(12051),
   NetherTempest                         = Spell(114923),
   MarkofAluneth                         = Spell(224968),
-  MirrorImage                           = Spell(55342),
   RuneofPower                           = Spell(116011),
   ArcanePowerBuff                       = Spell(12042),
   ArcanePower                           = Spell(12042),
@@ -95,6 +96,28 @@ end
 
 --- ======= ACTION LISTS =======
 local function Apl()
+  local function Precombat()
+    -- flask
+    -- food
+    -- augmentation
+    -- summon_arcane_familiar
+    if S.SummonArcaneFamiliar:IsCastableP() and (true) then
+      if AR.Cast(S.SummonArcaneFamiliar) then return ""; end
+    end
+    -- snapshot_stats
+    -- mirror_image
+    if S.MirrorImage:IsCastableP() and (true) then
+      if AR.Cast(S.MirrorImage) then return ""; end
+    end
+    -- potion
+    if I.DeadlyGrace:IsReady() and Settings.Commons.UsePotions and (true) then
+      if AR.CastSuggested(I.DeadlyGrace) then return ""; end
+    end
+    -- arcane_blast
+    if S.ArcaneBlast:IsCastableP() and (true) then
+      if AR.Cast(S.ArcaneBlast) then return ""; end
+    end
+  end
   local function Build()
     -- arcane_orb
     if S.ArcaneOrb:IsCastableP() and (true) then
@@ -302,6 +325,10 @@ local function Apl()
     if (Target:TimeToDie() < VarAverageBurnLength) then
       VarTimeUntilBurn = 0
     end
+  end
+  -- call precombat
+  if not Player:AffectingCombat() then
+    local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- counterspell,if=target.debuff.casting.react
   if S.Counterspell:IsCastableP() and (bool(target.debuff.casting.react)) then

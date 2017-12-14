@@ -236,3 +236,25 @@ class Execution:
         Get the object of the execution.
         """
         return self.switch_type()[1]
+
+
+class PrecombatAction(Action):
+    """
+    Special action for precombat.
+    """
+
+    def __init__(self, apl):
+        super().__init__(ActionList(apl, '', 'CallPrecombat'),
+                         'call_action_list,name=precombat')
+
+    def print_lua(self):
+        lua_string = ''
+        if self.show_comments:
+            lua_string += f'-- call precombat'
+        exec_cast = self.execution().object_().print_cast()
+        lua_string += ('\n'
+                       f'if not Player:AffectingCombat() then\n'
+                       f'  {exec_cast}\n'
+                       f'end')
+        return lua_string
+    

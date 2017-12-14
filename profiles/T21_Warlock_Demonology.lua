@@ -21,16 +21,22 @@ local AR     = AethysRotation
 -- Spells
 if not Spell.Warlock then Spell.Warlock = {} end
 Spell.Warlock.Demonology = {
-  Implosion                             = Spell(196277),
+  SummonPet                             = Spell(),
+  GrimoireofSupremacy                   = Spell(152107),
+  GrimoireofSacrifice                   = Spell(),
+  DemonicPowerBuff                      = Spell(),
+  SummonInfernal                        = Spell(1122),
+  LordofFlames                          = Spell(),
+  SummonDoomguard                       = Spell(18540),
+  DemonicEmpowerment                    = Spell(193396),
+  Demonbolt                             = Spell(157695),
   ShadowBolt                            = Spell(686),
+  Implosion                             = Spell(196277),
   DemonicSynergyBuff                    = Spell(171982),
   SoulConduit                           = Spell(215941),
   HandofGuldan                          = Spell(105174),
   Shadowflame                           = Spell(205181),
   ShadowflameDebuff                     = Spell(205181),
-  SummonInfernal                        = Spell(1122),
-  GrimoireofSupremacy                   = Spell(152107),
-  SummonDoomguard                       = Spell(18540),
   CallDreadstalkers                     = Spell(104316),
   SummonDarkglare                       = Spell(205180),
   PowerTrip                             = Spell(196605),
@@ -42,7 +48,6 @@ Spell.Warlock.Demonology = {
   ShadowyInspirationBuff                = Spell(196606),
   ShadowyInspiration                    = Spell(196269),
   ThalkielsAscendance                   = Spell(238145),
-  DemonicEmpowerment                    = Spell(193396),
   UseItems                              = Spell(),
   Berserking                            = Spell(26297),
   BloodFury                             = Spell(20572),
@@ -50,17 +55,16 @@ Spell.Warlock.Demonology = {
   SoulHarvestBuff                       = Spell(196098),
   ThalkielsConsumption                  = Spell(211714),
   LifeTap                               = Spell(1454),
-  Demonwrath                            = Spell(193440),
-  Demonbolt                             = Spell(157695)
+  Demonwrath                            = Spell(193440)
 };
 local S = Spell.Warlock.Demonology;
 
 -- Items
 if not Item.Warlock then Item.Warlock = {} end
 Item.Warlock.Demonology = {
+  ProlongedPower                   = Item(142117),
   Item132369                       = Item(132369),
-  Item132379                       = Item(132379),
-  ProlongedPower                   = Item(142117)
+  Item132379                       = Item(132379)
 };
 local I = Item.Warlock.Demonology;
 
@@ -90,7 +94,48 @@ end
 
 --- ======= ACTION LISTS =======
 local function Apl()
-
+  local function Precombat()
+    -- flask
+    -- food
+    -- augmentation
+    -- summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)
+    if S.SummonPet:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and (not S.GrimoireofSacrifice:IsAvailable() or Player:BuffDownP(S.DemonicPowerBuff))) then
+      if AR.Cast(S.SummonPet) then return ""; end
+    end
+    -- summon_infernal,if=talent.grimoire_of_supremacy.enabled&artifact.lord_of_flames.rank>0
+    if S.SummonInfernal:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and S.LordofFlames:ArtifactRank() > 0) then
+      if AR.Cast(S.SummonInfernal) then return ""; end
+    end
+    -- summon_infernal,if=talent.grimoire_of_supremacy.enabled&active_enemies>1
+    if S.SummonInfernal:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[30] > 1) then
+      if AR.Cast(S.SummonInfernal) then return ""; end
+    end
+    -- summon_doomguard,if=talent.grimoire_of_supremacy.enabled&active_enemies=1&artifact.lord_of_flames.rank=0
+    if S.SummonDoomguard:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[40] == 1 and S.LordofFlames:ArtifactRank() == 0) then
+      if AR.Cast(S.SummonDoomguard) then return ""; end
+    end
+    -- snapshot_stats
+    -- potion
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+      if AR.CastSuggested(I.ProlongedPower) then return ""; end
+    end
+    -- demonic_empowerment
+    if S.DemonicEmpowerment:IsCastableP() and (true) then
+      if AR.Cast(S.DemonicEmpowerment) then return ""; end
+    end
+    -- demonbolt
+    if S.Demonbolt:IsCastableP() and (true) then
+      if AR.Cast(S.Demonbolt) then return ""; end
+    end
+    -- shadow_bolt
+    if S.ShadowBolt:IsCastableP() and (true) then
+      if AR.Cast(S.ShadowBolt) then return ""; end
+    end
+  end
+  -- call precombat
+  if not Player:AffectingCombat() then
+    local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
+  end
   -- implosion,if=wild_imp_remaining_duration<=action.shadow_bolt.execute_time&(buff.demonic_synergy.remains|talent.soul_conduit.enabled|(!talent.soul_conduit.enabled&spell_targets.implosion>1)|wild_imp_count<=4)
   if S.Implosion:IsCastableP() and (wild_imp_remaining_duration <= S.ShadowBolt:ExecuteTime() and (bool(Player:BuffRemainsP(S.DemonicSynergyBuff)) or S.SoulConduit:IsAvailable() or (not S.SoulConduit:IsAvailable() and Cache.EnemiesCount[40] > 1) or wild_imp_count <= 4)) then
     if AR.Cast(S.Implosion) then return ""; end

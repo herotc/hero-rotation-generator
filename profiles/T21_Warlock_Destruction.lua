@@ -21,6 +21,17 @@ local AR     = AethysRotation
 -- Spells
 if not Spell.Warlock then Spell.Warlock = {} end
 Spell.Warlock.Destruction = {
+  SummonPet                             = Spell(),
+  GrimoireofSupremacy                   = Spell(152107),
+  GrimoireofSacrifice                   = Spell(),
+  DemonicPowerBuff                      = Spell(),
+  SummonInfernal                        = Spell(1122),
+  LordofFlames                          = Spell(224103),
+  SummonDoomguard                       = Spell(18540),
+  LifeTap                               = Spell(1454),
+  EmpoweredLifeTap                      = Spell(235157),
+  EmpoweredLifeTapBuff                  = Spell(235156),
+  ChaosBolt                             = Spell(116858),
   Immolate                              = Spell(348),
   RoaringBlaze                          = Spell(205184),
   Havoc                                 = Spell(80240),
@@ -39,19 +50,11 @@ Spell.Warlock.Destruction = {
   SoulHarvestBuff                       = Spell(196098),
   Shadowburn                            = Spell(17877),
   ConflagrationofChaosBuff              = Spell(196546),
-  ChaosBolt                             = Spell(116858),
   BackdraftBuff                         = Spell(117828),
-  LifeTap                               = Spell(1454),
-  EmpoweredLifeTap                      = Spell(235157),
-  EmpoweredLifeTapBuff                  = Spell(235156),
   LessonsofSpacetimeBuff                = Spell(236174),
-  GrimoireofSupremacy                   = Spell(152107),
-  SummonDoomguard                       = Spell(18540),
   GrimoireofService                     = Spell(108501),
   ServicePet                            = Spell(),
   SoulHarvest                           = Spell(196098),
-  SummonInfernal                        = Spell(1122),
-  LordofFlames                          = Spell(224103),
   LordofFlamesBuff                      = Spell(226802),
   SindoreiSpiteIcd                      = Spell(),
   ChannelDemonfire                      = Spell(196447),
@@ -92,7 +95,48 @@ end
 
 --- ======= ACTION LISTS =======
 local function Apl()
-
+  local function Precombat()
+    -- flask
+    -- food
+    -- augmentation
+    -- summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)
+    if S.SummonPet:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and (not S.GrimoireofSacrifice:IsAvailable() or Player:BuffDownP(S.DemonicPowerBuff))) then
+      if AR.Cast(S.SummonPet) then return ""; end
+    end
+    -- summon_infernal,if=talent.grimoire_of_supremacy.enabled&artifact.lord_of_flames.rank>0
+    if S.SummonInfernal:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and S.LordofFlames:ArtifactRank() > 0) then
+      if AR.Cast(S.SummonInfernal) then return ""; end
+    end
+    -- summon_infernal,if=talent.grimoire_of_supremacy.enabled&active_enemies>1
+    if S.SummonInfernal:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[30] > 1) then
+      if AR.Cast(S.SummonInfernal) then return ""; end
+    end
+    -- summon_doomguard,if=talent.grimoire_of_supremacy.enabled&active_enemies=1&artifact.lord_of_flames.rank=0
+    if S.SummonDoomguard:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[40] == 1 and S.LordofFlames:ArtifactRank() == 0) then
+      if AR.Cast(S.SummonDoomguard) then return ""; end
+    end
+    -- snapshot_stats
+    -- grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
+    if S.GrimoireofSacrifice:IsCastableP() and (S.GrimoireofSacrifice:IsAvailable()) then
+      if AR.Cast(S.GrimoireofSacrifice) then return ""; end
+    end
+    -- life_tap,if=talent.empowered_life_tap.enabled&!buff.empowered_life_tap.remains
+    if S.LifeTap:IsCastableP() and (S.EmpoweredLifeTap:IsAvailable() and not bool(Player:BuffRemainsP(S.EmpoweredLifeTapBuff))) then
+      if AR.Cast(S.LifeTap) then return ""; end
+    end
+    -- potion
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+      if AR.CastSuggested(I.ProlongedPower) then return ""; end
+    end
+    -- chaos_bolt
+    if S.ChaosBolt:IsCastableP() and (true) then
+      if AR.Cast(S.ChaosBolt) then return ""; end
+    end
+  end
+  -- call precombat
+  if not Player:AffectingCombat() then
+    local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
+  end
   -- immolate,cycle_targets=1,if=active_enemies=2&talent.roaring_blaze.enabled&!cooldown.havoc.remains&dot.immolate.remains<=buff.active_havoc.duration
   if S.Immolate:IsCastableP() and (Cache.EnemiesCount[40] == 2 and S.RoaringBlaze:IsAvailable() and not bool(S.Havoc:CooldownRemainsP()) and Target:DebuffRemainsP(S.ImmolateDebuff) <= S.ActiveHavocBuff:BaseDuration()) then
     if AR.Cast(S.Immolate) then return ""; end

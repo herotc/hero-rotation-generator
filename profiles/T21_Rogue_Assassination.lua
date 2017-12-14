@@ -21,6 +21,9 @@ local AR     = AethysRotation
 -- Spells
 if not Spell.Rogue then Spell.Rogue = {} end
 Spell.Rogue.Assassination = {
+  ApplyPoison                           = Spell(),
+  Stealth                               = Spell(),
+  MarkedForDeath                        = Spell(137619),
   Hemorrhage                            = Spell(16511),
   RuptureDebuff                         = Spell(1943),
   FanofKnives                           = Spell(51723),
@@ -34,7 +37,6 @@ Spell.Rogue.Assassination = {
   ArcaneTorrent                         = Spell(50613),
   KingsbaneDebuff                       = Spell(192759),
   EnvenomBuff                           = Spell(32645),
-  MarkedForDeath                        = Spell(137619),
   Vendetta                              = Spell(79140),
   Exsanguinate                          = Spell(200806),
   Rupture                               = Spell(1943),
@@ -65,8 +67,8 @@ local S = Spell.Rogue.Assassination;
 -- Items
 if not Item.Rogue then Item.Rogue = {} end
 Item.Rogue.Assassination = {
-  InsigniaofRavenholdt             = Item(137049),
   ProlongedPower                   = Item(142117),
+  InsigniaofRavenholdt             = Item(137049),
   MantleoftheMasterAssassin        = Item(144236),
   DuskwalkersFootpads              = Item(137030),
   ConvergenceofFates               = Item(140806)
@@ -98,6 +100,28 @@ end
 
 --- ======= ACTION LISTS =======
 local function Apl()
+  local function Precombat()
+    -- flask
+    -- augmentation
+    -- food
+    -- snapshot_stats
+    -- apply_poison
+    if S.ApplyPoison:IsCastableP() and (true) then
+      if AR.Cast(S.ApplyPoison) then return ""; end
+    end
+    -- stealth
+    if S.Stealth:IsCastableP() and (true) then
+      if AR.Cast(S.Stealth) then return ""; end
+    end
+    -- potion
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+      if AR.CastSuggested(I.ProlongedPower) then return ""; end
+    end
+    -- marked_for_death,if=raid_event.adds.in>40
+    if S.MarkedForDeath:IsCastableP() and (raid_event.adds.in > 40) then
+      if AR.Cast(S.MarkedForDeath) then return ""; end
+    end
+  end
   local function Build()
     -- hemorrhage,if=refreshable
     if S.Hemorrhage:IsCastableP() and (bool(refreshable)) then
@@ -247,6 +271,10 @@ local function Apl()
     if S.Garrote:IsCastableP() and (AC.Tier20_4Pc and S.Exsanguinate:IsAvailable() and Player:PrevGCDP(1, S.Rupture) and S.Exsanguinate:CooldownRemainsP() < 1 and (not S.Vanish:CooldownUpP() or AC.CombatTime() > 12)) then
       if AR.Cast(S.Garrote) then return ""; end
     end
+  end
+  -- call precombat
+  if not Player:AffectingCombat() then
+    local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*(7+talent.venom_rush.enabled*3)%2
   if (true) then

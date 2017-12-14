@@ -21,6 +21,8 @@ local AR     = AethysRotation
 -- Spells
 if not Spell.Monk then Spell.Monk = {} end
 Spell.Monk.Windwalker = {
+  ChiBurst                              = Spell(123986),
+  ChiWave                               = Spell(115098),
   InvokeXuentheWhiteTiger               = Spell(123904),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
@@ -45,8 +47,6 @@ Spell.Monk.Windwalker = {
   BokProcBuff                           = Spell(),
   CracklingJadeLightning                = Spell(117952),
   TheEmperorsCapacitorBuff              = Spell(235054),
-  ChiWave                               = Spell(115098),
-  ChiBurst                              = Spell(123986),
   SpearHandStrike                       = Spell(116705),
   TouchofKarma                          = Spell(122470)
 };
@@ -55,10 +55,10 @@ local S = Spell.Monk.Windwalker;
 -- Items
 if not Item.Monk then Item.Monk = {} end
 Item.Monk.Windwalker = {
+  ProlongedPower                   = Item(142117),
   HiddenMastersForbiddenTouch      = Item(137057),
   DrinkingHornCover                = Item(137097),
-  TheEmperorsCapacitor             = Item(144239),
-  ProlongedPower                   = Item(142117)
+  TheEmperorsCapacitor             = Item(144239)
 };
 local I = Item.Monk.Windwalker;
 
@@ -85,6 +85,24 @@ end
 
 --- ======= ACTION LISTS =======
 local function Apl()
+  local function Precombat()
+    -- flask
+    -- food
+    -- augmentation
+    -- snapshot_stats
+    -- potion
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+      if AR.CastSuggested(I.ProlongedPower) then return ""; end
+    end
+    -- chi_burst
+    if S.ChiBurst:IsCastableP() and (true) then
+      if AR.Cast(S.ChiBurst) then return ""; end
+    end
+    -- chi_wave
+    if S.ChiWave:IsCastableP() and (true) then
+      if AR.Cast(S.ChiWave) then return ""; end
+    end
+  end
   local function Cd()
     -- invoke_xuen_the_white_tiger
     if S.InvokeXuentheWhiteTiger:IsCastableP() and (true) then
@@ -330,6 +348,10 @@ local function Apl()
     if S.ChiBurst:IsCastableP() and (true) then
       if AR.Cast(S.ChiBurst) then return ""; end
     end
+  end
+  -- call precombat
+  if not Player:AffectingCombat() then
+    local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- auto_attack
   -- spear_hand_strike,if=target.debuff.casting.react

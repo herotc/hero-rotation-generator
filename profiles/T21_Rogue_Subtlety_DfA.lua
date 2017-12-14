@@ -21,6 +21,11 @@ local AR     = AethysRotation
 -- Spells
 if not Spell.Rogue then Spell.Rogue = {} end
 Spell.Rogue.Subtlety = {
+  Vigor                                 = Spell(14983),
+  MasterofShadows                       = Spell(),
+  EnvelopingShadows                     = Spell(238104),
+  Stealth                               = Spell(1784),
+  MarkedForDeath                        = Spell(137619),
   ShurikenStorm                         = Spell(197835),
   TheFirstoftheDeadBuff                 = Spell(248110),
   Gloomblade                            = Spell(200758),
@@ -34,10 +39,8 @@ Spell.Rogue.Subtlety = {
   SymbolsofDeath                        = Spell(212283),
   DeathFromAbove                        = Spell(152150),
   NightbladeDebuff                      = Spell(195452),
-  MarkedForDeath                        = Spell(137619),
   GoremawsBite                          = Spell(209782),
   ShadowDance                           = Spell(185313),
-  Vigor                                 = Spell(14983),
   PoolResource                          = Spell(9999000010),
   Vanish                                = Spell(1856),
   ShadowFocus                           = Spell(108209),
@@ -59,7 +62,6 @@ Spell.Rogue.Subtlety = {
   SubterfugeBuff                        = Spell(108208),
   DeathFromAboveBuff                    = Spell(163786),
   Wait                                  = Spell(),
-  EnvelopingShadows                     = Spell(238104),
   Anticipation                          = Spell(114015),
   ShadowGesturesBuff                    = Spell()
 };
@@ -68,10 +70,10 @@ local S = Spell.Rogue.Subtlety;
 -- Items
 if not Item.Rogue then Item.Rogue = {} end
 Item.Rogue.Subtlety = {
+  ShadowSatyrsWalk                 = Item(137032),
   ProlongedPower                   = Item(142117),
   TheFirstoftheDead                = Item(151818),
   MantleoftheMasterAssassin        = Item(144236),
-  ShadowSatyrsWalk                 = Item(137032),
   InsigniaofRavenholdt             = Item(137049),
   DenialoftheHalfgiants            = Item(137100)
 };
@@ -89,10 +91,10 @@ local Settings = {
 };
 
 -- Variables
+local VarSswRefund = 0;
+local VarStealthThreshold = 0;
 local VarShdFractional = 0;
 local VarDshDfa = 0;
-local VarStealthThreshold = 0;
-local VarSswRefund = 0;
 
 local function num(val)
   if val then return 1 else return 0 end
@@ -104,6 +106,36 @@ end
 
 --- ======= ACTION LISTS =======
 local function Apl()
+  local function Precombat()
+    -- flask
+    -- augmentation
+    -- food
+    -- snapshot_stats
+    -- variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(6+ssw_refund_offset)
+    if (true) then
+      VarSswRefund = num(I.ShadowSatyrsWalk:IsEquipped()) * (6 + ssw_refund_offset)
+    end
+    -- variable,name=stealth_threshold,value=(65+talent.vigor.enabled*35+talent.master_of_shadows.enabled*10+variable.ssw_refund)
+    if (true) then
+      VarStealthThreshold = (65 + num(S.Vigor:IsAvailable()) * 35 + num(S.MasterofShadows:IsAvailable()) * 10 + VarSswRefund)
+    end
+    -- variable,name=shd_fractional,value=1.725+0.725*talent.enveloping_shadows.enabled
+    if (true) then
+      VarShdFractional = 1.725 + 0.725 * num(S.EnvelopingShadows:IsAvailable())
+    end
+    -- stealth
+    if S.Stealth:IsCastableP() and (true) then
+      if AR.Cast(S.Stealth) then return ""; end
+    end
+    -- marked_for_death,precombat=1
+    if S.MarkedForDeath:IsCastableP() and (true) then
+      if AR.Cast(S.MarkedForDeath) then return ""; end
+    end
+    -- potion
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+      if AR.CastSuggested(I.ProlongedPower) then return ""; end
+    end
+  end
   local function Build()
     -- shuriken_storm,if=spell_targets.shuriken_storm>=2+buff.the_first_of_the_dead.up
     if S.ShurikenStorm:IsCastableP() and (Cache.EnemiesCount[10] >= 2 + num(Player:BuffP(S.TheFirstoftheDeadBuff))) then
@@ -259,6 +291,10 @@ local function Apl()
     if S.Shadowstrike:IsCastableP() and (true) then
       if AR.Cast(S.Shadowstrike) then return ""; end
     end
+  end
+  -- call precombat
+  if not Player:AffectingCombat() then
+    local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- variable,name=dsh_dfa,value=talent.death_from_above.enabled&talent.dark_shadow.enabled&spell_targets.death_from_above<4
   if (true) then

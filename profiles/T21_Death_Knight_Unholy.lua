@@ -21,6 +21,9 @@ local AR     = AethysRotation
 -- Spells
 if not Spell.DeathKnight then Spell.DeathKnight = {} end
 Spell.DeathKnight.Unholy = {
+  RaiseDead                             = Spell(),
+  ArmyoftheDead                         = Spell(42650),
+  BlightedRuneWeapon                    = Spell(194918),
   DeathandDecay                         = Spell(43265),
   Epidemic                              = Spell(207317),
   ScourgeStrike                         = Spell(55090),
@@ -30,7 +33,6 @@ Spell.DeathKnight.Unholy = {
   ColdHeartBuff                         = Spell(235599),
   MasterofGhoulsBuff                    = Spell(246995),
   SoulReaperDebuff                      = Spell(130736),
-  ArmyoftheDead                         = Spell(42650),
   Apocalypse                            = Spell(220143),
   FesteringWoundDebuff                  = Spell(194310),
   DarkArbiter                           = Spell(207349),
@@ -53,7 +55,6 @@ Spell.DeathKnight.Unholy = {
   UseItems                              = Spell(),
   UseItem                               = Spell(),
   TemptationBuff                        = Spell(234143),
-  BlightedRuneWeapon                    = Spell(194918),
   Outbreak                              = Spell(77575)
 };
 local S = Spell.DeathKnight.Unholy;
@@ -61,11 +62,11 @@ local S = Spell.DeathKnight.Unholy;
 -- Items
 if not Item.DeathKnight then Item.DeathKnight = {} end
 Item.DeathKnight.Unholy = {
+  ProlongedPower                   = Item(142117),
   ColdHeart                        = Item(151796),
   Item137075                       = Item(137075),
   Item140806                       = Item(140806),
-  Item132448                       = Item(132448),
-  ProlongedPower                   = Item(142117)
+  Item132448                       = Item(132448)
 };
 local I = Item.DeathKnight.Unholy;
 
@@ -92,6 +93,28 @@ end
 
 --- ======= ACTION LISTS =======
 local function Apl()
+  local function Precombat()
+    -- flask
+    -- food
+    -- augmentation
+    -- snapshot_stats
+    -- potion
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+      if AR.CastSuggested(I.ProlongedPower) then return ""; end
+    end
+    -- raise_dead
+    if S.RaiseDead:IsCastableP() and (true) then
+      if AR.Cast(S.RaiseDead) then return ""; end
+    end
+    -- army_of_the_dead
+    if S.ArmyoftheDead:IsCastableP() and (true) then
+      if AR.Cast(S.ArmyoftheDead) then return ""; end
+    end
+    -- blighted_rune_weapon
+    if S.BlightedRuneWeapon:IsCastableP() and (true) then
+      if AR.Cast(S.BlightedRuneWeapon) then return ""; end
+    end
+  end
   local function Aoe()
     -- death_and_decay,if=spell_targets.death_and_decay>=2
     if S.DeathandDecay:IsUsable() and (Cache.EnemiesCount[30] >= 2) then
@@ -259,6 +282,10 @@ local function Apl()
     if S.ClawingShadows:IsCastableP() and (Target:DebuffP(S.FesteringWoundDebuff)) then
       if AR.Cast(S.ClawingShadows) then return ""; end
     end
+  end
+  -- call precombat
+  if not Player:AffectingCombat() then
+    local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- auto_attack
   -- mind_freeze

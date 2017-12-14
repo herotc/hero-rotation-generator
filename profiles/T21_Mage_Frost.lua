@@ -21,6 +21,8 @@ local AR     = AethysRotation
 -- Spells
 if not Spell.Mage then Spell.Mage = {} end
 Spell.Mage.Frost = {
+  WaterElemental                        = Spell(),
+  MirrorImage                           = Spell(55342),
   Frostbolt                             = Spell(116),
   FrozenOrb                             = Spell(84714),
   Blizzard                              = Spell(190356),
@@ -39,7 +41,6 @@ Spell.Mage.Frost = {
   RuneofPower                           = Spell(116011),
   IcyVeins                              = Spell(12472),
   IcyVeinsBuff                          = Spell(12472),
-  MirrorImage                           = Spell(55342),
   UseItems                              = Spell(),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
@@ -90,6 +91,28 @@ end
 
 --- ======= ACTION LISTS =======
 local function Apl()
+  local function Precombat()
+    -- flask
+    -- food
+    -- augmentation
+    -- water_elemental
+    if S.WaterElemental:IsCastableP() and (true) then
+      if AR.Cast(S.WaterElemental) then return ""; end
+    end
+    -- snapshot_stats
+    -- mirror_image
+    if S.MirrorImage:IsCastableP() and (true) then
+      if AR.Cast(S.MirrorImage) then return ""; end
+    end
+    -- potion
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+      if AR.CastSuggested(I.ProlongedPower) then return ""; end
+    end
+    -- frostbolt
+    if S.Frostbolt:IsCastableP() and (true) then
+      if AR.Cast(S.Frostbolt) then return ""; end
+    end
+  end
   local function Aoe()
     -- frostbolt,if=prev_off_gcd.water_jet
     if S.Frostbolt:IsCastableP() and (bool(prev_off_gcd.water_jet)) then
@@ -269,6 +292,10 @@ local function Apl()
     if S.IceLance:IsCastableP() and (true) then
       if AR.Cast(S.IceLance) then return ""; end
     end
+  end
+  -- call precombat
+  if not Player:AffectingCombat() then
+    local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- counterspell
   if S.Counterspell:IsCastableP() and (true) then

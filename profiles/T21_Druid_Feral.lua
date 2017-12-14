@@ -21,9 +21,12 @@ local AR     = AethysRotation
 -- Spells
 if not Spell.Druid then Spell.Druid = {} end
 Spell.Druid.Feral = {
+  Regrowth                              = Spell(8936),
+  Bloodtalons                           = Spell(155672),
+  CatForm                               = Spell(768),
+  Prowl                                 = Spell(5215),
   Dash                                  = Spell(1850),
   CatFormBuff                           = Spell(768),
-  Prowl                                 = Spell(5215),
   IncarnationBuff                       = Spell(102543),
   JungleStalkerBuff                     = Spell(252071),
   Berserk                               = Spell(106951),
@@ -34,17 +37,14 @@ Spell.Druid.Feral = {
   Incarnation                           = Spell(102543),
   BerserkBuff                           = Spell(106951),
   AshamanesFrenzy                       = Spell(210722),
-  Bloodtalons                           = Spell(155672),
   BloodtalonsBuff                       = Spell(145152),
   Shadowmeld                            = Spell(58984),
   Rake                                  = Spell(1822),
   RakeDebuff                            = Spell(155722),
   UseItems                              = Spell(),
-  CatForm                               = Spell(768),
   ProwlBuff                             = Spell(5215),
   ShadowmeldBuff                        = Spell(58984),
   FerociousBite                         = Spell(22568),
-  Regrowth                              = Spell(8936),
   PredatorySwiftnessBuff                = Spell(69369),
   RipDebuff                             = Spell(1079),
   ApexPredatorBuff                      = Spell(252752),
@@ -69,9 +69,9 @@ local S = Spell.Druid.Feral;
 -- Items
 if not Item.Druid then Item.Druid = {} end
 Item.Druid.Feral = {
+  LuffaWrappings                   = Item(137056),
   OldWar                           = Item(127844),
-  AiluroPouncers                   = Item(137024),
-  LuffaWrappings                   = Item(137056)
+  AiluroPouncers                   = Item(137024)
 };
 local I = Item.Druid.Feral;
 
@@ -99,6 +99,36 @@ end
 
 --- ======= ACTION LISTS =======
 local function Apl()
+  local function Precombat()
+    -- flask
+    -- food
+    -- augmentation
+    -- regrowth,if=talent.bloodtalons.enabled
+    if S.Regrowth:IsCastableP() and (S.Bloodtalons:IsAvailable()) then
+      if AR.Cast(S.Regrowth) then return ""; end
+    end
+    -- variable,name=use_thrash,value=0
+    if (true) then
+      VarUseThrash = 0
+    end
+    -- variable,name=use_thrash,value=1,if=equipped.luffa_wrappings
+    if (I.LuffaWrappings:IsEquipped()) then
+      VarUseThrash = 1
+    end
+    -- cat_form
+    if S.CatForm:IsCastableP() and (true) then
+      if AR.Cast(S.CatForm) then return ""; end
+    end
+    -- prowl
+    if S.Prowl:IsCastableP() and (true) then
+      if AR.Cast(S.Prowl) then return ""; end
+    end
+    -- snapshot_stats
+    -- potion
+    if I.OldWar:IsReady() and Settings.Commons.UsePotions and (true) then
+      if AR.CastSuggested(I.OldWar) then return ""; end
+    end
+  end
   local function Cooldowns()
     -- dash,if=!buff.cat_form.up
     if S.Dash:IsCastableP() and (not Player:BuffP(S.CatFormBuff)) then
@@ -299,6 +329,10 @@ local function Apl()
     if S.Shred:IsCastableP() and (Target:DebuffRemainsP(S.RakeDebuff) > (action.shred.cost + action.rake.cost - Player:Energy()) / Player:EnergyRegen() or bool(Player:BuffStackP(S.ClearcastingBuff))) then
       if AR.Cast(S.Shred) then return ""; end
     end
+  end
+  -- call precombat
+  if not Player:AffectingCombat() then
+    local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- run_action_list,name=single_target,if=dot.rip.ticking|time>15
   if (Target:DebuffP(S.RipDebuff) or AC.CombatTime() > 15) then

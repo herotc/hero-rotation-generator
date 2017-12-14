@@ -21,6 +21,11 @@ local AR     = AethysRotation
 -- Spells
 if not Spell.Rogue then Spell.Rogue = {} end
 Spell.Rogue.Outlaw = {
+  Stealth                               = Spell(),
+  MarkedForDeath                        = Spell(137619),
+  RolltheBones                          = Spell(193316),
+  SliceandDice                          = Spell(5171),
+  CurseoftheDreadblades                 = Spell(202665),
   BladeFlurryBuff                       = Spell(13877),
   BladeFlurry                           = Spell(13877),
   GhostlyStrike                         = Spell(196937),
@@ -37,13 +42,11 @@ Spell.Rogue.Outlaw = {
   ArcaneTorrent                         = Spell(50613),
   CannonballBarrage                     = Spell(185767),
   AdrenalineRush                        = Spell(13750),
-  MarkedForDeath                        = Spell(137619),
   TrueBearingBuff                       = Spell(193359),
   Sprint                                = Spell(2983),
   DeathFromAbove                        = Spell(152150),
   Darkflight                            = Spell(68992),
   SprintBuff                            = Spell(2983),
-  CurseoftheDreadblades                 = Spell(202665),
   BetweentheEyes                        = Spell(199804),
   RunThrough                            = Spell(2098),
   GhostlyStrikeDebuff                   = Spell(196937),
@@ -52,13 +55,11 @@ Spell.Rogue.Outlaw = {
   Ambush                                = Spell(8676),
   Vanish                                = Spell(1856),
   Shadowmeld                            = Spell(58984),
-  SliceandDice                          = Spell(5171),
   LoadedDiceBuff                        = Spell(240837),
   DeeperStratagem                       = Spell(193531),
   Anticipation                          = Spell(114015),
   DeathFromAboveBuff                    = Spell(163786),
   SliceandDiceBuff                      = Spell(5171),
-  RolltheBones                          = Spell(193316),
   RolltheBonesBuff                      = Spell(),
   KillingSpree                          = Spell(51690),
   Gouge                                 = Spell(1776),
@@ -69,8 +70,8 @@ local S = Spell.Rogue.Outlaw;
 -- Items
 if not Item.Rogue then Item.Rogue = {} end
 Item.Rogue.Outlaw = {
-  ShivarranSymmetry                = Item(141321),
   ProlongedPower                   = Item(142117),
+  ShivarranSymmetry                = Item(141321),
   ThraxisTricksyTreads             = Item(137031),
   GreenskinsWaterloggedWristcuffs  = Item(137099),
   MantleoftheMasterAssassin        = Item(144236)
@@ -104,6 +105,32 @@ end
 
 --- ======= ACTION LISTS =======
 local function Apl()
+  local function Precombat()
+    -- flask
+    -- augmentation
+    -- food
+    -- snapshot_stats
+    -- stealth
+    if S.Stealth:IsCastableP() and (true) then
+      if AR.Cast(S.Stealth) then return ""; end
+    end
+    -- potion
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+      if AR.CastSuggested(I.ProlongedPower) then return ""; end
+    end
+    -- marked_for_death,if=raid_event.adds.in>40
+    if S.MarkedForDeath:IsCastableP() and (raid_event.adds.in > 40) then
+      if AR.Cast(S.MarkedForDeath) then return ""; end
+    end
+    -- roll_the_bones,if=!talent.slice_and_dice.enabled
+    if S.RolltheBones:IsCastableP() and (not S.SliceandDice:IsAvailable()) then
+      if AR.Cast(S.RolltheBones) then return ""; end
+    end
+    -- curse_of_the_dreadblades,if=combo_points.deficit>=4
+    if S.CurseoftheDreadblades:IsCastableP() and (Player:ComboPointsDeficit() >= 4) then
+      if AR.Cast(S.CurseoftheDreadblades) then return ""; end
+    end
+  end
   local function Bf()
     -- cancel_buff,name=blade_flurry,if=spell_targets.blade_flurry<2&buff.blade_flurry.up
     if (Cache.EnemiesCount[8] < 2 and Player:BuffP(S.BladeFlurryBuff)) then
@@ -201,6 +228,10 @@ local function Apl()
     if S.Shadowmeld:IsCastableP() and (bool(VarAmbushCondition)) then
       if AR.Cast(S.Shadowmeld) then return ""; end
     end
+  end
+  -- call precombat
+  if not Player:AffectingCombat() then
+    local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- variable,name=rtb_reroll,value=!talent.slice_and_dice.enabled&buff.loaded_dice.up&(rtb_buffs<2|(rtb_buffs<4&!buff.true_bearing.up))
   if (true) then

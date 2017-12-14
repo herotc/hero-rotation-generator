@@ -21,6 +21,11 @@ local AR     = AethysRotation
 -- Spells
 if not Spell.Hunter then Spell.Hunter = {} end
 Spell.Hunter.Survival = {
+  SummonPet                             = Spell(),
+  ExplosiveTrap                         = Spell(191433),
+  SteelTrap                             = Spell(162488),
+  DragonsfireGrenade                    = Spell(194855),
+  Harpoon                               = Spell(190925),
   ArcaneTorrent                         = Spell(50613),
   Berserking                            = Spell(26297),
   AspectoftheEagleBuff                  = Spell(186289),
@@ -33,7 +38,6 @@ Spell.Hunter.Survival = {
   AspectoftheEagle                      = Spell(186289),
   Butchery                              = Spell(212436),
   Caltrops                              = Spell(187698),
-  ExplosiveTrap                         = Spell(191433),
   Carve                                 = Spell(187708),
   SerpentSting                          = Spell(87935),
   SerpentStingDebuff                    = Spell(118253),
@@ -45,8 +49,6 @@ Spell.Hunter.Survival = {
   RaptorStrike                          = Spell(186270),
   T212PExposedFlankBuff                 = Spell(251751),
   SpittingCobra                         = Spell(194407),
-  DragonsfireGrenade                    = Spell(194855),
-  SteelTrap                             = Spell(162488),
   AMurderofCrows                        = Spell(206505),
   WayoftheMoknathal                     = Spell(201082),
   UseItems                              = Spell(),
@@ -87,6 +89,36 @@ end
 
 --- ======= ACTION LISTS =======
 local function Apl()
+  local function Precombat()
+    -- flask
+    -- augmentation
+    -- food
+    -- summon_pet
+    if S.SummonPet:IsCastableP() and (true) then
+      if AR.Cast(S.SummonPet) then return ""; end
+    end
+    -- snapshot_stats
+    -- potion
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+      if AR.CastSuggested(I.ProlongedPower) then return ""; end
+    end
+    -- explosive_trap
+    if S.ExplosiveTrap:IsCastableP() and (true) then
+      if AR.Cast(S.ExplosiveTrap) then return ""; end
+    end
+    -- steel_trap
+    if S.SteelTrap:IsCastableP() and (true) then
+      if AR.Cast(S.SteelTrap) then return ""; end
+    end
+    -- dragonsfire_grenade
+    if S.DragonsfireGrenade:IsCastableP() and (true) then
+      if AR.Cast(S.DragonsfireGrenade) then return ""; end
+    end
+    -- harpoon
+    if S.Harpoon:IsCastableP() and (true) then
+      if AR.Cast(S.Harpoon) then return ""; end
+    end
+  end
   local function Cds()
     -- arcane_torrent,if=focus<=30
     if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (Player:Focus() <= 30) then
@@ -250,6 +282,10 @@ local function Apl()
     if S.RaptorStrike:IsCastableP() and ((Player:BuffRemainsP(S.MoknathalTacticsBuff) < (Player:GCD()) or (Player:BuffStackP(S.MoknathalTacticsBuff) < 3))) then
       if AR.Cast(S.RaptorStrike) then return ""; end
     end
+  end
+  -- call precombat
+  if not Player:AffectingCombat() then
+    local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- variable,name=frizzosEquipped,value=(equipped.137043)
   if (true) then

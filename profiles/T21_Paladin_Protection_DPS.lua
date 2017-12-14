@@ -21,11 +21,11 @@ local AR     = AethysRotation
 -- Spells
 if not Spell.Paladin then Spell.Paladin = {} end
 Spell.Paladin.Protection = {
+  Seraphim                              = Spell(152262),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
   ArcaneTorrent                         = Spell(50613),
   ShieldoftheRighteous                  = Spell(53600),
-  Seraphim                              = Spell(152262),
   EyeofTyrDebuff                        = Spell(209202),
   AegisofLightBuff                      = Spell(204150),
   ArdentDefenderBuff                    = Spell(31850),
@@ -90,6 +90,25 @@ end
 
 --- ======= ACTION LISTS =======
 local function Apl()
+  local function Precombat()
+    -- flask,type=flask_of_ten_thousand_scars,if=!talent.seraphim.enabled
+    -- flask,type=flask_of_the_countless_armies,if=(role.attack|talent.seraphim.enabled)
+    -- food,type=seedbattered_fish_plate,if=!talent.seraphim.enabled
+    -- food,type=lavish_suramar_feast,if=(role.attack|talent.seraphim.enabled)
+    -- snapshot_stats
+    -- potion,name=unbending_potion,if=!talent.seraphim.enabled
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (not S.Seraphim:IsAvailable()) then
+      if AR.CastSuggested(I.ProlongedPower) then return ""; end
+    end
+    -- potion,name=old_war,if=(role.attack|talent.seraphim.enabled)&active_enemies<3
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and ((bool(role.attack) or S.Seraphim:IsAvailable()) and Cache.EnemiesCount[30] < 3) then
+      if AR.CastSuggested(I.ProlongedPower) then return ""; end
+    end
+    -- potion,name=prolonged_power,if=(role.attack|talent.seraphim.enabled)&active_enemies>=3
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and ((bool(role.attack) or S.Seraphim:IsAvailable()) and Cache.EnemiesCount[30] >= 3) then
+      if AR.CastSuggested(I.ProlongedPower) then return ""; end
+    end
+  end
   local function MaxDps()
     -- auto_attack
     -- blood_fury
@@ -281,6 +300,10 @@ local function Apl()
     if S.HammeroftheRighteous:IsCastableP() and (S.Seraphim:IsAvailable()) then
       if AR.Cast(S.HammeroftheRighteous) then return ""; end
     end
+  end
+  -- call precombat
+  if not Player:AffectingCombat() then
+    local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- auto_attack
   -- blood_fury

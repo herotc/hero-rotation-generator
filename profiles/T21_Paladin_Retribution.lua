@@ -91,6 +91,16 @@ end
 
 --- ======= ACTION LISTS =======
 local function Apl()
+  local function Precombat()
+    -- flask,type=flask_of_the_countless_armies
+    -- food,type=azshari_salad
+    -- augmentation,type=defiled
+    -- snapshot_stats
+    -- potion,name=old_war
+    if I.OldWar:IsReady() and Settings.Commons.UsePotions and (true) then
+      if AR.CastSuggested(I.OldWar) then return ""; end
+    end
+  end
   local function Cooldowns()
     -- potion,name=old_war,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<25|target.time_to_die<=40)
     if I.OldWar:IsReady() and Settings.Commons.UsePotions and ((Player:HasHeroism() or Player:BuffP(S.AvengingWrathBuff) or Player:BuffP(S.CrusadeBuff) and Player:BuffRemainsP(S.CrusadeBuff) < 25 or Target:TimeToDie() <= 40)) then
@@ -254,6 +264,10 @@ local function Apl()
     if S.WakeofAshes:IsCastableP() and (true) then
       if AR.Cast(S.WakeofAshes) then return ""; end
     end
+  end
+  -- call precombat
+  if not Player:AffectingCombat() then
+    local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- auto_attack
   -- rebuke

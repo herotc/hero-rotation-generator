@@ -21,6 +21,7 @@ local AR     = AethysRotation
 -- Spells
 if not Spell.Shaman then Spell.Shaman = {} end
 Spell.Shaman.Elemental = {
+  TotemMastery                          = Spell(210643),
   Stormkeeper                           = Spell(205495),
   Ascendance                            = Spell(114050),
   LiquidMagmaTotem                      = Spell(192222),
@@ -42,7 +43,6 @@ Spell.Shaman.Elemental = {
   PoweroftheMaelstromBuff               = Spell(191877),
   ElementalFocusBuff                    = Spell(16246),
   Aftershock                            = Spell(210707),
-  TotemMastery                          = Spell(210643),
   ResonanceTotemBuff                    = Spell(202192),
   EarthenStrengthBuff                   = Spell(252141),
   FrostShock                            = Spell(196840),
@@ -63,9 +63,9 @@ local S = Spell.Shaman.Elemental;
 -- Items
 if not Item.Shaman then Item.Shaman = {} end
 Item.Shaman.Elemental = {
+  ProlongedPower                   = Item(142117),
   SmolderingHeart                  = Item(151819),
   TheDeceiversBloodPact            = Item(137035),
-  ProlongedPower                   = Item(142117),
   GnawedThumbRing                  = Item(134526)
 };
 local I = Item.Shaman.Elemental;
@@ -93,6 +93,24 @@ end
 
 --- ======= ACTION LISTS =======
 local function Apl()
+  local function Precombat()
+    -- flask
+    -- food
+    -- augmentation
+    -- snapshot_stats
+    -- potion
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+      if AR.CastSuggested(I.ProlongedPower) then return ""; end
+    end
+    -- totem_mastery
+    if S.TotemMastery:IsCastableP() and (true) then
+      if AR.Cast(S.TotemMastery) then return ""; end
+    end
+    -- stormkeeper
+    if S.Stormkeeper:IsCastableP() and (true) then
+      if AR.Cast(S.Stormkeeper) then return ""; end
+    end
+  end
   local function Aoe()
     -- stormkeeper
     if S.Stormkeeper:IsCastableP() and (true) then
@@ -392,6 +410,10 @@ local function Apl()
     if S.FlameShock:IsCastableP() and (movement.distance > 6) then
       if AR.Cast(S.FlameShock) then return ""; end
     end
+  end
+  -- call precombat
+  if not Player:AffectingCombat() then
+    local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- bloodlust,if=target.health.pct<25|time>0.500
   if S.Bloodlust:IsCastableP() and (Target:HealthPercentage() < 25 or AC.CombatTime() > 0.500) then

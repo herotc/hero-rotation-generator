@@ -6,7 +6,7 @@ Define the APL class to represent and parse a simc profile.
 """
 
 from collections import OrderedDict
-from .actions import ActionList
+from .actions import ActionList, PrecombatAction
 from .units import Player, Target
 from .context import Context
 from .helpers import indent
@@ -109,6 +109,12 @@ class APL:
             else:
                 self.action_lists_simc[action_name] = action_simc
 
+    def precombat_action(self):
+        """
+        Get the call to precombat actions.
+        """
+        return PrecombatAction(self)
+
     def main_action_list(self):
         """
         Get the ActionList object for the main action list.
@@ -174,11 +180,13 @@ class APL:
         """
         function_name = self.main_action_list().name.lua_name()
         action_lists = self.print_action_lists_lua()
+        precombat_call = indent(self.precombat_action().print_lua())
         main_actions = self.main_action_list().print_actions_lua()
         context = self.context.print_lua()
         return (f'{context}'
                 f'--- ======= ACTION LISTS =======\n'
                 f'local function {function_name}()\n'
                 f'{action_lists}\n'
+                f'{precombat_call}\n'
                 f'{main_actions}\n'
                 f'end')

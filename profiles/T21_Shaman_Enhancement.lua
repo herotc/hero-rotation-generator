@@ -21,6 +21,7 @@ local AR     = AethysRotation
 -- Spells
 if not Spell.Shaman then Spell.Shaman = {} end
 Spell.Shaman.Enhancement = {
+  LightningShield                       = Spell(),
   EarthenSpike                          = Spell(188089),
   DoomWinds                             = Spell(204945),
   Strike                                = Spell(),
@@ -108,6 +109,20 @@ end
 
 --- ======= ACTION LISTS =======
 local function Apl()
+  local function Precombat()
+    -- flask
+    -- food
+    -- augmentation
+    -- snapshot_stats
+    -- potion
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+      if AR.CastSuggested(I.ProlongedPower) then return ""; end
+    end
+    -- lightning_shield
+    if S.LightningShield:IsCastableP() and (true) then
+      if AR.Cast(S.LightningShield) then return ""; end
+    end
+  end
   local function Asc()
     -- earthen_spike
     if S.EarthenSpike:IsCastableP() and (true) then
@@ -291,6 +306,10 @@ local function Apl()
     if S.Rockbiter:IsCastableP() and (Player:Maelstrom() < 15 and AC.CombatTime() < Player:GCD()) then
       if AR.Cast(S.Rockbiter) then return ""; end
     end
+  end
+  -- call precombat
+  if not Player:AffectingCombat() then
+    local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- wind_shear
   if S.WindShear:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (true) then

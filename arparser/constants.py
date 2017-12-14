@@ -41,13 +41,16 @@ RANGE = 'range'
 
 # Named action lists to ignore in simc
 IGNORED_ACTION_LISTS = [
-    'precombat',
 ]
 
 # Named executions which should be ignored by ARParser
 IGNORED_EXECUTIONS = [
     'auto_attack',
     'auto_shot',
+    'food',
+    'flask',
+    'augmentation',
+    'snapshot_stats',
 ]
 
 # Strings to recognize as items

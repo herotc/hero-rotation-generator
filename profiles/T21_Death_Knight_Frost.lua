@@ -66,10 +66,10 @@ local S = Spell.DeathKnight.Frost;
 -- Items
 if not Item.DeathKnight then Item.DeathKnight = {} end
 Item.DeathKnight.Frost = {
+  ProlongedPower                   = Item(142117),
   PerseveranceoftheEbonMartyr      = Item(132459),
   ConsortsColdCore                 = Item(144293),
   KoltirasNewfoundWill             = Item(132366),
-  ProlongedPower                   = Item(142117),
   ColdHeart                        = Item(151796)
 };
 local I = Item.DeathKnight.Frost;
@@ -97,6 +97,16 @@ end
 
 --- ======= ACTION LISTS =======
 local function Apl()
+  local function Precombat()
+    -- flask
+    -- food
+    -- augmentation
+    -- snapshot_stats
+    -- potion
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+      if AR.CastSuggested(I.ProlongedPower) then return ""; end
+    end
+  end
   local function BosPooling()
     -- remorseless_winter,if=talent.gathering_storm.enabled
     if S.RemorselessWinter:IsCastableP() and (S.GatheringStorm:IsAvailable()) then
@@ -428,6 +438,10 @@ local function Apl()
     if S.EmpowerRuneWeapon:IsCastableP() and (not S.BreathofSindragosa:IsAvailable() or Target:TimeToDie() < S.BreathofSindragosa:CooldownRemainsP()) then
       if AR.Cast(S.EmpowerRuneWeapon) then return ""; end
     end
+  end
+  -- call precombat
+  if not Player:AffectingCombat() then
+    local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- auto_attack
   -- mind_freeze

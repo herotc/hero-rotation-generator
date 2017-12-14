@@ -21,6 +21,16 @@ local AR     = AethysRotation
 -- Spells
 if not Spell.Warlock then Spell.Warlock = {} end
 Spell.Warlock.Affliction = {
+  SummonPet                             = Spell(),
+  GrimoireofSupremacy                   = Spell(152107),
+  GrimoireofSacrifice                   = Spell(),
+  DemonicPowerBuff                      = Spell(),
+  SummonInfernal                        = Spell(1122),
+  LordofFlames                          = Spell(),
+  SummonDoomguard                       = Spell(18540),
+  LifeTap                               = Spell(1454),
+  EmpoweredLifeTap                      = Spell(235157),
+  EmpoweredLifeTapBuff                  = Spell(235156),
   ReapSouls                             = Spell(216698),
   DeadwindHarvesterBuff                 = Spell(216708),
   TormentedSoulsBuff                    = Spell(216695),
@@ -31,9 +41,6 @@ Spell.Warlock.Affliction = {
   ServicePet                            = Spell(),
   CorruptionDebuff                      = Spell(172),
   AgonyDebuff                           = Spell(980),
-  SummonDoomguard                       = Spell(18540),
-  GrimoireofSupremacy                   = Spell(152107),
-  SummonInfernal                        = Spell(1122),
   SindoreiSpiteIcd                      = Spell(),
   Berserking                            = Spell(26297),
   UnstableAffliction                    = Spell(30108),
@@ -44,9 +51,6 @@ Spell.Warlock.Affliction = {
   Haunt                                 = Spell(48181),
   SiphonLife                            = Spell(63106),
   Corruption                            = Spell(172),
-  LifeTap                               = Spell(1454),
-  EmpoweredLifeTap                      = Spell(235157),
-  EmpoweredLifeTapBuff                  = Spell(235156),
   PhantomSingularity                    = Spell(205179),
   MaleficGrasp                          = Spell(235155),
   UnstableAffliction1                   = Spell(),
@@ -66,9 +70,9 @@ local S = Spell.Warlock.Affliction;
 -- Items
 if not Item.Warlock then Item.Warlock = {} end
 Item.Warlock.Affliction = {
+  ProlongedPower                   = Item(142117),
   Item144364                       = Item(144364),
   Item132379                       = Item(132379),
-  ProlongedPower                   = Item(142117),
   Item132381                       = Item(132381),
   Item132457                       = Item(132457)
 };
@@ -97,6 +101,40 @@ end
 
 --- ======= ACTION LISTS =======
 local function Apl()
+  local function Precombat()
+    -- flask
+    -- food
+    -- augmentation
+    -- summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)
+    if S.SummonPet:IsCastableP() and (not S.GrimoireofSupremacy:IsAvailable() and (not S.GrimoireofSacrifice:IsAvailable() or Player:BuffDownP(S.DemonicPowerBuff))) then
+      if AR.Cast(S.SummonPet) then return ""; end
+    end
+    -- summon_infernal,if=talent.grimoire_of_supremacy.enabled&artifact.lord_of_flames.rank>0
+    if S.SummonInfernal:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and S.LordofFlames:ArtifactRank() > 0) then
+      if AR.Cast(S.SummonInfernal) then return ""; end
+    end
+    -- summon_infernal,if=talent.grimoire_of_supremacy.enabled&active_enemies>1
+    if S.SummonInfernal:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[30] > 1) then
+      if AR.Cast(S.SummonInfernal) then return ""; end
+    end
+    -- summon_doomguard,if=talent.grimoire_of_supremacy.enabled&active_enemies=1&artifact.lord_of_flames.rank=0
+    if S.SummonDoomguard:IsCastableP() and (S.GrimoireofSupremacy:IsAvailable() and Cache.EnemiesCount[40] == 1 and S.LordofFlames:ArtifactRank() == 0) then
+      if AR.Cast(S.SummonDoomguard) then return ""; end
+    end
+    -- snapshot_stats
+    -- grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
+    if S.GrimoireofSacrifice:IsCastableP() and (S.GrimoireofSacrifice:IsAvailable()) then
+      if AR.Cast(S.GrimoireofSacrifice) then return ""; end
+    end
+    -- life_tap,if=talent.empowered_life_tap.enabled&!buff.empowered_life_tap.remains
+    if S.LifeTap:IsCastableP() and (S.EmpoweredLifeTap:IsAvailable() and not bool(Player:BuffRemainsP(S.EmpoweredLifeTapBuff))) then
+      if AR.Cast(S.LifeTap) then return ""; end
+    end
+    -- potion
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+      if AR.CastSuggested(I.ProlongedPower) then return ""; end
+    end
+  end
   local function Haunt()
     -- reap_souls,if=!buff.deadwind_harvester.remains&time>5&(buff.tormented_souls.react>=5|target.time_to_die<=buff.tormented_souls.react*(5+1.5*equipped.144364)+(buff.deadwind_harvester.remains*(5+1.5*equipped.144364)%12*(5+1.5*equipped.144364)))
     if S.ReapSouls:IsCastableP() and (not bool(Player:BuffRemainsP(S.DeadwindHarvesterBuff)) and AC.CombatTime() > 5 and (Player:BuffStackP(S.TormentedSoulsBuff) >= 5 or Target:TimeToDie() <= Player:BuffStackP(S.TormentedSoulsBuff) * (5 + 1.5 * num(I.Item144364:IsEquipped())) + (Player:BuffRemainsP(S.DeadwindHarvesterBuff) * (5 + 1.5 * num(I.Item144364:IsEquipped())) / 12 * (5 + 1.5 * num(I.Item144364:IsEquipped()))))) then
@@ -598,6 +636,10 @@ local function Apl()
     if S.LifeTap:IsCastableP() and (true) then
       if AR.Cast(S.LifeTap) then return ""; end
     end
+  end
+  -- call precombat
+  if not Player:AffectingCombat() then
+    local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- call_action_list,name=mg,if=talent.malefic_grasp.enabled
   if (S.MaleficGrasp:IsAvailable()) then
