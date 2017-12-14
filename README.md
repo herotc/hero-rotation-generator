@@ -2,6 +2,33 @@
 
 Parser to generate AethysRotation APLs from simc profiles
 
+## Refresh profiles
+
+The launch scripts are designed to automatically parse all the `.simc` profiles
+present in the `/profiles` folder.
+
+### Windows
+
+Using the command prompt in the root folder of the project,
+
+```bash
+.\launch.bat
+```
+
+Using PowerShell,
+
+```bash
+.\launch.ps1
+```
+
+### Unix
+
+Using the command prompt in the root folder of the project,
+
+```bash
+./launch.sh
+```
+
 ## Usage
 
 The `arparser` package can be used as a script with the following command:
