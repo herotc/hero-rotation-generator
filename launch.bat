@@ -1,1 +1,2 @@
-python -m arparser -p (get-item .\profiles\*.simc)
+@echo off
+for %%v in (profiles\*.simc) do python -m arparser -p %%v
