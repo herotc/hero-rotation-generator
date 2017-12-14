@@ -257,4 +257,3 @@ class PrecombatAction(Action):
                        f'  {exec_cast}\n'
                        f'end')
         return lua_string
-    

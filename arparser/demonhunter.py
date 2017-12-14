@@ -101,18 +101,17 @@ def havoc_melee_condition(fun):
     Add class specific conditions.
     """
 
-    def additional_conditions(self):
+    def __init__(self, action, simc, type_=SPELL):
         """
-        Additional conditions to test for the specific action; [] by default if
-        none.
+        Init of the Spell class.
         """
-        conditions = []
-        if (self.action.player.spec.simc == HAVOC
-                and self.action.player.spell_property(self, MELEE)):
-            conditions.append(LuaExpression(
-                None, Method('IsInMeleeRange'), []))
-        return conditions + fun(self)
-    return additional_conditions
+        fun(self, action, simc, type_=type_)
+        if (action.player.spec.simc == HAVOC
+                and action.player.spell_property(self, MELEE)):
+            self.additional_conditions = (
+                [LuaExpression(None, Method('IsInMeleeRange'), [])]
+                + self.additional_conditions)
+    return __init__
 
 
 def havoc_is_in_melee_range(fun):

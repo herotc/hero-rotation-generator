@@ -5,100 +5,28 @@ Define the objects representing simc executions.
 @author: skasch
 """
 
-from .lua import LuaNamed, LuaTyped, LuaExpression, Literal, Method
+from .lua import LuaNamed, LuaTyped, LuaCastable, LuaExpression, Literal, Method
 from .demonhunter import havoc_melee_condition
 from .druid import guardian_swipe_thrash_value
 from .constants import (IGNORED_EXECUTIONS, SPELL, BUFF, DEBUFF,
-                        USABLE, INTERRUPT, CD, GCDAOGCD, OGCDAOGCD, NUM)
+                        USABLE, INTERRUPT, CD, GCDAOGCD, OGCDAOGCD, NUM, FALSE)
 
 
-class Castable:
-    """
-    The class for castable elements: items and spells.
-    """
-
-    def condition_method(self):
-        """
-        Return the method to use in the default condition, which usually tests
-        whether the action is doable.
-        """
-        pass
-
-    def condition_args(self):
-        """
-        Return the arguments of the default condition, which usually tests
-        whether the action is doable.
-        """
-        return []
-
-    def condition(self):
-        """
-        Return the LuaExpression of the default condition.
-        """
-        return LuaExpression(self, self.condition_method(),
-                             self.condition_args())
-
-    def additional_conditions(self):
-        """
-        Additional conditions to test for the specific action; [] by default if
-        none.
-        """
-        return []
-
-    def conditions(self):
-        """
-        List of conditions to check before executing the action.
-        """
-        return [self.condition()] + self.additional_conditions()
-
-    def print_conditions(self):
-        """
-        Print the lua code for the condition of the execution.
-        """
-        return ' and '.join(condition.print_lua()
-                            for condition in self.conditions())
-
-    def cast_method(self):
-        """
-        The method to call when executing the action.
-        """
-        return Method('AR.Cast')
-
-    def cast_args(self):
-        """
-        The arguments of the method used to cast the action.
-        """
-        return [self]
-
-    def cast(self):
-        """
-        Return the LuaExpression to cast the action.
-        """
-        return LuaExpression(None, self.cast_method(), self.cast_args())
-
-    def cast_template(self):
-        """
-        The template of the code to execute the action; {} will be replaced by
-        the result of self.cast().print_lua().
-        """
-        return 'if {} then return ""; end'
-
-    def print_cast(self):
-        """
-        Print the lua code of what to do when casting the action.
-        """
-        return self.cast_template().format(self.cast().print_lua())
-
-
-class Item(LuaNamed, Castable):
+class Item(LuaNamed, LuaCastable):
     """
     The Item class, used to represent an item.
     """
 
     def __init__(self, action, simc):
         super().__init__(simc)
+        # Castable
+        LuaCastable.__init__(self)
+        self.condition_method = Method('IsReady')
+        self.cast_method = Method('AR.CastSuggested')
+        # Item
         self.action = action
         self.iid = ''
+        # Handle case when item is defined as an Item ID
         try:
             int(simc)
             self.unnamed_item = True
@@ -107,12 +35,6 @@ class Item(LuaNamed, Castable):
         except ValueError:
             self.unnamed_item = False
         self.action.context.add_item(self)
-
-    def condition_method(self):
-        return Method('IsReady')
-
-    def cast_method(self):
-        return Method('AR.CastSuggested')
 
     def print_lua(self):
         """
@@ -128,12 +50,11 @@ class Potion(Item):
 
     def __init__(self, action):
         super().__init__(action, action.player.potion())
+        # Castable
+        self.additional_conditions = [Literal('Settings.Commons.UsePotions')]
 
-    def additional_conditions(self):
-        return [Literal('Settings.Commons.UsePotions')]
 
-
-class RunActionList(LuaNamed, Castable):
+class RunActionList(LuaNamed, LuaCastable):
     """
     The class to handle a run_action_string action; calls a function containing
     the code for the speficic ActionList called.
@@ -141,7 +62,9 @@ class RunActionList(LuaNamed, Castable):
 
     def __init__(self, action, simc):
         super().__init__(simc)
+        LuaCastable.__init__(self)
         self.action = action
+        self.cast_template = 'return {};'
 
     def conditions(self):
         return []
@@ -149,11 +72,8 @@ class RunActionList(LuaNamed, Castable):
     def cast(self):
         return Literal(self.lua_name() + '()')
 
-    def cast_template(self):
-        return 'return {};'
 
-
-class CallActionList(LuaNamed, Castable):
+class CallActionList(LuaNamed, LuaCastable):
     """
     The class to handle a call_action_string action; calls a function containing
     the code for the speficic ActionList called.
@@ -161,7 +81,10 @@ class CallActionList(LuaNamed, Castable):
 
     def __init__(self, action, simc):
         super().__init__(simc)
+        LuaCastable.__init__(self)
         self.action = action
+        self.cast_template = ('local ShouldReturn = {}; '
+                              'if ShouldReturn then return ShouldReturn; end')
 
     def conditions(self):
         return []
@@ -169,12 +92,8 @@ class CallActionList(LuaNamed, Castable):
     def cast(self):
         return Literal(self.lua_name() + '()')
 
-    def cast_template(self):
-        return ('local ShouldReturn = {}; '
-                'if ShouldReturn then return ShouldReturn; end')
 
-
-class Variable(LuaNamed, LuaTyped, Castable):
+class Variable(LuaNamed, LuaTyped, LuaCastable):
     """
     The class to handle a variable action; this creates a new variable as a
     local function to compute a value used afterwards.
@@ -182,6 +101,7 @@ class Variable(LuaNamed, LuaTyped, Castable):
 
     def __init__(self, action, simc):
         super().__init__(simc)
+        LuaCastable.__init__(self)
         self.action = action
         self.type_ = NUM
         if 'default' in action.properties():
@@ -206,7 +126,7 @@ class Variable(LuaNamed, LuaTyped, Castable):
         return self.print_cast()
 
 
-class CancelBuff(LuaNamed, Castable):
+class CancelBuff(LuaNamed, LuaCastable):
     """
     The class to handle a variable action; this creates a new variable as a
     local function to compute a value used afterwards.
@@ -214,24 +134,16 @@ class CancelBuff(LuaNamed, Castable):
 
     def __init__(self, action, simc):
         super().__init__(simc)
+        # Castble
+        LuaCastable.__init__(self)
+        self.cast_method = Method('AR.Cancel')
+        self.cast_template = '-- if {} then return ""; end'
+        # Main
         self.action = action
         self.buff = Spell(action, simc, type_=BUFF)
 
     def print_conditions(self):
         return ''
-
-    def cast_method(self):
-        """
-        The method to call when executing the action.
-        """
-        return Method('AR.Cancel')
-
-    def cast_template(self):
-        """
-        The template of the code to execute the action; {} will be replaced by
-        the result of self.cast().print_lua().
-        """
-        return '-- if {} then return ""; end'
 
     def print_lua(self):
         """
@@ -240,7 +152,7 @@ class CancelBuff(LuaNamed, Castable):
         return self.buff.print_lua()
 
 
-class Spell(LuaNamed, Castable):
+class Spell(LuaNamed, LuaCastable):
     """
     Represents a spell; it can be either a spell, a buff or a debuff.
     """
@@ -251,54 +163,48 @@ class Spell(LuaNamed, Castable):
         DEBUFF: 'Debuff',
     }
 
+    @havoc_melee_condition
     def __init__(self, action, simc, type_=SPELL):
         super().__init__(simc)
-        self.action = action
         self.type_ = type_
+        # Castable
+        LuaCastable.__init__(self)
+        if action.player.spell_property(self, USABLE):
+            self.condition_method = Method('IsUsable')
+        else:
+            self.condition_method = Method('IsCastableP')
+
+        if action.player.spell_property(self, CD):
+            self.additional_conditions.append(
+                LuaExpression(None, Method('AR.CDsON'), []))
+        if action.player.spell_property(self, INTERRUPT):
+            self.additional_conditions.append(
+                Literal('Settings.General.InterruptEnabled'))
+            self.additional_conditions.append(
+                LuaExpression(action.target, Method('IsInterruptible'), []))
+
+        if action.player.spell_property(self, INTERRUPT):
+            self.cast_method = Method('AR.CastAnnotated')
+
+        if action.player.spell_property(self, GCDAOGCD):
+            self.cast_args.append(Literal(
+                f'Settings.{action.player.spec.lua_name()}.'
+                f'GCDasOffGCD.{self.lua_name()}'))
+        if action.player.spell_property(self, OGCDAOGCD):
+            self.cast_args.append(Literal(
+                f'Settings.{action.player.spec.lua_name()}.'
+                f'OffGCDasOffGCD.{self.lua_name()}'))
+        if action.player.spell_property(self, INTERRUPT):
+            self.cast_args.append(Literal(FALSE))
+            self.cast_args.append(Literal(INTERRUPT, convert=True, quoted=True))
+        # Main
+        self.action = action
         self.ignored = simc in IGNORED_EXECUTIONS
         if not self.ignored:
             self.action.context.add_spell(self)
 
     def lua_name(self):
         return f'{super().lua_name()}{self.TYPE_SUFFIX[self.type_]}'
-
-    def condition_method(self):
-        if self.action.player.spell_property(self, USABLE):
-            return Method('IsUsable')
-        return Method('IsCastableP')
-
-    @havoc_melee_condition
-    def additional_conditions(self):
-        conditions = []
-        if self.action.player.spell_property(self, CD):
-            conditions.append(LuaExpression(None, Method('AR.CDsON'), []))
-        if self.action.player.spell_property(self, INTERRUPT):
-            conditions.append(Literal('Settings.General.InterruptEnabled'))
-            conditions.append(LuaExpression(self.action.target,
-                                            Method('IsInterruptible'), []))
-        return conditions
-
-    def cast_method(self):
-        if self.action.player.spell_property(self, INTERRUPT):
-            return Method('AR.CastAnnotated')
-        return Method('AR.Cast')
-
-    def cast_args(self):
-        args = [self]
-        if self.action.player.spell_property(self, GCDAOGCD):
-            args.append(Literal('Settings.'
-                                f'{self.action.player.spec.lua_name()}.'
-                                'GCDasOffGCD.'
-                                f'{self.lua_name()}'))
-        if self.action.player.spell_property(self, OGCDAOGCD):
-            args.append(Literal('Settings.'
-                                f'{self.action.player.spec.lua_name()}.'
-                                'OffGCDasOffGCD.'
-                                f'{self.lua_name()}'))
-        if self.action.player.spell_property(self, INTERRUPT):
-            args.append(Literal('false'))
-            args.append(Literal('"Interrupt"'))
-        return args
 
     def print_cast(self):
         """

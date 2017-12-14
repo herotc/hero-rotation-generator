@@ -14,10 +14,208 @@ from .units import Pet
 from .constants import SPELL, BUFF, DEBUFF, BOOL, PET, BLOODLUST, RANGE
 
 
+class ActionExpression(BuildExpression):
+    """
+    Represent the expression for a action. condition. Also works for expressions
+    implicitly referring to the execution of the condition.
+    """
+
+    def __init__(self, condition, to_self=False):
+        self.condition = condition
+        self.to_self = to_self
+        if to_self:
+            call = condition.condition_list[0]
+        else:
+            call = condition.condition_list[2]
+        self.object_ = self.action_object()
+        self.args = []
+        self.aura_model = self.build_aura()
+        super().__init__(call)
+
+    def action_object(self):
+        """
+        The object of the action expression, depending on whether the action is
+        applied to self (i.e. the execution) or not.
+        """
+        if self.to_self:
+            return self.condition.parent_action.execution().object_()
+        return Spell(self.condition.parent_action,
+                     self.condition.condition_list[1])
+
+    def build_aura(self):
+        """
+        The action aura when referring to the action as a buff or debuff.
+        """
+        if self.condition.player_unit.spell_property(
+                self.action_object(), DEBUFF):
+            aura_type = DEBUFF
+            aura_object = self.condition.target_unit
+        else:
+            aura_type = BUFF
+            aura_object = self.condition.player_unit
+        return Aura(self.condition, aura_type, aura_object,
+                    spell=self.action_object())
+
+    def from_aura(self):
+        """
+        Get attributes from the aura corresponding to the action object.
+        """
+        self.object_ = self.aura_model.object_
+        self.method = self.aura_model.method
+        self.args = self.aura_model.args
+
+    def execute_time(self):
+        """
+        Return the arguments for the expression action.spell.execute_time.
+        """
+        self.method = Method('ExecuteTime')
+
+    def recharge_time(self):
+        """
+        Return the arguments for the expression action.spell.recharge_time.
+        """
+        self.method = Method('RechargeP')
+
+    def full_recharge_time(self):
+        """
+        Return the arguments for the expression action.spell.full_recharge_time.
+        """
+        self.method = Method('FullRechargeTimeP')
+
+    def cast_time(self):
+        """
+        Return the arguments for the expression action.spell.cast_time.
+        """
+        self.method = Method('CastTime')
+
+    def charges(self):
+        """
+        Return the arguments for the expression action.spell.charges.
+        """
+        self.method = Method('ChargesP')
+
+    def charges_fractional(self):
+        """
+        Return the arguments for the expression action.spell.charges.
+        """
+        self.method = Method('ChargesFractional')
+
+    def cooldown(self):
+        """
+        Return the arguments for the expression action.spell.charges.
+        """
+        self.method = Method('Cooldown')
+
+    def usable_in(self):
+        """
+        Return the arguments for the expression action.spell.usable_in.
+        """
+        self.method = Method('UsableInP')
+
+    def travel_time(self):
+        """
+        Return the arguments for the expression action.spell.travel_time.
+        """
+        self.method = Method('TravelTime')
+
+    def max_charges(self):
+        """
+        Return the arguments for the expression action.spell.max_charges.
+        """
+        self.method = Method('MaxCharges')
+
+    def spell_targets(self):
+        """
+        Return the arguments for the expression action.spell.spell_targets.
+        """
+        self.object_ = None
+        self.method = Method('Cache.EnemiesCount')
+        self.args = [
+            Literal(self.condition.player_unit.spell_property(
+                self.action_object(), RANGE,
+                self.condition.player_unit.spec_range()))
+        ]
+        self.array = True
+
+    def active_enemies(self):
+        """
+        Return the arguments for the expression action.spell.active_enemies.
+        """
+        self.spell_targets()
+
+    def time_to_die(self):
+        """
+        Return the arguments for the expression time_to_die.
+        """
+        self.object_ = self.condition.target_unit
+        self.method = Method('TimeToDie')
+
+    def ready(self):
+        """
+        Return the arguments for the expression action.spell.ready.
+        """
+        self.aura_model.ready()
+        self.from_aura()
+
+    def remains(self):
+        """
+        Return the arguments for the expression action.spell.remains.
+        """
+        self.aura_model.remains()
+        self.from_aura()
+
+    def down(self):
+        """
+        Return the arguments for the expression action.spell.down.
+        """
+        self.aura_model.down()
+        self.from_aura()
+
+    def stack(self):
+        """
+        Return the arguments for the expression action.spell.stack.
+        """
+        self.aura_model.stack()
+        self.from_aura()
+
+    def react(self):
+        """
+        Return the arguments for the expression action.spell.react.
+        """
+        self.aura_model.react()
+        self.from_aura()
+
+    def duration(self):
+        """
+        Return the arguments for the expression action.spell.duration.
+        """
+        self.aura_model.duration()
+        self.from_aura()
+
+    def tick_time(self):
+        """
+        Return the arguments for the expression action.spell.duration.
+        """
+        self.aura_model.tick_time()
+        self.from_aura()
+
+    def ticking(self):
+        """
+        Return the arguments for the expression action.spell.duration.
+        """
+        self.aura_model.ticking()
+        self.from_aura()
+
+
 class Expression:
     """
     Represent a singleton condition (i.e. without any operator).
     """
+
+    actions_to_self = [method for method in dir(ActionExpression)
+                       if callable(getattr(ActionExpression, method))
+                       and not method.startswith('__')
+                       and not method == 'print_lua']
 
     def __init__(self, condition_expression, simc):
         self.condition_expression = condition_expression
@@ -38,7 +236,7 @@ class Expression:
         """
         Return the expression of the condition.
         """
-        if (self.condition_list[0] in self.actions_to_self()
+        if (self.condition_list[0] in self.actions_to_self
                 and len(self.condition_list) == 1):
             return self.action(to_self=True)
         try:
@@ -65,15 +263,6 @@ class Expression:
         self.pet_caster = Pet(self.player_unit, pet_name)
         self.condition_list = self.condition_list[2:]
         return self.expression()
-
-    def actions_to_self(self):
-        """
-        The list of actions that can be applied to self (i.e. the execution of
-        the action) for shortcut.
-        """
-        return [method for method in dir(ActionExpression)
-                if callable(getattr(ActionExpression, method))
-                and not method.startswith('__') and not method == 'print_lua']
 
     def action(self, to_self=False):
         """
@@ -389,199 +578,6 @@ class Aura(Expires):
         Return the arguments for the expression {aura}.spell.ticking.
         """
         self.ready()
-
-
-class ActionExpression(BuildExpression):
-    """
-    Represent the expression for a action. condition. Also works for expressions
-    implicitly referring to the execution of the condition.
-    """
-
-    def __init__(self, condition, to_self=False):
-        self.condition = condition
-        self.to_self = to_self
-        if to_self:
-            call = condition.condition_list[0]
-        else:
-            call = condition.condition_list[2]
-        self.object_ = self.action_object()
-        self.args = []
-        self.aura_model = self.build_aura()
-        super().__init__(call)
-
-    def action_object(self):
-        """
-        The object of the action expression, depending on whether the action is
-        applied to self (i.e. the execution) or not.
-        """
-        if self.to_self:
-            return self.condition.parent_action.execution().object_()
-        return Spell(self.condition.parent_action,
-                     self.condition.condition_list[1])
-
-    def build_aura(self):
-        """
-        The action aura when referring to the action as a buff or debuff.
-        """
-        if self.condition.player_unit.spell_property(
-                self.action_object(), DEBUFF):
-            aura_type = DEBUFF
-            aura_object = self.condition.target_unit
-        else:
-            aura_type = BUFF
-            aura_object = self.condition.player_unit
-        return Aura(self.condition, aura_type, aura_object,
-                    spell=self.action_object())
-
-    def from_aura(self):
-        """
-        Get attributes from the aura corresponding to the action object.
-        """
-        self.object_ = self.aura_model.object_
-        self.method = self.aura_model.method
-        self.args = self.aura_model.args
-
-    def execute_time(self):
-        """
-        Return the arguments for the expression action.spell.execute_time.
-        """
-        self.method = Method('ExecuteTime')
-
-    def recharge_time(self):
-        """
-        Return the arguments for the expression action.spell.recharge_time.
-        """
-        self.method = Method('RechargeP')
-
-    def full_recharge_time(self):
-        """
-        Return the arguments for the expression action.spell.full_recharge_time.
-        """
-        self.method = Method('FullRechargeTimeP')
-
-    def cast_time(self):
-        """
-        Return the arguments for the expression action.spell.cast_time.
-        """
-        self.method = Method('CastTime')
-
-    def charges(self):
-        """
-        Return the arguments for the expression action.spell.charges.
-        """
-        self.method = Method('ChargesP')
-
-    def charges_fractional(self):
-        """
-        Return the arguments for the expression action.spell.charges.
-        """
-        self.method = Method('ChargesFractional')
-
-    def cooldown(self):
-        """
-        Return the arguments for the expression action.spell.charges.
-        """
-        self.method = Method('Cooldown')
-
-    def usable_in(self):
-        """
-        Return the arguments for the expression action.spell.usable_in.
-        """
-        self.method = Method('UsableInP')
-
-    def travel_time(self):
-        """
-        Return the arguments for the expression action.spell.travel_time.
-        """
-        self.method = Method('TravelTime')
-
-    def max_charges(self):
-        """
-        Return the arguments for the expression action.spell.max_charges.
-        """
-        self.method = Method('MaxCharges')
-
-    def spell_targets(self):
-        """
-        Return the arguments for the expression action.spell.spell_targets.
-        """
-        self.object_ = None
-        self.method = Method('Cache.EnemiesCount')
-        self.args = [
-            Literal(self.condition.player_unit.spell_property(
-                self.action_object(), RANGE,
-                self.condition.player_unit.spec_range()))
-        ]
-        self.array = True
-
-    def active_enemies(self):
-        """
-        Return the arguments for the expression action.spell.active_enemies.
-        """
-        self.spell_targets()
-
-    def time_to_die(self):
-        """
-        Return the arguments for the expression time_to_die.
-        """
-        self.object_ = self.condition.target_unit
-        self.method = Method('TimeToDie')
-
-    def ready(self):
-        """
-        Return the arguments for the expression action.spell.ready.
-        """
-        self.aura_model.ready()
-        self.from_aura()
-
-    def remains(self):
-        """
-        Return the arguments for the expression action.spell.remains.
-        """
-        self.aura_model.remains()
-        self.from_aura()
-
-    def down(self):
-        """
-        Return the arguments for the expression action.spell.down.
-        """
-        self.aura_model.down()
-        self.from_aura()
-
-    def stack(self):
-        """
-        Return the arguments for the expression action.spell.stack.
-        """
-        self.aura_model.stack()
-        self.from_aura()
-
-    def react(self):
-        """
-        Return the arguments for the expression action.spell.react.
-        """
-        self.aura_model.react()
-        self.from_aura()
-
-    def duration(self):
-        """
-        Return the arguments for the expression action.spell.duration.
-        """
-        self.aura_model.duration()
-        self.from_aura()
-
-    def tick_time(self):
-        """
-        Return the arguments for the expression action.spell.duration.
-        """
-        self.aura_model.tick_time()
-        self.from_aura()
-
-    def ticking(self):
-        """
-        Return the arguments for the expression action.spell.duration.
-        """
-        self.aura_model.ticking()
-        self.from_aura()
 
 
 class SetBonus(Literal):
