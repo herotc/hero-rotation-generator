@@ -7,19 +7,36 @@ Define the objects representing simc units.
 
 from functools import reduce
 
-from .lua import LuaNamed
+from .lua import LuaNamed, Literal
 from .demonhunter import havoc_is_in_melee_range
 from .druid import balance_future_astral_power, guardian_swipe_thrash
 from .constants import RANGE
 from .database import (CLASS_SPECS, RACES, SPELL_INFO, COMMON, DEFAULT_POTION)
 
 
-class Player:
+class Unit:
+    """
+    Define a unit.
+    """
+
+    def __init__(self, unit_object):
+        self.unit_object = Literal(unit_object, convert=True)
+
+    def print_lua(self):
+        """
+        Return the representation of the unit.
+        """
+        return f'{self.unit_object.print_lua()}'
+
+
+class Player(Unit, LuaNamed):
     """
     Define a player as the main actor of a simulation.
     """
 
     def __init__(self, simc, apl):
+        super().__init__('player')
+        self.simc = simc
         self.class_ = PlayerClass(simc)
         self.spec = None
         self.level = 110
@@ -88,42 +105,26 @@ class Player:
         """
         self.level = int(level)
 
-    def print_lua(self):
-        """
-        Print the lua expression for the player.
-        """
-        return 'Player'
 
-
-class Target:
+class Target(Unit, LuaNamed):
     """
     Define a target of the main actor of a simulation.
     """
 
     def __init__(self, simc=None):
+        super().__init__('target')
         self.simc = simc if simc is not None else 'patchwerk'
 
-    def print_lua(self):
-        """
-        Print the lua expression for the target.
-        """
-        return 'Target'
 
-
-class Pet:
+class Pet(Unit, LuaNamed):
     """
     Define a pet of the main actor of a simulation.
     """
 
     def __init__(self, owner, name='pet'):
+        super().__init__('pet')
         self.owner = owner
         self.name = name
-
-    def print_lua(self):
-        """
-        Print the lua expression for the pet.
-        """
-        return 'Pet'
 
 
 class PlayerClass(LuaNamed):
