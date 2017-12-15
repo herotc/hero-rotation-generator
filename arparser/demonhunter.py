@@ -5,8 +5,6 @@ Demon Hunter specific constants and functions.
 @author: skasch
 """
 
-import os
-
 from .lua import LuaExpression
 from .expressions import Method
 from .constants import MELEE, SPELL, BUFF, DEBUFF, COMMON, RANGE
@@ -15,7 +13,12 @@ DEMONHUNTER = 'demonhunter'
 HAVOC = 'havoc'
 VENGEANCE = 'vengeance'
 
-DH_SPECS = {DEMONHUNTER: [HAVOC, VENGEANCE]}
+DH_SPECS = {
+    DEMONHUNTER: {
+        HAVOC:          577,
+        VENGEANCE:      581,
+    },
+}
 
 DH_POTION = {
     DEMONHUNTER: {

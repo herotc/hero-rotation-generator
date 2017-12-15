@@ -108,7 +108,7 @@ local function bool(val)
 end
 
 --- ======= ACTION LISTS =======
-local function Apl()
+local function APL()
   local function Precombat()
     -- flask
     -- food
@@ -393,3 +393,5 @@ local function Apl()
     local ShouldReturn = Filler(); if ShouldReturn then return ShouldReturn; end
   end
 end
+
+AR.SetAPL(263, APL)

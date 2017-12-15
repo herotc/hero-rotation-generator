@@ -8,9 +8,18 @@ Priest specific constants and functions.
 from .constants import COMMON, SPELL, BUFF, DEBUFF, INTERRUPT, RANGE
 
 PRIEST = 'priest'
+DISCIPLINE = 'discipline'
+HOLY = 'holy'
 SHADOW = 'shadow'
 
-PR_SPECS = {PRIEST: [SHADOW]}
+
+PR_SPECS = {
+    PRIEST: {
+        DISCIPLINE:     256,
+        HOLY:           257,
+        SHADOW:         258,
+    },
+}
 
 PR_POTION = {
     PRIEST: {

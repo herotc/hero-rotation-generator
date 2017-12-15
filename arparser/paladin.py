@@ -8,10 +8,17 @@ Paladin specific constants and functions.
 from .constants import COMMON, SPELL, BUFF, DEBUFF, INTERRUPT, RANGE
 
 PALADIN = 'paladin'
+HOLY = 'holy'
 PROTECTION = 'protection'
 RETRIBUTION = 'retribution'
 
-PL_SPECS = {PALADIN: [PROTECTION, RETRIBUTION]}
+PL_SPECS = {
+    PALADIN: {
+        HOLY:           65,
+        PROTECTION:     66,
+        RETRIBUTION:    70,
+    },
+}
 
 PL_POTION = {
     PALADIN: {

@@ -90,7 +90,7 @@ local function bool(val)
 end
 
 --- ======= ACTION LISTS =======
-local function Apl()
+local function APL()
   local function Precombat()
     -- flask,type=flask_of_the_countless_armies
     -- food,type=azshari_salad
@@ -287,3 +287,5 @@ local function Apl()
     local ShouldReturn = Generators(); if ShouldReturn then return ShouldReturn; end
   end
 end
+
+AR.SetAPL(70, APL)

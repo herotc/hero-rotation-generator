@@ -98,7 +98,7 @@ local function bool(val)
 end
 
 --- ======= ACTION LISTS =======
-local function Apl()
+local function APL()
   local function Precombat()
     -- flask
     -- food
@@ -388,3 +388,5 @@ local function Apl()
     if AR.Cast(S.Shred) then return ""; end
   end
 end
+
+AR.SetAPL(103, APL)

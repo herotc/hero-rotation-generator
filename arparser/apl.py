@@ -174,6 +174,15 @@ class APL:
         return '\n'.join(indent(action_list.print_lua())
                          for action_list in self.action_lists())
 
+    def print_set_apl(self):
+        """
+        Print the call to SetAPL to set the APL into AR.
+        """
+        class_simc = self.player.class_.simc
+        spec_simc = self.player.spec.simc
+        apl_id = CLASS_SPECS.get(class_simc, {}).get(spec_simc, 0)
+        return f'AR.SetAPL({apl_id}, APL)\n'
+
     def print_lua(self):
         """
         Print the lua string representing the action list.
@@ -183,10 +192,12 @@ class APL:
         precombat_call = indent(self.precombat_action().print_lua())
         main_actions = self.main_action_list().print_actions_lua()
         context = self.context.print_lua()
+        set_apl = self.print_set_apl()
         return (f'{context}'
                 f'--- ======= ACTION LISTS =======\n'
                 f'local function {function_name}()\n'
                 f'{action_lists}\n'
                 f'{precombat_call}\n'
                 f'{main_actions}\n'
-                f'end')
+                f'end\n'
+                f'\n{set_apl}')

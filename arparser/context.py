@@ -6,7 +6,7 @@ Context of an APL.
 """
 
 from .constants import PET
-from .database import ITEM_INFO
+from .database import ITEM_INFO, CLASS_SPECS
 from .druid import guardian_print_swipe_thrash
 
 class Context:

@@ -10,8 +10,15 @@ from .constants import COMMON, SPELL, BUFF, DEBUFF, RANGE
 WARRIOR = 'warrior'
 ARMS = 'arms'
 FURY = 'fury'
+PROTECTION = 'protection'
 
-WR_SPECS = {WARRIOR: [ARMS, FURY]}
+WR_SPECS = {
+    WARRIOR: {
+        ARMS:           71,
+        FURY:           72,
+        PROTECTION:     73,
+    },
+}
 
 WR_POTION = {
     WARRIOR: {

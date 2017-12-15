@@ -10,8 +10,15 @@ from .constants import COMMON, SPELL, BUFF, DEBUFF, INTERRUPT, RANGE
 MONK = 'monk'
 BREWMASTER = 'brewmaster'
 WINDWALKER = 'windwalker'
+MISTWEAVER = 'mistweaver'
 
-MK_SPECS = {MONK: [BREWMASTER, WINDWALKER]}
+MK_SPECS = {
+    MONK: {
+        BREWMASTER:     268,
+        WINDWALKER:     269,
+        MISTWEAVER:     270,
+    },
+}
 
 MK_POTION = {
     MONK: {

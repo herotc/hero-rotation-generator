@@ -12,7 +12,13 @@ ARCANE = 'arcane'
 FIRE = 'fire'
 FROST = 'frost'
 
-MG_SPECS = {MAGE: [ARCANE, FIRE, FROST]}
+MG_SPECS = {
+    MAGE: {
+        ARCANE:         62,
+        FIRE:           63,
+        FROST:          64,
+    },
+}
 
 MG_POTION = {
     MAGE: {

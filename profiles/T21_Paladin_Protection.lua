@@ -90,7 +90,7 @@ local function bool(val)
 end
 
 --- ======= ACTION LISTS =======
-local function Apl()
+local function APL()
   local function Precombat()
     -- flask,type=flask_of_ten_thousand_scars,if=!talent.seraphim.enabled
     -- flask,type=flask_of_the_countless_armies,if=(role.attack|talent.seraphim.enabled)
@@ -348,3 +348,5 @@ local function Apl()
     local ShouldReturn = Prot(); if ShouldReturn then return ShouldReturn; end
   end
 end
+
+AR.SetAPL(66, APL)

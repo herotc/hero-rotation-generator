@@ -137,7 +137,7 @@ local function ActiveUAs ()
 end
 
 --- ======= ACTION LISTS =======
-local function Apl()
+local function APL()
   local function Precombat()
     -- flask
     -- food
@@ -691,3 +691,5 @@ local function Apl()
     local ShouldReturn = Haunt(); if ShouldReturn then return ShouldReturn; end
   end
 end
+
+AR.SetAPL(265, APL)

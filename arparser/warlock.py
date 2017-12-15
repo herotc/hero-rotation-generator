@@ -15,7 +15,13 @@ AFFLICTION = 'affliction'
 DEMONOLOGY = 'demonology'
 DESTRUCTION = 'destruction'
 
-WL_SPECS = {WARLOCK: [AFFLICTION, DEMONOLOGY, DESTRUCTION]}
+WL_SPECS = {
+    WARLOCK: {
+        AFFLICTION:         265,
+        DEMONOLOGY:         266,
+        DESTRUCTION:        267,
+    },
+}
 
 WL_POTION = {
     WARLOCK: {

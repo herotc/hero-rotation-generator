@@ -10,8 +10,15 @@ from .constants import COMMON, SPELL, BUFF, DEBUFF, INTERRUPT, RANGE
 SHAMAN = 'shaman'
 ELEMENTAL = 'elemental'
 ENHANCEMENT = 'enhancement'
+RESTORATION = 'restoration'
 
-SH_SPECS = {SHAMAN: [ELEMENTAL, ENHANCEMENT]}
+SH_SPECS = {
+    SHAMAN: {
+        ELEMENTAL:          262,
+        ENHANCEMENT:        263,
+        RESTORATION:        264,
+    },
+}
 
 SH_POTION = {
     SHAMAN: {

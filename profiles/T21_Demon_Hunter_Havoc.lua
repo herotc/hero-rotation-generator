@@ -104,7 +104,7 @@ local function IsInMeleeRange()
 end
 
 --- ======= ACTION LISTS =======
-local function Apl()
+local function APL()
   local function Precombat()
     -- flask
     -- augmentation
@@ -371,3 +371,5 @@ local function Apl()
     return Normal();
   end
 end
+
+AR.SetAPL(577, APL)

@@ -14,7 +14,13 @@ BLOOD = 'blood'
 FROST = 'frost'
 UNHOLY = 'unholy'
 
-DK_SPECS = {DEATHKNIGHT: [BLOOD, FROST, UNHOLY]}
+DK_SPECS = {
+    DEATHKNIGHT: {
+        BLOOD:          250,
+        FROST:          251,
+        UNHOLY:         252,
+    },
+}
 
 DK_POTION = {
     DEATHKNIGHT: {

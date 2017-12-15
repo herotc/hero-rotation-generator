@@ -88,7 +88,7 @@ local function bool(val)
 end
 
 --- ======= ACTION LISTS =======
-local function Apl()
+local function APL()
   local function Precombat()
     -- flask
     -- augmentation
@@ -329,3 +329,5 @@ local function Apl()
     local ShouldReturn = Bitephase(); if ShouldReturn then return ShouldReturn; end
   end
 end
+
+AR.SetAPL(255, APL)

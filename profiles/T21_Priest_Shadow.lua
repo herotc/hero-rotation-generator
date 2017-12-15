@@ -112,7 +112,7 @@ local function bool(val)
 end
 
 --- ======= ACTION LISTS =======
-local function Apl()
+local function APL()
   local function Precombat()
     -- flask
     -- food
@@ -488,3 +488,5 @@ local function Apl()
     return Main();
   end
 end
+
+AR.SetAPL(258, APL)

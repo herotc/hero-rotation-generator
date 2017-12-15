@@ -12,7 +12,13 @@ BEAST_MASTERY = 'beast_mastery'
 MARKSMANSHIP = 'marksmanship'
 SURVIVAL = 'survival'
 
-HT_SPECS = {HUNTER: [BEAST_MASTERY, MARKSMANSHIP, SURVIVAL]}
+HT_SPECS = {
+    HUNTER: {
+        BEAST_MASTERY:      253,
+        MARKSMANSHIP:       254,
+        SURVIVAL:           255,
+    },
+}
 
 HT_POTION = {
     HUNTER: {

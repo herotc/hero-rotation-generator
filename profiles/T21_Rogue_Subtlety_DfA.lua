@@ -105,7 +105,7 @@ local function bool(val)
 end
 
 --- ======= ACTION LISTS =======
-local function Apl()
+local function APL()
   local function Precombat()
     -- flask
     -- augmentation
@@ -349,3 +349,5 @@ local function Apl()
     local ShouldReturn = Build(); if ShouldReturn then return ShouldReturn; end
   end
 end
+
+AR.SetAPL(261, APL)

@@ -71,6 +71,7 @@ WORD_REPLACEMENTS = {
     'The': 'the',
     'Deathknight': 'DeathKnight',
     'Demonhunter': 'DemonHunter',
+    'Apl': 'APL',
 }
 
 # Expressions operators

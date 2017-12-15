@@ -90,7 +90,7 @@ local function bool(val)
 end
 
 --- ======= ACTION LISTS =======
-local function Apl()
+local function APL()
   local function Precombat()
     -- flask,type=countless_armies
     -- food,type=nightborne_delicacy_platter
@@ -363,3 +363,5 @@ local function Apl()
     return Single();
   end
 end
+
+AR.SetAPL(71, APL)

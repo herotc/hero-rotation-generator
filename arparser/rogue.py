@@ -12,7 +12,13 @@ ASSASSINATION = 'assassination'
 OUTLAW = 'outlaw'
 SUBTLETY = 'subtlety'
 
-RG_SPECS = {ROGUE: [ASSASSINATION, OUTLAW, SUBTLETY]}
+RG_SPECS = {
+    ROGUE: {
+        ASSASSINATION:      259,
+        OUTLAW:             260,
+        SUBTLETY:           261,
+    },
+}
 
 RG_POTION = {
     ROGUE: {

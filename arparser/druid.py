@@ -4,7 +4,7 @@ Druid specific constants and functions.
 
 @author: skasch
 """
-import os
+
 import copy
 
 from .expressions import Method
@@ -14,8 +14,16 @@ DRUID = 'druid'
 BALANCE = 'balance'
 FERAL = 'feral'
 GUARDIAN = 'guardian'
+RESTORATION = 'restoration'
 
-DR_SPECS = {DRUID: [BALANCE, FERAL, GUARDIAN]}
+DR_SPECS = {
+    DRUID: {
+        BALANCE:        102,
+        FERAL:          103,
+        GUARDIAN:       104,
+        RESTORATION:    105,
+    },
+}
 
 DR_POTION = {
     DRUID: {

@@ -83,7 +83,7 @@ local function bool(val)
 end
 
 --- ======= ACTION LISTS =======
-local function Apl()
+local function APL()
   local function Precombat()
     -- flask
     -- augmentation
@@ -200,3 +200,5 @@ local function Apl()
     if AR.Cast(S.DireBeast) then return ""; end
   end
 end
+
+AR.SetAPL(253, APL)
