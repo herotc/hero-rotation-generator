@@ -876,22 +876,43 @@ class RaidEvent(Literal):
         super().__init__()
 
     def adds_in(self):
+        """
+        Return the argument for the expressions raid_event.adds.in.
+        """
         self.simc = MAX_INT
 
     def adds_exists(self):
+        """
+        Return the argument for the expressions raid_event.adds.exists.
+        """
         self.simc = FALSE
 
     def adds_up(self):
+        """
+        Return the argument for the expressions raid_event.adds.up.
+        """
         self.simc = FALSE
     
     def adds_remains(self):
+        """
+        Return the argument for the expressions raid_event.adds.remains.
+        """
         self.simc = 0
     
     def adds_count(self):
+        """
+        Return the argument for the expressions raid_event.adds.count.
+        """
         self.simc = 0
 
     def movement_in(self):
+        """
+        Return the argument for the expressions raid_event.movement.in.
+        """
         self.simc = MAX_INT
     
     def movement_exists(self):
+        """
+        Return the argument for the expressions raid_event.movement.exists.
+        """
         self.simc = FALSE
