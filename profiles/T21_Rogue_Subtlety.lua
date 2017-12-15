@@ -180,7 +180,7 @@ local function Apl()
       if AR.Cast(S.MarkedForDeath) then return ""; end
     end
     -- marked_for_death,if=raid_event.adds.in>40&!stealthed.all&combo_points.deficit>=cp_max_spend
-    if S.MarkedForDeath:IsCastableP() and (raid_event.adds.in > 40 and not bool(stealthed.all) and Player:ComboPointsDeficit() >= cp_max_spend) then
+    if S.MarkedForDeath:IsCastableP() and (4294967296 > 40 and not bool(stealthed.all) and Player:ComboPointsDeficit() >= cp_max_spend) then
       if AR.Cast(S.MarkedForDeath) then return ""; end
     end
     -- shadow_blades,if=(time>10&combo_points.deficit>=2+stealthed.all-equipped.mantle_of_the_master_assassin)|(time<10&(!talent.marked_for_death.enabled|combo_points.deficit>=3|dot.nightblade.ticking))

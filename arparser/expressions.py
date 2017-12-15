@@ -11,7 +11,8 @@ from .resources import (Rune, AstralPower, HolyPower, Insanity, Pain, Focus,
                         Maelstrom, Energy, ComboPoints, SoulShards,
                         ArcaneCharges, Chi, RunicPower, Fury, Mana)
 from .units import Pet
-from .constants import SPELL, BUFF, DEBUFF, BOOL, PET, BLOODLUST, RANGE
+from .constants import (SPELL, BUFF, DEBUFF, BOOL, PET, BLOODLUST, RANGE,
+                        TRUE, FALSE, MAX_INT)
 
 
 class ActionExpression(BuildExpression):
@@ -458,6 +459,12 @@ class Expression:
             return Literal('target')
         return TargetExpression(self)
 
+    def raid_event(self):
+        """
+        Return the condition when the prefix is target.
+        """
+        return RaidEvent(self)
+
     def variable(self):
         """
         Return the condition when the prefix is variable.
@@ -831,7 +838,6 @@ class Cooldown(BuildExpression, Expires):
         self.method = Method('ChargesFractional')
 
 
-
 class TargetExpression(BuildExpression):
     """
     Represent the expression for a target. condition.
@@ -856,3 +862,36 @@ class TargetExpression(BuildExpression):
         """
         if self.condition.condition_list[2] == 'pct':
             self.method = Method('HealthPercentage')
+
+
+class RaidEvent(Literal):
+    """
+    Represent the expression for a raid_event condition.
+    """
+    
+    def __init__(self, condition):
+        self.condition = condition
+        call = '_'.join(condition.condition_list[1:])
+        getattr(self, call)()
+        super().__init__()
+
+    def adds_in(self):
+        self.simc = MAX_INT
+
+    def adds_exists(self):
+        self.simc = FALSE
+
+    def adds_up(self):
+        self.simc = FALSE
+    
+    def adds_remains(self):
+        self.simc = 0
+    
+    def adds_count(self):
+        self.simc = 0
+
+    def movement_in(self):
+        self.simc = MAX_INT
+    
+    def movement_exists(self):
+        self.simc = FALSE

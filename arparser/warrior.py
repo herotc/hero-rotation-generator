@@ -70,6 +70,7 @@ WR_SPELL_INFO = {
             'bladestorm':                           {SPELL:     46924,
                                                      BUFF:      46924,
                                                      RANGE:     8},
+            'bladestorm_mh':                        {RANGE:     8},
             'whirlwind':                            {SPELL:     190411,
                                                      RANGE:     8},
             'meat_cleaver':                         {SPELL:     85739,

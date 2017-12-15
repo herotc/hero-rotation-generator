@@ -111,7 +111,7 @@ local function Apl()
       if AR.Cast(S.Bloodthirst) then return ""; end
     end
     -- bladestorm,if=buff.enrage.remains>2&(raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)
-    if S.Bladestorm:IsCastableP() and (Player:BuffRemainsP(S.EnrageBuff) > 2 and (raid_event.adds.in > 90 or not bool(raid_event.adds.exists) or Cache.EnemiesCount[5] > desired_targets)) then
+    if S.Bladestorm:IsCastableP() and (Player:BuffRemainsP(S.EnrageBuff) > 2 and (4294967296 > 90 or not false or Cache.EnemiesCount[8] > desired_targets)) then
       if AR.Cast(S.Bladestorm) then return ""; end
     end
     -- whirlwind,if=buff.meat_cleaver.down
@@ -307,7 +307,7 @@ local function Apl()
     return Movement();
   end
   -- heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists
-  if S.HeroicLeap:IsCastableP() and ((raid_event.movement.distance > 25 and raid_event.movement.in > 45) or not bool(raid_event.movement.exists)) then
+  if S.HeroicLeap:IsCastableP() and ((raid_event.movement.distance > 25 and 4294967296 > 45) or not false) then
     if AR.Cast(S.HeroicLeap) then return ""; end
   end
   -- potion,name=old_war,if=buff.battle_cry.up&(buff.avatar.up|!talent.avatar.enabled)
@@ -343,7 +343,7 @@ local function Apl()
     if AR.Cast(S.BattleCry) then return ""; end
   end
   -- battle_cry,if=gcd.remains=0&talent.bladestorm.enabled&(raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)
-  if S.BattleCry:IsCastableP() and (Player:GCDRemains() == 0 and S.Bladestorm:IsAvailable() and (raid_event.adds.in > 90 or not bool(raid_event.adds.exists) or Cache.EnemiesCount[5] > desired_targets)) then
+  if S.BattleCry:IsCastableP() and (Player:GCDRemains() == 0 and S.Bladestorm:IsAvailable() and (4294967296 > 90 or not false or Cache.EnemiesCount[8] > desired_targets)) then
     if AR.Cast(S.BattleCry) then return ""; end
   end
   -- battle_cry,if=gcd.remains=0&buff.dragon_roar.up&(cooldown.bloodthirst.remains=0|buff.enrage.remains>cooldown.bloodthirst.remains)

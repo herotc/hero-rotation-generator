@@ -36,6 +36,8 @@ PET = 'pet'
 COMMON = 'common'
 RANGE = 'range'
 
+MAX_INT = 2**32
+
 # Miscellaneous
 # =============
 

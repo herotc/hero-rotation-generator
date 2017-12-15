@@ -118,7 +118,7 @@ local function Apl()
       if AR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- marked_for_death,if=raid_event.adds.in>40
-    if S.MarkedForDeath:IsCastableP() and (raid_event.adds.in > 40) then
+    if S.MarkedForDeath:IsCastableP() and (4294967296 > 40) then
       if AR.Cast(S.MarkedForDeath) then return ""; end
     end
   end
@@ -162,7 +162,7 @@ local function Apl()
       if AR.Cast(S.ArcaneTorrent, Settings.Assassination.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
     end
     -- marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit*1.5|(raid_event.adds.in>40&combo_points.deficit>=cp_max_spend)
-    if S.MarkedForDeath:IsCastableP() and (Target:TimeToDie() < Player:ComboPointsDeficit() * 1.5 or (raid_event.adds.in > 40 and Player:ComboPointsDeficit() >= cp_max_spend)) then
+    if S.MarkedForDeath:IsCastableP() and (Target:TimeToDie() < Player:ComboPointsDeficit() * 1.5 or (4294967296 > 40 and Player:ComboPointsDeficit() >= cp_max_spend)) then
       if AR.Cast(S.MarkedForDeath) then return ""; end
     end
     -- vendetta,if=!talent.exsanguinate.enabled|dot.rupture.ticking
