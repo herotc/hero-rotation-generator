@@ -5,7 +5,7 @@ Monk specific constants and functions.
 @author: skasch
 """
 
-from .constants import COMMON, SPELL, BUFF, INTERRUPT, RANGE
+from .constants import COMMON, SPELL, BUFF, DEBUFF, INTERRUPT, RANGE
 
 MONK = 'monk'
 BREWMASTER = 'brewmaster'
@@ -25,13 +25,15 @@ MK_SPELL_INFO = {
         COMMON: {
             'blackout_combo':                   {SPELL:     196736,
                                                  BUFF:      228563},
-            'tiger_palm':                       {SPELL:     100780},
             'blackout_kick':                    {SPELL:     100784},
+            'chi_burst':                        {SPELL:     123986},
+            'chi_wave':                         {SPELL:     115098},
             'rushing_jade_wind':                {SPELL:     116847,
                                                  BUFF:      116847,
                                                  RANGE:     8},
             'spear_hand_strike':                {SPELL:     116705,
                                                  INTERRUPT: True},
+            'tiger_palm':                       {SPELL:     100780},
             # Legendaries
             'the_emperors_capacitor':           {BUFF:      235054},
         },
@@ -42,7 +44,8 @@ MK_SPELL_INFO = {
             'black_ox_brew':                    {SPELL:     115399},
             'keg_smash':                        {SPELL:     121253},
             'blackout_strike':                  {SPELL:     205523},
-            'breath_of_fire':                   {SPELL:     115181},
+            'breath_of_fire':                   {SPELL:     115181,
+                                                 DEBUFF:    123725},
             'gift_of_the_ox':                   {SPELL:     124507},
             'dampen_harm':                      {SPELL:     122278,
                                                  BUFF:      122278},
@@ -67,15 +70,14 @@ MK_SPELL_INFO = {
             'energizing_elixir':                {SPELL:     115288},
             'whirling_dragon_punch':            {SPELL:     152175},
             'crackling_jade_lightning':         {SPELL:     117952},
-            'chi_wave':                         {SPELL:     115098},
-            'chi_burst':                        {SPELL:     123986},
             'touch_of_karma':                   {SPELL:     122470},
         },
     },
 }
 
 MK_ITEM_INFO = {
-    'hidden_masters_forbidden_touch':   137057,
+    'archimondes_hatred_reborn':        144249,
     'drinking_horn_cover':              137097,
+    'hidden_masters_forbidden_touch':   137057,
     'the_emperors_capacitor':           144239,
 }

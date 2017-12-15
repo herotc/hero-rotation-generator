@@ -22,8 +22,8 @@ local AR     = AethysRotation
 if not Spell.Monk then Spell.Monk = {} end
 Spell.Monk.Brewmaster = {
   DampenHarm                            = Spell(122278),
-  ChiBurst                              = Spell(),
-  ChiWave                               = Spell(),
+  ChiBurst                              = Spell(123986),
+  ChiWave                               = Spell(115098),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
   ExplodingKeg                          = Spell(214326),
@@ -40,8 +40,6 @@ Spell.Monk.Brewmaster = {
   BreathofFireDotDebuff                 = Spell(),
   RushingJadeWind                       = Spell(116847),
   BlackoutCombo                         = Spell(196736),
-  GreaterGiftoftheOx                    = Spell(),
-  GiftoftheOx                           = Spell(124507),
   FortifyingBrewBuff                    = Spell(115203),
   FortifyingBrew                        = Spell(115203),
   DampenHarmBuff                        = Spell(122278),
@@ -166,13 +164,7 @@ local function Apl()
   end
   -- auto_attack
   -- greater_gift_of_the_ox
-  if S.GreaterGiftoftheOx:IsCastableP() and (true) then
-    if AR.Cast(S.GreaterGiftoftheOx) then return ""; end
-  end
   -- gift_of_the_ox
-  if S.GiftoftheOx:IsCastableP() and (true) then
-    if AR.Cast(S.GiftoftheOx) then return ""; end
-  end
   -- dampen_harm,if=incoming_damage_1500ms&buff.fortifying_brew.down
   if S.DampenHarm:IsCastableP() and (bool(incoming_damage_1500ms) and Player:BuffDownP(S.FortifyingBrewBuff)) then
     if AR.Cast(S.DampenHarm) then return ""; end
