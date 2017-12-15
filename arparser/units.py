@@ -5,13 +5,13 @@ Define the objects representing simc units.
 @author: skasch
 """
 
+import os
 from functools import reduce
 
 from .lua import LuaNamed, Literal
-from .demonhunter import havoc_is_in_melee_range
-from .druid import balance_future_astral_power, guardian_swipe_thrash
 from .constants import RANGE
-from .database import (CLASS_SPECS, RACES, SPELL_INFO, COMMON, DEFAULT_POTION)
+from .database import (CLASS_SPECS, RACES, SPELL_INFO, COMMON, DEFAULT_POTION,
+                       CLASS_FUNCTIONS)
 
 
 class Unit:
@@ -43,6 +43,7 @@ class Player(Unit, LuaNamed):
         self.race = None
         self.apl = apl
         self.spells = None
+        self.funs = None
         self.range_ = None
 
     def potion(self):
@@ -51,14 +52,41 @@ class Player(Unit, LuaNamed):
         """
         return self.spec.potion()
 
-    @havoc_is_in_melee_range
-    @balance_future_astral_power
-    @guardian_swipe_thrash
     def set_spec(self, spec):
         """
         Sets the spec of the player.
         """
         self.spec = PlayerSpec(self, spec)
+        for function_name in self.spec_functions():
+            self.add_to_context(function_name)
+    
+    def spec_functions(self):
+        """
+        Return the context functions specific to the player spec.
+        """
+        if not self.funs:
+            class_simc = self.class_.simc
+            spec_simc = self.spec.simc
+            funs = CLASS_FUNCTIONS.get(COMMON, []).copy()
+            funs.extend(CLASS_FUNCTIONS.get(class_simc, {}).get(COMMON, []))
+            funs.extend(CLASS_FUNCTIONS.get(class_simc, {}).get(spec_simc, []))
+            self.funs = funs
+        return self.funs
+
+    def add_to_context(self, function_name):
+        """
+        Add a function to the context given the function name (must match a file
+        in the luafunctions folder).
+        """
+        lua_fun = ''
+        lua_file_path = os.path.join(
+            os.path.dirname(__file__),
+            'luafunctions',
+            f'{function_name}.lua'
+        )
+        with open(lua_file_path) as lua_file:
+            lua_fun = lua_file.read()
+        self.apl.context.add_code(lua_fun)
 
     def spell_book(self):
         """

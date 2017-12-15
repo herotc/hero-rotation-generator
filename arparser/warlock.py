@@ -5,6 +5,9 @@ Warlock specific constants and functions.
 @author: skasch
 """
 
+import os
+
+from .lua import Method
 from .constants import COMMON, SPELL, BUFF, DEBUFF, RANGE
 
 WARLOCK = 'warlock'
@@ -134,3 +137,79 @@ WL_SPELL_INFO = {
 WL_ITEM_INFO = {
     'lessons_of_spacetime':             144369,
 }
+
+
+WL_FUNCTIONS = {
+    WARLOCK: {
+        COMMON: [
+            'FutureShard',
+        ],
+        AFFLICTION: [
+            'UnstableAfflictionDebuffs',
+            'ActiveUAs',
+        ],
+    },
+}
+
+
+def affliction_functions(fun):
+    """
+    Adds melee range prediction with movement skills for Havoc.
+    """
+
+    def set_spec(self, spec):
+        """
+        Sets the spec of the player.
+        """
+        if spec == AFFLICTION:
+            for affliction_fun in WL_FUNCTIONS[WARLOCK][AFFLICTION]:
+                lua_fun = ''
+                lua_file_path = os.path.join(
+                    os.path.dirname(__file__),
+                    'luafunctions',
+                    f'{affliction_fun}.lua'
+                )
+                with open(lua_file_path) as lua_file:
+                    lua_fun = lua_file.read()
+                self.apl.context.add_code(lua_fun)
+        fun(self, spec)
+
+    return set_spec
+
+
+def warlock_soul_shard_value(fun):
+    """
+    Replaces the soul_shard expression with a call to FutureShard.
+    """
+
+    def value(self):
+        """
+        Return the arguments for the expression soul_shard.
+        """
+        if self.condition.parent_action.player.class_.simc == WARLOCK:
+            self.object_ = None
+            self.method = Method('FutureShard')
+        else:
+            fun(self)
+
+    return value
+
+
+def affliction_active_uas_stack(fun):
+    """
+    Replaces the buff.active_uas.stack expression with a call to ActiveUAs.
+    """
+
+    def stack(self):
+        """
+        Return the arguments for the expression buff.active_uas.stack.
+        """
+        if (self.condition.parent_action.player.spec.simc == AFFLICTION
+                and self.condition.condition_list[1] == 'active_uas'):
+            self.object_ = None
+            self.method = Method('ActiveUAs')
+            self.args = []
+        else:
+            fun(self)
+
+    return stack

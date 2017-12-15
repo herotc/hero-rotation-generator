@@ -8,9 +8,10 @@ Define the objects representing simc expressions.
 from .lua import LuaExpression, BuildExpression, Method, Literal
 from .executions import Spell, Item, Variable
 from .resources import (Rune, AstralPower, HolyPower, Insanity, Pain, Focus,
-                        Maelstrom, Energy, ComboPoints, SoulShards,
+                        Maelstrom, Energy, ComboPoints, SoulShard,
                         ArcaneCharges, Chi, RunicPower, Fury, Rage, Mana)
 from .units import Pet
+from .warlock import affliction_active_uas_stack
 from .constants import (SPELL, BUFF, DEBUFF, BOOL, PET, BLOODLUST, RANGE,
                         FALSE, MAX_INT)
 
@@ -391,11 +392,11 @@ class Expression:
         """
         return ComboPoints(self)
 
-    def soul_shards(self):
+    def soul_shard(self):
         """
-        Return the condition when the prefix is soul_shards.
+        Return the condition when the prefix is soul_shard.
         """
-        return SoulShards(self)
+        return SoulShard(self)
 
     def arcane_charges(self):
         """
@@ -838,6 +839,10 @@ class Buff(BuildExpression, Aura):
         Aura.__init__(self, condition, BUFF, object_, spell_type=BUFF)
         call = condition.condition_list[2]
         super().__init__(call)
+    
+    @affliction_active_uas_stack
+    def stack(self):
+        super().stack()
 
 
 class Cooldown(BuildExpression, Expires):

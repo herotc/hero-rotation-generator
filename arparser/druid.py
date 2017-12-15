@@ -201,55 +201,17 @@ DR_ITEM_INFO = {
     'luffa_wrappings':          137056,
 }
 
-
-def balance_future_astral_power(fun):
-    """
-    Adds astral power value prediction for Balance.
-    """
-
-    def set_spec(self, spec):
-        """
-        Sets the spec of the player.
-        """
-        if spec == BALANCE:
-            future_astral_power = ''
-            lua_file_path = os.path.join(os.path.dirname(__file__),
-                                         'luafunctions',
-                                         'FutureAstralPower.lua')
-            with open(lua_file_path) as lua_file:
-                future_astral_power = ''.join(lua_file.readlines())
-            self.apl.context.add_code(future_astral_power)
-        fun(self, spec)
-
-    return set_spec
-
-
-def guardian_swipe_thrash(fun):
-    """
-    Adds form check for swipe and thrash for Guardian.
-    """
-
-    def set_spec(self, spec):
-        """
-        Sets the spec of the player.
-        """
-        if spec == GUARDIAN:
-            swipe = ''
-            lua_file_path = os.path.join(os.path.dirname(__file__),
-                                         'luafunctions', 'Swipe.lua')
-            with open(lua_file_path) as lua_file:
-                swipe = ''.join(lua_file.readlines())
-            self.apl.context.add_code(swipe)
-
-            thrash = ''
-            lua_file_path = os.path.join(os.path.dirname(__file__),
-                                         'luafunctions', 'Thrash.lua')
-            with open(lua_file_path) as lua_file:
-                thrash = ''.join(lua_file.readlines())
-            self.apl.context.add_code(thrash)
-        fun(self, spec)
-
-    return set_spec
+DR_FUNCTIONS = {
+    DRUID: {
+        BALANCE: [
+            'FutureAstralPower',
+        ],
+        GUARDIAN: [
+            'Swipe',
+            'Thrash',
+        ],
+    },
+}
 
 
 def balance_astral_power_value(fun):

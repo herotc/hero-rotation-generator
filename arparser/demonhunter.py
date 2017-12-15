@@ -95,6 +95,14 @@ DH_SPELL_INFO = {
 DH_ITEM_INFO = {
 }
 
+DH_FUNCTIONS = {
+    DEMONHUNTER: {
+        HAVOC: [
+            'IsInMeleeRange',
+        ],
+    },
+}
+
 
 def havoc_melee_condition(fun):
     """
@@ -112,24 +120,3 @@ def havoc_melee_condition(fun):
                 [LuaExpression(None, Method('IsInMeleeRange'), [])]
                 + self.additional_conditions)
     return __init__
-
-
-def havoc_is_in_melee_range(fun):
-    """
-    Adds melee range prediction with movement skills for Havoc.
-    """
-
-    def set_spec(self, spec):
-        """
-        Sets the spec of the player.
-        """
-        if spec == HAVOC:
-            is_in_melee_range = ''
-            lua_file_path = os.path.join(os.path.dirname(__file__),
-                                         'luafunctions', 'IsInMeleeRange.lua')
-            with open(lua_file_path) as lua_file:
-                is_in_melee_range = ''.join(lua_file.readlines())
-            self.apl.context.add_code(is_in_melee_range)
-        fun(self, spec)
-
-    return set_spec

@@ -93,6 +93,27 @@ local function bool(val)
   return val ~= 0
 end
 
+local function FutureShard ()
+  local Shard = Player:SoulShards()
+  if not Player:IsCasting() then
+    return Shard
+  else
+    if Player:IsCasting(S.UnstableAffliction) 
+        or Player:IsCasting(S.SeedOfCorruption) then
+      return Shard - 1
+    elseif Player:IsCasting(S.SummonDoomGuard) 
+        or Player:IsCasting(S.SummonDoomGuardSuppremacy) 
+        or Player:IsCasting(S.SummonInfernal) 
+        or Player:IsCasting(S.SummonInfernalSuppremacy) 
+        or Player:IsCasting(S.GrimoireFelhunter) 
+        or Player:IsCasting(S.SummonFelhunter) then
+      return Shard - 1
+    else
+      return Shard
+    end
+  end
+end
+
 --- ======= ACTION LISTS =======
 local function Apl()
   local function Precombat()
@@ -182,11 +203,11 @@ local function Apl()
     if AR.CastSuggested(I.ProlongedPower) then return ""; end
   end
   -- shadowburn,if=soul_shard<4&buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time
-  if S.Shadowburn:IsCastableP() and (soul_shard < 4 and Player:BuffRemainsP(S.ConflagrationofChaosBuff) <= S.ChaosBolt:CastTime()) then
+  if S.Shadowburn:IsCastableP() and (FutureShard() < 4 and Player:BuffRemainsP(S.ConflagrationofChaosBuff) <= S.ChaosBolt:CastTime()) then
     if AR.Cast(S.Shadowburn) then return ""; end
   end
   -- shadowburn,if=(charges=1+set_bonus.tier19_4pc&recharge_time<action.chaos_bolt.cast_time|charges=2+set_bonus.tier19_4pc)&soul_shard<5
-  if S.Shadowburn:IsCastableP() and ((S.Shadowburn:ChargesP() == 1 + num(AC.Tier19_4Pc) and S.Shadowburn:RechargeP() < S.ChaosBolt:CastTime() or S.Shadowburn:ChargesP() == 2 + num(AC.Tier19_4Pc)) and soul_shard < 5) then
+  if S.Shadowburn:IsCastableP() and ((S.Shadowburn:ChargesP() == 1 + num(AC.Tier19_4Pc) and S.Shadowburn:RechargeP() < S.ChaosBolt:CastTime() or S.Shadowburn:ChargesP() == 2 + num(AC.Tier19_4Pc)) and FutureShard() < 5) then
     if AR.Cast(S.Shadowburn) then return ""; end
   end
   -- conflagrate,if=talent.roaring_blaze.enabled&(charges=2+set_bonus.tier19_4pc|(charges>=1+set_bonus.tier19_4pc&recharge_time<gcd)|target.time_to_die<24)
@@ -194,11 +215,11 @@ local function Apl()
     if AR.Cast(S.Conflagrate) then return ""; end
   end
   -- conflagrate,if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack>0&dot.immolate.remains>dot.immolate.duration*0.3&(active_enemies=1|soul_shard<3)&soul_shard<5
-  if S.Conflagrate:IsCastableP() and (S.RoaringBlaze:IsAvailable() and Target:DebuffStackP(S.RoaringBlazeDebuff) > 0 and Target:DebuffRemainsP(S.ImmolateDebuff) > S.ImmolateDebuff:BaseDuration() * 0.3 and (Cache.EnemiesCount[40] == 1 or soul_shard < 3) and soul_shard < 5) then
+  if S.Conflagrate:IsCastableP() and (S.RoaringBlaze:IsAvailable() and Target:DebuffStackP(S.RoaringBlazeDebuff) > 0 and Target:DebuffRemainsP(S.ImmolateDebuff) > S.ImmolateDebuff:BaseDuration() * 0.3 and (Cache.EnemiesCount[40] == 1 or FutureShard() < 3) and FutureShard() < 5) then
     if AR.Cast(S.Conflagrate) then return ""; end
   end
   -- conflagrate,if=!talent.roaring_blaze.enabled&buff.backdraft.stack<3&(charges=1+set_bonus.tier19_4pc&recharge_time<action.chaos_bolt.cast_time|charges=2+set_bonus.tier19_4pc)&soul_shard<5
-  if S.Conflagrate:IsCastableP() and (not S.RoaringBlaze:IsAvailable() and Player:BuffStackP(S.BackdraftBuff) < 3 and (S.Conflagrate:ChargesP() == 1 + num(AC.Tier19_4Pc) and S.Conflagrate:RechargeP() < S.ChaosBolt:CastTime() or S.Conflagrate:ChargesP() == 2 + num(AC.Tier19_4Pc)) and soul_shard < 5) then
+  if S.Conflagrate:IsCastableP() and (not S.RoaringBlaze:IsAvailable() and Player:BuffStackP(S.BackdraftBuff) < 3 and (S.Conflagrate:ChargesP() == 1 + num(AC.Tier19_4Pc) and S.Conflagrate:RechargeP() < S.ChaosBolt:CastTime() or S.Conflagrate:ChargesP() == 2 + num(AC.Tier19_4Pc)) and FutureShard() < 5) then
     if AR.Cast(S.Conflagrate) then return ""; end
   end
   -- life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<=gcd
@@ -270,7 +291,7 @@ local function Apl()
     if AR.Cast(S.Cataclysm) then return ""; end
   end
   -- chaos_bolt,if=active_enemies<3&(cooldown.havoc.remains>12&cooldown.havoc.remains|active_enemies=1|soul_shard>=5-spell_targets.infernal_awakening*1.5|target.time_to_die<=10)
-  if S.ChaosBolt:IsCastableP() and (Cache.EnemiesCount[40] < 3 and (S.Havoc:CooldownRemainsP() > 12 and bool(S.Havoc:CooldownRemainsP()) or Cache.EnemiesCount[40] == 1 or soul_shard >= 5 - Cache.EnemiesCount[40] * 1.5 or Target:TimeToDie() <= 10)) then
+  if S.ChaosBolt:IsCastableP() and (Cache.EnemiesCount[40] < 3 and (S.Havoc:CooldownRemainsP() > 12 and bool(S.Havoc:CooldownRemainsP()) or Cache.EnemiesCount[40] == 1 or FutureShard() >= 5 - Cache.EnemiesCount[40] * 1.5 or Target:TimeToDie() <= 10)) then
     if AR.Cast(S.ChaosBolt) then return ""; end
   end
   -- shadowburn
