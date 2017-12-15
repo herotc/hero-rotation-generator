@@ -24,11 +24,11 @@ Spell.Mage.Frost = {
   WaterElemental                        = Spell(),
   MirrorImage                           = Spell(55342),
   Frostbolt                             = Spell(116),
+  WaterJet                              = Spell(135029, "pet"),
   FrozenOrb                             = Spell(84714),
   Blizzard                              = Spell(190356),
   CometStorm                            = Spell(153595),
   IceNova                               = Spell(157997),
-  WaterJet                              = Spell(135029, "pet"),
   FingersofFrostBuff                    = Spell(44544),
   BrainFreezeBuff                       = Spell(190446),
   Flurry                                = Spell(44614),
@@ -115,7 +115,7 @@ local function Apl()
   end
   local function Aoe()
     -- frostbolt,if=prev_off_gcd.water_jet
-    if S.Frostbolt:IsCastableP() and (bool(prev_off_gcd.water_jet)) then
+    if S.Frostbolt:IsCastableP() and (Pet:PrevOffGCDP(1, S.WaterJet)) then
       if AR.Cast(S.Frostbolt) then return ""; end
     end
     -- frozen_orb
@@ -221,7 +221,7 @@ local function Apl()
       if AR.Cast(S.IceNova) then return ""; end
     end
     -- frostbolt,if=prev_off_gcd.water_jet
-    if S.Frostbolt:IsCastableP() and (bool(prev_off_gcd.water_jet)) then
+    if S.Frostbolt:IsCastableP() and (Pet:PrevOffGCDP(1, S.WaterJet)) then
       if AR.Cast(S.Frostbolt) then return ""; end
     end
     -- water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<3&!buff.brain_freeze.react

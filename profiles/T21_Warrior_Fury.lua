@@ -55,6 +55,7 @@ Spell.Warrior.Fury = {
   BloodbathBuff                         = Spell(12292),
   UseItem                               = Spell(),
   RecklessAbandon                       = Spell(202751),
+  UmbralMoonglaives                     = Spell(242553),
   DragonRoarBuff                        = Spell(118000),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
@@ -339,7 +340,7 @@ local function Apl()
     if AR.Cast(S.Avatar) then return ""; end
   end
   -- battle_cry,if=gcd.remains=0&talent.reckless_abandon.enabled&!talent.bloodbath.enabled&(equipped.umbral_moonglaives&(prev_off_gcd.umbral_moonglaives|(trinket.cooldown.remains>3&trinket.cooldown.remains<90))|!equipped.umbral_moonglaives)
-  if S.BattleCry:IsCastableP() and (Player:GCDRemains() == 0 and S.RecklessAbandon:IsAvailable() and not S.Bloodbath:IsAvailable() and (I.UmbralMoonglaives:IsEquipped() and (bool(prev_off_gcd.umbral_moonglaives) or (trinket.cooldown.remains > 3 and trinket.cooldown.remains < 90)) or not I.UmbralMoonglaives:IsEquipped())) then
+  if S.BattleCry:IsCastableP() and (Player:GCDRemains() == 0 and S.RecklessAbandon:IsAvailable() and not S.Bloodbath:IsAvailable() and (I.UmbralMoonglaives:IsEquipped() and (Player:PrevOffGCDP(1, S.UmbralMoonglaives) or (trinket.cooldown.remains > 3 and trinket.cooldown.remains < 90)) or not I.UmbralMoonglaives:IsEquipped())) then
     if AR.Cast(S.BattleCry) then return ""; end
   end
   -- battle_cry,if=gcd.remains=0&talent.bladestorm.enabled&(raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)
@@ -351,7 +352,7 @@ local function Apl()
     if AR.Cast(S.BattleCry) then return ""; end
   end
   -- battle_cry,if=(gcd.remains=0|gcd.remains<=0.4&prev_gcd.1.rampage)&(cooldown.bloodbath.remains=0|buff.bloodbath.up|!talent.bloodbath.enabled|(target.time_to_die<12))&(equipped.umbral_moonglaives&(prev_off_gcd.umbral_moonglaives|(trinket.cooldown.remains>3&trinket.cooldown.remains<90))|!equipped.umbral_moonglaives)
-  if S.BattleCry:IsCastableP() and ((Player:GCDRemains() == 0 or Player:GCDRemains() <= 0.4 and Player:PrevGCDP(1, S.Rampage)) and (S.Bloodbath:CooldownRemainsP() == 0 or Player:BuffP(S.BloodbathBuff) or not S.Bloodbath:IsAvailable() or (Target:TimeToDie() < 12)) and (I.UmbralMoonglaives:IsEquipped() and (bool(prev_off_gcd.umbral_moonglaives) or (trinket.cooldown.remains > 3 and trinket.cooldown.remains < 90)) or not I.UmbralMoonglaives:IsEquipped())) then
+  if S.BattleCry:IsCastableP() and ((Player:GCDRemains() == 0 or Player:GCDRemains() <= 0.4 and Player:PrevGCDP(1, S.Rampage)) and (S.Bloodbath:CooldownRemainsP() == 0 or Player:BuffP(S.BloodbathBuff) or not S.Bloodbath:IsAvailable() or (Target:TimeToDie() < 12)) and (I.UmbralMoonglaives:IsEquipped() and (Player:PrevOffGCDP(1, S.UmbralMoonglaives) or (trinket.cooldown.remains > 3 and trinket.cooldown.remains < 90)) or not I.UmbralMoonglaives:IsEquipped())) then
     if AR.Cast(S.BattleCry) then return ""; end
   end
   -- bloodbath,if=buff.battle_cry.up|(target.time_to_die<14)|(cooldown.battle_cry.remains<2&prev_gcd.1.rampage)

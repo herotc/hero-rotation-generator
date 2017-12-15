@@ -331,7 +331,7 @@ local function Apl()
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- counterspell,if=target.debuff.casting.react
-  if S.Counterspell:IsCastableP() and (bool(target.debuff.casting.react)) then
+  if S.Counterspell:IsCastableP() and (Target:IsCasting()) then
     if AR.Cast(S.Counterspell) then return ""; end
   end
   -- time_warp,if=buff.bloodlust.down&(time=0|(buff.arcane_power.up&(buff.potion.up|!action.potion.usable))|target.time_to_die<=buff.bloodlust.duration)

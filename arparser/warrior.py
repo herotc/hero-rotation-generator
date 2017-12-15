@@ -29,6 +29,8 @@ WR_SPELL_INFO = {
             'charge':                               {SPELL:     100},
             'avatar':                               {SPELL:     107574,
                                                      BUFF:      107574},
+            # Trinkets
+            'umbral_moonglaives':                   {SPELL:     242553},
             # Legendaries
             'fujiedas_fury':                        {BUFF:      207775},
         },

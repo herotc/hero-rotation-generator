@@ -359,7 +359,7 @@ local function Apl()
   end
   -- auto_shot
   -- counter_shot,if=target.debuff.casting.react
-  if S.CounterShot:IsCastableP() and (bool(target.debuff.casting.react)) then
+  if S.CounterShot:IsCastableP() and (Target:IsCasting()) then
     if AR.Cast(S.CounterShot) then return ""; end
   end
   -- use_item,name=tarnished_sentinel_medallion,if=((cooldown.trueshot.remains<6|cooldown.trueshot.remains>45)&(target.time_to_die>cooldown+duration))|target.time_to_die<25|buff.bullseye.react=30

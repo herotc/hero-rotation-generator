@@ -339,7 +339,7 @@ local function Apl()
     if AR.Cast(S.Avatar) then return ""; end
   end
   -- battle_cry,if=((target.time_to_die>=70|set_bonus.tier20_4pc)&((gcd.remains<=0.5&prev_gcd.1.ravager)|!talent.ravager.enabled&!gcd.remains&target.debuff.colossus_smash.remains>=5&(!cooldown.bladestorm.remains|!set_bonus.tier20_4pc)&(!talent.rend.enabled|dot.rend.remains>4)))|buff.executioners_precision.stack=2&buff.shattered_defenses.up&!gcd.remains&!set_bonus.tier20_4pc
-  if S.BattleCry:IsCastableP() and (((Target:TimeToDie() >= 70 or AC.Tier20_4Pc) and ((Player:GCDRemains() <= 0.5 and Player:PrevGCDP(1, S.Ravager)) or not S.Ravager:IsAvailable() and not bool(Player:GCDRemains()) and target.debuff.colossus_smash.remains >= 5 and (not bool(S.Bladestorm:CooldownRemainsP()) or not AC.Tier20_4Pc) and (not S.Rend:IsAvailable() or Target:DebuffRemainsP(S.RendDebuff) > 4))) or Player:BuffStackP(S.ExecutionersPrecisionBuff) == 2 and Player:BuffP(S.ShatteredDefensesBuff) and not bool(Player:GCDRemains()) and not AC.Tier20_4Pc) then
+  if S.BattleCry:IsCastableP() and (((Target:TimeToDie() >= 70 or AC.Tier20_4Pc) and ((Player:GCDRemains() <= 0.5 and Player:PrevGCDP(1, S.Ravager)) or not S.Ravager:IsAvailable() and not bool(Player:GCDRemains()) and Target:DebuffRemainsP(S.ColossusSmash) >= 5 and (not bool(S.Bladestorm:CooldownRemainsP()) or not AC.Tier20_4Pc) and (not S.Rend:IsAvailable() or Target:DebuffRemainsP(S.RendDebuff) > 4))) or Player:BuffStackP(S.ExecutionersPrecisionBuff) == 2 and Player:BuffP(S.ShatteredDefensesBuff) and not bool(Player:GCDRemains()) and not AC.Tier20_4Pc) then
     if AR.Cast(S.BattleCry) then return ""; end
   end
   -- use_items,if=buff.battle_cry.up&debuff.colossus_smash.up

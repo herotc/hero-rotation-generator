@@ -117,7 +117,7 @@ local function Apl()
       if AR.Cast(S.Berserking, Settings.Windwalker.OffGCDasOffGCD.Berserking) then return ""; end
     end
     -- arcane_torrent,if=chi.max-chi>=1&energy.time_to_max>=0.5
-    if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (Player:ChiMax() - Player:Chi() >= 1 and energy.time_to_max >= 0.5) then
+    if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (Player:ChiMax() - Player:Chi() >= 1 and Player:EnergyTimeToMaxPredicted() >= 0.5) then
       if AR.Cast(S.ArcaneTorrent, Settings.Windwalker.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
     end
     -- touch_of_death,cycle_targets=1,max_cycle_targets=2,if=!artifact.gale_burst.enabled&equipped.hidden_masters_forbidden_touch&!prev_gcd.1.touch_of_death
@@ -139,7 +139,7 @@ local function Apl()
       if AR.Cast(S.TigerPalm) then return ""; end
     end
     -- arcane_torrent,if=chi.max-chi>=1&energy.time_to_max>=0.5
-    if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (Player:ChiMax() - Player:Chi() >= 1 and energy.time_to_max >= 0.5) then
+    if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (Player:ChiMax() - Player:Chi() >= 1 and Player:EnergyTimeToMaxPredicted() >= 0.5) then
       if AR.Cast(S.ArcaneTorrent, Settings.Windwalker.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
     end
     -- call_action_list,name=cd
@@ -219,7 +219,7 @@ local function Apl()
       if AR.Cast(S.TigerPalm) then return ""; end
     end
     -- arcane_torrent,if=chi.max-chi>=1&energy.time_to_max>=0.5
-    if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (Player:ChiMax() - Player:Chi() >= 1 and energy.time_to_max >= 0.5) then
+    if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (Player:ChiMax() - Player:Chi() >= 1 and Player:EnergyTimeToMaxPredicted() >= 0.5) then
       if AR.Cast(S.ArcaneTorrent, Settings.Windwalker.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
     end
     -- call_action_list,name=cd,if=cooldown.fists_of_fury.remains>1
@@ -265,11 +265,11 @@ local function Apl()
       if AR.Cast(S.EnergizingElixir) then return ""; end
     end
     -- arcane_torrent,if=chi.max-chi>=1&energy.time_to_max>=0.5
-    if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (Player:ChiMax() - Player:Chi() >= 1 and energy.time_to_max >= 0.5) then
+    if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (Player:ChiMax() - Player:Chi() >= 1 and Player:EnergyTimeToMaxPredicted() >= 0.5) then
       if AR.Cast(S.ArcaneTorrent, Settings.Windwalker.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
     end
     -- tiger_palm,cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy.time_to_max<=0.5&chi.max-chi>=2
-    if S.TigerPalm:IsCastableP() and (not Player:PrevGCDP(1, S.TigerPalm) and energy.time_to_max <= 0.5 and Player:ChiMax() - Player:Chi() >= 2) then
+    if S.TigerPalm:IsCastableP() and (not Player:PrevGCDP(1, S.TigerPalm) and Player:EnergyTimeToMaxPredicted() <= 0.5 and Player:ChiMax() - Player:Chi() >= 2) then
       if AR.Cast(S.TigerPalm) then return ""; end
     end
     -- strike_of_the_windlord,if=!talent.serenity.enabled|cooldown.serenity.remains>=10
@@ -281,15 +281,15 @@ local function Apl()
       if AR.Cast(S.RisingSunKick) then return ""; end
     end
     -- fists_of_fury,if=talent.serenity.enabled&!equipped.drinking_horn_cover&cooldown.serenity.remains>=5&energy.time_to_max>2
-    if S.FistsofFury:IsCastableP() and (S.Serenity:IsAvailable() and not I.DrinkingHornCover:IsEquipped() and S.Serenity:CooldownRemainsP() >= 5 and energy.time_to_max > 2) then
+    if S.FistsofFury:IsCastableP() and (S.Serenity:IsAvailable() and not I.DrinkingHornCover:IsEquipped() and S.Serenity:CooldownRemainsP() >= 5 and Player:EnergyTimeToMaxPredicted() > 2) then
       if AR.Cast(S.FistsofFury) then return ""; end
     end
     -- fists_of_fury,if=talent.serenity.enabled&equipped.drinking_horn_cover&(cooldown.serenity.remains>=15|cooldown.serenity.remains<=4)&energy.time_to_max>2
-    if S.FistsofFury:IsCastableP() and (S.Serenity:IsAvailable() and I.DrinkingHornCover:IsEquipped() and (S.Serenity:CooldownRemainsP() >= 15 or S.Serenity:CooldownRemainsP() <= 4) and energy.time_to_max > 2) then
+    if S.FistsofFury:IsCastableP() and (S.Serenity:IsAvailable() and I.DrinkingHornCover:IsEquipped() and (S.Serenity:CooldownRemainsP() >= 15 or S.Serenity:CooldownRemainsP() <= 4) and Player:EnergyTimeToMaxPredicted() > 2) then
       if AR.Cast(S.FistsofFury) then return ""; end
     end
     -- fists_of_fury,if=!talent.serenity.enabled&energy.time_to_max>2
-    if S.FistsofFury:IsCastableP() and (not S.Serenity:IsAvailable() and energy.time_to_max > 2) then
+    if S.FistsofFury:IsCastableP() and (not S.Serenity:IsAvailable() and Player:EnergyTimeToMaxPredicted() > 2) then
       if AR.Cast(S.FistsofFury) then return ""; end
     end
     -- rising_sun_kick,cycle_targets=1,if=!talent.serenity.enabled|cooldown.serenity.remains>=5
@@ -309,11 +309,11 @@ local function Apl()
       if AR.Cast(S.SpinningCraneKick) then return ""; end
     end
     -- crackling_jade_lightning,if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=19&energy.time_to_max>3
-    if S.CracklingJadeLightning:IsCastableP() and (I.TheEmperorsCapacitor:IsEquipped() and Player:BuffStackP(S.TheEmperorsCapacitorBuff) >= 19 and energy.time_to_max > 3) then
+    if S.CracklingJadeLightning:IsCastableP() and (I.TheEmperorsCapacitor:IsEquipped() and Player:BuffStackP(S.TheEmperorsCapacitorBuff) >= 19 and Player:EnergyTimeToMaxPredicted() > 3) then
       if AR.Cast(S.CracklingJadeLightning) then return ""; end
     end
     -- crackling_jade_lightning,if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=14&cooldown.serenity.remains<13&talent.serenity.enabled&energy.time_to_max>3
-    if S.CracklingJadeLightning:IsCastableP() and (I.TheEmperorsCapacitor:IsEquipped() and Player:BuffStackP(S.TheEmperorsCapacitorBuff) >= 14 and S.Serenity:CooldownRemainsP() < 13 and S.Serenity:IsAvailable() and energy.time_to_max > 3) then
+    if S.CracklingJadeLightning:IsCastableP() and (I.TheEmperorsCapacitor:IsEquipped() and Player:BuffStackP(S.TheEmperorsCapacitorBuff) >= 14 and S.Serenity:CooldownRemainsP() < 13 and S.Serenity:IsAvailable() and Player:EnergyTimeToMaxPredicted() > 3) then
       if AR.Cast(S.CracklingJadeLightning) then return ""; end
     end
     -- spinning_crane_kick,if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick
@@ -329,15 +329,15 @@ local function Apl()
       if AR.Cast(S.BlackoutKick) then return ""; end
     end
     -- chi_wave,if=energy.time_to_max>1
-    if S.ChiWave:IsCastableP() and (energy.time_to_max > 1) then
+    if S.ChiWave:IsCastableP() and (Player:EnergyTimeToMaxPredicted() > 1) then
       if AR.Cast(S.ChiWave) then return ""; end
     end
     -- chi_burst,if=energy.time_to_max>1
-    if S.ChiBurst:IsCastableP() and (energy.time_to_max > 1) then
+    if S.ChiBurst:IsCastableP() and (Player:EnergyTimeToMaxPredicted() > 1) then
       if AR.Cast(S.ChiBurst) then return ""; end
     end
     -- tiger_palm,cycle_targets=1,if=!prev_gcd.1.tiger_palm&(chi.max-chi>=2|energy.time_to_max<1)
-    if S.TigerPalm:IsCastableP() and (not Player:PrevGCDP(1, S.TigerPalm) and (Player:ChiMax() - Player:Chi() >= 2 or energy.time_to_max < 1)) then
+    if S.TigerPalm:IsCastableP() and (not Player:PrevGCDP(1, S.TigerPalm) and (Player:ChiMax() - Player:Chi() >= 2 or Player:EnergyTimeToMaxPredicted() < 1)) then
       if AR.Cast(S.TigerPalm) then return ""; end
     end
     -- chi_wave
@@ -355,7 +355,7 @@ local function Apl()
   end
   -- auto_attack
   -- spear_hand_strike,if=target.debuff.casting.react
-  if S.SpearHandStrike:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (bool(target.debuff.casting.react)) then
+  if S.SpearHandStrike:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (Target:IsCasting()) then
     if AR.CastAnnotated(S.SpearHandStrike, false, "Interrupt") then return ""; end
   end
   -- touch_of_karma,interval=90,pct_health=0.5

@@ -319,6 +319,12 @@ class Expression:
         """
         return PrevGCD(self)
 
+    def prev_off_gcd(self):
+        """
+        Return the condition when the prefix is prev_off_gcd.
+        """
+        return PrevOffGCD(self)
+
     def gcd(self):
         """
         Return the condition when the prefix is gcd.
@@ -653,6 +659,26 @@ class PrevGCD(BuildExpression):
         self.method = Method('PrevGCDP', type_=BOOL)
 
 
+class PrevOffGCD(BuildExpression):
+    """
+    Represent the expression for a prev_off_gcd. condition.
+    """
+
+    def __init__(self, condition):
+        self.condition = condition
+        call = 'value'
+        self.object_ = condition.caster(condition.condition_list[1])
+        self.args = [Literal(1), Spell(condition.parent_action,
+                                       condition.condition_list[1])]
+        super().__init__(call)
+
+    def value(self):
+        """
+        Return the arguments for the expression prev_off_gcd.
+        """
+        self.method = Method('PrevOffGCDP', type_=BOOL)
+
+
 class GCD(BuildExpression):
     """
     Represent the expression for a gcd. condition.
@@ -844,6 +870,60 @@ class Cooldown(BuildExpression, Expires):
         self.method = Method('ChargesFractional')
 
 
+class RaidEvent(Literal):
+    """
+    Represent the expression for a raid_event condition.
+    """
+
+    def __init__(self, condition):
+        self.condition = condition
+        call = '_'.join(condition.condition_list[1:])
+        getattr(self, call)()
+        super().__init__()
+
+    def adds_in(self):
+        """
+        Return the argument for the expressions raid_event.adds.in.
+        """
+        self.simc = MAX_INT
+
+    def adds_exists(self):
+        """
+        Return the argument for the expressions raid_event.adds.exists.
+        """
+        self.simc = FALSE
+
+    def adds_up(self):
+        """
+        Return the argument for the expressions raid_event.adds.up.
+        """
+        self.simc = FALSE
+
+    def adds_remains(self):
+        """
+        Return the argument for the expressions raid_event.adds.remains.
+        """
+        self.simc = 0
+
+    def adds_count(self):
+        """
+        Return the argument for the expressions raid_event.adds.count.
+        """
+        self.simc = 0
+
+    def movement_in(self):
+        """
+        Return the argument for the expressions raid_event.movement.in.
+        """
+        self.simc = MAX_INT
+
+    def movement_exists(self):
+        """
+        Return the argument for the expressions raid_event.movement.exists.
+        """
+        self.simc = FALSE
+
+
 class TargetExpression(BuildExpression):
     """
     Represent the expression for a target. condition.
@@ -868,57 +948,14 @@ class TargetExpression(BuildExpression):
         """
         if self.condition.condition_list[2] == 'pct':
             self.method = Method('HealthPercentage')
-
-
-class RaidEvent(Literal):
-    """
-    Represent the expression for a raid_event condition.
-    """
     
-    def __init__(self, condition):
-        self.condition = condition
-        call = '_'.join(condition.condition_list[1:])
-        getattr(self, call)()
-        super().__init__()
-
-    def adds_in(self):
+    def debuff(self):
         """
-        Return the argument for the expressions raid_event.adds.in.
+        Return the argument for the expressons target.debuff.{something}.
         """
-        self.simc = MAX_INT
-
-    def adds_exists(self):
-        """
-        Return the argument for the expressions raid_event.adds.exists.
-        """
-        self.simc = FALSE
-
-    def adds_up(self):
-        """
-        Return the argument for the expressions raid_event.adds.up.
-        """
-        self.simc = FALSE
-    
-    def adds_remains(self):
-        """
-        Return the argument for the expressions raid_event.adds.remains.
-        """
-        self.simc = 0
-    
-    def adds_count(self):
-        """
-        Return the argument for the expressions raid_event.adds.count.
-        """
-        self.simc = 0
-
-    def movement_in(self):
-        """
-        Return the argument for the expressions raid_event.movement.in.
-        """
-        self.simc = MAX_INT
-    
-    def movement_exists(self):
-        """
-        Return the argument for the expressions raid_event.movement.exists.
-        """
-        self.simc = FALSE
+        if self.condition.condition_list[2] == 'casting':
+            self.method = Method('IsCasting', type_=BOOL)
+        if self.condition.condition_list[3] == 'remains':
+            self.method = Method('DebuffRemainsP')
+            self.args = [Spell(self.condition.parent_action, 
+                               self.condition.condition_list[2])]

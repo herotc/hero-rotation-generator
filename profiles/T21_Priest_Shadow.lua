@@ -257,7 +257,7 @@ local function Apl()
   end
   local function S2M()
     -- silence,if=equipped.sephuzs_secret&(target.is_add|target.debuff.casting.react)&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up,cycle_targets=1
-    if S.Silence:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (I.SephuzsSecret:IsEquipped() and (bool(target.is_add) or bool(target.debuff.casting.react)) and S.BuffSephuzsSecret:CooldownUpP() and not Player:BuffP(S.SephuzsSecretBuff)) then
+    if S.Silence:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (I.SephuzsSecret:IsEquipped() and (bool(target.is_add) or Target:IsCasting()) and S.BuffSephuzsSecret:CooldownUpP() and not Player:BuffP(S.SephuzsSecretBuff)) then
       if AR.CastAnnotated(S.Silence, false, "Interrupt") then return ""; end
     end
     -- void_bolt,if=buff.insanity_drain_stacks.value<6&set_bonus.tier19_4pc
@@ -367,7 +367,7 @@ local function Apl()
       if AR.Cast(S.SurrenderToMadness) then return ""; end
     end
     -- silence,if=equipped.sephuzs_secret&(target.is_add|target.debuff.casting.react)&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up&buff.insanity_drain_stacks.value>10,cycle_targets=1
-    if S.Silence:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (I.SephuzsSecret:IsEquipped() and (bool(target.is_add) or bool(target.debuff.casting.react)) and S.BuffSephuzsSecret:CooldownUpP() and not Player:BuffP(S.SephuzsSecretBuff) and buff.insanity_drain_stacks.value > 10) then
+    if S.Silence:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (I.SephuzsSecret:IsEquipped() and (bool(target.is_add) or Target:IsCasting()) and S.BuffSephuzsSecret:CooldownUpP() and not Player:BuffP(S.SephuzsSecretBuff) and buff.insanity_drain_stacks.value > 10) then
       if AR.CastAnnotated(S.Silence, false, "Interrupt") then return ""; end
     end
     -- void_bolt

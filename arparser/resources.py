@@ -55,6 +55,12 @@ class Resource(BuildExpression):
         Return the arguments for the expression {resource}.max.
         """
         self.method = Method(f'{self.simc.print_lua()}Max')
+    
+    def time_to_max(self):
+        """
+        Return the arguments for the expression {resource}.time_to_max.
+        """
+        self.method = Method(f'{self.simc.print_lua()}TimeToMaxPredicted')
 
 
 class Rune(Resource):

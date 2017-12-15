@@ -217,7 +217,7 @@ local function Apl()
       if AR.Cast(S.Pyroblast) then return ""; end
     end
     -- fire_blast,if=!prev_off_gcd.fire_blast&buff.heating_up.react&firestarter.active&charges_fractional>1.7
-    if S.FireBlast:IsCastableP() and (not bool(prev_off_gcd.fire_blast) and bool(Player:BuffStackP(S.HeatingUpBuff)) and bool(firestarter.active) and S.FireBlast:ChargesFractional() > 1.7) then
+    if S.FireBlast:IsCastableP() and (not Player:PrevOffGCDP(1, S.FireBlast) and bool(Player:BuffStackP(S.HeatingUpBuff)) and bool(firestarter.active) and S.FireBlast:ChargesFractional() > 1.7) then
       if AR.Cast(S.FireBlast) then return ""; end
     end
     -- phoenixs_flames,if=!prev_gcd.1.phoenixs_flames&charges_fractional>2.7&firestarter.active
@@ -225,7 +225,7 @@ local function Apl()
       if AR.Cast(S.PhoenixsFlames) then return ""; end
     end
     -- fire_blast,if=!prev_off_gcd.fire_blast&!firestarter.active
-    if S.FireBlast:IsCastableP() and (not bool(prev_off_gcd.fire_blast) and not bool(firestarter.active)) then
+    if S.FireBlast:IsCastableP() and (not Player:PrevOffGCDP(1, S.FireBlast) and not bool(firestarter.active)) then
       if AR.Cast(S.FireBlast) then return ""; end
     end
     -- phoenixs_flames,if=!prev_gcd.1.phoenixs_flames
@@ -324,7 +324,7 @@ local function Apl()
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- counterspell,if=target.debuff.casting.react
-  if S.Counterspell:IsCastableP() and (bool(target.debuff.casting.react)) then
+  if S.Counterspell:IsCastableP() and (Target:IsCasting()) then
     if AR.Cast(S.Counterspell) then return ""; end
   end
   -- time_warp,if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410&(cooldown.combustion.remains<1|target.time_to_die<50))

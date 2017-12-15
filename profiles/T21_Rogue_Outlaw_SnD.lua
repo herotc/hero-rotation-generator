@@ -151,7 +151,7 @@ local function Apl()
       if AR.Cast(S.GhostlyStrike) then return ""; end
     end
     -- pistol_shot,if=combo_points.deficit>=1+buff.broadsides.up+talent.quick_draw.enabled&buff.opportunity.up&(energy.time_to_max>2-talent.quick_draw.enabled|(buff.greenskins_waterlogged_wristcuffs.up&(buff.blunderbuss.up|buff.greenskins_waterlogged_wristcuffs.remains<2)))
-    if S.PistolShot:IsCastableP() and (Player:ComboPointsDeficit() >= 1 + num(Player:BuffP(S.BroadsidesBuff)) + num(S.QuickDraw:IsAvailable()) and Player:BuffP(S.OpportunityBuff) and (energy.time_to_max > 2 - num(S.QuickDraw:IsAvailable()) or (Player:BuffP(S.GreenskinsWaterloggedWristcuffsBuff) and (Player:BuffP(S.BlunderbussBuff) or Player:BuffRemainsP(S.GreenskinsWaterloggedWristcuffsBuff) < 2)))) then
+    if S.PistolShot:IsCastableP() and (Player:ComboPointsDeficit() >= 1 + num(Player:BuffP(S.BroadsidesBuff)) + num(S.QuickDraw:IsAvailable()) and Player:BuffP(S.OpportunityBuff) and (Player:EnergyTimeToMaxPredicted() > 2 - num(S.QuickDraw:IsAvailable()) or (Player:BuffP(S.GreenskinsWaterloggedWristcuffsBuff) and (Player:BuffP(S.BlunderbussBuff) or Player:BuffRemainsP(S.GreenskinsWaterloggedWristcuffsBuff) < 2)))) then
       if AR.Cast(S.PistolShot) then return ""; end
     end
     -- saber_slash,if=variable.ss_useable
@@ -207,7 +207,7 @@ local function Apl()
       if AR.Cast(S.BetweentheEyes) then return ""; end
     end
     -- run_through,if=!talent.death_from_above.enabled|energy.time_to_max<cooldown.death_from_above.remains+3.5
-    if S.RunThrough:IsCastableP() and (not S.DeathFromAbove:IsAvailable() or energy.time_to_max < S.DeathFromAbove:CooldownRemainsP() + 3.5) then
+    if S.RunThrough:IsCastableP() and (not S.DeathFromAbove:IsAvailable() or Player:EnergyTimeToMaxPredicted() < S.DeathFromAbove:CooldownRemainsP() + 3.5) then
       if AR.Cast(S.RunThrough) then return ""; end
     end
   end
@@ -258,7 +258,7 @@ local function Apl()
     local ShouldReturn = Stealth(); if ShouldReturn then return ShouldReturn; end
   end
   -- death_from_above,if=energy.time_to_max>2&!variable.ss_useable_noreroll
-  if S.DeathFromAbove:IsCastableP() and (energy.time_to_max > 2 and not bool(VarSsUseableNoreroll)) then
+  if S.DeathFromAbove:IsCastableP() and (Player:EnergyTimeToMaxPredicted() > 2 and not bool(VarSsUseableNoreroll)) then
     if AR.Cast(S.DeathFromAbove) then return ""; end
   end
   -- sprint,if=equipped.thraxis_tricksy_treads&buff.death_from_above.up&buff.death_from_above.remains<=0.15
@@ -286,7 +286,7 @@ local function Apl()
     if AR.Cast(S.RolltheBones) then return ""; end
   end
   -- killing_spree,if=energy.time_to_max>5|energy<15
-  if S.KillingSpree:IsCastableP() and (energy.time_to_max > 5 or Player:Energy() < 15) then
+  if S.KillingSpree:IsCastableP() and (Player:EnergyTimeToMaxPredicted() > 5 or Player:Energy() < 15) then
     if AR.Cast(S.KillingSpree) then return ""; end
   end
   -- call_action_list,name=build

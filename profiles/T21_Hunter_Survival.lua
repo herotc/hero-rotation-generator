@@ -300,7 +300,7 @@ local function Apl()
     if AR.Cast(S.UseItems) then return ""; end
   end
   -- muzzle,if=target.debuff.casting.react
-  if S.Muzzle:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (bool(target.debuff.casting.react)) then
+  if S.Muzzle:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (Target:IsCasting()) then
     if AR.CastAnnotated(S.Muzzle, false, "Interrupt") then return ""; end
   end
   -- auto_attack
