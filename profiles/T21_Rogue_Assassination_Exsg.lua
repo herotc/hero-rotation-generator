@@ -227,8 +227,8 @@ local function Apl()
     end
   end
   local function Maintain()
-    -- rupture,if=talent.nightstalker.enabled&stealthed.rogue&(!equipped.mantle_of_the_master_assassin|!set_bonus.tier19_4pc)&(talent.exsanguinate.enabled|target.time_to_die-remains>4)
-    if S.Rupture:IsCastableP() and (S.Nightstalker:IsAvailable() and bool(stealthed.rogue) and (not I.MantleoftheMasterAssassin:IsEquipped() or not AC.Tier19_4Pc) and (S.Exsanguinate:IsAvailable() or Target:TimeToDie() - Target:DebuffRemainsP(S.Rupture) > 4)) then
+    -- rupture,if=talent.nightstalker.enabled&stealthed.rogue&!set_bonus.tier21_2pc&(!equipped.mantle_of_the_master_assassin|!set_bonus.tier19_4pc)&(talent.exsanguinate.enabled|target.time_to_die-remains>4)
+    if S.Rupture:IsCastableP() and (S.Nightstalker:IsAvailable() and bool(stealthed.rogue) and not AC.Tier21_2Pc and (not I.MantleoftheMasterAssassin:IsEquipped() or not AC.Tier19_4Pc) and (S.Exsanguinate:IsAvailable() or Target:TimeToDie() - Target:DebuffRemainsP(S.Rupture) > 4)) then
       if AR.Cast(S.Rupture) then return ""; end
     end
     -- garrote,cycle_targets=1,if=talent.subterfuge.enabled&stealthed.rogue&combo_points.deficit>=1&set_bonus.tier20_4pc&((dot.garrote.remains<=13&!debuff.toxic_blade.up)|pmultiplier<=1)&!exsanguinated

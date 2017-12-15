@@ -336,12 +336,12 @@ local function Apl()
   if (Player:BuffRemainsP(S.TheFirstoftheDeadBuff) > 1 and Player:ComboPoints() >= 3 and Cache.EnemiesCount[10] < 2 and not Player:BuffP(S.ShadowGesturesBuff)) then
     local ShouldReturn = Finish(); if ShouldReturn then return ShouldReturn; end
   end
-  -- wait,sec=time_to_sht.4,if=combo_points=5&time_to_sht.4<=1&energy.deficit>=30
-  if S.Wait:IsCastableP() and (Player:ComboPoints() == 5 and time_to_sht.4 <= 1 and Player:EnergyDeficit() >= 30) then
-    if AR.Cast(S.Wait) then return ""; end
+  -- call_action_list,name=finish,if=variable.dsh_dfa&equipped.the_first_of_the_dead&dot.nightblade.remains<=(cooldown.symbols_of_death.remains+10)&cooldown.symbols_of_death.remains<=2&combo_points>=2
+  if (bool(VarDshDfa) and I.TheFirstoftheDead:IsEquipped() and Target:DebuffRemainsP(S.NightbladeDebuff) <= (S.SymbolsofDeath:CooldownRemainsP() + 10) and S.SymbolsofDeath:CooldownRemainsP() <= 2 and Player:ComboPoints() >= 2) then
+    local ShouldReturn = Finish(); if ShouldReturn then return ShouldReturn; end
   end
-  -- wait,sec=time_to_sht.5,if=combo_points=5&time_to_sht.5<=1&energy.deficit>=30
-  if S.Wait:IsCastableP() and (Player:ComboPoints() == 5 and time_to_sht.5 <= 1 and Player:EnergyDeficit() >= 30) then
+  -- wait,sec=time_to_sht.5,if=combo_points=5&time_to_sht.5<=1&energy.deficit>=30&!buff.shadow_blades.up
+  if S.Wait:IsCastableP() and (Player:ComboPoints() == 5 and time_to_sht.5 <= 1 and Player:EnergyDeficit() >= 30 and not Player:BuffP(S.ShadowBladesBuff)) then
     if AR.Cast(S.Wait) then return ""; end
   end
   -- call_action_list,name=build,if=energy.deficit<=variable.stealth_threshold
