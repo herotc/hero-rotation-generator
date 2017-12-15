@@ -173,11 +173,11 @@ local function Apl()
       if AR.Cast(S.ColossusSmash) then return ""; end
     end
     -- warbreaker,if=raid_event.adds.in>90&buff.shattered_defenses.down
-    if S.Warbreaker:IsCastableP() and (4294967296 > 90 and Player:BuffDownP(S.ShatteredDefensesBuff)) then
+    if S.Warbreaker:IsCastableP() and (10000000000 > 90 and Player:BuffDownP(S.ShatteredDefensesBuff)) then
       if AR.Cast(S.Warbreaker) then return ""; end
     end
     -- focused_rage,if=rage.deficit<35&buff.focused_rage.stack<3
-    if S.FocusedRage:IsCastableP() and (rage.deficit < 35 and Player:BuffStackP(S.FocusedRageBuff) < 3) then
+    if S.FocusedRage:IsCastableP() and (Player:RageDeficit() < 35 and Player:BuffStackP(S.FocusedRageBuff) < 3) then
       if AR.Cast(S.FocusedRage) then return ""; end
     end
     -- rend,cycle_targets=1,if=remains<=duration*0.3
@@ -211,11 +211,11 @@ local function Apl()
       if AR.Cast(S.ColossusSmash) then return ""; end
     end
     -- warbreaker,if=(raid_event.adds.in>90|!raid_event.adds.exists)&cooldown.mortal_strike.remains<=gcd.remains&buff.shattered_defenses.down&buff.executioners_precision.stack=2
-    if S.Warbreaker:IsCastableP() and ((4294967296 > 90 or not false) and S.MortalStrike:CooldownRemainsP() <= Player:GCDRemains() and Player:BuffDownP(S.ShatteredDefensesBuff) and Player:BuffStackP(S.ExecutionersPrecisionBuff) == 2) then
+    if S.Warbreaker:IsCastableP() and ((10000000000 > 90 or not false) and S.MortalStrike:CooldownRemainsP() <= Player:GCDRemains() and Player:BuffDownP(S.ShatteredDefensesBuff) and Player:BuffStackP(S.ExecutionersPrecisionBuff) == 2) then
       if AR.Cast(S.Warbreaker) then return ""; end
     end
     -- focused_rage,if=rage.deficit<35&buff.focused_rage.stack<3
-    if S.FocusedRage:IsCastableP() and (rage.deficit < 35 and Player:BuffStackP(S.FocusedRageBuff) < 3) then
+    if S.FocusedRage:IsCastableP() and (Player:RageDeficit() < 35 and Player:BuffStackP(S.FocusedRageBuff) < 3) then
       if AR.Cast(S.FocusedRage) then return ""; end
     end
     -- rend,if=remains<5&cooldown.battle_cry.remains<2&(cooldown.bladestorm.remains<2|!set_bonus.tier20_4pc)
@@ -235,15 +235,15 @@ local function Apl()
       if AR.Cast(S.Whirlwind) then return ""; end
     end
     -- overpower,if=rage<40
-    if S.Overpower:IsCastableP() and (rage < 40) then
+    if S.Overpower:IsCastableP() and (Player:Rage() < 40) then
       if AR.Cast(S.Overpower) then return ""; end
     end
     -- execute,if=buff.shattered_defenses.down|rage>=40|talent.dauntless.enabled&rage>=36
-    if S.Execute:IsCastableP() and (Player:BuffDownP(S.ShatteredDefensesBuff) or rage >= 40 or S.Dauntless:IsAvailable() and rage >= 36) then
+    if S.Execute:IsCastableP() and (Player:BuffDownP(S.ShatteredDefensesBuff) or Player:Rage() >= 40 or S.Dauntless:IsAvailable() and Player:Rage() >= 36) then
       if AR.Cast(S.Execute) then return ""; end
     end
     -- bladestorm,interrupt=1,if=(raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)&!set_bonus.tier20_4pc
-    if S.Bladestorm:IsCastableP() and ((4294967296 > 90 or not false or Cache.EnemiesCount[5] > desired_targets) and not AC.Tier20_4Pc) then
+    if S.Bladestorm:IsCastableP() and ((10000000000 > 90 or not false or Cache.EnemiesCount[5] > desired_targets) and not AC.Tier20_4Pc) then
       if AR.Cast(S.Bladestorm) then return ""; end
     end
   end
@@ -257,11 +257,11 @@ local function Apl()
       if AR.Cast(S.ColossusSmash) then return ""; end
     end
     -- warbreaker,if=(raid_event.adds.in>90|!raid_event.adds.exists)&((talent.fervor_of_battle.enabled&debuff.colossus_smash.remains<gcd)|!talent.fervor_of_battle.enabled&((buff.stone_heart.up|cooldown.mortal_strike.remains<=gcd.remains)&buff.shattered_defenses.down))
-    if S.Warbreaker:IsCastableP() and ((4294967296 > 90 or not false) and ((S.FervorofBattle:IsAvailable() and Target:DebuffRemainsP(S.ColossusSmashDebuff) < Player:GCD()) or not S.FervorofBattle:IsAvailable() and ((Player:BuffP(S.StoneHeartBuff) or S.MortalStrike:CooldownRemainsP() <= Player:GCDRemains()) and Player:BuffDownP(S.ShatteredDefensesBuff)))) then
+    if S.Warbreaker:IsCastableP() and ((10000000000 > 90 or not false) and ((S.FervorofBattle:IsAvailable() and Target:DebuffRemainsP(S.ColossusSmashDebuff) < Player:GCD()) or not S.FervorofBattle:IsAvailable() and ((Player:BuffP(S.StoneHeartBuff) or S.MortalStrike:CooldownRemainsP() <= Player:GCDRemains()) and Player:BuffDownP(S.ShatteredDefensesBuff)))) then
       if AR.Cast(S.Warbreaker) then return ""; end
     end
     -- focused_rage,if=!buff.battle_cry_deadly_calm.up&buff.focused_rage.stack<3&!cooldown.colossus_smash.up&(rage>=130|debuff.colossus_smash.down|talent.anger_management.enabled&cooldown.battle_cry.remains<=8)
-    if S.FocusedRage:IsCastableP() and (not Player:BuffP(S.BattleCryDeadlyCalmBuff) and Player:BuffStackP(S.FocusedRageBuff) < 3 and not S.ColossusSmash:CooldownUpP() and (rage >= 130 or Target:DebuffDownP(S.ColossusSmashDebuff) or S.AngerManagement:IsAvailable() and S.BattleCry:CooldownRemainsP() <= 8)) then
+    if S.FocusedRage:IsCastableP() and (not Player:BuffP(S.BattleCryDeadlyCalmBuff) and Player:BuffStackP(S.FocusedRageBuff) < 3 and not S.ColossusSmash:CooldownUpP() and (Player:Rage() >= 130 or Target:DebuffDownP(S.ColossusSmashDebuff) or S.AngerManagement:IsAvailable() and S.BattleCry:CooldownRemainsP() <= 8)) then
       if AR.Cast(S.FocusedRage) then return ""; end
     end
     -- rend,if=remains<=gcd.max|remains<5&cooldown.battle_cry.remains<2&(cooldown.bladestorm.remains<2|!set_bonus.tier20_4pc)
@@ -297,7 +297,7 @@ local function Apl()
       if AR.Cast(S.Whirlwind) then return ""; end
     end
     -- slam,if=spell_targets.whirlwind=1&!talent.fervor_of_battle.enabled&(rage>=52|!talent.rend.enabled|!talent.ravager.enabled)
-    if S.Slam:IsCastableP() and (Cache.EnemiesCount[8] == 1 and not S.FervorofBattle:IsAvailable() and (rage >= 52 or not S.Rend:IsAvailable() or not S.Ravager:IsAvailable())) then
+    if S.Slam:IsCastableP() and (Cache.EnemiesCount[8] == 1 and not S.FervorofBattle:IsAvailable() and (Player:Rage() >= 52 or not S.Rend:IsAvailable() or not S.Ravager:IsAvailable())) then
       if AR.Cast(S.Slam) then return ""; end
     end
     -- overpower
@@ -305,7 +305,7 @@ local function Apl()
       if AR.Cast(S.Overpower) then return ""; end
     end
     -- bladestorm,if=(raid_event.adds.in>90|!raid_event.adds.exists)&!set_bonus.tier20_4pc
-    if S.Bladestorm:IsCastableP() and ((4294967296 > 90 or not false) and not AC.Tier20_4Pc) then
+    if S.Bladestorm:IsCastableP() and ((10000000000 > 90 or not false) and not AC.Tier20_4Pc) then
       if AR.Cast(S.Bladestorm) then return ""; end
     end
   end
@@ -331,7 +331,7 @@ local function Apl()
     if AR.Cast(S.Berserking, Settings.Arms.OffGCDasOffGCD.Berserking) then return ""; end
   end
   -- arcane_torrent,if=buff.battle_cry_deadly_calm.down&rage.deficit>40&cooldown.battle_cry.remains
-  if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (Player:BuffDownP(S.BattleCryDeadlyCalmBuff) and rage.deficit > 40 and bool(S.BattleCry:CooldownRemainsP())) then
+  if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (Player:BuffDownP(S.BattleCryDeadlyCalmBuff) and Player:RageDeficit() > 40 and bool(S.BattleCry:CooldownRemainsP())) then
     if AR.Cast(S.ArcaneTorrent, Settings.Arms.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
   end
   -- avatar,if=gcd.remains<0.25&(buff.battle_cry.up|cooldown.battle_cry.remains<15)|target.time_to_die<=20

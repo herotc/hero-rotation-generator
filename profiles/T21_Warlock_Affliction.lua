@@ -185,7 +185,7 @@ local function Apl()
       if AR.Cast(S.BloodFury, Settings.Affliction.OffGCDasOffGCD.BloodFury) then return ""; end
     end
     -- soul_harvest,if=buff.soul_harvest.remains<=8&buff.active_uas.stack>=1&(raid_event.adds.in>20|active_enemies>1|!raid_event.adds.exists)
-    if S.SoulHarvest:IsCastableP() and (Player:BuffRemainsP(S.SoulHarvestBuff) <= 8 and Player:BuffStackP(S.ActiveUasBuff) >= 1 and (4294967296 > 20 or Cache.EnemiesCount[40] > 1 or not false)) then
+    if S.SoulHarvest:IsCastableP() and (Player:BuffRemainsP(S.SoulHarvestBuff) <= 8 and Player:BuffStackP(S.ActiveUasBuff) >= 1 and (10000000000 > 20 or Cache.EnemiesCount[40] > 1 or not false)) then
       if AR.Cast(S.SoulHarvest) then return ""; end
     end
     -- potion,if=!talent.soul_harvest.enabled&(trinket.proc.any.react|trinket.stack_proc.any.react|target.time_to_die<=70|buff.active_uas.stack>2)
@@ -521,7 +521,7 @@ local function Apl()
       if AR.Cast(S.BloodFury, Settings.Affliction.OffGCDasOffGCD.BloodFury) then return ""; end
     end
     -- soul_harvest,if=sim.target=target&buff.soul_harvest.remains<=8&(raid_event.adds.in>20|active_enemies>1|!raid_event.adds.exists)&(buff.active_uas.stack>=2|active_enemies>3)&(!talent.deaths_embrace.enabled|time_to_die>120|time_to_die<30)
-    if S.SoulHarvest:IsCastableP() and (sim.target == target and Player:BuffRemainsP(S.SoulHarvestBuff) <= 8 and (4294967296 > 20 or Cache.EnemiesCount[40] > 1 or not false) and (Player:BuffStackP(S.ActiveUasBuff) >= 2 or Cache.EnemiesCount[40] > 3) and (not S.DeathsEmbrace:IsAvailable() or Target:TimeToDie() > 120 or Target:TimeToDie() < 30)) then
+    if S.SoulHarvest:IsCastableP() and (sim.target == target and Player:BuffRemainsP(S.SoulHarvestBuff) <= 8 and (10000000000 > 20 or Cache.EnemiesCount[40] > 1 or not false) and (Player:BuffStackP(S.ActiveUasBuff) >= 2 or Cache.EnemiesCount[40] > 3) and (not S.DeathsEmbrace:IsAvailable() or Target:TimeToDie() > 120 or Target:TimeToDie() < 30)) then
       if AR.Cast(S.SoulHarvest) then return ""; end
     end
     -- potion,if=target.time_to_die<=70

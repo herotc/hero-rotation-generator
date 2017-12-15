@@ -107,11 +107,11 @@ local function Apl()
   end
   local function Aoe()
     -- bloodthirst,if=buff.enrage.down|rage<90
-    if S.Bloodthirst:IsCastableP() and (Player:BuffDownP(S.EnrageBuff) or rage < 90) then
+    if S.Bloodthirst:IsCastableP() and (Player:BuffDownP(S.EnrageBuff) or Player:Rage() < 90) then
       if AR.Cast(S.Bloodthirst) then return ""; end
     end
     -- bladestorm,if=buff.enrage.remains>2&(raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)
-    if S.Bladestorm:IsCastableP() and (Player:BuffRemainsP(S.EnrageBuff) > 2 and (4294967296 > 90 or not false or Cache.EnemiesCount[8] > desired_targets)) then
+    if S.Bladestorm:IsCastableP() and (Player:BuffRemainsP(S.EnrageBuff) > 2 and (10000000000 > 90 or not false or Cache.EnemiesCount[8] > desired_targets)) then
       if AR.Cast(S.Bladestorm) then return ""; end
     end
     -- whirlwind,if=buff.meat_cleaver.down
@@ -119,7 +119,7 @@ local function Apl()
       if AR.Cast(S.Whirlwind) then return ""; end
     end
     -- rampage,if=buff.meat_cleaver.up&(buff.enrage.down&!talent.frothing_berserker.enabled|buff.massacre.react|rage>=100)
-    if S.Rampage:IsCastableP() and (Player:BuffP(S.MeatCleaverBuff) and (Player:BuffDownP(S.EnrageBuff) and not S.FrothingBerserker:IsAvailable() or bool(Player:BuffStackP(S.MassacreBuff)) or rage >= 100)) then
+    if S.Rampage:IsCastableP() and (Player:BuffP(S.MeatCleaverBuff) and (Player:BuffDownP(S.EnrageBuff) and not S.FrothingBerserker:IsAvailable() or bool(Player:BuffStackP(S.MassacreBuff)) or Player:Rage() >= 100)) then
       if AR.Cast(S.Rampage) then return ""; end
     end
     -- bloodthirst
@@ -149,7 +149,7 @@ local function Apl()
       if AR.Cast(S.RagingBlow) then return ""; end
     end
     -- rampage,if=(rage>=100&talent.frothing_berserker.enabled&!set_bonus.tier21_4pc)|set_bonus.tier21_4pc|!talent.frothing_berserker.enabled
-    if S.Rampage:IsCastableP() and ((rage >= 100 and S.FrothingBerserker:IsAvailable() and not AC.Tier21_4Pc) or AC.Tier21_4Pc or not S.FrothingBerserker:IsAvailable()) then
+    if S.Rampage:IsCastableP() and ((Player:Rage() >= 100 and S.FrothingBerserker:IsAvailable() and not AC.Tier21_4Pc) or AC.Tier21_4Pc or not S.FrothingBerserker:IsAvailable()) then
       if AR.Cast(S.Rampage) then return ""; end
     end
     -- odyns_fury,if=buff.enrage.up&(cooldown.raging_blow.remains>0|!talent.inner_rage.enabled)
@@ -243,7 +243,7 @@ local function Apl()
       if AR.Cast(S.RagingBlow) then return ""; end
     end
     -- rampage,if=target.health.pct>21&(rage>=100|!talent.frothing_berserker.enabled)&(((cooldown.battle_cry.remains>5|cooldown.bloodbath.remains>5)&!talent.carnage.enabled)|((cooldown.battle_cry.remains>3|cooldown.bloodbath.remains>3)&talent.carnage.enabled))|buff.massacre.react
-    if S.Rampage:IsCastableP() and (Target:HealthPercentage() > 21 and (rage >= 100 or not S.FrothingBerserker:IsAvailable()) and (((S.BattleCry:CooldownRemainsP() > 5 or S.Bloodbath:CooldownRemainsP() > 5) and not S.Carnage:IsAvailable()) or ((S.BattleCry:CooldownRemainsP() > 3 or S.Bloodbath:CooldownRemainsP() > 3) and S.Carnage:IsAvailable())) or bool(Player:BuffStackP(S.MassacreBuff))) then
+    if S.Rampage:IsCastableP() and (Target:HealthPercentage() > 21 and (Player:Rage() >= 100 or not S.FrothingBerserker:IsAvailable()) and (((S.BattleCry:CooldownRemainsP() > 5 or S.Bloodbath:CooldownRemainsP() > 5) and not S.Carnage:IsAvailable()) or ((S.BattleCry:CooldownRemainsP() > 3 or S.Bloodbath:CooldownRemainsP() > 3) and S.Carnage:IsAvailable())) or bool(Player:BuffStackP(S.MassacreBuff))) then
       if AR.Cast(S.Rampage) then return ""; end
     end
     -- execute,if=buff.stone_heart.react&((talent.inner_rage.enabled&cooldown.raging_blow.remains>1)|buff.enrage.up)
@@ -277,7 +277,7 @@ local function Apl()
       if AR.Cast(S.Execute) then return ""; end
     end
     -- rampage,if=buff.meat_cleaver.up&((buff.enrage.down&!talent.frothing_berserker.enabled)|(rage>=100&talent.frothing_berserker.enabled))|buff.massacre.react
-    if S.Rampage:IsCastableP() and (Player:BuffP(S.MeatCleaverBuff) and ((Player:BuffDownP(S.EnrageBuff) and not S.FrothingBerserker:IsAvailable()) or (rage >= 100 and S.FrothingBerserker:IsAvailable())) or bool(Player:BuffStackP(S.MassacreBuff))) then
+    if S.Rampage:IsCastableP() and (Player:BuffP(S.MeatCleaverBuff) and ((Player:BuffDownP(S.EnrageBuff) and not S.FrothingBerserker:IsAvailable()) or (Player:Rage() >= 100 and S.FrothingBerserker:IsAvailable())) or bool(Player:BuffStackP(S.MassacreBuff))) then
       if AR.Cast(S.Rampage) then return ""; end
     end
     -- raging_blow,if=talent.inner_rage.enabled
@@ -307,7 +307,7 @@ local function Apl()
     return Movement();
   end
   -- heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists
-  if S.HeroicLeap:IsCastableP() and ((raid_event.movement.distance > 25 and 4294967296 > 45) or not false) then
+  if S.HeroicLeap:IsCastableP() and ((raid_event.movement.distance > 25 and 10000000000 > 45) or not false) then
     if AR.Cast(S.HeroicLeap) then return ""; end
   end
   -- potion,name=old_war,if=buff.battle_cry.up&(buff.avatar.up|!talent.avatar.enabled)
@@ -343,7 +343,7 @@ local function Apl()
     if AR.Cast(S.BattleCry) then return ""; end
   end
   -- battle_cry,if=gcd.remains=0&talent.bladestorm.enabled&(raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)
-  if S.BattleCry:IsCastableP() and (Player:GCDRemains() == 0 and S.Bladestorm:IsAvailable() and (4294967296 > 90 or not false or Cache.EnemiesCount[8] > desired_targets)) then
+  if S.BattleCry:IsCastableP() and (Player:GCDRemains() == 0 and S.Bladestorm:IsAvailable() and (10000000000 > 90 or not false or Cache.EnemiesCount[8] > desired_targets)) then
     if AR.Cast(S.BattleCry) then return ""; end
   end
   -- battle_cry,if=gcd.remains=0&buff.dragon_roar.up&(cooldown.bloodthirst.remains=0|buff.enrage.remains>cooldown.bloodthirst.remains)
@@ -367,7 +367,7 @@ local function Apl()
     if AR.Cast(S.Berserking, Settings.Fury.OffGCDasOffGCD.Berserking) then return ""; end
   end
   -- arcane_torrent,if=rage<rage.max-40
-  if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (rage < rage.max - 40) then
+  if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (Player:Rage() < Player:RageMax() - 40) then
     if AR.Cast(S.ArcaneTorrent, Settings.Fury.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
   end
   -- run_action_list,name=cooldowns,if=buff.battle_cry.up&spell_targets.whirlwind=1

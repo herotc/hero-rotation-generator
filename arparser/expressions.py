@@ -9,10 +9,10 @@ from .lua import LuaExpression, BuildExpression, Method, Literal
 from .executions import Spell, Item, Variable
 from .resources import (Rune, AstralPower, HolyPower, Insanity, Pain, Focus,
                         Maelstrom, Energy, ComboPoints, SoulShards,
-                        ArcaneCharges, Chi, RunicPower, Fury, Mana)
+                        ArcaneCharges, Chi, RunicPower, Fury, Rage, Mana)
 from .units import Pet
 from .constants import (SPELL, BUFF, DEBUFF, BOOL, PET, BLOODLUST, RANGE,
-                        TRUE, FALSE, MAX_INT)
+                        FALSE, MAX_INT)
 
 
 class ActionExpression(BuildExpression):
@@ -414,6 +414,12 @@ class Expression:
         Return the condition when the prefix is fury.
         """
         return Fury(self)
+
+    def rage(self):
+        """
+        Return the condition when the prefix is rage.
+        """
+        return Rage(self)
 
     def mana(self):
         """

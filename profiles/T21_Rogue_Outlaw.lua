@@ -119,7 +119,7 @@ local function Apl()
       if AR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- marked_for_death,if=raid_event.adds.in>40
-    if S.MarkedForDeath:IsCastableP() and (4294967296 > 40) then
+    if S.MarkedForDeath:IsCastableP() and (10000000000 > 40) then
       if AR.Cast(S.MarkedForDeath) then return ""; end
     end
     -- roll_the_bones,if=!talent.slice_and_dice.enabled
@@ -185,7 +185,7 @@ local function Apl()
       if AR.Cast(S.AdrenalineRush) then return ""; end
     end
     -- marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|((raid_event.adds.in>40|buff.true_bearing.remains>15-buff.adrenaline_rush.up*5)&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)
-    if S.MarkedForDeath:IsCastableP() and (Target:TimeToDie() < Player:ComboPointsDeficit() or ((4294967296 > 40 or Player:BuffRemainsP(S.TrueBearingBuff) > 15 - num(Player:BuffP(S.AdrenalineRushBuff)) * 5) and not bool(stealthed.rogue) and Player:ComboPointsDeficit() >= cp_max_spend - 1)) then
+    if S.MarkedForDeath:IsCastableP() and (Target:TimeToDie() < Player:ComboPointsDeficit() or ((10000000000 > 40 or Player:BuffRemainsP(S.TrueBearingBuff) > 15 - num(Player:BuffP(S.AdrenalineRushBuff)) * 5) and not bool(stealthed.rogue) and Player:ComboPointsDeficit() >= cp_max_spend - 1)) then
       if AR.Cast(S.MarkedForDeath) then return ""; end
     end
     -- sprint,if=!talent.death_from_above.enabled&equipped.thraxis_tricksy_treads&!variable.ss_useable

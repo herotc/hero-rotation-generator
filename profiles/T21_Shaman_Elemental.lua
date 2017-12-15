@@ -187,11 +187,11 @@ local function Apl()
       if AR.Cast(S.EarthShock) then return ""; end
     end
     -- stormkeeper,if=raid_event.adds.count<3|raid_event.adds.in>50
-    if S.Stormkeeper:IsCastableP() and (0 < 3 or 4294967296 > 50) then
+    if S.Stormkeeper:IsCastableP() and (0 < 3 or 10000000000 > 50) then
       if AR.Cast(S.Stormkeeper) then return ""; end
     end
     -- liquid_magma_totem,if=raid_event.adds.count<3|raid_event.adds.in>50
-    if S.LiquidMagmaTotem:IsCastableP() and (0 < 3 or 4294967296 > 50) then
+    if S.LiquidMagmaTotem:IsCastableP() and (0 < 3 or 10000000000 > 50) then
       if AR.Cast(S.LiquidMagmaTotem) then return ""; end
     end
     -- lightning_bolt,if=buff.power_of_the_maelstrom.up&buff.stormkeeper.up&spell_targets.chain_lightning<3
@@ -269,15 +269,15 @@ local function Apl()
       if AR.Cast(S.EarthShock) then return ""; end
     end
     -- stormkeeper,if=raid_event.adds.count<3|raid_event.adds.in>50
-    if S.Stormkeeper:IsCastableP() and (0 < 3 or 4294967296 > 50) then
+    if S.Stormkeeper:IsCastableP() and (0 < 3 or 10000000000 > 50) then
       if AR.Cast(S.Stormkeeper) then return ""; end
     end
     -- icefury,if=(raid_event.movement.in<5|maelstrom<=101&artifact.swelling_maelstrom.enabled|!artifact.swelling_maelstrom.enabled&maelstrom<=76)&!buff.ascendance.up
-    if S.Icefury:IsCastableP() and ((4294967296 < 5 or Player:Maelstrom() <= 101 and S.SwellingMaelstrom:ArtifactEnabled() or not S.SwellingMaelstrom:ArtifactEnabled() and Player:Maelstrom() <= 76) and not Player:BuffP(S.AscendanceBuff)) then
+    if S.Icefury:IsCastableP() and ((10000000000 < 5 or Player:Maelstrom() <= 101 and S.SwellingMaelstrom:ArtifactEnabled() or not S.SwellingMaelstrom:ArtifactEnabled() and Player:Maelstrom() <= 76) and not Player:BuffP(S.AscendanceBuff)) then
       if AR.Cast(S.Icefury) then return ""; end
     end
     -- liquid_magma_totem,if=raid_event.adds.count<3|raid_event.adds.in>50
-    if S.LiquidMagmaTotem:IsCastableP() and (0 < 3 or 4294967296 > 50) then
+    if S.LiquidMagmaTotem:IsCastableP() and (0 < 3 or 10000000000 > 50) then
       if AR.Cast(S.LiquidMagmaTotem) then return ""; end
     end
     -- lightning_bolt,if=buff.power_of_the_maelstrom.up&buff.stormkeeper.up&spell_targets.chain_lightning<3
@@ -289,7 +289,7 @@ local function Apl()
       if AR.Cast(S.LavaBurst) then return ""; end
     end
     -- frost_shock,if=buff.icefury.up&((maelstrom>=20&raid_event.movement.in>buff.icefury.remains)|buff.icefury.remains<(1.5*spell_haste*buff.icefury.stack+1))
-    if S.FrostShock:IsCastableP() and (Player:BuffP(S.IcefuryBuff) and ((Player:Maelstrom() >= 20 and 4294967296 > Player:BuffRemainsP(S.IcefuryBuff)) or Player:BuffRemainsP(S.IcefuryBuff) < (1.5 * Player:SpellHaste() * Player:BuffStackP(S.IcefuryBuff) + 1))) then
+    if S.FrostShock:IsCastableP() and (Player:BuffP(S.IcefuryBuff) and ((Player:Maelstrom() >= 20 and 10000000000 > Player:BuffRemainsP(S.IcefuryBuff)) or Player:BuffRemainsP(S.IcefuryBuff) < (1.5 * Player:SpellHaste() * Player:BuffStackP(S.IcefuryBuff) + 1))) then
       if AR.Cast(S.FrostShock) then return ""; end
     end
     -- flame_shock,if=maelstrom>=20&buff.elemental_focus.up,target_if=refreshable
@@ -351,11 +351,11 @@ local function Apl()
       if AR.Cast(S.EarthShock) then return ""; end
     end
     -- stormkeeper,if=raid_event.adds.count<3|raid_event.adds.in>50
-    if S.Stormkeeper:IsCastableP() and (0 < 3 or 4294967296 > 50) then
+    if S.Stormkeeper:IsCastableP() and (0 < 3 or 10000000000 > 50) then
       if AR.Cast(S.Stormkeeper) then return ""; end
     end
     -- liquid_magma_totem,if=raid_event.adds.count<3|raid_event.adds.in>50
-    if S.LiquidMagmaTotem:IsCastableP() and (0 < 3 or 4294967296 > 50) then
+    if S.LiquidMagmaTotem:IsCastableP() and (0 < 3 or 10000000000 > 50) then
       if AR.Cast(S.LiquidMagmaTotem) then return ""; end
     end
     -- lava_burst,if=dot.flame_shock.remains>cast_time&cooldown_react

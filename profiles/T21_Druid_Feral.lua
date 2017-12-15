@@ -298,7 +298,7 @@ local function Apl()
       if AR.Cast(S.Rake) then return ""; end
     end
     -- brutal_slash,if=(buff.tigers_fury.up&(raid_event.adds.in>(1+max_charges-charges_fractional)*recharge_time))
-    if S.BrutalSlash:IsCastableP() and ((Player:BuffP(S.TigersFuryBuff) and (4294967296 > (1 + S.BrutalSlash:MaxCharges() - S.BrutalSlash:ChargesFractional()) * S.BrutalSlash:RechargeP()))) then
+    if S.BrutalSlash:IsCastableP() and ((Player:BuffP(S.TigersFuryBuff) and (10000000000 > (1 + S.BrutalSlash:MaxCharges() - S.BrutalSlash:ChargesFractional()) * S.BrutalSlash:RechargeP()))) then
       if AR.Cast(S.BrutalSlash) then return ""; end
     end
     -- moonfire_cat,target_if=refreshable

@@ -198,6 +198,15 @@ class Fury(Resource):
         super().__init__(condition, 'fury')
 
 
+class Rage(Resource):
+    """
+    Represent the expression for a rage. condition.
+    """
+
+    def __init__(self, condition):
+        super().__init__(condition, 'rage')
+
+
 class Mana(Resource):
     """
     Represent the expression for a mana. condition.

@@ -187,7 +187,7 @@ local function Apl()
       if AR.Cast(S.DivineHammer) then return ""; end
     end
     -- wake_of_ashes,if=(!raid_event.adds.exists|raid_event.adds.in>15)&(holy_power<=0|holy_power=1&(cooldown.blade_of_justice.remains>gcd|cooldown.divine_hammer.remains>gcd)|holy_power=2&((cooldown.zeal.charges_fractional<=0.65|cooldown.crusader_strike.charges_fractional<=0.65)))
-    if S.WakeofAshes:IsCastableP() and ((not false or 4294967296 > 15) and (Player:HolyPower() <= 0 or Player:HolyPower() == 1 and (S.BladeofJustice:CooldownRemainsP() > Player:GCD() or S.DivineHammer:CooldownRemainsP() > Player:GCD()) or Player:HolyPower() == 2 and ((S.Zeal:ChargesFractional() <= 0.65 or S.CrusaderStrike:ChargesFractional() <= 0.65)))) then
+    if S.WakeofAshes:IsCastableP() and ((not false or 10000000000 > 15) and (Player:HolyPower() <= 0 or Player:HolyPower() == 1 and (S.BladeofJustice:CooldownRemainsP() > Player:GCD() or S.DivineHammer:CooldownRemainsP() > Player:GCD()) or Player:HolyPower() == 2 and ((S.Zeal:ChargesFractional() <= 0.65 or S.CrusaderStrike:ChargesFractional() <= 0.65)))) then
       if AR.Cast(S.WakeofAshes) then return ""; end
     end
     -- blade_of_justice,if=holy_power<=3&!set_bonus.tier20_4pc
