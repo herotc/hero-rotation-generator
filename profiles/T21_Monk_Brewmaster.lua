@@ -30,7 +30,7 @@ Spell.Monk.Brewmaster = {
   InvokeNiuzaotheBlackOx                = Spell(132578),
   IronskinBrew                          = Spell(115308),
   BlackoutComboBuff                     = Spell(228563),
-  Brews                                 = Spell(),
+  Brews                                 = Spell(115308),
   BlackOxBrew                           = Spell(115399),
   KegSmash                              = Spell(121253),
   ArcaneTorrent                         = Spell(50613),
@@ -118,16 +118,16 @@ local function APL()
       if AR.Cast(S.ExplodingKeg) then return ""; end
     end
     -- invoke_niuzao_the_black_ox,if=target.time_to_die>45
-    if S.InvokeNiuzaotheBlackOx:IsCastableP() and (Target:TimeToDie() > 45) then
-      if AR.Cast(S.InvokeNiuzaotheBlackOx) then return ""; end
+    if S.InvokeNiuzaotheBlackOx:IsCastableP() and AR.CDsON() and (Target:TimeToDie() > 45) then
+      if AR.Cast(S.InvokeNiuzaotheBlackOx, Settings.Brewmaster.OffGCDasOffGCD.InvokeNiuzaotheBlackOx) then return ""; end
     end
     -- ironskin_brew,if=buff.blackout_combo.down&cooldown.brews.charges>=1
     if S.IronskinBrew:IsCastableP() and (Player:BuffDownP(S.BlackoutComboBuff) and S.Brews:ChargesP() >= 1) then
-      if AR.Cast(S.IronskinBrew) then return ""; end
+      if AR.Cast(S.IronskinBrew, Settings.Brewmaster.OffGCDasOffGCD.IronskinBrew) then return ""; end
     end
     -- black_ox_brew,if=(energy+(energy.regen*(cooldown.keg_smash.remains)))<40&buff.blackout_combo.down&cooldown.keg_smash.up
     if S.BlackOxBrew:IsCastableP() and ((Player:Energy() + (Player:EnergyRegen() * (S.KegSmash:CooldownRemainsP()))) < 40 and Player:BuffDownP(S.BlackoutComboBuff) and S.KegSmash:CooldownUpP()) then
-      if AR.Cast(S.BlackOxBrew) then return ""; end
+      if AR.Cast(S.BlackOxBrew, Settings.Brewmaster.OffGCDasOffGCD.BlackOxBrew) then return ""; end
     end
     -- arcane_torrent,if=energy<31
     if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (Player:Energy() < 31) then

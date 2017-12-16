@@ -105,8 +105,8 @@ local function APL()
   end
   local function Cd()
     -- invoke_xuen_the_white_tiger
-    if S.InvokeXuentheWhiteTiger:IsCastableP() and (true) then
-      if AR.Cast(S.InvokeXuentheWhiteTiger) then return ""; end
+    if S.InvokeXuentheWhiteTiger:IsCastableP() and AR.CDsON() and (true) then
+      if AR.Cast(S.InvokeXuentheWhiteTiger, Settings.Windwalker.OffGCDasOffGCD.InvokeXuentheWhiteTiger) then return ""; end
     end
     -- blood_fury
     if S.BloodFury:IsCastableP() and AR.CDsON() and (true) then
@@ -121,15 +121,15 @@ local function APL()
       if AR.Cast(S.ArcaneTorrent, Settings.Windwalker.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
     end
     -- touch_of_death,cycle_targets=1,max_cycle_targets=2,if=!artifact.gale_burst.enabled&equipped.hidden_masters_forbidden_touch&!prev_gcd.1.touch_of_death
-    if S.TouchofDeath:IsCastableP() and (not S.GaleBurst:ArtifactEnabled() and I.HiddenMastersForbiddenTouch:IsEquipped() and not Player:PrevGCDP(1, S.TouchofDeath)) then
+    if S.TouchofDeath:IsCastableP() and AR.CDsON() and (not S.GaleBurst:ArtifactEnabled() and I.HiddenMastersForbiddenTouch:IsEquipped() and not Player:PrevGCDP(1, S.TouchofDeath)) then
       if AR.Cast(S.TouchofDeath) then return ""; end
     end
     -- touch_of_death,if=!artifact.gale_burst.enabled&!equipped.hidden_masters_forbidden_touch
-    if S.TouchofDeath:IsCastableP() and (not S.GaleBurst:ArtifactEnabled() and not I.HiddenMastersForbiddenTouch:IsEquipped()) then
+    if S.TouchofDeath:IsCastableP() and AR.CDsON() and (not S.GaleBurst:ArtifactEnabled() and not I.HiddenMastersForbiddenTouch:IsEquipped()) then
       if AR.Cast(S.TouchofDeath) then return ""; end
     end
     -- touch_of_death,cycle_targets=1,max_cycle_targets=2,if=artifact.gale_burst.enabled&((talent.serenity.enabled&cooldown.serenity.remains<=1)|chi>=2)&(cooldown.strike_of_the_windlord.remains<8|cooldown.fists_of_fury.remains<=4)&cooldown.rising_sun_kick.remains<7&!prev_gcd.1.touch_of_death
-    if S.TouchofDeath:IsCastableP() and (S.GaleBurst:ArtifactEnabled() and ((S.Serenity:IsAvailable() and S.Serenity:CooldownRemainsP() <= 1) or Player:Chi() >= 2) and (S.StrikeoftheWindlord:CooldownRemainsP() < 8 or S.FistsofFury:CooldownRemainsP() <= 4) and S.RisingSunKick:CooldownRemainsP() < 7 and not Player:PrevGCDP(1, S.TouchofDeath)) then
+    if S.TouchofDeath:IsCastableP() and AR.CDsON() and (S.GaleBurst:ArtifactEnabled() and ((S.Serenity:IsAvailable() and S.Serenity:CooldownRemainsP() <= 1) or Player:Chi() >= 2) and (S.StrikeoftheWindlord:CooldownRemainsP() < 8 or S.FistsofFury:CooldownRemainsP() <= 4) and S.RisingSunKick:CooldownRemainsP() < 7 and not Player:PrevGCDP(1, S.TouchofDeath)) then
       if AR.Cast(S.TouchofDeath) then return ""; end
     end
   end
@@ -147,8 +147,8 @@ local function APL()
       local ShouldReturn = Cd(); if ShouldReturn then return ShouldReturn; end
     end
     -- storm_earth_and_fire,if=!buff.storm_earth_and_fire.up
-    if S.StormEarthandFire:IsCastableP() and (not Player:BuffP(S.StormEarthandFireBuff)) then
-      if AR.Cast(S.StormEarthandFire) then return ""; end
+    if S.StormEarthandFire:IsCastableP() and AR.CDsON() and (not Player:BuffP(S.StormEarthandFireBuff)) then
+      if AR.Cast(S.StormEarthandFire, Settings.Windwalker.OffGCDasOffGCD.StormEarthandFire) then return ""; end
     end
     -- call_action_list,name=st
     if (true) then
@@ -165,15 +165,15 @@ local function APL()
       local ShouldReturn = Cd(); if ShouldReturn then return ShouldReturn; end
     end
     -- serenity
-    if S.Serenity:IsCastableP() and (true) then
-      if AR.Cast(S.Serenity) then return ""; end
+    if S.Serenity:IsCastableP() and AR.CDsON() and (true) then
+      if AR.Cast(S.Serenity, Settings.Windwalker.OffGCDasOffGCD.Serenity) then return ""; end
     end
     -- rising_sun_kick,cycle_targets=1,if=active_enemies<3
     if S.RisingSunKick:IsCastableP() and (Cache.EnemiesCount[8] < 3) then
       if AR.Cast(S.RisingSunKick) then return ""; end
     end
     -- strike_of_the_windlord
-    if S.StrikeoftheWindlord:IsCastableP() and (true) then
+    if S.StrikeoftheWindlord:IsCastableP() and AR.CDsON() and (true) then
       if AR.Cast(S.StrikeoftheWindlord) then return ""; end
     end
     -- blackout_kick,cycle_targets=1,if=(!prev_gcd.1.blackout_kick)&(prev_gcd.1.strike_of_the_windlord|prev_gcd.1.fists_of_fury)&active_enemies<2
@@ -227,15 +227,15 @@ local function APL()
       local ShouldReturn = Cd(); if ShouldReturn then return ShouldReturn; end
     end
     -- serenity,if=cooldown.fists_of_fury.remains>1
-    if S.Serenity:IsCastableP() and (S.FistsofFury:CooldownRemainsP() > 1) then
-      if AR.Cast(S.Serenity) then return ""; end
+    if S.Serenity:IsCastableP() and AR.CDsON() and (S.FistsofFury:CooldownRemainsP() > 1) then
+      if AR.Cast(S.Serenity, Settings.Windwalker.OffGCDasOffGCD.Serenity) then return ""; end
     end
     -- rising_sun_kick,cycle_targets=1,if=active_enemies<3&buff.serenity.up
     if S.RisingSunKick:IsCastableP() and (Cache.EnemiesCount[8] < 3 and Player:BuffP(S.SerenityBuff)) then
       if AR.Cast(S.RisingSunKick) then return ""; end
     end
     -- strike_of_the_windlord,if=buff.serenity.up
-    if S.StrikeoftheWindlord:IsCastableP() and (Player:BuffP(S.SerenityBuff)) then
+    if S.StrikeoftheWindlord:IsCastableP() and AR.CDsON() and (Player:BuffP(S.SerenityBuff)) then
       if AR.Cast(S.StrikeoftheWindlord) then return ""; end
     end
     -- blackout_kick,cycle_targets=1,if=(!prev_gcd.1.blackout_kick)&(prev_gcd.1.strike_of_the_windlord)
@@ -261,8 +261,8 @@ local function APL()
       local ShouldReturn = Cd(); if ShouldReturn then return ShouldReturn; end
     end
     -- energizing_elixir,if=chi<=1&(cooldown.rising_sun_kick.remains=0|(artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains=0)|energy<50)
-    if S.EnergizingElixir:IsCastableP() and (Player:Chi() <= 1 and (S.RisingSunKick:CooldownRemainsP() == 0 or (S.StrikeoftheWindlord:ArtifactEnabled() and S.StrikeoftheWindlord:CooldownRemainsP() == 0) or Player:Energy() < 50)) then
-      if AR.Cast(S.EnergizingElixir) then return ""; end
+    if S.EnergizingElixir:IsCastableP() and AR.CDsON() and (Player:Chi() <= 1 and (S.RisingSunKick:CooldownRemainsP() == 0 or (S.StrikeoftheWindlord:ArtifactEnabled() and S.StrikeoftheWindlord:CooldownRemainsP() == 0) or Player:Energy() < 50)) then
+      if AR.Cast(S.EnergizingElixir, Settings.Windwalker.OffGCDasOffGCD.EnergizingElixir) then return ""; end
     end
     -- arcane_torrent,if=chi.max-chi>=1&energy.time_to_max>=0.5
     if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (Player:ChiMax() - Player:Chi() >= 1 and Player:EnergyTimeToMaxPredicted() >= 0.5) then
@@ -273,7 +273,7 @@ local function APL()
       if AR.Cast(S.TigerPalm) then return ""; end
     end
     -- strike_of_the_windlord,if=!talent.serenity.enabled|cooldown.serenity.remains>=10
-    if S.StrikeoftheWindlord:IsCastableP() and (not S.Serenity:IsAvailable() or S.Serenity:CooldownRemainsP() >= 10) then
+    if S.StrikeoftheWindlord:IsCastableP() and AR.CDsON() and (not S.Serenity:IsAvailable() or S.Serenity:CooldownRemainsP() >= 10) then
       if AR.Cast(S.StrikeoftheWindlord) then return ""; end
     end
     -- rising_sun_kick,cycle_targets=1,if=((chi>=3&energy>=40)|chi>=5)&(!talent.serenity.enabled|cooldown.serenity.remains>=6)
@@ -360,14 +360,14 @@ local function APL()
   end
   -- touch_of_karma,interval=90,pct_health=0.5
   if S.TouchofKarma:IsCastableP() and (true) then
-    if AR.Cast(S.TouchofKarma) then return ""; end
+    if AR.Cast(S.TouchofKarma, Settings.Windwalker.OffGCDasOffGCD.TouchofKarma) then return ""; end
   end
   -- potion,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60
   if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.SerenityBuff) or Player:BuffP(S.StormEarthandFireBuff) or (not S.Serenity:IsAvailable() and bool(trinket.proc.agility.react)) or Player:HasHeroism() or Target:TimeToDie() <= 60) then
     if AR.CastSuggested(I.ProlongedPower) then return ""; end
   end
   -- touch_of_death,if=target.time_to_die<=9
-  if S.TouchofDeath:IsCastableP() and (Target:TimeToDie() <= 9) then
+  if S.TouchofDeath:IsCastableP() and AR.CDsON() and (Target:TimeToDie() <= 9) then
     if AR.Cast(S.TouchofDeath) then return ""; end
   end
   -- call_action_list,name=serenity,if=(talent.serenity.enabled&cooldown.serenity.remains<=0)|buff.serenity.up
