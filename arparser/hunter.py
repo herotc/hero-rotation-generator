@@ -139,12 +139,13 @@ HT_SPELL_INFO = {
 }
 
 HT_ITEM_INFO = {
-    'call_of_the_wild':         137101,
-    'the_mantle_of_command':    144326,
-    'parsels_tongue':           151805,
-    'qapla_eredun_war_order':   137227,
-    'frizzos_finger':           137043,
-    'sephuzs_secret':           132452,
-    'convergence_of_fates':     140806,
-    'roar_of_the_seven_lions':  137080,
+    'call_of_the_wild':             137101,
+    'the_mantle_of_command':        144326,
+    'parsels_tongue':               151805,
+    'qapla_eredun_war_order':       137227,
+    'frizzos_finger':               137043,
+    'sephuzs_secret':               132452,
+    'convergence_of_fates':         140806,
+    'roar_of_the_seven_lions':      137080,
+    'tarnished_sentinel_medallion': 147017,
 }

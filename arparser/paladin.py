@@ -102,4 +102,5 @@ PL_ITEM_INFO = {
     'scarlet_inquisitors_expurgation':      151813,
     'liadrins_fury_unleashed':              137048,
     'whisper_of_the_nathrezim':             137020,
+    'apocalypse_drive':                     151975,
 }

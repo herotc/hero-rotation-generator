@@ -41,7 +41,6 @@ Spell.DeathKnight.Blood = {
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
   UseItems                              = Spell(),
-  UseItem                               = Spell(),
   VampiricBloodBuff                     = Spell(55233),
   DancingRuneWeapon                     = Spell(49028),
   VampiricBlood                         = Spell(55233),
@@ -174,8 +173,8 @@ local function APL()
     if AR.Cast(S.UseItems) then return ""; end
   end
   -- use_item,name=archimondes_hatred_reborn,if=buff.vampiric_blood.up
-  if S.UseItem:IsCastableP() and (Player:BuffP(S.VampiricBloodBuff)) then
-    if AR.Cast(S.UseItem) then return ""; end
+  if I.ArchimondesHatredReborn:IsReady() and (Player:BuffP(S.VampiricBloodBuff)) then
+    if AR.CastSuggested(I.ArchimondesHatredReborn) then return ""; end
   end
   -- potion,if=buff.dancing_rune_weapon.up
   if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.DancingRuneWeaponBuff)) then

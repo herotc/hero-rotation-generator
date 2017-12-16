@@ -48,7 +48,6 @@ Spell.Hunter.Marksmanship = {
   Barrage                               = Spell(120360),
   ArcaneShot                            = Spell(185358),
   CounterShot                           = Spell(147362),
-  UseItem                               = Spell(),
   UseItems                              = Spell(),
   Volley                                = Spell(194386),
   PatientSniper                         = Spell(234588)
@@ -58,7 +57,8 @@ local S = Spell.Hunter.Marksmanship;
 -- Items
 if not Item.Hunter then Item.Hunter = {} end
 Item.Hunter.Marksmanship = {
-  ProlongedPower                   = Item(142117)
+  ProlongedPower                   = Item(142117),
+  TarnishedSentinelMedallion       = Item(147017)
 };
 local I = Item.Hunter.Marksmanship;
 
@@ -363,8 +363,8 @@ local function APL()
     if AR.Cast(S.CounterShot) then return ""; end
   end
   -- use_item,name=tarnished_sentinel_medallion,if=((cooldown.trueshot.remains<6|cooldown.trueshot.remains>45)&(target.time_to_die>cooldown+duration))|target.time_to_die<25|buff.bullseye.react=30
-  if S.UseItem:IsCastableP() and (((S.Trueshot:CooldownRemainsP() < 6 or S.Trueshot:CooldownRemainsP() > 45) and (Target:TimeToDie() > S.UseItem:Cooldown() + S.UseItem:BaseDuration())) or Target:TimeToDie() < 25 or Player:BuffStackP(S.BullseyeBuff) == 30) then
-    if AR.Cast(S.UseItem) then return ""; end
+  if I.TarnishedSentinelMedallion:IsReady() and (((S.Trueshot:CooldownRemainsP() < 6 or S.Trueshot:CooldownRemainsP() > 45) and (Target:TimeToDie() > I.TarnishedSentinelMedallion:Cooldown() + I.TarnishedSentinelMedallion:BaseDuration())) or Target:TimeToDie() < 25 or Player:BuffStackP(S.BullseyeBuff) == 30) then
+    if AR.CastSuggested(I.TarnishedSentinelMedallion) then return ""; end
   end
   -- use_items
   if S.UseItems:IsCastableP() and (true) then

@@ -22,7 +22,6 @@ local AR     = AethysRotation
 if not Spell.Paladin then Spell.Paladin = {} end
 Spell.Paladin.Protection = {
   Seraphim                              = Spell(152262),
-  UseItem                               = Spell(),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
   ArcaneTorrent                         = Spell(50613),
@@ -64,6 +63,7 @@ local S = Spell.Paladin.Protection;
 if not Item.Paladin then Item.Paladin = {} end
 Item.Paladin.Protection = {
   ProlongedPower                   = Item(142117),
+  ApocalypseDrive                  = Item(151975),
   Item151812                       = Item(151812)
 };
 local I = Item.Paladin.Protection;
@@ -113,8 +113,8 @@ local function APL()
   local function MaxDps()
     -- auto_attack
     -- use_item,name=apocalypse_drive
-    if S.UseItem:IsCastableP() and (true) then
-      if AR.Cast(S.UseItem) then return ""; end
+    if I.ApocalypseDrive:IsReady() and (true) then
+      if AR.CastSuggested(I.ApocalypseDrive) then return ""; end
     end
     -- blood_fury
     if S.BloodFury:IsCastableP() and AR.CDsON() and (true) then
@@ -132,8 +132,8 @@ local function APL()
   local function MaxSurvival()
     -- auto_attack
     -- use_item,name=apocalypse_drive
-    if S.UseItem:IsCastableP() and (true) then
-      if AR.Cast(S.UseItem) then return ""; end
+    if I.ApocalypseDrive:IsReady() and (true) then
+      if AR.CastSuggested(I.ApocalypseDrive) then return ""; end
     end
     -- blood_fury
     if S.BloodFury:IsCastableP() and AR.CDsON() and (true) then
@@ -316,8 +316,8 @@ local function APL()
   end
   -- auto_attack
   -- use_item,name=apocalypse_drive
-  if S.UseItem:IsCastableP() and (true) then
-    if AR.Cast(S.UseItem) then return ""; end
+  if I.ApocalypseDrive:IsReady() and (true) then
+    if AR.CastSuggested(I.ApocalypseDrive) then return ""; end
   end
   -- blood_fury
   if S.BloodFury:IsCastableP() and AR.CDsON() and (true) then

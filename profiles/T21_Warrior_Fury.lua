@@ -53,7 +53,6 @@ Spell.Warrior.Fury = {
   Avatar                                = Spell(107574),
   DragonRoar                            = Spell(118000),
   BloodbathBuff                         = Spell(12292),
-  UseItem                               = Spell(),
   RecklessAbandon                       = Spell(202751),
   UmbralMoonglaives                     = Spell(242553),
   DragonRoarBuff                        = Spell(118000),
@@ -328,8 +327,8 @@ local function APL()
     if AR.Cast(S.FuriousSlash) then return ""; end
   end
   -- use_item,name=umbral_moonglaives,if=equipped.umbral_moonglaives&(cooldown.battle_cry.remains>gcd&cooldown.battle_cry.remains<2|cooldown.battle_cry.remains=0)
-  if S.UseItem:IsCastableP() and (I.UmbralMoonglaives:IsEquipped() and (S.BattleCry:CooldownRemainsP() > Player:GCD() and S.BattleCry:CooldownRemainsP() < 2 or S.BattleCry:CooldownRemainsP() == 0)) then
-    if AR.Cast(S.UseItem) then return ""; end
+  if I.UmbralMoonglaives:IsReady() and (I.UmbralMoonglaives:IsEquipped() and (S.BattleCry:CooldownRemainsP() > Player:GCD() and S.BattleCry:CooldownRemainsP() < 2 or S.BattleCry:CooldownRemainsP() == 0)) then
+    if AR.CastSuggested(I.UmbralMoonglaives) then return ""; end
   end
   -- bloodthirst,if=equipped.kazzalax_fujiedas_fury&buff.fujiedas_fury.down
   if S.Bloodthirst:IsCastableP() and (I.KazzalaxFujiedasFury:IsEquipped() and Player:BuffDownP(S.FujiedasFuryBuff)) then

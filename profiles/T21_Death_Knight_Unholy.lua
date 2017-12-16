@@ -53,7 +53,6 @@ Spell.DeathKnight.Unholy = {
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
   UseItems                              = Spell(),
-  UseItem                               = Spell(),
   TemptationBuff                        = Spell(234143),
   Outbreak                              = Spell(77575)
 };
@@ -66,7 +65,9 @@ Item.DeathKnight.Unholy = {
   ColdHeart                        = Item(151796),
   Item137075                       = Item(137075),
   Item140806                       = Item(140806),
-  Item132448                       = Item(132448)
+  Item132448                       = Item(132448),
+  FeloiledInfernalMachine          = Item(144482),
+  RingofCollapsingFutures          = Item(142173)
 };
 local I = Item.DeathKnight.Unholy;
 
@@ -309,12 +310,12 @@ local function APL()
     if AR.Cast(S.UseItems) then return ""; end
   end
   -- use_item,name=feloiled_infernal_machine,if=pet.valkyr_battlemaiden.active|!talent.dark_arbiter.enabled
-  if S.UseItem:IsCastableP() and (bool(pet.valkyr_battlemaiden.active) or not S.DarkArbiter:IsAvailable()) then
-    if AR.Cast(S.UseItem) then return ""; end
+  if I.FeloiledInfernalMachine:IsReady() and (bool(pet.valkyr_battlemaiden.active) or not S.DarkArbiter:IsAvailable()) then
+    if AR.CastSuggested(I.FeloiledInfernalMachine) then return ""; end
   end
   -- use_item,name=ring_of_collapsing_futures,if=(buff.temptation.stack=0&target.time_to_die>60)|target.time_to_die<60
-  if S.UseItem:IsCastableP() and ((Player:BuffStackP(S.TemptationBuff) == 0 and Target:TimeToDie() > 60) or Target:TimeToDie() < 60) then
-    if AR.Cast(S.UseItem) then return ""; end
+  if I.RingofCollapsingFutures:IsReady() and ((Player:BuffStackP(S.TemptationBuff) == 0 and Target:TimeToDie() > 60) or Target:TimeToDie() < 60) then
+    if AR.CastSuggested(I.RingofCollapsingFutures) then return ""; end
   end
   -- potion,if=buff.unholy_strength.react
   if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (bool(Player:BuffStackP(S.UnholyStrengthBuff))) then

@@ -54,7 +54,6 @@ Spell.Shaman.Elemental = {
   StormElemental                        = Spell(192249),
   ElementalMastery                      = Spell(16166),
   UseItems                              = Spell(),
-  UseItem                               = Spell(),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297)
 };
@@ -448,8 +447,8 @@ local function APL()
     if AR.Cast(S.UseItems) then return ""; end
   end
   -- use_item,name=gnawed_thumb_ring,if=equipped.gnawed_thumb_ring&(talent.ascendance.enabled&!buff.ascendance.up|!talent.ascendance.enabled)
-  if S.UseItem:IsCastableP() and (I.GnawedThumbRing:IsEquipped() and (S.Ascendance:IsAvailable() and not Player:BuffP(S.AscendanceBuff) or not S.Ascendance:IsAvailable())) then
-    if AR.Cast(S.UseItem) then return ""; end
+  if I.GnawedThumbRing:IsReady() and (I.GnawedThumbRing:IsEquipped() and (S.Ascendance:IsAvailable() and not Player:BuffP(S.AscendanceBuff) or not S.Ascendance:IsAvailable())) then
+    if AR.CastSuggested(I.GnawedThumbRing) then return ""; end
   end
   -- blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
   if S.BloodFury:IsCastableP() and AR.CDsON() and (not S.Ascendance:IsAvailable() or Player:BuffP(S.AscendanceBuff) or S.Ascendance:CooldownRemainsP() > 50) then

@@ -15,6 +15,7 @@ DEBUFF = 'debuff'
 POTION = 'potion'
 
 VARIABLE = 'variable'
+USE_ITEM = 'use_item'
 CANCEL_BUFF = 'cancel_buff'
 RUN_ACTION_LIST = 'run_action_list'
 CALL_ACTION_LIST = 'call_action_list'

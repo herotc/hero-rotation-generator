@@ -43,15 +43,15 @@ Spell.Monk.Brewmaster = {
   FortifyingBrewBuff                    = Spell(115203),
   FortifyingBrew                        = Spell(115203),
   DampenHarmBuff                        = Spell(122278),
-  DiffuseMagicBuff                      = Spell(122783),
-  UseItem                               = Spell()
+  DiffuseMagicBuff                      = Spell(122783)
 };
 local S = Spell.Monk.Brewmaster;
 
 -- Items
 if not Item.Monk then Item.Monk = {} end
 Item.Monk.Brewmaster = {
-  ProlongedPower                   = Item(142117)
+  ProlongedPower                   = Item(142117),
+  ArchimondesHatredReborn          = Item(144249)
 };
 local I = Item.Monk.Brewmaster;
 
@@ -174,8 +174,8 @@ local function APL()
     if AR.Cast(S.FortifyingBrew) then return ""; end
   end
   -- use_item,name=archimondes_hatred_reborn
-  if S.UseItem:IsCastableP() and (true) then
-    if AR.Cast(S.UseItem) then return ""; end
+  if I.ArchimondesHatredReborn:IsReady() and (true) then
+    if AR.CastSuggested(I.ArchimondesHatredReborn) then return ""; end
   end
   -- call_action_list,name=st
   if (true) then

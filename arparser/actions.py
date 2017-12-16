@@ -11,7 +11,7 @@ from .executions import (Spell, Item, Potion, Variable, CancelBuff,
                          RunActionList, CallActionList)
 from .helpers import indent, convert_type
 from .constants import (SPELL, ITEM, POTION, VARIABLE, CANCEL_BUFF,
-                        RUN_ACTION_LIST, CALL_ACTION_LIST,
+                        USE_ITEM, RUN_ACTION_LIST, CALL_ACTION_LIST,
                         ITEM_ACTIONS, BOOL, NUM)
 
 
@@ -207,6 +207,9 @@ class Execution:
             type_, object_ = ITEM, Potion(self.action)
         elif self.execution in ITEM_ACTIONS:
             type_, object_ = ITEM, Item(self.action, self.execution)
+        elif self.execution == USE_ITEM:
+            item_name = self.action.properties().get('name', '')
+            type_, object_ = ITEM, Item(self.action, item_name)
         elif self.execution == VARIABLE:
             variable_name = self.action.properties()['name']
             type_, object_ = VARIABLE, Variable(self.action, variable_name)

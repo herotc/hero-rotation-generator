@@ -48,7 +48,6 @@ Spell.DeathKnight.Frost = {
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
   UseItems                              = Spell(),
-  UseItem                               = Spell(),
   TemptationBuff                        = Spell(234143),
   Obliteration                          = Spell(207256),
   ObliterationBuff                      = Spell(207256),
@@ -70,6 +69,10 @@ Item.DeathKnight.Frost = {
   PerseveranceoftheEbonMartyr      = Item(132459),
   ConsortsColdCore                 = Item(144293),
   KoltirasNewfoundWill             = Item(132366),
+  RingofCollapsingFutures          = Item(142173),
+  HornofValor                      = Item(133642),
+  DraughtofSouls                   = Item(140808),
+  FeloiledInfernalMachine          = Item(144482),
   ColdHeart                        = Item(151796)
 };
 local I = Item.DeathKnight.Frost;
@@ -271,20 +274,20 @@ local function APL()
       if AR.Cast(S.UseItems) then return ""; end
     end
     -- use_item,name=ring_of_collapsing_futures,if=(buff.temptation.stack=0&target.time_to_die>60)|target.time_to_die<60
-    if S.UseItem:IsCastableP() and ((Player:BuffStackP(S.TemptationBuff) == 0 and Target:TimeToDie() > 60) or Target:TimeToDie() < 60) then
-      if AR.Cast(S.UseItem) then return ""; end
+    if I.RingofCollapsingFutures:IsReady() and ((Player:BuffStackP(S.TemptationBuff) == 0 and Target:TimeToDie() > 60) or Target:TimeToDie() < 60) then
+      if AR.CastSuggested(I.RingofCollapsingFutures) then return ""; end
     end
     -- use_item,name=horn_of_valor,if=buff.pillar_of_frost.up&(!talent.breath_of_sindragosa.enabled|!cooldown.breath_of_sindragosa.remains)
-    if S.UseItem:IsCastableP() and (Player:BuffP(S.PillarofFrostBuff) and (not S.BreathofSindragosa:IsAvailable() or not bool(S.BreathofSindragosa:CooldownRemainsP()))) then
-      if AR.Cast(S.UseItem) then return ""; end
+    if I.HornofValor:IsReady() and (Player:BuffP(S.PillarofFrostBuff) and (not S.BreathofSindragosa:IsAvailable() or not bool(S.BreathofSindragosa:CooldownRemainsP()))) then
+      if AR.CastSuggested(I.HornofValor) then return ""; end
     end
     -- use_item,name=draught_of_souls,if=rune.time_to_5<3&(!dot.breath_of_sindragosa.ticking|runic_power>60)
-    if S.UseItem:IsCastableP() and (Player:RuneTimeToX(5) < 3 and (not Target:DebuffP(S.BreathofSindragosaDebuff) or Player:RunicPower() > 60)) then
-      if AR.Cast(S.UseItem) then return ""; end
+    if I.DraughtofSouls:IsReady() and (Player:RuneTimeToX(5) < 3 and (not Target:DebuffP(S.BreathofSindragosaDebuff) or Player:RunicPower() > 60)) then
+      if AR.CastSuggested(I.DraughtofSouls) then return ""; end
     end
     -- use_item,name=feloiled_infernal_machine,if=!talent.obliteration.enabled|buff.obliteration.up
-    if S.UseItem:IsCastableP() and (not S.Obliteration:IsAvailable() or Player:BuffP(S.ObliterationBuff)) then
-      if AR.Cast(S.UseItem) then return ""; end
+    if I.FeloiledInfernalMachine:IsReady() and (not S.Obliteration:IsAvailable() or Player:BuffP(S.ObliterationBuff)) then
+      if AR.CastSuggested(I.FeloiledInfernalMachine) then return ""; end
     end
     -- potion,if=buff.pillar_of_frost.up&(dot.breath_of_sindragosa.ticking|buff.obliteration.up|talent.hungering_rune_weapon.enabled)
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.PillarofFrostBuff) and (Target:DebuffP(S.BreathofSindragosaDebuff) or Player:BuffP(S.ObliterationBuff) or S.HungeringRuneWeapon:IsAvailable())) then

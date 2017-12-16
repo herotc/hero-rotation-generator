@@ -171,4 +171,8 @@ DK_ITEM_INFO = {
     'taktheritrixs_shoulderpads':       137075,
     'convergence_of_fates':             140806,
     'the_instructors_fourth_lesson':    132448,
+    'ring_of_collapsing_futures':       142173,
+    'horn_of_valor':                    133642,
+    'draught_of_souls':                 140808,
+    'feloiled_infernal_machine':        144482,
 }
