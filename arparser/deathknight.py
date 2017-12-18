@@ -14,7 +14,7 @@ BLOOD = 'blood'
 FROST = 'frost'
 UNHOLY = 'unholy'
 
-DK_SPECS = {
+CLASS_SPECS = {
     DEATHKNIGHT: {
         BLOOD:          250,
         FROST:          251,
@@ -22,7 +22,7 @@ DK_SPECS = {
     },
 }
 
-DK_POTION = {
+DEFAULT_POTION = {
     DEATHKNIGHT: {
         BLOOD:  'prolonged_power',
         FROST:  'prolonged_power',
@@ -30,7 +30,7 @@ DK_POTION = {
     }
 }
 
-DK_SPELL_INFO = {
+SPELL_INFO = {
     DEATHKNIGHT: {
         COMMON: {
             'mind_freeze':                      {SPELL:     47528,
@@ -162,7 +162,7 @@ DK_SPELL_INFO = {
     },
 }
 
-DK_ITEM_INFO = {
+ITEM_INFO = {
     'archimondes_hatred_reborn':        144249,
     'perseverance_of_the_ebon_martyr':  132459,
     'consorts_cold_core':               144293,
@@ -175,4 +175,17 @@ DK_ITEM_INFO = {
     'horn_of_valor':                    133642,
     'draught_of_souls':                 140808,
     'feloiled_infernal_machine':        144482,
+}
+
+CLASS_FUNCTIONS = {
+    DEATHKNIGHT: {
+        COMMON: [
+        ],
+        BLOOD: [
+        ],
+        FROST: [
+        ],
+        UNHOLY: [
+        ],
+    },
 }

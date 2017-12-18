@@ -12,7 +12,7 @@ ARMS = 'arms'
 FURY = 'fury'
 PROTECTION = 'protection'
 
-WR_SPECS = {
+CLASS_SPECS = {
     WARRIOR: {
         ARMS:           71,
         FURY:           72,
@@ -20,14 +20,14 @@ WR_SPECS = {
     },
 }
 
-WR_POTION = {
+DEFAULT_POTION = {
     WARRIOR: {
         ARMS: 'prolonged_power',
         FURY: 'old_war',
     }
 }
 
-WR_SPELL_INFO = {
+SPELL_INFO = {
     WARRIOR: {
         COMMON: {
             'battle_cry':                           {SPELL:     1719,
@@ -113,9 +113,20 @@ WR_SPELL_INFO = {
     },
 }
 
-WR_ITEM_INFO = {
+ITEM_INFO = {
     'the_great_storms_eye':             151823,
     'archavons_heavy_hand':             137060,
     'kazzalax_fujiedas_fury':           137053,
     'umbral_moonglaives':               147012,
+}
+
+CLASS_FUNCTIONS = {
+    WARRIOR: {
+        COMMON: [
+        ],
+        ARMS: [
+        ],
+        FURY: [
+        ],
+    },
 }

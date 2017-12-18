@@ -12,7 +12,7 @@ ELEMENTAL = 'elemental'
 ENHANCEMENT = 'enhancement'
 RESTORATION = 'restoration'
 
-SH_SPECS = {
+CLASS_SPECS = {
     SHAMAN: {
         ELEMENTAL:          262,
         ENHANCEMENT:        263,
@@ -20,14 +20,14 @@ SH_SPECS = {
     },
 }
 
-SH_POTION = {
+DEFAULT_POTION = {
     SHAMAN: {
         ELEMENTAL:      'prolonged_power',
         ENHANCEMENT:    'prolonged_power',
     }
 }
 
-SH_SPELL_INFO = {
+SPELL_INFO = {
     SHAMAN: {
         COMMON: {
             'bloodlust':                        {SPELL:     2825},
@@ -118,9 +118,20 @@ SH_SPELL_INFO = {
     },
 }
 
-SH_ITEM_INFO = {
+ITEM_INFO = {
     'echoes_of_the_great_sundering':        137074,
     'smoldering_heart':                     151819,
     'the_deceivers_blood_pact':             137035,
     'gnawed_thumb_ring':                    134526,
+}
+
+CLASS_FUNCTIONS = {
+    SHAMAN: {
+        COMMON: [
+        ],
+        ELEMENTAL: [
+        ],
+        ENHANCEMENT: [
+        ],
+    },
 }

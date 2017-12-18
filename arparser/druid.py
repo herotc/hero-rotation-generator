@@ -16,7 +16,7 @@ FERAL = 'feral'
 GUARDIAN = 'guardian'
 RESTORATION = 'restoration'
 
-DR_SPECS = {
+CLASS_SPECS = {
     DRUID: {
         BALANCE:        102,
         FERAL:          103,
@@ -25,7 +25,7 @@ DR_SPECS = {
     },
 }
 
-DR_POTION = {
+DEFAULT_POTION = {
     DRUID: {
         BALANCE:    'prolonged_power',
         FERAL:      'old_war',
@@ -33,7 +33,7 @@ DR_POTION = {
     }
 }
 
-DR_SPELL_INFO = {
+SPELL_INFO = {
     DRUID: {
         COMMON: {
             'bear_form':                        {SPELL:     5487},
@@ -199,7 +199,7 @@ DR_SPELL_INFO = {
     },
 }
 
-DR_ITEM_INFO = {
+ITEM_INFO = {
     'the_emerald_dreamcatcher': 137062,
     'lady_and_the_child':       144295,
     'oneths_intuition':         137092,
@@ -209,10 +209,14 @@ DR_ITEM_INFO = {
     'luffa_wrappings':          137056,
 }
 
-DR_FUNCTIONS = {
+CLASS_FUNCTIONS = {
     DRUID: {
+        COMMON: [
+        ],
         BALANCE: [
             'FutureAstralPower',
+        ],
+        FERAL: [
         ],
         GUARDIAN: [
             'Swipe',

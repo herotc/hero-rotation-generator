@@ -15,7 +15,7 @@ AFFLICTION = 'affliction'
 DEMONOLOGY = 'demonology'
 DESTRUCTION = 'destruction'
 
-WL_SPECS = {
+CLASS_SPECS = {
     WARLOCK: {
         AFFLICTION:         265,
         DEMONOLOGY:         266,
@@ -23,7 +23,7 @@ WL_SPECS = {
     },
 }
 
-WL_POTION = {
+DEFAULT_POTION = {
     WARLOCK: {
         AFFLICTION:     'prolonged_power',
         DEMONOLOGY:     'prolonged_power',
@@ -31,7 +31,7 @@ WL_POTION = {
     }
 }
 
-WL_SPELL_INFO = {
+SPELL_INFO = {
     WARLOCK: {
         COMMON: {
             'summon_infernal':                  {SPELL:     1122,
@@ -140,12 +140,12 @@ WL_SPELL_INFO = {
     },
 }
 
-WL_ITEM_INFO = {
+ITEM_INFO = {
     'lessons_of_spacetime':             144369,
 }
 
 
-WL_FUNCTIONS = {
+CLASS_FUNCTIONS = {
     WARLOCK: {
         COMMON: [
             'FutureShard',
@@ -154,33 +154,12 @@ WL_FUNCTIONS = {
             'UnstableAfflictionDebuffs',
             'ActiveUAs',
         ],
+        DEMONOLOGY: [
+        ],
+        DESTRUCTION: [
+        ],
     },
 }
-
-
-def affliction_functions(fun):
-    """
-    Adds melee range prediction with movement skills for Havoc.
-    """
-
-    def set_spec(self, spec):
-        """
-        Sets the spec of the player.
-        """
-        if spec == AFFLICTION:
-            for affliction_fun in WL_FUNCTIONS[WARLOCK][AFFLICTION]:
-                lua_fun = ''
-                lua_file_path = os.path.join(
-                    os.path.dirname(__file__),
-                    'luafunctions',
-                    f'{affliction_fun}.lua'
-                )
-                with open(lua_file_path) as lua_file:
-                    lua_fun = lua_file.read()
-                self.apl.context.add_code(lua_fun)
-        fun(self, spec)
-
-    return set_spec
 
 
 def warlock_soul_shard_value(fun):

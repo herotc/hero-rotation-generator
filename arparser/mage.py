@@ -12,7 +12,7 @@ ARCANE = 'arcane'
 FIRE = 'fire'
 FROST = 'frost'
 
-MG_SPECS = {
+CLASS_SPECS = {
     MAGE: {
         ARCANE:         62,
         FIRE:           63,
@@ -20,7 +20,7 @@ MG_SPECS = {
     },
 }
 
-MG_POTION = {
+DEFAULT_POTION = {
     MAGE: {
         ARCANE: 'deadly_grace',
         FIRE:   'prolonged_power',
@@ -28,7 +28,7 @@ MG_POTION = {
     }
 }
 
-MG_SPELL_INFO = {
+SPELL_INFO = {
     MAGE: {
         COMMON: {
             'time_warp':                    {SPELL:     80353},
@@ -167,7 +167,7 @@ MG_SPELL_INFO = {
     },
 }
 
-MG_ITEM_INFO = {
+ITEM_INFO = {
     'mystic_kilt_of_the_rune_master':   209280,
     'mantle_of_the_first_kirin_tor':    248098,
     'marquee_bindings_of_the_sun_king': 132406,
@@ -183,4 +183,17 @@ MG_ITEM_INFO = {
     'belovirs_final_stand':             133977,
     'prydaz_xavarics_magnum_opus':      132444,
     'shard_of_the_exodar':              132410,
+}
+
+CLASS_FUNCTIONS = {
+    MAGE: {
+        COMMON: [
+        ],
+        ARCANE: [
+        ],
+        FIRE: [
+        ],
+        FROST: [
+        ],
+    },
 }

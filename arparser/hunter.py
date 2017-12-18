@@ -12,7 +12,7 @@ BEAST_MASTERY = 'beast_mastery'
 MARKSMANSHIP = 'marksmanship'
 SURVIVAL = 'survival'
 
-HT_SPECS = {
+CLASS_SPECS = {
     HUNTER: {
         BEAST_MASTERY:      253,
         MARKSMANSHIP:       254,
@@ -20,7 +20,7 @@ HT_SPECS = {
     },
 }
 
-HT_POTION = {
+DEFAULT_POTION = {
     HUNTER: {
         BEAST_MASTERY:  'prolonged_power',
         MARKSMANSHIP:   'prolonged_power',
@@ -28,7 +28,7 @@ HT_POTION = {
     }
 }
 
-HT_SPELL_INFO = {
+SPELL_INFO = {
     HUNTER: {
         COMMON: {
             'multishot':                    {SPELL:     2643,
@@ -138,7 +138,7 @@ HT_SPELL_INFO = {
     },
 }
 
-HT_ITEM_INFO = {
+ITEM_INFO = {
     'call_of_the_wild':             137101,
     'the_mantle_of_command':        144326,
     'parsels_tongue':               151805,
@@ -148,4 +148,17 @@ HT_ITEM_INFO = {
     'convergence_of_fates':         140806,
     'roar_of_the_seven_lions':      137080,
     'tarnished_sentinel_medallion': 147017,
+}
+
+CLASS_FUNCTIONS = {
+    HUNTER: {
+        COMMON: [
+        ],
+        BEAST_MASTERY: [
+        ],
+        MARKSMANSHIP: [
+        ],
+        SURVIVAL: [
+        ],
+    },
 }

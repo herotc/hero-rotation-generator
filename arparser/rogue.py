@@ -12,7 +12,7 @@ ASSASSINATION = 'assassination'
 OUTLAW = 'outlaw'
 SUBTLETY = 'subtlety'
 
-RG_SPECS = {
+CLASS_SPECS = {
     ROGUE: {
         ASSASSINATION:      259,
         OUTLAW:             260,
@@ -20,7 +20,7 @@ RG_SPECS = {
     },
 }
 
-RG_POTION = {
+DEFAULT_POTION = {
     ROGUE: {
         ASSASSINATION:  'prolonged_power',
         OUTLAW:         'prolonged_power',
@@ -28,7 +28,7 @@ RG_POTION = {
     }
 }
 
-RG_SPELL_INFO = {
+SPELL_INFO = {
     ROGUE: {
         COMMON: {
             'fan_of_knives':                        {SPELL:     51723,
@@ -137,7 +137,7 @@ RG_SPELL_INFO = {
     },
 }
 
-RG_ITEM_INFO = {
+ITEM_INFO = {
     'the_dreadlords_deceit':                137021,
     'insignia_of_ravenholdt':               137049,
     'mantle_of_the_master_assassin':        144236,
@@ -148,4 +148,17 @@ RG_ITEM_INFO = {
     'the_first_of_the_dead':                151818,
     'shadow_satyrs_walk':                   137032,
     'denial_of_the_halfgiants':             137100,
+}
+
+CLASS_FUNCTIONS = {
+    ROGUE: {
+        COMMON: [
+        ],
+        ASSASSINATION: [
+        ],
+        OUTLAW: [
+        ],
+        SUBTLETY: [
+        ],
+    },
 }

@@ -13,21 +13,21 @@ DEMONHUNTER = 'demonhunter'
 HAVOC = 'havoc'
 VENGEANCE = 'vengeance'
 
-DH_SPECS = {
+CLASS_SPECS = {
     DEMONHUNTER: {
         HAVOC:          577,
         VENGEANCE:      581,
     },
 }
 
-DH_POTION = {
+DEFAULT_POTION = {
     DEMONHUNTER: {
         HAVOC:      'prolonged_power',
         VENGEANCE:  'prolonged_power',
     }
 }
 
-DH_SPELL_INFO = {
+SPELL_INFO = {
     DEMONHUNTER: {
         COMMON: {
             'annihilation':         {SPELL:     201427,
@@ -95,13 +95,17 @@ DH_SPELL_INFO = {
     },
 }
 
-DH_ITEM_INFO = {
+ITEM_INFO = {
 }
 
-DH_FUNCTIONS = {
+CLASS_FUNCTIONS = {
     DEMONHUNTER: {
+        COMMON: [
+        ],
         HAVOC: [
             'IsInMeleeRange',
+        ],
+        VENGEANCE: [
         ],
     },
 }

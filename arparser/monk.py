@@ -6,15 +6,15 @@ Monk specific constants and functions.
 """
 
 from .constants import (SPELL, BUFF, DEBUFF, COMMON,
-                        GCDAOGCD, OGCDAOGCD, INTERRUPT,
-                        MELEE, CD, RANGE)
+                        OGCDAOGCD, INTERRUPT,
+                        CD, RANGE)
 
 MONK = 'monk'
 BREWMASTER = 'brewmaster'
 WINDWALKER = 'windwalker'
 MISTWEAVER = 'mistweaver'
 
-MK_SPECS = {
+CLASS_SPECS = {
     MONK: {
         BREWMASTER:     268,
         WINDWALKER:     269,
@@ -22,14 +22,14 @@ MK_SPECS = {
     },
 }
 
-MK_POTION = {
+DEFAULT_POTION = {
     MONK: {
         BREWMASTER: 'prolonged_power',
         WINDWALKER: 'prolonged_power',
     }
 }
 
-MK_SPELL_INFO = {
+SPELL_INFO = {
     MONK: {
         COMMON: {
             'blackout_kick':                    {SPELL:     100784},
@@ -102,9 +102,20 @@ MK_SPELL_INFO = {
     },
 }
 
-MK_ITEM_INFO = {
+ITEM_INFO = {
     'archimondes_hatred_reborn':        144249,
     'drinking_horn_cover':              137097,
     'hidden_masters_forbidden_touch':   137057,
     'the_emperors_capacitor':           144239,
+}
+
+CLASS_FUNCTIONS = {
+    MONK: {
+        COMMON: [
+        ],
+        BREWMASTER: [
+        ],
+        WINDWALKER: [
+        ],
+    },
 }

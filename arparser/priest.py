@@ -13,7 +13,7 @@ HOLY = 'holy'
 SHADOW = 'shadow'
 
 
-PR_SPECS = {
+CLASS_SPECS = {
     PRIEST: {
         DISCIPLINE:     256,
         HOLY:           257,
@@ -21,13 +21,13 @@ PR_SPECS = {
     },
 }
 
-PR_POTION = {
+DEFAULT_POTION = {
     PRIEST: {
         SHADOW: 'prolonged_power',
     }
 }
 
-PR_SPELL_INFO = {
+SPELL_INFO = {
     PRIEST: {
         COMMON: {
             'shadow_word_pain':                 {SPELL:     589,
@@ -79,7 +79,16 @@ PR_SPELL_INFO = {
 
 # TODO insanity_drain_stacks
 
-PR_ITEM_INFO = {
+ITEM_INFO = {
     'zeks_exterminatus':            144438,
     'mangazas_madness':             132864,
+}
+
+CLASS_FUNCTIONS = {
+    PRIEST: {
+        COMMON: [
+        ],
+        SHADOW: [
+        ],
+    },
 }

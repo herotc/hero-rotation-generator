@@ -12,7 +12,7 @@ HOLY = 'holy'
 PROTECTION = 'protection'
 RETRIBUTION = 'retribution'
 
-PL_SPECS = {
+CLASS_SPECS = {
     PALADIN: {
         HOLY:           65,
         PROTECTION:     66,
@@ -20,14 +20,14 @@ PL_SPECS = {
     },
 }
 
-PL_POTION = {
+DEFAULT_POTION = {
     PALADIN: {
         PROTECTION:     'prolonged_power',
         RETRIBUTION:    'old_war',
     }
 }
 
-PL_SPELL_INFO = {
+SPELL_INFO = {
     PALADIN: {
         COMMON: {
             'divine_shield':                    {SPELL:     642,
@@ -98,9 +98,20 @@ PL_SPELL_INFO = {
     },
 }
 
-PL_ITEM_INFO = {
+ITEM_INFO = {
     'scarlet_inquisitors_expurgation':      151813,
     'liadrins_fury_unleashed':              137048,
     'whisper_of_the_nathrezim':             137020,
     'apocalypse_drive':                     151975,
+}
+
+CLASS_FUNCTIONS = {
+    PALADIN: {
+        COMMON: [
+        ],
+        PROTECTION: [
+        ],
+        RETRIBUTION: [
+        ],
+    },
 }
