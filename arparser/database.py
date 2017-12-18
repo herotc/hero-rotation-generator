@@ -5,21 +5,22 @@ Initialize the arparser package.
 @author: skasch
 """
 
-from . import deathknight   as dk
-from . import demonhunter   as dh
-from . import druid         as dr
-from . import hunter        as ht
-from . import mage          as mg
-from . import monk          as mk
-from . import paladin       as pl
-from . import priest        as pr
-from . import rogue         as rg
-from . import shaman        as sh
-from . import warlock       as wl
-from . import warrior       as wr
+from . import deathknight
+from . import demonhunter
+from . import druid
+from . import hunter
+from . import mage
+from . import monk
+from . import paladin
+from . import priest
+from . import rogue
+from . import shaman
+from . import warlock
+from . import warrior
 from .constants import SPELL, BUFF, OGCDAOGCD, CD, COMMON
 
-CLASSES = [dk, dh, dr, ht, mg, mk, pl, pr, rg, sh, wl, wr]
+CLASSES = [deathknight, demonhunter, druid, hunter, mage, monk, paladin, priest,
+           rogue, shaman, warlock, warrior]
 
 CLASS_SPECS = {}
 for class_ in CLASSES:
