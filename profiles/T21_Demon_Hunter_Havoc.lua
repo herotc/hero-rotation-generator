@@ -103,6 +103,28 @@ local function IsInMeleeRange()
   return Target:IsInRange("Melee")
 end
 
+local function IsMetaExtendedByDemonic()
+  if not Player:BuffP(S.MetamorphosisBuff) then
+    return false;
+  elseif(S.EyeBeam:TimeSinceLastCast() < S.MetamorphosisImpact:TimeSinceLastCast()) then
+    return true;
+  end
+
+  return false;
+end
+
+local function MetamorphosisCooldownAdjusted()
+  -- TODO: Make this better by sampling the Fury expenses over time instead of approximating
+  if I.ConvergenceofFates:IsEquipped() and I.DelusionsOfGrandeur:IsEquipped() then
+    return S.Metamorphosis:CooldownRemainsP() * 0.56;
+  elseif I.ConvergenceofFates:IsEquipped() then
+    return S.Metamorphosis:CooldownRemainsP() * 0.78;
+  elseif I.DelusionsOfGrandeur:IsEquipped() then
+    return S.Metamorphosis:CooldownRemainsP() * 0.67;
+  end
+  return S.Metamorphosis:CooldownRemainsP()
+end
+
 --- ======= ACTION LISTS =======
 local function APL()
   local function Precombat()
@@ -133,11 +155,11 @@ local function APL()
       if AR.Cast(S.Nemesis) then return ""; end
     end
     -- nemesis,if=!raid_event.adds.exists&(buff.chaos_blades.up|buff.metamorphosis.up|cooldown.metamorphosis.adjusted_remains<20|target.time_to_die<=60)
-    if S.Nemesis:IsCastableP() and (not false and (Player:BuffP(S.ChaosBladesBuff) or Player:BuffP(S.MetamorphosisBuff) or cooldown.metamorphosis.adjusted_remains < 20 or Target:TimeToDie() <= 60)) then
+    if S.Nemesis:IsCastableP() and (not false and (Player:BuffP(S.ChaosBladesBuff) or Player:BuffP(S.MetamorphosisBuff) or MetamorphosisCooldownAdjusted() < 20 or Target:TimeToDie() <= 60)) then
       if AR.Cast(S.Nemesis) then return ""; end
     end
     -- chaos_blades,if=buff.metamorphosis.up|cooldown.metamorphosis.adjusted_remains>60|target.time_to_die<=duration
-    if S.ChaosBlades:IsCastableP() and (Player:BuffP(S.MetamorphosisBuff) or cooldown.metamorphosis.adjusted_remains > 60 or Target:TimeToDie() <= S.ChaosBlades:BaseDuration()) then
+    if S.ChaosBlades:IsCastableP() and (Player:BuffP(S.MetamorphosisBuff) or MetamorphosisCooldownAdjusted() > 60 or Target:TimeToDie() <= S.ChaosBlades:BaseDuration()) then
       if AR.Cast(S.ChaosBlades) then return ""; end
     end
     -- potion,if=buff.metamorphosis.remains>25|target.time_to_die<60
@@ -187,7 +209,7 @@ local function APL()
       if AR.Cast(S.Felblade) then return ""; end
     end
     -- eye_beam,if=spell_targets.eye_beam_tick>desired_targets|!buff.metamorphosis.extended_by_demonic|(set_bonus.tier21_4pc&buff.metamorphosis.remains>16)
-    if S.EyeBeam:IsCastableP() and (Cache.EnemiesCount[20] > desired_targets or not bool(buff.metamorphosis.extended_by_demonic) or (AC.Tier21_4Pc and Player:BuffRemainsP(S.MetamorphosisBuff) > 16)) then
+    if S.EyeBeam:IsCastableP() and (Cache.EnemiesCount[20] > desired_targets or not IsMetaExtendedByDemonic() or (AC.Tier21_4Pc and Player:BuffRemainsP(S.MetamorphosisBuff) > 16)) then
       if AR.Cast(S.EyeBeam) then return ""; end
     end
     -- annihilation,if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance

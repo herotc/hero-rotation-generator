@@ -5,9 +5,8 @@ Demon Hunter specific constants and functions.
 @author: skasch
 """
 
-from .lua import LuaExpression
-from .expressions import Method
-from .constants import MELEE, SPELL, BUFF, DEBUFF, COMMON, RANGE
+from .lua import LuaExpression, Method
+from .constants import MELEE, SPELL, BUFF, DEBUFF, COMMON, RANGE, BOOL
 
 DEMONHUNTER = 'demonhunter'
 HAVOC = 'havoc'
@@ -104,6 +103,8 @@ CLASS_FUNCTIONS = {
         ],
         HAVOC: [
             'IsInMeleeRange',
+            'IsMetaExtendedByDemonic',
+            'MetamorphosisCooldownAdjusted',
         ],
         VENGEANCE: [
         ],
@@ -127,3 +128,43 @@ def havoc_melee_condition(fun):
                 [LuaExpression(None, Method('IsInMeleeRange'), [])]
                 + self.additional_conditions)
     return __init__
+
+
+def havoc_extended_by_demonic_buff(fun):
+    """
+    Add extended_by_demonic for metamorphosis to buff. expression.
+    """
+
+    def extended_by_demonic(self):
+        """
+        Return the arguments for the expression buff.spell.extended_by_demonic.
+        """
+        if (self.condition.player_unit.spec.simc == HAVOC
+                and self.condition.condition_list[1] == 'metamorphosis'):
+            self.object_ = None
+            self.method = Method('IsMetaExtendedByDemonic', type_=BOOL)
+            self.args = []
+        else:
+            fun(self)
+    
+    return extended_by_demonic
+
+
+def havoc_metamorphosis_cooldown(fun):
+    """
+    Add cooldown_adjusted for metamorphosis to cooldown. expression.
+    """
+
+    def adjusted_remains(self):
+        """
+        Return the arguments for the expression cooldown.spell.adjusted_remains.
+        """
+        if (self.condition.player_unit.spec.simc == HAVOC
+                and self.condition.condition_list[1] == 'metamorphosis'):
+            self.object_ = None
+            self.method = Method('MetamorphosisCooldownAdjusted')
+            self.args = []
+        else:
+            fun(self)
+    
+    return adjusted_remains

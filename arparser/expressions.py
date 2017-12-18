@@ -11,6 +11,8 @@ from .resources import (Rune, AstralPower, HolyPower, Insanity, Pain, Focus,
                         Maelstrom, Energy, ComboPoints, SoulShard,
                         ArcaneCharges, Chi, RunicPower, Fury, Rage, Mana)
 from .units import Pet
+from .demonhunter import (havoc_extended_by_demonic_buff,
+                          havoc_metamorphosis_cooldown)
 from .warlock import affliction_active_uas_stack
 from .constants import (SPELL, BUFF, DEBUFF, BOOL, PET, BLOODLUST, RANGE,
                         FALSE, MAX_INT)
@@ -839,10 +841,17 @@ class Buff(BuildExpression, Aura):
         Aura.__init__(self, condition, BUFF, object_, spell_type=BUFF)
         call = condition.condition_list[2]
         super().__init__(call)
-    
+
     @affliction_active_uas_stack
     def stack(self):
         super().stack()
+    
+    @havoc_extended_by_demonic_buff
+    def extended_by_demonic(self):
+        """
+        Return the arguments for the expression buff.spell.extended_by_demonic.
+        """
+        pass
 
 
 class Cooldown(BuildExpression, Expires):
@@ -873,6 +882,13 @@ class Cooldown(BuildExpression, Expires):
         cooldown.spell.charges_fractional.
         """
         self.method = Method('ChargesFractional')
+    
+    @havoc_metamorphosis_cooldown
+    def adjusted_remains(self):
+        """
+        Return the arguments for the expression cooldown.spell.adjusted_remains.
+        """
+        pass
 
 
 class RaidEvent(Literal):
@@ -953,7 +969,7 @@ class TargetExpression(BuildExpression):
         """
         if self.condition.condition_list[2] == 'pct':
             self.method = Method('HealthPercentage')
-    
+
     def debuff(self):
         """
         Return the argument for the expressons target.debuff.{something}.
@@ -962,5 +978,5 @@ class TargetExpression(BuildExpression):
             self.method = Method('IsCasting', type_=BOOL)
         if self.condition.condition_list[3] == 'remains':
             self.method = Method('DebuffRemainsP')
-            self.args = [Spell(self.condition.parent_action, 
+            self.args = [Spell(self.condition.parent_action,
                                self.condition.condition_list[2])]
