@@ -5,7 +5,9 @@ Hunter specific constants and functions.
 @author: skasch
 """
 
-from .constants import COMMON, SPELL, BUFF, DEBUFF, PET, INTERRUPT, RANGE
+from .executions import Spell
+from .lua import LuaExpression, Method
+from .constants import COMMON, SPELL, BUFF, DEBUFF, PET, INTERRUPT, RANGE, BOOL
 
 HUNTER = 'hunter'
 BEAST_MASTERY = 'beast_mastery'
@@ -85,7 +87,7 @@ SPELL_INFO = {
             'marking_targets':              {BUFF:      223138},
             'trueshot':                     {SPELL:     193526,
                                              BUFF:      193526},
-            'vulnerability':                {DEBUFF:    197131},
+            'vulnerability':                {DEBUFF:    187131},
             'a_murder_of_crows':            {SPELL:     131894},
             'black_arrow':                  {SPELL:     194599},
             'explosive_shot':               {SPELL:     212431},
@@ -157,8 +159,68 @@ CLASS_FUNCTIONS = {
         BEAST_MASTERY: [
         ],
         MARKSMANSHIP: [
+            'TargetDebuffRemainsP',
+            'TargetDebuffP',
         ],
         SURVIVAL: [
         ],
     },
 }
+
+
+def marksmanship_lowest_vuln_within(fun):
+    """
+    Call TargetDebuffRemainsP function for lowest_vuln_within.
+    """
+
+    def lowest_vuln_within(self):
+        """
+        Return the condition when the prefix is lowest_vuln_within.
+        """
+        if self.player_unit.spec.simc == MARKSMANSHIP:
+            object_ = None
+            method = Method('TargetDebuffRemainsP')
+            args = [Spell(self.parent_action, 'vulnerability', type_=DEBUFF)]
+            return LuaExpression(object_, method, args)
+        else:
+            fun(self)
+
+    return lowest_vuln_within
+
+
+def marksmanship_debuff_remains(fun):
+    """
+    Call TargetDebuffRemainsP function for lowest_vuln_within.
+    """
+
+    def remains(self):
+        """
+        Return the arguments for the expression debuff.spell.remains.
+        """
+        if self.condition.player_unit.spec.simc == MARKSMANSHIP:
+            self.object_ = None
+            self.method = Method('TargetDebuffRemainsP')
+            self.args = [self.spell]
+        else:
+            fun(self)
+
+    return remains
+
+
+def marksmanship_debuff_ready(fun):
+    """
+    Call TargetDebuffRemainsP function for lowest_vuln_within.
+    """
+
+    def ready(self):
+        """
+        Return the arguments for the expression debuff.spell.up/ready.
+        """
+        if self.condition.player_unit.spec.simc == MARKSMANSHIP:
+            self.object_ = None
+            self.method = Method('TargetDebuffP', type_=BOOL)
+            self.args = [self.spell]
+        else:
+            fun(self)
+
+    return ready

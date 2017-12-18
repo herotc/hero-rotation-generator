@@ -65,6 +65,8 @@ SPELL_INFO = {
         'darkflight':                   {SPELL:     68992},
         'stoneform':                    {SPELL:     20594},
         'exhaustion':                   {BUFF:      57723},
+        # TODO: Fix; hack to make it work from consumable
+        'prolonged_power':              {BUFF:      229206},
         'potion_of_prolonged_power':    {BUFF:      229206},
         'potion_of_deadly_grace':       {BUFF:      188027},
         'pool_resource':                {SPELL:     9999000010},

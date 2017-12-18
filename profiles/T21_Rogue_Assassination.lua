@@ -136,7 +136,7 @@ local function APL()
       if AR.Cast(S.FanofKnives) then return ""; end
     end
     -- mutilate,cycle_targets=1,if=dot.deadly_poison_dot.refreshable
-    if S.Mutilate:IsCastableP() and (bool(dot.deadly_poison_dot.refreshable)) then
+    if S.Mutilate:IsCastableP() and (Target:DebuffRefreshableCP(S.DeadlyPoisonDotDebuff)) then
       if AR.Cast(S.Mutilate) then return ""; end
     end
     -- mutilate
@@ -178,7 +178,7 @@ local function APL()
       if AR.Cast(S.Exsanguinate) then return ""; end
     end
     -- vanish,if=talent.nightstalker.enabled&combo_points>=cp_max_spend&!talent.exsanguinate.enabled&mantle_duration=0&((equipped.mantle_of_the_master_assassin&set_bonus.tier19_4pc)|((!equipped.mantle_of_the_master_assassin|!set_bonus.tier19_4pc)&(dot.rupture.refreshable|debuff.vendetta.up)))
-    if S.Vanish:IsCastableP() and (S.Nightstalker:IsAvailable() and Player:ComboPoints() >= cp_max_spend and not S.Exsanguinate:IsAvailable() and mantle_duration == 0 and ((I.MantleoftheMasterAssassin:IsEquipped() and AC.Tier19_4Pc) or ((not I.MantleoftheMasterAssassin:IsEquipped() or not AC.Tier19_4Pc) and (bool(dot.rupture.refreshable) or Target:DebuffP(S.VendettaDebuff))))) then
+    if S.Vanish:IsCastableP() and (S.Nightstalker:IsAvailable() and Player:ComboPoints() >= cp_max_spend and not S.Exsanguinate:IsAvailable() and mantle_duration == 0 and ((I.MantleoftheMasterAssassin:IsEquipped() and AC.Tier19_4Pc) or ((not I.MantleoftheMasterAssassin:IsEquipped() or not AC.Tier19_4Pc) and (Target:DebuffRefreshableCP(S.RuptureDebuff) or Target:DebuffP(S.VendettaDebuff))))) then
       if AR.Cast(S.Vanish) then return ""; end
     end
     -- vanish,if=talent.nightstalker.enabled&combo_points>=cp_max_spend&talent.exsanguinate.enabled&cooldown.exsanguinate.remains<1&(dot.rupture.ticking|time>10)
@@ -190,7 +190,7 @@ local function APL()
       if AR.Cast(S.Vanish) then return ""; end
     end
     -- vanish,if=talent.subterfuge.enabled&!equipped.mantle_of_the_master_assassin&!stealthed.rogue&dot.garrote.refreshable&((spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives)|(spell_targets.fan_of_knives>=4&combo_points.deficit>=4))
-    if S.Vanish:IsCastableP() and (S.Subterfuge:IsAvailable() and not I.MantleoftheMasterAssassin:IsEquipped() and not bool(stealthed.rogue) and bool(dot.garrote.refreshable) and ((Cache.EnemiesCount[10] <= 3 and Player:ComboPointsDeficit() >= 1 + Cache.EnemiesCount[10]) or (Cache.EnemiesCount[10] >= 4 and Player:ComboPointsDeficit() >= 4))) then
+    if S.Vanish:IsCastableP() and (S.Subterfuge:IsAvailable() and not I.MantleoftheMasterAssassin:IsEquipped() and not bool(stealthed.rogue) and Target:DebuffRefreshableCP(S.GarroteDebuff) and ((Cache.EnemiesCount[10] <= 3 and Player:ComboPointsDeficit() >= 1 + Cache.EnemiesCount[10]) or (Cache.EnemiesCount[10] >= 4 and Player:ComboPointsDeficit() >= 4))) then
       if AR.Cast(S.Vanish) then return ""; end
     end
     -- vanish,if=talent.shadow_focus.enabled&variable.energy_time_to_max_combined>=2&combo_points.deficit>=4
@@ -293,7 +293,7 @@ local function APL()
     local ShouldReturn = Maintain(); if ShouldReturn then return ShouldReturn; end
   end
   -- call_action_list,name=finish,if=(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)&(!dot.rupture.refreshable|(dot.rupture.exsanguinated&dot.rupture.remains>=3.5)|target.time_to_die-dot.rupture.remains<=6)&active_dot.rupture>=spell_targets.rupture
-  if ((not S.Exsanguinate:IsAvailable() or S.Exsanguinate:CooldownRemainsP() > 2) and (not bool(dot.rupture.refreshable) or (bool(dot.rupture.exsanguinated) and Target:DebuffRemainsP(S.RuptureDebuff) >= 3.5) or Target:TimeToDie() - Target:DebuffRemainsP(S.RuptureDebuff) <= 6) and active_dot.rupture >= Cache.EnemiesCount[5]) then
+  if ((not S.Exsanguinate:IsAvailable() or S.Exsanguinate:CooldownRemainsP() > 2) and (not Target:DebuffRefreshableCP(S.RuptureDebuff) or (bool(dot.rupture.exsanguinated) and Target:DebuffRemainsP(S.RuptureDebuff) >= 3.5) or Target:TimeToDie() - Target:DebuffRemainsP(S.RuptureDebuff) <= 6) and active_dot.rupture >= Cache.EnemiesCount[5]) then
     local ShouldReturn = Finish(); if ShouldReturn then return ShouldReturn; end
   end
   -- call_action_list,name=build,if=combo_points.deficit>1|energy.deficit<=25+variable.energy_regen_combined

@@ -192,7 +192,7 @@ local function APL()
     if AR.Cast(S.CobraShot) then return ""; end
   end
   -- cobra_shot,if=(cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max)|(buff.bestial_wrath.up&(spell_targets.multishot=1|focus.regen*cooldown.kill_command.remains>action.kill_command.cost))|target.time_to_die<cooldown.kill_command.remains|(equipped.parsels_tongue&buff.parsels_tongue.remains<=gcd.max*2)
-  if S.CobraShot:IsCastableP() and ((S.KillCommand:CooldownRemainsP() > Player:FocusTimeToMaxPredicted() and S.BestialWrath:CooldownRemainsP() > Player:FocusTimeToMaxPredicted()) or (Player:BuffP(S.BestialWrathBuff) and (Cache.EnemiesCount[40] == 1 or Player:FocusRegen() * S.KillCommand:CooldownRemainsP() > action.kill_command.cost)) or Target:TimeToDie() < S.KillCommand:CooldownRemainsP() or (I.ParselsTongue:IsEquipped() and Player:BuffRemainsP(S.ParselsTongueBuff) <= Player:GCD() * 2)) then
+  if S.CobraShot:IsCastableP() and ((S.KillCommand:CooldownRemainsP() > Player:FocusTimeToMaxPredicted() and S.BestialWrath:CooldownRemainsP() > Player:FocusTimeToMaxPredicted()) or (Player:BuffP(S.BestialWrathBuff) and (Cache.EnemiesCount[40] == 1 or Player:FocusRegen() * S.KillCommand:CooldownRemainsP() > S.KillCommand:Cost())) or Target:TimeToDie() < S.KillCommand:CooldownRemainsP() or (I.ParselsTongue:IsEquipped() and Player:BuffRemainsP(S.ParselsTongueBuff) <= Player:GCD() * 2)) then
     if AR.Cast(S.CobraShot) then return ""; end
   end
   -- dire_beast,if=buff.bestial_wrath.up

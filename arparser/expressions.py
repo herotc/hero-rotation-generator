@@ -13,6 +13,9 @@ from .resources import (Rune, AstralPower, HolyPower, Insanity, Pain, Focus,
 from .units import Pet
 from .demonhunter import (havoc_extended_by_demonic_buff,
                           havoc_metamorphosis_cooldown)
+from .hunter import (marksmanship_lowest_vuln_within,
+                     marksmanship_debuff_ready,
+                     marksmanship_debuff_remains)
 from .warlock import affliction_active_uas_stack
 from .constants import (SPELL, BUFF, DEBUFF, BOOL, PET, BLOODLUST, RANGE,
                         FALSE, MAX_INT)
@@ -122,11 +125,23 @@ class ActionExpression(BuildExpression):
         """
         self.method = Method('TravelTime')
 
+    def in_flight(self):
+        """
+        Return the arguments for the expression action.spell.in_flight.
+        """
+        self.method = Method('InFlight', type_=BOOL)
+
     def max_charges(self):
         """
         Return the arguments for the expression action.spell.max_charges.
         """
         self.method = Method('MaxCharges')
+
+    def cost(self):
+        """
+        Return the arguments for the expression action.spell.cost.
+        """
+        self.method = Method('Cost')
 
     def spell_targets(self):
         """
@@ -140,6 +155,16 @@ class ActionExpression(BuildExpression):
                 self.condition.player_unit.spec_range()))
         ]
         self.array = True
+
+    def cast_regen(self):
+        """
+        Return the arguments for the expression action.spell.cast_regen.
+        """
+        self.object_ = self.condition.player_unit
+        self.method = Method('FocusCastRegen')
+        self.args = [LuaExpression(self.action_object(),
+                                   Method('ExecuteTime'),
+                                   [])]
 
     def active_enemies(self):
         """
@@ -297,6 +322,12 @@ class Expression:
         Return the condition when the prefix is cooldown.
         """
         return Cooldown(self)
+
+    def consumable(self):
+        """
+        Return the condition when the prefix is consumable.
+        """
+        return Consumable(self)
 
     def buff(self):
         """
@@ -486,6 +517,13 @@ class Expression:
         """
         return Variable(self.parent_action, self.condition_list[1])
 
+    @marksmanship_lowest_vuln_within
+    def lowest_vuln_within(self):
+        """
+        Return the condition when the prefix is lowest_vuln_within.
+        """
+        pass
+
 
 class Expires:
     """
@@ -571,6 +609,12 @@ class Aura(Expires):
             self.args = []
         else:
             self.method = Method(f'{self.simc.lua_name()}StackP')
+    
+    def refreshable(self):
+        """
+        Return the arguments for the expression {aura}.spell.refreshable.
+        """
+        self.method = Method(f'{self.simc.lua_name()}RefreshableCP', type_=BOOL)
 
     def react(self):
         """
@@ -824,11 +868,42 @@ class Debuff(BuildExpression, Aura):
         call = condition.condition_list[2]
         super().__init__(call)
 
+    @marksmanship_debuff_ready
+    def ready(self):
+        Aura.ready(self)
+
+    @marksmanship_debuff_remains
+    def remains(self):
+        Aura.remains(self)
+
 
 class Dot(Debuff):
     """
     Represent the expression for a dot. condition.
     """
+
+
+class Consumable(BuildExpression):
+    """
+    Represent the expression for a consumable. condition.
+    """
+
+    def __init__(self, condition):
+        self.object_ = condition.player_unit
+        self.args = [Spell(condition.parent_action,
+                           condition.condition_list[1],
+                           type_=BUFF)]
+        if len(condition.condition_list) > 2:
+            call = condition.condition_list[2]
+        else:
+            call = 'ready'
+        super().__init__(call)
+
+    def ready(self):
+        """
+        Return the arguments for the expression consumable.item(.ready).
+        """
+        self.method = Method('Buff', type_=BOOL)
 
 
 class Buff(BuildExpression, Aura):
@@ -845,7 +920,7 @@ class Buff(BuildExpression, Aura):
     @affliction_active_uas_stack
     def stack(self):
         super().stack()
-    
+
     @havoc_extended_by_demonic_buff
     def extended_by_demonic(self):
         """
@@ -876,13 +951,20 @@ class Cooldown(BuildExpression, Expires):
         """
         self.method = Method('RechargeP')
 
+    def full_recharge_time(self):
+        """
+        Return the arguments for the expression
+        cooldown.spell.full_recharge_time.
+        """
+        self.method = Method('FullRechargeTime')
+
     def charges_fractional(self):
         """
         Return the arguments for the expression
         cooldown.spell.charges_fractional.
         """
         self.method = Method('ChargesFractional')
-    
+
     @havoc_metamorphosis_cooldown
     def adjusted_remains(self):
         """

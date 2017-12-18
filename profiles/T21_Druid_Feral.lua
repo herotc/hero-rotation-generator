@@ -167,7 +167,7 @@ local function APL()
       if AR.Cast(S.AshamanesFrenzy) then return ""; end
     end
     -- shadowmeld,if=combo_points<5&energy>=action.rake.cost&dot.rake.pmultiplier<2.1&buff.tigers_fury.up&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>18)&!buff.incarnation.up
-    if S.Shadowmeld:IsCastableP() and (Player:ComboPoints() < 5 and Player:Energy() >= action.rake.cost and dot.rake.pmultiplier < 2.1 and Player:BuffP(S.TigersFuryBuff) and (Player:BuffP(S.BloodtalonsBuff) or not S.Bloodtalons:IsAvailable()) and (not S.Incarnation:IsAvailable() or S.Incarnation:CooldownRemainsP() > 18) and not Player:BuffP(S.IncarnationBuff)) then
+    if S.Shadowmeld:IsCastableP() and (Player:ComboPoints() < 5 and Player:Energy() >= S.Rake:Cost() and dot.rake.pmultiplier < 2.1 and Player:BuffP(S.TigersFuryBuff) and (Player:BuffP(S.BloodtalonsBuff) or not S.Bloodtalons:IsAvailable()) and (not S.Incarnation:IsAvailable() or S.Incarnation:CooldownRemainsP() > 18) and not Player:BuffP(S.IncarnationBuff)) then
       if AR.Cast(S.Shadowmeld) then return ""; end
     end
     -- use_items
@@ -326,7 +326,7 @@ local function APL()
       if AR.Cast(S.SwipeCat) then return ""; end
     end
     -- shred,if=dot.rake.remains>(action.shred.cost+action.rake.cost-energy)%energy.regen|buff.clearcasting.react
-    if S.Shred:IsCastableP() and (Target:DebuffRemainsP(S.RakeDebuff) > (action.shred.cost + action.rake.cost - Player:Energy()) / Player:EnergyRegen() or bool(Player:BuffStackP(S.ClearcastingBuff))) then
+    if S.Shred:IsCastableP() and (Target:DebuffRemainsP(S.RakeDebuff) > (S.Shred:Cost() + S.Rake:Cost() - Player:Energy()) / Player:EnergyRegen() or bool(Player:BuffStackP(S.ClearcastingBuff))) then
       if AR.Cast(S.Shred) then return ""; end
     end
   end

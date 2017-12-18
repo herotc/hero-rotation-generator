@@ -590,7 +590,7 @@ local function APL()
       if AR.Cast(S.PhantomSingularity) then return ""; end
     end
     -- seed_of_corruption,if=(talent.sow_the_seeds.enabled&spell_targets.seed_of_corruption>=3)|(spell_targets.seed_of_corruption>3&dot.corruption.refreshable)
-    if S.SeedofCorruption:IsCastableP() and ((S.SowtheSeeds:IsAvailable() and Cache.EnemiesCount[40] >= 3) or (Cache.EnemiesCount[40] > 3 and bool(dot.corruption.refreshable))) then
+    if S.SeedofCorruption:IsCastableP() and ((S.SowtheSeeds:IsAvailable() and Cache.EnemiesCount[40] >= 3) or (Cache.EnemiesCount[40] > 3 and Target:DebuffRefreshableCP(S.CorruptionDebuff))) then
       if AR.Cast(S.SeedofCorruption) then return ""; end
     end
     -- unstable_affliction,if=talent.contagion.enabled&dot.unstable_affliction_1.remains<cast_time&dot.unstable_affliction_2.remains<cast_time&dot.unstable_affliction_3.remains<cast_time&dot.unstable_affliction_4.remains<cast_time&dot.unstable_affliction_5.remains<cast_time

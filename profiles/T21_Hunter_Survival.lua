@@ -159,7 +159,7 @@ local function APL()
       if AR.Cast(S.ExplosiveTrap) then return ""; end
     end
     -- carve,if=(talent.serpent_sting.enabled&dot.serpent_sting.refreshable)|(active_enemies>5)
-    if S.Carve:IsCastableP() and ((S.SerpentSting:IsAvailable() and bool(dot.serpent_sting.refreshable)) or (Cache.EnemiesCount[8] > 5)) then
+    if S.Carve:IsCastableP() and ((S.SerpentSting:IsAvailable() and Target:DebuffRefreshableCP(S.SerpentStingDebuff)) or (Cache.EnemiesCount[8] > 5)) then
       if AR.Cast(S.Carve) then return ""; end
     end
   end
@@ -181,7 +181,7 @@ local function APL()
       if AR.Cast(S.FuryoftheEagle) then return ""; end
     end
     -- lacerate,if=dot.lacerate.refreshable&(focus>((50+35)-((cooldown.flanking_strike.remains%gcd)*(focus.regen*gcd))))
-    if S.Lacerate:IsCastableP() and (bool(dot.lacerate.refreshable) and (Player:Focus() > ((50 + 35) - ((S.FlankingStrike:CooldownRemainsP() / Player:GCD()) * (Player:FocusRegen() * Player:GCD()))))) then
+    if S.Lacerate:IsCastableP() and (Target:DebuffRefreshableCP(S.LacerateDebuff) and (Player:Focus() > ((50 + 35) - ((S.FlankingStrike:CooldownRemainsP() / Player:GCD()) * (Player:FocusRegen() * Player:GCD()))))) then
       if AR.Cast(S.Lacerate) then return ""; end
     end
     -- raptor_strike,if=buff.t21_2p_exposed_flank.up
@@ -261,11 +261,11 @@ local function APL()
       if AR.Cast(S.ExplosiveTrap) then return ""; end
     end
     -- butchery,if=variable.frizzosEquipped&dot.lacerate.refreshable&(focus>((50+40)-((cooldown.flanking_strike.remains%gcd)*(focus.regen*gcd))))
-    if S.Butchery:IsCastableP() and (bool(VarFrizzosequipped) and bool(dot.lacerate.refreshable) and (Player:Focus() > ((50 + 40) - ((S.FlankingStrike:CooldownRemainsP() / Player:GCD()) * (Player:FocusRegen() * Player:GCD()))))) then
+    if S.Butchery:IsCastableP() and (bool(VarFrizzosequipped) and Target:DebuffRefreshableCP(S.LacerateDebuff) and (Player:Focus() > ((50 + 40) - ((S.FlankingStrike:CooldownRemainsP() / Player:GCD()) * (Player:FocusRegen() * Player:GCD()))))) then
       if AR.Cast(S.Butchery) then return ""; end
     end
     -- carve,if=variable.frizzosEquipped&dot.lacerate.refreshable&(focus>((50+40)-((cooldown.flanking_strike.remains%gcd)*(focus.regen*gcd))))
-    if S.Carve:IsCastableP() and (bool(VarFrizzosequipped) and bool(dot.lacerate.refreshable) and (Player:Focus() > ((50 + 40) - ((S.FlankingStrike:CooldownRemainsP() / Player:GCD()) * (Player:FocusRegen() * Player:GCD()))))) then
+    if S.Carve:IsCastableP() and (bool(VarFrizzosequipped) and Target:DebuffRefreshableCP(S.LacerateDebuff) and (Player:Focus() > ((50 + 40) - ((S.FlankingStrike:CooldownRemainsP() / Player:GCD()) * (Player:FocusRegen() * Player:GCD()))))) then
       if AR.Cast(S.Carve) then return ""; end
     end
     -- flanking_strike

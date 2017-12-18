@@ -73,6 +73,7 @@ class Action:
         self.context = action_list.context
         self.show_comments = action_list.show_comments
         self.simc = simc
+        self.operation_simc = None
 
     def split_simc(self):
         """
@@ -117,6 +118,8 @@ class Action:
         Return the condition expression of the action (the thing to test
         before doing the execution).
         """
+        if self.operation() == 'setif':
+            return self.get_expression('condition')
         return self.get_expression('if')
 
     def value_expression(self):
@@ -139,35 +142,63 @@ class Action:
         """
         return self.value_expression().grow()
 
+    def operation(self):
+        """
+        The operation of the action.
+        """
+        if not self.operation_simc:
+            if 'op' in self.properties():
+                self.operation_simc = self.properties()['op']
+            else:
+                self.operation_simc = 'set'
+        return self.operation_simc
+
+    #-- variable,name=vuln_window,
+    # op=setif,
+    # value=cooldown.sidewinders.full_recharge_time,
+    # value_else=debuff.vulnerability.remains,
+    # condition=talent.sidewinders.enabled&cooldown.sidewinders.full_recharge_time<variable.vuln_window
     def print_exec(self):
         """
         Print the execution line of the action.
         """
-        if 'op' in self.properties():
-            operation = self.properties()['op']
-        else:
-            operation = 'set'
-        if operation == 'set':
+        if self.operation() == 'set':
             exec_cast = self.execution().object_().print_cast()
             exec_value = convert_type(self.value_tree(), NUM)
             exec_link = ' = ' if exec_value != '' else ''
             return f'{exec_cast}{exec_link}{exec_value}'
-        elif operation == 'reset':
+        elif self.operation() == 'reset':
             exec_cast = self.execution().object_().print_cast()
             exec_default = self.execution().object_().default
             return f'{exec_cast} = {exec_default}'
-        elif operation == 'max':
+        elif self.operation() == 'max':
             exec_cast = self.execution().object_().print_cast()
             exec_value = convert_type(self.value_tree(), NUM)
             return f'{exec_cast} = math.max({exec_cast}, {exec_value})'
-        elif operation == 'min':
+        elif self.operation() == 'min':
             exec_cast = self.execution().object_().print_cast()
             exec_value = convert_type(self.value_tree(), NUM)
             return f'{exec_cast} = math.min({exec_cast}, {exec_value})'
-        elif operation == 'add':
+        elif self.operation() == 'add':
             exec_cast = self.execution().object_().print_cast()
             exec_value = convert_type(self.value_tree(), NUM)
             return f'{exec_cast} = {exec_cast} + {exec_value}'
+        elif self.operation() == 'setif':
+            exec_cast = self.execution().object_().print_cast()
+            exec_value = convert_type(self.value_tree(), NUM)
+            return f'{exec_cast} = {exec_value}'
+    
+    def print_exec_else(self):
+        """
+        Print the execution line of the action for the else case.
+        """
+        if self.operation() == 'setif':
+            exec_cast = self.execution().object_().print_cast()
+            exec_value = convert_type(
+                self.get_expression('value_else', null_cond='').grow(), NUM)
+            return (f'else\n'
+                    f'  {exec_cast} = {exec_value}\n')
+        return ''
 
     def print_lua(self):
         """
@@ -182,9 +213,11 @@ class Action:
         exec_cond = self.execution().object_().print_conditions()
         cond_link = ' and ' if exec_cond != '' else ''
         if_cond = convert_type(self.condition_tree(), BOOL)
+        exec_else = self.print_exec_else()
         lua_string += ('\n'
                        f'if {exec_cond}{cond_link}({if_cond}) then\n'
                        f'  {exec_cast}\n'
+                       f'{exec_else}'
                        f'end')
         return lua_string
 
