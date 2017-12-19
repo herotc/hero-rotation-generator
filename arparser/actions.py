@@ -10,6 +10,7 @@ from .conditions import ConditionExpression
 from .executions import (Spell, Item, Potion, Variable, CancelBuff,
                          RunActionList, CallActionList)
 from .helpers import indent, convert_type
+from .mage import arcane_burn_phase
 from .constants import (SPELL, ITEM, POTION, VARIABLE, CANCEL_BUFF,
                         USE_ITEM, RUN_ACTION_LIST, CALL_ACTION_LIST,
                         ITEM_ACTIONS, BOOL, NUM)
@@ -153,11 +154,6 @@ class Action:
                 self.operation_simc = 'set'
         return self.operation_simc
 
-    #-- variable,name=vuln_window,
-    # op=setif,
-    # value=cooldown.sidewinders.full_recharge_time,
-    # value_else=debuff.vulnerability.remains,
-    # condition=talent.sidewinders.enabled&cooldown.sidewinders.full_recharge_time<variable.vuln_window
     def print_exec(self):
         """
         Print the execution line of the action.
@@ -187,7 +183,7 @@ class Action:
             exec_cast = self.execution().object_().print_cast()
             exec_value = convert_type(self.value_tree(), NUM)
             return f'{exec_cast} = {exec_value}'
-    
+
     def print_exec_else(self):
         """
         Print the execution line of the action for the else case.
@@ -232,6 +228,7 @@ class Execution:
         self.action = action
         self.execution = execution
 
+    @arcane_burn_phase
     def switch_type(self):
         """
         Return the couple type, object of the execution depending on its value.

@@ -270,7 +270,7 @@ local function APL()
       if AR.Cast(S.PoolResource) then return ""; end
     end
     -- thrash_cat,if=refreshable&(spell_targets.thrash_cat>2)
-    if S.ThrashCat:IsCastableP() and (bool(refreshable) and (Cache.EnemiesCount[8] > 2)) then
+    if S.ThrashCat:IsCastableP() and (Target:DebuffRefreshableCP(S.ThrashCat) and (Cache.EnemiesCount[8] > 2)) then
       if AR.Cast(S.ThrashCat) then return ""; end
     end
     -- pool_resource,for_next=1
@@ -310,11 +310,11 @@ local function APL()
       if AR.Cast(S.PoolResource) then return ""; end
     end
     -- thrash_cat,if=refreshable&(variable.use_thrash=2|spell_targets.thrash_cat>1)
-    if S.ThrashCat:IsCastableP() and (bool(refreshable) and (VarUseThrash == 2 or Cache.EnemiesCount[8] > 1)) then
+    if S.ThrashCat:IsCastableP() and (Target:DebuffRefreshableCP(S.ThrashCat) and (VarUseThrash == 2 or Cache.EnemiesCount[8] > 1)) then
       if AR.Cast(S.ThrashCat) then return ""; end
     end
     -- thrash_cat,if=refreshable&variable.use_thrash=1&buff.clearcasting.react
-    if S.ThrashCat:IsCastableP() and (bool(refreshable) and VarUseThrash == 1 and bool(Player:BuffStackP(S.ClearcastingBuff))) then
+    if S.ThrashCat:IsCastableP() and (Target:DebuffRefreshableCP(S.ThrashCat) and VarUseThrash == 1 and bool(Player:BuffStackP(S.ClearcastingBuff))) then
       if AR.Cast(S.ThrashCat) then return ""; end
     end
     -- pool_resource,for_next=1

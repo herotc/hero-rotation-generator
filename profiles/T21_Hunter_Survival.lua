@@ -237,7 +237,7 @@ local function APL()
       if AR.Cast(S.DragonsfireGrenade) then return ""; end
     end
     -- lacerate,if=refreshable|!ticking
-    if S.Lacerate:IsCastableP() and (bool(refreshable) or not Target:DebuffP(S.Lacerate)) then
+    if S.Lacerate:IsCastableP() and (Target:DebuffRefreshableCP(S.Lacerate) or not Target:DebuffP(S.Lacerate)) then
       if AR.Cast(S.Lacerate) then return ""; end
     end
     -- raptor_strike,if=buff.t21_2p_exposed_flank.up&!variable.mokTalented
@@ -249,11 +249,11 @@ local function APL()
       if AR.Cast(S.RaptorStrike) then return ""; end
     end
     -- steel_trap,if=refreshable|!ticking
-    if S.SteelTrap:IsCastableP() and (bool(refreshable) or not Target:DebuffP(S.SteelTrap)) then
+    if S.SteelTrap:IsCastableP() and (Target:DebuffRefreshableCP(S.SteelTrap) or not Target:DebuffP(S.SteelTrap)) then
       if AR.Cast(S.SteelTrap) then return ""; end
     end
     -- caltrops,if=refreshable|!ticking
-    if S.Caltrops:IsCastableP() and (bool(refreshable) or not Target:DebuffP(S.Caltrops)) then
+    if S.Caltrops:IsCastableP() and (Target:DebuffRefreshableCP(S.Caltrops) or not Target:DebuffP(S.Caltrops)) then
       if AR.Cast(S.Caltrops) then return ""; end
     end
     -- explosive_trap

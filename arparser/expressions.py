@@ -6,7 +6,7 @@ Define the objects representing simc expressions.
 """
 
 from .lua import LuaExpression, BuildExpression, Method, Literal
-from .executions import Spell, Item, Variable
+from .executions import Spell, Item, Potion, Variable
 from .resources import (Rune, AstralPower, HolyPower, Insanity, Pain, Focus,
                         Maelstrom, Energy, ComboPoints, SoulShard,
                         ArcaneCharges, Chi, RunicPower, Fury, Rage, Mana)
@@ -16,9 +16,10 @@ from .demonhunter import (havoc_extended_by_demonic_buff,
 from .hunter import (marksmanship_lowest_vuln_within,
                      marksmanship_debuff_ready,
                      marksmanship_debuff_remains)
+from .mage import arcane_burn_expressions, arcane_max_stack
 from .warlock import affliction_active_uas_stack
 from .constants import (SPELL, BUFF, DEBUFF, BOOL, PET, BLOODLUST, RANGE,
-                        FALSE, MAX_INT)
+                        FALSE, MAX_INT, POTION)
 
 
 class ActionExpression(BuildExpression):
@@ -46,6 +47,8 @@ class ActionExpression(BuildExpression):
         """
         if self.to_self:
             return self.condition.parent_action.execution().object_()
+        if self.condition.condition_list[1] == POTION:
+            return Potion(self.condition.parent_action)
         return Spell(self.condition.parent_action,
                      self.condition.condition_list[1])
 
@@ -178,6 +181,13 @@ class ActionExpression(BuildExpression):
         """
         self.object_ = self.condition.target_unit
         self.method = Method('TimeToDie')
+    
+    def usable(self):
+        """
+        Return the arguments for the expression action.spell.usable.
+        """
+        self.method = self.object_.condition_method
+        self.args = self.object_.condition_args
 
     def ready(self):
         """
@@ -235,6 +245,13 @@ class ActionExpression(BuildExpression):
         self.aura_model.ticking()
         self.from_aura()
 
+    def refreshable(self):
+        """
+        Return the arguments for the expression action.spell.duration.
+        """
+        self.aura_model.refreshable()
+        self.from_aura()
+
 
 class Expression:
     """
@@ -261,6 +278,7 @@ class Expression:
         """
         return self.simc.split('.')
 
+    @arcane_burn_expressions
     def expression(self):
         """
         Return the expression of the condition.
@@ -539,6 +557,9 @@ class Expires:
             spell_simc = condition.condition_list[1]
             if spell_simc == BLOODLUST:
                 self.spell = Literal(BLOODLUST)
+            elif spell_simc == POTION:
+                self.spell = Spell(condition.parent_action, 
+                                   condition.player_unit.potion(), spell_type)
             else:
                 self.spell = Spell(condition.parent_action, spell_simc,
                                    spell_type)
@@ -925,6 +946,13 @@ class Buff(BuildExpression, Aura):
     def extended_by_demonic(self):
         """
         Return the arguments for the expression buff.spell.extended_by_demonic.
+        """
+        pass
+    
+    @arcane_max_stack
+    def max_stack(self):
+        """
+        Return the arguments for the expression buff.spell.max_stack.
         """
         pass
 

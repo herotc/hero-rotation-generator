@@ -8,8 +8,8 @@ Define the objects representing simc executions.
 from .lua import LuaNamed, LuaTyped, LuaCastable, LuaExpression, Literal, Method
 from .demonhunter import havoc_melee_condition
 from .druid import guardian_swipe_thrash_value
-from .constants import (IGNORED_EXECUTIONS, SPELL, BUFF, DEBUFF,
-                        USABLE, INTERRUPT, CD, GCDAOGCD, OGCDAOGCD, NUM, FALSE)
+from .constants import (IGNORED_EXECUTIONS, SPELL, BUFF, DEBUFF, USABLE,
+                        INTERRUPT, CD, GCDAOGCD, OGCDAOGCD, NUM, BOOL, FALSE)
 
 
 class Item(LuaNamed, LuaCastable):
@@ -21,7 +21,7 @@ class Item(LuaNamed, LuaCastable):
         super().__init__(simc)
         # Castable
         LuaCastable.__init__(self)
-        self.condition_method = Method('IsReady')
+        self.condition_method = Method('IsReady', type_=BOOL)
         self.cast_method = Method('AR.CastSuggested')
         # Item
         self.action = action
@@ -104,11 +104,11 @@ class Variable(LuaNamed, LuaTyped, LuaCastable):
         LuaCastable.__init__(self)
         self.action = action
         self.type_ = NUM
-        if 'default' in action.properties():
-            self.default = action.properties()['default']
-        else:
+        try:
+            self.default = action.properties().get('default', '0')
+            action.context.add_variable(self)
+        except AttributeError:
             self.default = '0'
-        self.action.context.add_variable(self)
 
     def print_conditions(self):
         return ''
@@ -170,9 +170,9 @@ class Spell(LuaNamed, LuaCastable):
         # Castable
         LuaCastable.__init__(self)
         if action.player.spell_property(self, USABLE):
-            self.condition_method = Method('IsUsable')
+            self.condition_method = Method('IsUsable', type_=BOOL)
         else:
-            self.condition_method = Method('IsCastableP')
+            self.condition_method = Method('IsCastableP', type_=BOOL)
 
         if action.player.spell_property(self, CD):
             self.additional_conditions.append(

@@ -147,7 +147,7 @@ local function APL()
   end
   local function Build()
     -- ghostly_strike,if=combo_points.deficit>=1+buff.broadsides.up&refreshable
-    if S.GhostlyStrike:IsCastableP() and (Player:ComboPointsDeficit() >= 1 + num(Player:BuffP(S.BroadsidesBuff)) and bool(refreshable)) then
+    if S.GhostlyStrike:IsCastableP() and (Player:ComboPointsDeficit() >= 1 + num(Player:BuffP(S.BroadsidesBuff)) and Target:DebuffRefreshableCP(S.GhostlyStrike)) then
       if AR.Cast(S.GhostlyStrike) then return ""; end
     end
     -- pistol_shot,if=combo_points.deficit>=1+buff.broadsides.up+talent.quick_draw.enabled&buff.opportunity.up&(energy.time_to_max>2-talent.quick_draw.enabled|(buff.greenskins_waterlogged_wristcuffs.up&(buff.blunderbuss.up|buff.greenskins_waterlogged_wristcuffs.remains<2)))

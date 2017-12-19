@@ -618,15 +618,15 @@ local function APL()
       if AR.Cast(S.LifeTap) then return ""; end
     end
     -- agony,if=refreshable&time_to_die>=remains
-    if S.Agony:IsCastableP() and (bool(refreshable) and Target:TimeToDie() >= Target:DebuffRemainsP(S.Agony)) then
+    if S.Agony:IsCastableP() and (Target:DebuffRefreshableCP(S.Agony) and Target:TimeToDie() >= Target:DebuffRemainsP(S.Agony)) then
       if AR.Cast(S.Agony) then return ""; end
     end
     -- siphon_life,if=refreshable&time_to_die>=remains
-    if S.SiphonLife:IsCastableP() and (bool(refreshable) and Target:TimeToDie() >= Target:DebuffRemainsP(S.SiphonLife)) then
+    if S.SiphonLife:IsCastableP() and (Target:DebuffRefreshableCP(S.SiphonLife) and Target:TimeToDie() >= Target:DebuffRemainsP(S.SiphonLife)) then
       if AR.Cast(S.SiphonLife) then return ""; end
     end
     -- corruption,if=refreshable&time_to_die>=remains
-    if S.Corruption:IsCastableP() and (bool(refreshable) and Target:TimeToDie() >= Target:DebuffRemainsP(S.Corruption)) then
+    if S.Corruption:IsCastableP() and (Target:DebuffRefreshableCP(S.Corruption) and Target:TimeToDie() >= Target:DebuffRemainsP(S.Corruption)) then
       if AR.Cast(S.Corruption) then return ""; end
     end
     -- agony,cycle_targets=1,target_if=sim.target!=target&time_to_die>tick_time*3&!buff.deadwind_harvester.remains&refreshable

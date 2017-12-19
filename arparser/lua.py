@@ -51,25 +51,36 @@ class LuaCastable:
     The class for castable elements: items and spells.
     """
 
-    def __init__(self):
+    def __init__(self, cast_method=None, cast_args=None, cast_template=None):
         self.condition_method = None
         self.condition_args = []
         self.additional_conditions = []
-        self.cast_method = Method('AR.Cast')
-        self.cast_args = [self]
-        self.cast_template = 'if {} then return ""; end'
+        if cast_method is None:
+            self.cast_method = Method('AR.Cast')
+        else:
+            self.cast_method = cast_method
+        if cast_args is None:
+            self.cast_args = [self]
+        else:
+            self.cast_args = cast_args
+        if cast_template is None:
+            self.cast_template = 'if {} then return ""; end'
+        else:
+            self.cast_template = cast_template
 
     def main_condition(self):
         """
         Return the LuaExpression of the default condition.
         """
-        return LuaExpression(self, self.condition_method, self.condition_args)
+        if self.condition_method is None:
+            return []
+        return [LuaExpression(self, self.condition_method, self.condition_args)]
 
     def conditions(self):
         """
         List of conditions to check before executing the action.
         """
-        return [self.main_condition()] + self.additional_conditions
+        return self.main_condition() + self.additional_conditions
 
     def print_conditions(self):
         """

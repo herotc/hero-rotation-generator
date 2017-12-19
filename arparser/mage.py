@@ -5,6 +5,8 @@ Mage specific constants and functions.
 @author: skasch
 """
 
+from .lua import LuaCastable, LuaExpression, Method
+from .executions import Variable
 from .constants import COMMON, SPELL, BUFF, DEBUFF, PET, RANGE
 
 MAGE = 'mage'
@@ -40,6 +42,8 @@ SPELL_INFO = {
             'invisibility':                 {SPELL:     66},
             'counterspell':                 {SPELL:     2139},
             'blink':                        {SPELL:     1953},
+            # Items
+            'deadly_grace':                 {BUFF:      188027},
             # Legendaries
             'rhonins_assaulting_armwraps':  {BUFF:      208081},
             'kaelthas_ultimate_ability':    {BUFF:      209455},
@@ -190,6 +194,8 @@ CLASS_FUNCTIONS = {
         COMMON: [
         ],
         ARCANE: [
+            'MaxStack',
+            'BurnPhase',
         ],
         FIRE: [
         ],
@@ -197,3 +203,92 @@ CLASS_FUNCTIONS = {
         ],
     },
 }
+
+def arcane_burn_phase_variables(fun):
+    """
+    Inject burn phase specific variables in the context.
+    """
+
+    def set_spec(self, spec):
+        """
+        Sets the spec of the player.
+        """
+        fun(self, spec)
+        if self.class_.simc == MAGE and spec == ARCANE:
+            self.apl.context.add_variable(Variable(None, 'burn_phase'))
+            self.apl.context.add_variable(Variable(None, 'burn_phase_start'))
+            self.apl.context.add_variable(Variable(None, 'burn_phase_duration'))
+
+    return set_spec
+
+def arcane_burn_phase(fun):
+    """
+    Handle start_burn_phase and stop_burn_phase executions.
+    """
+
+    def switch_type(self):
+        """
+        Return the couple type, object of the execution depending on its value.
+        """
+        if self.execution == 'start_burn_phase':
+            type_, object_ = 'start_burn_phase', LuaCastable(
+                cast_method=Method('StartBurnPhase'),
+                cast_args=[],
+                cast_template='{}'
+            )
+        elif self.execution == 'stop_burn_phase':
+            type_, object_ = 'stop_burn_phase', LuaCastable(
+                cast_method=Method('StopBurnPhase'),
+                cast_args=[],
+                cast_template='{}'
+            )
+        else:
+            type_, object_ = fun(self)
+        return type_, object_
+
+    return switch_type
+
+
+def arcane_burn_expressions(fun):
+    """
+    Handle burn phase specific variables.
+    """
+
+    def expression(self):
+        """
+        Return the expression of the condition.
+        """
+        if self.condition_list[0] in ['burn_phase', 'burn_phase_start',
+                                      'burn_phase_duration']:
+            return Variable(self.parent_action, self.condition_list[0])
+        else:
+            return fun(self)
+
+    return expression
+
+
+def arcane_max_stack(fun):
+    """
+    Handle max_stack expressions for Arcane.
+    """
+
+    def max_stack(self):
+        """
+        Return the arguments for the expression buff.spell.max_stack.
+        """
+        if self.condition.condition_list[1] == 'arcane_charge':
+            self.object_ = self.condition.player_unit
+            self.method = Method('ArcaneChargesMax')
+            self.args = []
+        elif self.condition.condition_list[1] == 'presence_of_mind':
+            self.object_ = None
+            self.method = Method('PresenceOfMindMax')
+            self.args = []
+        elif self.condition.condition_list[1] == 'arcane_missiles':
+            self.object_ = None
+            self.method = Method('ArcaneMissilesProcMax')
+            self.args = []
+        else:
+            fun(self)
+
+    return max_stack

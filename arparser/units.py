@@ -9,6 +9,7 @@ import os
 from functools import reduce
 
 from .lua import LuaNamed, Literal
+from .mage import arcane_burn_phase_variables
 from .constants import RANGE
 from .database import (CLASS_SPECS, RACES, SPELL_INFO, COMMON, DEFAULT_POTION,
                        CLASS_FUNCTIONS)
@@ -52,6 +53,8 @@ class Player(Unit, LuaNamed):
         """
         return self.spec.potion()
 
+
+    @arcane_burn_phase_variables
     def set_spec(self, spec):
         """
         Sets the spec of the player.
