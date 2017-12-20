@@ -36,7 +36,9 @@ class ActionExpression(BuildExpression):
         else:
             call = condition.condition_list[2]
         self.object_ = self.action_object()
+        self.method = None
         self.args = []
+        self.range_ = None
         self.aura_model = self.build_aura()
         super().__init__(call)
 
@@ -150,14 +152,10 @@ class ActionExpression(BuildExpression):
         """
         Return the arguments for the expression action.spell.spell_targets.
         """
-        self.object_ = None
-        self.method = Method('Cache.EnemiesCount')
-        self.args = [
-            Literal(self.condition.player_unit.spell_property(
-                self.action_object(), RANGE,
-                self.condition.player_unit.spec_range()))
-        ]
-        self.array = True
+        self.range_ = self.condition.player_unit.spell_property(
+            self.action_object(), RANGE,
+            self.condition.player_unit.spec_range())
+        self.model = 'range'
 
     def cast_regen(self):
         """
@@ -181,7 +179,7 @@ class ActionExpression(BuildExpression):
         """
         self.object_ = self.condition.target_unit
         self.method = Method('TimeToDie')
-    
+
     def usable(self):
         """
         Return the arguments for the expression action.spell.usable.
@@ -558,7 +556,7 @@ class Expires:
             if spell_simc == BLOODLUST:
                 self.spell = Literal(BLOODLUST)
             elif spell_simc == POTION:
-                self.spell = Spell(condition.parent_action, 
+                self.spell = Spell(condition.parent_action,
                                    condition.player_unit.potion(), spell_type)
             else:
                 self.spell = Spell(condition.parent_action, spell_simc,
@@ -630,7 +628,7 @@ class Aura(Expires):
             self.args = []
         else:
             self.method = Method(f'{self.simc.lua_name()}StackP')
-    
+
     def refreshable(self):
         """
         Return the arguments for the expression {aura}.spell.refreshable.
@@ -675,7 +673,8 @@ class SetBonus(Literal):
     def __init__(self, condition):
         self.condition = condition
         self.simc = self.lua_tier_name()
-        super().__init__(type_=BOOL)
+        self.type_ = BOOL
+        super().__init__()
 
     def lua_tier_name(self):
         """
@@ -696,6 +695,7 @@ class Equipped(BuildExpression):
         call = 'value'
         self.object_ = Item(condition.parent_action,
                             condition.condition_list[1])
+        self.method = None
         self.args = []
         super().__init__(call)
 
@@ -715,6 +715,7 @@ class PrevGCD(BuildExpression):
         self.condition = condition
         call = 'value'
         self.object_ = condition.caster(condition.condition_list[2])
+        self.method = None
         self.args = [Literal(condition.condition_list[1]),
                      Spell(condition.parent_action,
                            condition.condition_list[2])]
@@ -736,6 +737,7 @@ class PrevOffGCD(BuildExpression):
         self.condition = condition
         call = 'value'
         self.object_ = condition.caster(condition.condition_list[1])
+        self.method = None
         self.args = [Literal(1), Spell(condition.parent_action,
                                        condition.condition_list[1])]
         super().__init__(call)
@@ -760,6 +762,7 @@ class GCD(BuildExpression):
         else:
             call = 'value'
         self.object_ = condition.player_unit
+        self.method = None
         self.args = []
         super().__init__(call)
 
@@ -794,6 +797,7 @@ class Time(BuildExpression):
         else:
             call = 'value'
         self.object_ = None
+        self.method = None
         self.args = []
         super().__init__(call)
 
@@ -814,6 +818,7 @@ class Artifact(BuildExpression):
         call = condition.condition_list[2]
         self.object_ = Spell(condition.parent_action,
                              condition.condition_list[1])
+        self.method = None
         self.args = []
         super().__init__(call)
 
@@ -840,6 +845,7 @@ class Talent(BuildExpression):
         call = condition.condition_list[2]
         self.object_ = Spell(condition.parent_action,
                              condition.condition_list[1])
+        self.method = None
         self.args = []
         super().__init__(call)
 
@@ -864,18 +870,16 @@ class Race(BuildExpression):
         super().__init__('')
 
 
-class SpellTargets(LuaExpression):
+class SpellTargets(BuildExpression):
     """
     Represent the expression for a spell_targets. condition.
     """
 
     def __init__(self, condition):
         self.condition = condition
-        object_ = None
-        method = Method('Cache.EnemiesCount')
-        args = [Literal(condition.player_unit.spell_property(
-            condition.condition_list[1], RANGE, 5))]
-        super().__init__(object_, method, args, array=True)
+        self.range_ = condition.player_unit.spell_property(
+            condition.condition_list[1], RANGE, 5)
+        super().__init__(None, model='range')
 
 
 class Debuff(BuildExpression, Aura):
@@ -911,6 +915,7 @@ class Consumable(BuildExpression):
 
     def __init__(self, condition):
         self.object_ = condition.player_unit
+        self.method = None
         self.args = [Spell(condition.parent_action,
                            condition.condition_list[1],
                            type_=BUFF)]
@@ -948,7 +953,7 @@ class Buff(BuildExpression, Aura):
         Return the arguments for the expression buff.spell.extended_by_demonic.
         """
         pass
-    
+
     @arcane_max_stack
     def max_stack(self):
         """
@@ -1064,6 +1069,7 @@ class TargetExpression(BuildExpression):
         self.condition = condition
         call = condition.condition_list[1]
         self.object_ = self.condition.target_unit
+        self.method = None
         self.args = []
         super().__init__(call)
 

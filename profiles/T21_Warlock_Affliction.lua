@@ -91,6 +91,13 @@ local Settings = {
 
 -- Variables
 
+local EnemyRanges = {30, 40}
+local function UpdateRanges()
+  for _, i in ipairs(EnemyRanges) do
+    AC.GetEnemies(i);
+  end
+end
+
 local function num(val)
   if val then return 1 else return 0 end
 end
@@ -138,6 +145,7 @@ end
 
 --- ======= ACTION LISTS =======
 local function APL()
+  UpdateRanges()
   local function Precombat()
     -- flask
     -- food

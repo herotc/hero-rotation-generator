@@ -196,6 +196,7 @@ class APL:
         return (f'{context}'
                 f'--- ======= ACTION LISTS =======\n'
                 f'local function {function_name}()\n'
+                f'{indent("UpdateRanges()")}\n'
                 f'{action_lists}\n'
                 f'{precombat_call}\n'
                 f'{main_actions}\n'

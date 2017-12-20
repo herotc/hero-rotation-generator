@@ -51,6 +51,7 @@ class Context:
         self.spells = {}
         self.items = {}
         self.variables = {}
+        self.ranges = []
         self.custom_code = [self.NUM_FUNCTION, self.BOOL_FUNCTION]
         self.player = None
 
@@ -75,6 +76,13 @@ class Context:
         """
         if variable.simc not in self.variables:
             self.variables[variable.simc] = variable
+
+    def add_range(self, range_):
+        """
+        Add an range to the context.
+        """
+        if range_ not in self.ranges:
+            self.ranges.append(range_)
 
     def set_player(self, player):
         """
@@ -144,6 +152,18 @@ class Context:
         """
         return '\n'.join(self.custom_code)
 
+    def print_ranges(self):
+        """
+        Print the custom code.
+        """
+        lua_ranges = ", ".join(str(r) for r in sorted(self.ranges))
+        return (f'local EnemyRanges = {{{lua_ranges}}}\n'
+                f'local function UpdateRanges()\n'
+                f'  for _, i in ipairs(EnemyRanges) do\n'
+                f'    AC.GetEnemies(i);\n'
+                f'  end\n'
+                f'end\n')
+
     def print_settings(self):
         """
         Print additional settings.
@@ -174,4 +194,5 @@ class Context:
             f'{self.print_items()}\n'
             f'{self.print_settings()}\n'
             f'{self.print_variables()}\n'
+            f'{self.print_ranges()}\n'
             f'{self.print_custom_code()}{newline}')

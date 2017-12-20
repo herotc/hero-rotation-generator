@@ -102,55 +102,83 @@ class LuaCastable:
         return self.cast_template.format(self.cast().print_lua())
 
 
-class LuaExpression(LuaTyped):
+class LuaTemplated(LuaTyped):
     """
     Abstract class representing a generic lua expression in the form:
     object:method(args)
     """
 
-    def __init__(self, object_, method, args, type_=None, array=False):
-        self.array = array
-        self.object_ = object_
-        self.method = method
-        self.args = args
-        if type_:
-            super().__init__(type_)
-        elif method.type_:
-            super().__init__(method.type_)
-        else:
-            super().__init__()
-
-    def template(self):
-        """
-        The template for the expression, depending on if it's an array or not.
-        """
-        if self.array:
-            return '{}{}[{}]'
-        return '{}{}({})'
+    def __init__(self, **kwargs):
+        self.lua_keys = []
+        self.template = ''
+        self.attributes = kwargs
+        try:
+            assert self.type_
+            super().__init__(self.type_)
+        except (AssertionError, AttributeError):
+            try:
+                assert self.method.type_
+                super().__init__(self.method.type_)
+            except (AssertionError, AttributeError):
+                super().__init__()
 
     def print_lua(self):
         """
-        Print the lua code for the expression.
+        Print the lua code for the composite object.
         """
-        object_caller = f'{self.object_.print_lua()}:' if self.object_ else ''
-        return self.template().format(
-            object_caller,
-            self.method.print_lua(),
-            ', '.join(arg.print_lua() for arg in self.args)
-        )
+        return self.template.format(**self.attributes)
 
 
-class BuildExpression(LuaExpression):
+class LuaExpression(LuaTemplated):
     """
-    Build an expression from a call.
+    Abstract class representing a generic lua expression in the form:
+    object:method(args)
     """
 
-    def __init__(self, call, array=False):
-        call = 'ready' if call == 'up' else call
-        self.array = array
-        if call:
-            getattr(self, call)()
-        super().__init__(self.object_, self.method, self.args, array=self.array)
+    def __init__(self, object_, method, args, type_=None):
+        self.type_ = type_
+        lua_object = object_.print_lua() if object_ else ''
+        link = ':' if object_ else ''
+        lua_args = ', '.join(arg.print_lua() for arg in args)
+        LuaTemplated.__init__(self,
+                              object_=lua_object,
+                              link=link,
+                              method=method.print_lua(),
+                              args=lua_args)
+        self.template = '{object_}{link}{method}({args})'
+
+
+class LuaArray(LuaTemplated):
+    """
+    Abstract class representing a lua array call of the form: object:array[idx]
+    """
+
+    def __init__(self, object_, method, index, type_=None):
+        self.type_ = type_
+        lua_object = object_.print_lua() if object_ else ''
+        link = ':' if object_ else ''
+        LuaTemplated.__init__(self,
+                              object_=lua_object,
+                              link=link,
+                              method=method.print_lua(),
+                              index=str(index))
+        self.template = '{object_}{link}{method}[{index}]'
+
+
+class LuaRange(LuaArray):
+    """
+    Abstract class representing a lua call for a range check:
+    Cache.EnemiesCount[idx]
+    """
+
+    def __init__(self, range_, type_=None):
+        self.type_ = type_
+        self.condition.parent_action.context.add_range(range_)
+        LuaArray.__init__(self,
+                          object_=None,
+                          method=Method('Cache.EnemiesCount'),
+                          index=range_,
+                          type_=None)
 
 
 class LuaComparison(LuaTyped):
@@ -189,29 +217,49 @@ class Method:
         return self.name
 
 
-class Literal(LuaTyped, LuaNamed):
+class Literal(LuaTemplated, LuaNamed):
     """
     Represent a literal expression (a value) as a string.
     """
 
-    def __init__(self, simc=None, type_=None, convert=False, quoted=False):
+    def __init__(self, simc=None, convert=False, quoted=False):
         if simc is not None:
             self.simc = simc
         self.convert = convert
         self.quoted = quoted
-        if not type_:
-            type_ = BOOL if self.simc in (TRUE, FALSE) else NUM
-        super().__init__(type_)
-
-    def print_lua(self):
-        """
-        Print the literal value.
-        """
-        result = ''
-        if self.convert:
-            result = self.lua_name()
-        else:
-            result = str(self.simc)
+        if not (hasattr(self, 'type_') and self.type_):
+            self.type_ = BOOL if self.simc in (TRUE, FALSE) else NUM
+        LuaTemplated.__init__(self, value=self.get_value())
         if self.quoted:
-            result = f'"{result}"'
-        return result
+            self.template = '"{value}"'
+        else:
+            self.template = '{value}'
+
+    def get_value(self):
+        """
+        Return the lua value for the literal.
+        """
+        if self.convert:
+            return self.lua_name()
+        else:
+            return str(self.simc)
+
+
+class BuildExpression(LuaExpression, LuaRange, LuaArray, Literal):
+    """
+    Build an expression from a call.
+    """
+
+    def __init__(self, call, model='expression'):
+        self.model = model
+        call = 'ready' if call == 'up' else call
+        if call:
+            getattr(self, call)()
+        if self.model == 'array':
+            LuaArray.__init__(self, self.object_, self.method, self.index)
+        elif self.model == 'range':
+            LuaRange.__init__(self, self.range_)
+        elif self.model == 'expression':
+            LuaExpression.__init__(self, self.object_, self.method, self.args)
+        elif self.model == 'literal':
+            Literal.__init__(self, self.simc, self.convert, self.quoted)
