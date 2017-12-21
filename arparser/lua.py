@@ -173,7 +173,10 @@ class LuaRange(LuaArray):
 
     def __init__(self, range_, type_=None):
         self.type_ = type_
-        self.condition.parent_action.context.add_range(range_)
+        try:
+            self.condition.parent_action.context.add_range(range_)
+        except AttributeError:
+            pass
         LuaArray.__init__(self,
                           object_=None,
                           method=Method('Cache.EnemiesCount'),
@@ -224,7 +227,7 @@ class Literal(LuaTemplated, LuaNamed):
 
     def __init__(self, simc=None, convert=False, quoted=False):
         if simc is not None:
-            self.simc = simc
+            LuaNamed.__init__(simc)
         self.convert = convert
         self.quoted = quoted
         if not (hasattr(self, 'type_') and self.type_):
@@ -241,8 +244,7 @@ class Literal(LuaTemplated, LuaNamed):
         """
         if self.convert:
             return self.lua_name()
-        else:
-            return str(self.simc)
+        return str(self.simc)
 
 
 class BuildExpression(LuaExpression, LuaRange, LuaArray, Literal):
@@ -255,11 +257,35 @@ class BuildExpression(LuaExpression, LuaRange, LuaArray, Literal):
         call = 'ready' if call == 'up' else call
         if call:
             getattr(self, call)()
+        self.switch_model()
+
+    def switch_model(self):
+        """
+        Call the right builder depending on the model.
+        """
         if self.model == 'array':
-            LuaArray.__init__(self, self.object_, self.method, self.index)
+            self.try_builder(LuaArray, ['object_', 'method', 'index'])
         elif self.model == 'range':
-            LuaRange.__init__(self, self.range_)
+            self.try_builder(LuaRange, ['range_'])
         elif self.model == 'expression':
-            LuaExpression.__init__(self, self.object_, self.method, self.args)
+            self.try_builder(LuaExpression, ['object_', 'method', 'args'])
         elif self.model == 'literal':
-            Literal.__init__(self, self.simc, self.convert, self.quoted)
+            convert = self.convert if hasattr(self, 'convert') else False
+            quoted = self.quoted if hasattr(self, 'quoted') else False
+            self.try_builder(Literal, ['simc'], convert=convert, quoted=quoted)
+        else:
+            raise AttributeError(f'The model {self.model} is invalid.')
+
+    def try_builder(self, model, attributes, **kwargs):
+        """
+        Try to build the model.
+        """
+        try:
+            args = [getattr(self, attribute) for attribute in attributes]
+            model.__init__(self, *args, **kwargs)
+        except AttributeError:
+            missing_attr = [not hasattr(self, attribute)
+                            for attribute in attributes]
+            error_msg = (f'The {model.__name__} model did not have the '
+                         f'following attributes: {", ".join(missing_attr)}')
+            raise NotImplementedError(error_msg)

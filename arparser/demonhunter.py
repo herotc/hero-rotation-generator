@@ -146,7 +146,7 @@ def havoc_extended_by_demonic_buff(fun):
             self.args = []
         else:
             fun(self)
-    
+
     return extended_by_demonic
 
 
@@ -166,5 +166,5 @@ def havoc_metamorphosis_cooldown(fun):
             self.args = []
         else:
             fun(self)
-    
+
     return adjusted_remains

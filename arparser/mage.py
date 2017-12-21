@@ -5,7 +5,7 @@ Mage specific constants and functions.
 @author: skasch
 """
 
-from .lua import LuaCastable, LuaExpression, Method
+from .lua import LuaCastable, Method
 from .executions import Variable
 from .constants import COMMON, SPELL, BUFF, DEBUFF, PET, RANGE
 
@@ -261,8 +261,7 @@ def arcane_burn_expressions(fun):
         if self.condition_list[0] in ['burn_phase', 'burn_phase_start',
                                       'burn_phase_duration']:
             return Variable(self.parent_action, self.condition_list[0])
-        else:
-            return fun(self)
+        return fun(self)
 
     return expression
 
