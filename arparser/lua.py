@@ -176,7 +176,7 @@ class LuaRange(LuaArray):
         try:
             self.condition.parent_action.context.add_range(range_)
         except AttributeError:
-            pass
+            print(f'Warning: failed to add range {range_} to context.')
         LuaArray.__init__(self,
                           object_=None,
                           method=Method('Cache.EnemiesCount'),
@@ -227,7 +227,7 @@ class Literal(LuaTemplated, LuaNamed):
 
     def __init__(self, simc=None, convert=False, quoted=False):
         if simc is not None:
-            LuaNamed.__init__(simc)
+            LuaNamed.__init__(self, simc)
         self.convert = convert
         self.quoted = quoted
         if not (hasattr(self, 'type_') and self.type_):
@@ -288,4 +288,4 @@ class BuildExpression(LuaExpression, LuaRange, LuaArray, Literal):
                             for attribute in attributes]
             error_msg = (f'The {model.__name__} model did not have the '
                          f'following attributes: {", ".join(missing_attr)}')
-            raise NotImplementedError(error_msg)
+            raise AttributeError(error_msg)
