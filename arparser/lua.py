@@ -36,8 +36,11 @@ class LuaTyped:
     An abstract class for elements who have a lua type.
     """
 
-    def __init__(self, type_=NUM):
-        self.type_ = type_
+    def __init__(self, type_=None):
+        if type_ is None:
+            self.type_ = NUM
+        else:
+            self.type_ = type_
 
     def lua_type(self):
         """
@@ -113,14 +116,9 @@ class LuaTemplated(LuaTyped):
         self.template = ''
         self.attributes = kwargs
         try:
-            assert self.type_
             super().__init__(self.type_)
-        except (AssertionError, AttributeError):
-            try:
-                assert self.method.type_
-                super().__init__(self.method.type_)
-            except (AssertionError, AttributeError):
-                super().__init__()
+        except AssertionError:
+            super().__init__()
 
     def print_lua(self):
         """
@@ -136,7 +134,13 @@ class LuaExpression(LuaTemplated):
     """
 
     def __init__(self, object_, method, args, type_=None):
-        self.type_ = type_
+        if type_ is not None:
+            self.type_ = type_
+        else:
+            try:
+                self.type_ = method.type_
+            except AttributeError:
+                self.type_ = None
         lua_object = object_.print_lua() if object_ else ''
         link = ':' if object_ else ''
         lua_args = ', '.join(arg.print_lua() for arg in args)
@@ -154,7 +158,13 @@ class LuaArray(LuaTemplated):
     """
 
     def __init__(self, object_, method, index, type_=None):
-        self.type_ = type_
+        if type_ is not None:
+            self.type_ = type_
+        else:
+            try:
+                self.type_ = method.type_
+            except AttributeError:
+                self.type_ = None
         lua_object = object_.print_lua() if object_ else ''
         link = ':' if object_ else ''
         LuaTemplated.__init__(self,
@@ -171,17 +181,13 @@ class LuaRange(LuaArray):
     Cache.EnemiesCount[idx]
     """
 
-    def __init__(self, range_, type_=None):
-        self.type_ = type_
-        try:
-            self.condition.parent_action.context.add_range(range_)
-        except AttributeError:
-            print(f'Warning: failed to add range {range_} to context.')
+    def __init__(self, condition, range_, type_=None):
+        condition.parent_action.context.add_range(range_)
         LuaArray.__init__(self,
                           object_=None,
                           method=Method('Cache.EnemiesCount'),
                           index=range_,
-                          type_=None)
+                          type_=type_)
 
 
 class LuaComparison(LuaTyped):
@@ -225,12 +231,14 @@ class Literal(LuaTemplated, LuaNamed):
     Represent a literal expression (a value) as a string.
     """
 
-    def __init__(self, simc=None, convert=False, quoted=False):
+    def __init__(self, simc=None, convert=False, quoted=False, type_=None):
         if simc is not None:
             LuaNamed.__init__(self, simc)
         self.convert = convert
         self.quoted = quoted
-        if not (hasattr(self, 'type_') and self.type_):
+        if type_ is not None:
+            self.type_ = type_
+        else:
             self.type_ = BOOL if self.simc in (TRUE, FALSE) else NUM
         LuaTemplated.__init__(self, value=self.get_value())
         if self.quoted:
@@ -247,13 +255,14 @@ class Literal(LuaTemplated, LuaNamed):
         return str(self.simc)
 
 
-class BuildExpression(LuaExpression, LuaRange, LuaArray, Literal):
+class BuildExpression:
     """
     Build an expression from a call.
     """
 
     def __init__(self, call, model='expression'):
         self.model = model
+        self.content = None
         call = 'ready' if call == 'up' else call
         if call:
             getattr(self, call)()
@@ -264,15 +273,22 @@ class BuildExpression(LuaExpression, LuaRange, LuaArray, Literal):
         Call the right builder depending on the model.
         """
         if self.model == 'array':
-            self.try_builder(LuaArray, ['object_', 'method', 'index'])
+            type_ = getattr(self, 'type_', None)
+            self.try_builder(LuaArray, ['object_', 'method', 'index'],
+                             type_=type_)
         elif self.model == 'range':
-            self.try_builder(LuaRange, ['range_'])
+            type_ = getattr(self, 'type_', None)
+            self.try_builder(LuaRange, ['condition', 'range_'], type_=type_)
         elif self.model == 'expression':
-            self.try_builder(LuaExpression, ['object_', 'method', 'args'])
+            type_ = getattr(self, 'type_', None)
+            self.try_builder(LuaExpression, ['object_', 'method', 'args'],
+                             type_=type_)
         elif self.model == 'literal':
-            convert = self.convert if hasattr(self, 'convert') else False
-            quoted = self.quoted if hasattr(self, 'quoted') else False
-            self.try_builder(Literal, ['simc'], convert=convert, quoted=quoted)
+            convert = getattr(self, 'convert', False)
+            quoted = getattr(self, 'quoted', False)
+            type_ = getattr(self, 'type_', None)
+            self.try_builder(Literal, ['simc'], convert=convert, quoted=quoted,
+                             type_=type_)
         else:
             raise AttributeError(f'The model {self.model} is invalid.')
 
@@ -282,10 +298,18 @@ class BuildExpression(LuaExpression, LuaRange, LuaArray, Literal):
         """
         try:
             args = [getattr(self, attribute) for attribute in attributes]
-            model.__init__(self, *args, **kwargs)
+            self.content = model(*args, **kwargs)
         except AttributeError:
             missing_attr = [not hasattr(self, attribute)
                             for attribute in attributes]
             error_msg = (f'The {model.__name__} model did not have the '
                          f'following attributes: {", ".join(missing_attr)}')
             raise AttributeError(error_msg)
+    
+    @classmethod
+    def build(cls, *args, **kwargs):
+        """
+        Build the expression and return its content.
+        """
+        obj = cls(*args, **kwargs)
+        return obj.content

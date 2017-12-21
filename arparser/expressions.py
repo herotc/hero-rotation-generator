@@ -313,7 +313,7 @@ class Expression:
         """
         Return the condition when the prefix is action.
         """
-        return ActionExpression(self, to_self)
+        return ActionExpression.build(self, to_self)
 
     def spell_haste(self):
         """
@@ -325,187 +325,187 @@ class Expression:
         """
         Return the condition when the prefix is set_bonus.
         """
-        return SetBonus(self)
+        return SetBonus.build(self)
 
     def equipped(self):
         """
         Return the condition when the prefix is equipped.
         """
-        return Equipped(self)
+        return Equipped.build(self)
 
     def cooldown(self):
         """
         Return the condition when the prefix is cooldown.
         """
-        return Cooldown(self)
+        return Cooldown.build(self)
 
     def consumable(self):
         """
         Return the condition when the prefix is consumable.
         """
-        return Consumable(self)
+        return Consumable.build(self)
 
     def buff(self):
         """
         Return the condition when the prefix is buff.
         """
-        return Buff(self)
+        return Buff.build(self)
 
     def debuff(self):
         """
         Return the condition when the prefix is debuff.
         """
-        return Debuff(self)
+        return Debuff.build(self)
 
     def dot(self):
         """
         Return the condition when the prefix is dot.
         """
-        return Dot(self)
+        return Dot.build(self)
 
     def prev_gcd(self):
         """
         Return the condition when the prefix is prev_gcd.
         """
-        return PrevGCD(self)
+        return PrevGCD.build(self)
 
     def prev_off_gcd(self):
         """
         Return the condition when the prefix is prev_off_gcd.
         """
-        return PrevOffGCD(self)
+        return PrevOffGCD.build(self)
 
     def gcd(self):
         """
         Return the condition when the prefix is gcd.
         """
-        return GCD(self)
+        return GCD.build(self)
 
     def time(self):
         """
         Return the condition when the prefix is time.
         """
-        return Time(self)
+        return Time.build(self)
 
     def rune(self):
         """
         Return the condition when the prefix is rune.
         """
-        return Rune(self)
+        return Rune.build(self)
 
     def astral_power(self):
         """
         Return the condition when the prefix is astral_power.
         """
-        return AstralPower(self)
+        return AstralPower.build(self)
 
     def holy_power(self):
         """
         Return the condition when the prefix is holy_power.
         """
-        return HolyPower(self)
+        return HolyPower.build(self)
 
     def insanity(self):
         """
         Return the condition when the prefix is insanity.
         """
-        return Insanity(self)
+        return Insanity.build(self)
 
     def pain(self):
         """
         Return the condition when the prefix is pain.
         """
-        return Pain(self)
+        return Pain.build(self)
 
     def focus(self):
         """
         Return the condition when the prefix is focus.
         """
-        return Focus(self)
+        return Focus.build(self)
 
     def maelstrom(self):
         """
         Return the condition when the prefix is maelstrom.
         """
-        return Maelstrom(self)
+        return Maelstrom.build(self)
 
     def energy(self):
         """
         Return the condition when the prefix is energy.
         """
-        return Energy(self)
+        return Energy.build(self)
 
     def combo_points(self):
         """
         Return the condition when the prefix is combo_points.
         """
-        return ComboPoints(self)
+        return ComboPoints.build(self)
 
     def soul_shard(self):
         """
         Return the condition when the prefix is soul_shard.
         """
-        return SoulShard(self)
+        return SoulShard.build(self)
 
     def arcane_charges(self):
         """
         Return the condition when the prefix is arcane_charges.
         """
-        return ArcaneCharges(self)
+        return ArcaneCharges.build(self)
 
     def chi(self):
         """
         Return the condition when the prefix is chi.
         """
-        return Chi(self)
+        return Chi.build(self)
 
     def runic_power(self):
         """
         Return the condition when the prefix is runic_power.
         """
-        return RunicPower(self)
+        return RunicPower.build(self)
 
     def fury(self):
         """
         Return the condition when the prefix is fury.
         """
-        return Fury(self)
+        return Fury.build(self)
 
     def rage(self):
         """
         Return the condition when the prefix is rage.
         """
-        return Rage(self)
+        return Rage.build(self)
 
     def mana(self):
         """
         Return the condition when the prefix is mana.
         """
-        return Mana(self)
+        return Mana.build(self)
 
     def artifact(self):
         """
         Return the condition when the prefix is artifact.
         """
-        return Artifact(self)
+        return Artifact.build(self)
 
     def talent(self):
         """
         Return the condition when the prefix is talent.
         """
-        return Talent(self)
+        return Talent.build(self)
 
     def race(self):
         """
         Return the condition when the prefix is race.
         """
-        return Race(self)
+        return Race.build(self)
 
     def spell_targets(self):
         """
         Return the condition when the prefix is spell_targets.
         """
-        return SpellTargets(self)
+        return SpellTargets.build(self)
 
     def level(self):
         """
@@ -519,13 +519,13 @@ class Expression:
         """
         if len(self.condition_list) <= 1:
             return Literal('target')
-        return TargetExpression(self)
+        return TargetExpression.build(self)
 
     def raid_event(self):
         """
         Return the condition when the prefix is target.
         """
-        return RaidEvent(self)
+        return RaidEvent.build(self)
 
     def variable(self):
         """
@@ -665,16 +665,16 @@ class Aura(Expires):
         self.ready()
 
 
-class SetBonus(Literal):
+class SetBonus(BuildExpression):
     """
     Represent the expression for a set_bonus. condition.
     """
 
     def __init__(self, condition):
         self.condition = condition
-        self.simc = self.lua_tier_name()
+        self.simc = None
         self.type_ = BOOL
-        super().__init__()
+        super().__init__('lua_tier_name', model='literal')
 
     def lua_tier_name(self):
         """
@@ -682,7 +682,7 @@ class SetBonus(Literal):
         is equipped or not.
         """
         simc = self.condition.condition_list[1]
-        return f'AC.{"_".join(word.title() for word in simc.split("_"))}'
+        self.simc = f'AC.{"_".join(word.title() for word in simc.split("_"))}'
 
 
 class Equipped(BuildExpression):
@@ -1006,16 +1006,16 @@ class Cooldown(BuildExpression, Expires):
         pass
 
 
-class RaidEvent(Literal):
+class RaidEvent(BuildExpression):
     """
     Represent the expression for a raid_event condition.
     """
 
     def __init__(self, condition):
         self.condition = condition
+        self.simc = None
         call = '_'.join(condition.condition_list[1:])
-        getattr(self, call)()
-        super().__init__()
+        super().__init__(call, model='literal')
 
     def adds_in(self):
         """
