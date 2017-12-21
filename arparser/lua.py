@@ -305,7 +305,7 @@ class BuildExpression:
             error_msg = (f'The {model.__name__} model did not have the '
                          f'following attributes: {", ".join(missing_attr)}')
             raise AttributeError(error_msg)
-    
+
     @classmethod
     def build(cls, *args, **kwargs):
         """

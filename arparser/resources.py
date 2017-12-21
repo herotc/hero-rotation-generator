@@ -24,6 +24,7 @@ class Resource(BuildExpression):
         else:
             call = 'value'
         self.object_ = condition.player_unit
+        self.method = None
         self.args = []
         super().__init__(call)
 
@@ -56,7 +57,7 @@ class Resource(BuildExpression):
         Return the arguments for the expression {resource}.max.
         """
         self.method = Method(f'{self.simc.print_lua()}Max')
-    
+
     def time_to_max(self):
         """
         Return the arguments for the expression {resource}.time_to_max.
