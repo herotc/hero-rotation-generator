@@ -6,7 +6,7 @@ Monk specific constants and functions.
 """
 
 from .constants import (SPELL, BUFF, DEBUFF, COMMON,
-                        OGCDAOGCD, INTERRUPT,
+                        OGCDAOGCD, USABLE, INTERRUPT,
                         CD, RANGE)
 
 MONK = 'monk'
@@ -65,9 +65,11 @@ SPELL_INFO = {
                                                  CD:        True,
                                                  OGCDAOGCD: True},
             'ironskin_brew':                    {SPELL:     115308,
+                                                 BUFF:      215479,
                                                  OGCDAOGCD: True},
             'keg_smash':                        {SPELL:     121253,
-                                                 RANGE:     8},
+                                                 RANGE:     8,
+                                                 USABLE:    True},
         },
         WINDWALKER: {
             'crackling_jade_lightning':         {SPELL:     117952},

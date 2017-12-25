@@ -150,7 +150,7 @@ local function APL()
       if AR.Cast(S.BlackoutStrike) then return ""; end
     end
     -- keg_smash
-    if S.KegSmash:IsCastableP() and (true) then
+    if S.KegSmash:IsUsable() and (true) then
       if AR.Cast(S.KegSmash) then return ""; end
     end
     -- breath_of_fire,if=buff.bloodlust.down&buff.blackout_combo.down|(buff.bloodlust.up&buff.blackout_combo.down&dot.breath_of_fire_dot.remains<=0)
