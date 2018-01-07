@@ -21,9 +21,9 @@ local AR     = AethysRotation
 -- Spells
 if not Spell.Monk then Spell.Monk = {} end
 Spell.Monk.Brewmaster = {
-  DampenHarm                            = Spell(122278),
   ChiBurst                              = Spell(123986),
   ChiWave                               = Spell(115098),
+  DampenHarm                            = Spell(122278),
   FortifyingBrewBuff                    = Spell(115203),
   FortifyingBrew                        = Spell(115203),
   DampenHarmBuff                        = Spell(122278),
@@ -33,11 +33,10 @@ Spell.Monk.Brewmaster = {
   ExplodingKeg                          = Spell(214326),
   InvokeNiuzaotheBlackOx                = Spell(132578),
   PurifyingBrew                         = Spell(119582),
+  Brews                                 = Spell(115308),
+  IronskinBrewBuff                      = Spell(215479),
   IronskinBrew                          = Spell(115308),
   BlackoutComboBuff                     = Spell(228563),
-  Brews                                 = Spell(115308),
-  LightBrewing                          = Spell(196721),
-  IronskinBrewBuff                      = Spell(215479),
   BlackOxBrew                           = Spell(115399),
   KegSmash                              = Spell(121253),
   ArcaneTorrent                         = Spell(50613),
@@ -98,10 +97,6 @@ local function APL()
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
       if AR.CastSuggested(I.ProlongedPower) then return ""; end
     end
-    -- dampen_harm
-    if S.DampenHarm:IsCastableP() and (true) then
-      if AR.Cast(S.DampenHarm) then return ""; end
-    end
     -- chi_burst
     if S.ChiBurst:IsCastableP() and (true) then
       if AR.Cast(S.ChiBurst) then return ""; end
@@ -150,16 +145,16 @@ local function APL()
   if S.InvokeNiuzaotheBlackOx:IsCastableP() and AR.CDsON() and (Target:TimeToDie() > 45) then
     if AR.Cast(S.InvokeNiuzaotheBlackOx, Settings.Brewmaster.OffGCDasOffGCD.InvokeNiuzaotheBlackOx) then return ""; end
   end
-  -- purifying_brew,if=stagger.heavy
-  if S.PurifyingBrew:IsCastableP() and (bool(stagger.heavy)) then
+  -- purifying_brew,if=stagger.heavy|(stagger.moderate&cooldown.brews.charges_fractional>=cooldown.brews.max_charges-0.5&buff.ironskin_brew.remains>=buff.ironskin_brew.duration*2.5)
+  if S.PurifyingBrew:IsCastableP() and (bool(stagger.heavy) or (bool(stagger.moderate) and S.Brews:ChargesFractional() >= cooldown.brews.max_charges - 0.5 and Player:BuffRemainsP(S.IronskinBrewBuff) >= S.IronskinBrewBuff:BaseDuration() * 2.5)) then
     if AR.Cast(S.PurifyingBrew, Settings.Brewmaster.OffGCDasOffGCD.PurifyingBrew) then return ""; end
   end
-  -- ironskin_brew,if=buff.blackout_combo.down&cooldown.brews.charges_fractional>=1.9+talent.light_brewing.enabled&buff.ironskin_brew.remains<=buff.ironskin_brew.duration*3
-  if S.IronskinBrew:IsCastableP() and (Player:BuffDownP(S.BlackoutComboBuff) and S.Brews:ChargesFractional() >= 1.9 + num(S.LightBrewing:IsAvailable()) and Player:BuffRemainsP(S.IronskinBrewBuff) <= S.IronskinBrewBuff:BaseDuration() * 3) then
+  -- ironskin_brew,if=buff.blackout_combo.down&cooldown.brews.charges_fractional>=cooldown.brews.max_charges-0.1-(1+buff.ironskin_brew.remains<=buff.ironskin_brew.duration*0.5)&buff.ironskin_brew.remains<=buff.ironskin_brew.duration*2
+  if S.IronskinBrew:IsCastableP() and (Player:BuffDownP(S.BlackoutComboBuff) and S.Brews:ChargesFractional() >= cooldown.brews.max_charges - 0.1 - num((1 + Player:BuffRemainsP(S.IronskinBrewBuff) <= S.IronskinBrewBuff:BaseDuration() * 0.5)) and Player:BuffRemainsP(S.IronskinBrewBuff) <= S.IronskinBrewBuff:BaseDuration() * 2) then
     if AR.Cast(S.IronskinBrew, Settings.Brewmaster.OffGCDasOffGCD.IronskinBrew) then return ""; end
   end
-  -- black_ox_brew,if=incoming_damage_1500ms&stagger.moderate&cooldown.brews.charges_fractional<=0.8
-  if S.BlackOxBrew:IsCastableP() and (bool(incoming_damage_1500ms) and bool(stagger.moderate) and S.Brews:ChargesFractional() <= 0.8) then
+  -- black_ox_brew,if=incoming_damage_1500ms&stagger.heavy&cooldown.brews.charges_fractional<=0.75
+  if S.BlackOxBrew:IsCastableP() and (bool(incoming_damage_1500ms) and bool(stagger.heavy) and S.Brews:ChargesFractional() <= 0.75) then
     if AR.Cast(S.BlackOxBrew, Settings.Brewmaster.OffGCDasOffGCD.BlackOxBrew) then return ""; end
   end
   -- black_ox_brew,if=(energy+(energy.regen*(cooldown.keg_smash.remains)))<40&buff.blackout_combo.down&cooldown.keg_smash.up
