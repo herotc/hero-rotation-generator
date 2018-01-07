@@ -29,8 +29,6 @@ Spell.DemonHunter.Havoc = {
   NemesisDebuff                         = Spell(206491),
   ChaosBladesBuff                       = Spell(247938),
   ChaosBlades                           = Spell(247938),
-  PickUpFragment                        = Spell(),
-  EyeBeam                               = Spell(198013),
   VengefulRetreat                       = Spell(198793),
   Prepared                              = Spell(203551),
   Momentum                              = Spell(206476),
@@ -44,19 +42,21 @@ Spell.DemonHunter.Havoc = {
   FelEruption                           = Spell(211881),
   FuryoftheIllidari                     = Spell(201467),
   BladeDance                            = Spell(188499),
+  EyeBeam                               = Spell(198013),
   MasteroftheGlaive                     = Spell(203556),
   Felblade                              = Spell(232893),
+  BlindFury                             = Spell(203550),
   Annihilation                          = Spell(201427),
   ChaosStrike                           = Spell(162794),
-  DemonicAppetite                       = Spell(206478),
   DemonBlades                           = Spell(203555),
   DemonsBite                            = Spell(162243),
   OutofRangeBuff                        = Spell(),
   FelBarrage                            = Spell(211053),
-  BlindFury                             = Spell(203550),
+  HavocT214PcBuff                       = Spell(),
   FirstBlood                            = Spell(206416),
   ChaosCleave                           = Spell(206475),
-  ConsumeMagic                          = Spell(183752)
+  ConsumeMagic                          = Spell(183752),
+  PickUpFragment                        = Spell()
 };
 local S = Spell.DemonHunter.Havoc;
 
@@ -144,8 +144,8 @@ local function APL()
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
       if AR.CastSuggested(I.ProlongedPower) then return ""; end
     end
-    -- metamorphosis,if=!(talent.demon_reborn.enabled&talent.demonic.enabled)
-    if S.Metamorphosis:IsCastableP() and (not (S.DemonReborn:IsAvailable() and S.Demonic:IsAvailable())) then
+    -- metamorphosis,if=!(talent.demon_reborn.enabled&(talent.demonic.enabled|set_bonus.tier21_4pc))
+    if S.Metamorphosis:IsCastableP() and (not (S.DemonReborn:IsAvailable() and (S.Demonic:IsAvailable() or AC.Tier21_4Pc))) then
       if AR.Cast(S.Metamorphosis) then return ""; end
     end
   end
@@ -154,8 +154,8 @@ local function APL()
     if S.Metamorphosis:IsCastableP() and (not (S.Demonic:IsAvailable() or bool(VarPoolingForMeta) or bool(VarWaitingForNemesis) or bool(VarWaitingForChaosBlades)) or Target:TimeToDie() < 25) then
       if AR.Cast(S.Metamorphosis) then return ""; end
     end
-    -- metamorphosis,if=talent.demonic.enabled&buff.metamorphosis.up&fury<40
-    if S.Metamorphosis:IsCastableP() and (S.Demonic:IsAvailable() and Player:BuffP(S.MetamorphosisBuff) and Player:Fury() < 40) then
+    -- metamorphosis,if=talent.demonic.enabled&buff.metamorphosis.up
+    if S.Metamorphosis:IsCastableP() and (S.Demonic:IsAvailable() and Player:BuffP(S.MetamorphosisBuff)) then
       if AR.Cast(S.Metamorphosis) then return ""; end
     end
     -- nemesis,target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)
@@ -176,10 +176,6 @@ local function APL()
     end
   end
   local function Demonic()
-    -- pick_up_fragment,if=fury.deficit>=35&(cooldown.eye_beam.remains>5|(buff.metamorphosis.up&cooldown.metamorphosis.ready))
-    if S.PickUpFragment:IsCastableP() and (Player:FuryDeficit() >= 35 and (S.EyeBeam:CooldownRemainsP() > 5 or (Player:BuffP(S.MetamorphosisBuff) and S.Metamorphosis:CooldownUpP()))) then
-      if AR.Cast(S.PickUpFragment) then return ""; end
-    end
     -- vengeful_retreat,if=(talent.prepared.enabled|talent.momentum.enabled)&buff.prepared.down&buff.momentum.down
     if S.VengefulRetreat:IsCastableP() and ((S.Prepared:IsAvailable() or S.Momentum:IsAvailable()) and Player:BuffDownP(S.PreparedBuff) and Player:BuffDownP(S.MomentumBuff)) then
       if AR.Cast(S.VengefulRetreat) then return ""; end
@@ -216,8 +212,8 @@ local function APL()
     if S.Felblade:IsCastableP() and (Player:FuryDeficit() >= 30 and (Player:Fury() < 40 or Player:BuffDownP(S.MetamorphosisBuff))) then
       if AR.Cast(S.Felblade) then return ""; end
     end
-    -- eye_beam,if=spell_targets.eye_beam_tick>desired_targets|!buff.metamorphosis.extended_by_demonic|(set_bonus.tier21_4pc&buff.metamorphosis.remains>16)
-    if S.EyeBeam:IsCastableP() and (Cache.EnemiesCount[20] > desired_targets or not IsMetaExtendedByDemonic() or (AC.Tier21_4Pc and Player:BuffRemainsP(S.MetamorphosisBuff) > 16)) then
+    -- eye_beam,if=spell_targets.eye_beam_tick>desired_targets|(!talent.blind_fury.enabled|fury.deficit>=70)&(!buff.metamorphosis.extended_by_demonic|(set_bonus.tier21_4pc&buff.metamorphosis.remains>16))
+    if S.EyeBeam:IsCastableP() and (Cache.EnemiesCount[20] > desired_targets or (not S.BlindFury:IsAvailable() or Player:FuryDeficit() >= 70) and (not IsMetaExtendedByDemonic() or (AC.Tier21_4Pc and Player:BuffRemainsP(S.MetamorphosisBuff) > 16))) then
       if AR.Cast(S.EyeBeam) then return ""; end
     end
     -- annihilation,if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance
@@ -232,8 +228,8 @@ local function APL()
     if S.ChaosStrike:IsCastableP() and IsInMeleeRange() and ((not S.Momentum:IsAvailable() or Player:BuffP(S.MomentumBuff) or Player:FuryDeficit() < 30 + num(Player:BuffP(S.PreparedBuff)) * 8) and not bool(VarPoolingForChaosStrike) and not bool(VarPoolingForMeta) and not bool(VarPoolingForBladeDance)) then
       if AR.Cast(S.ChaosStrike) then return ""; end
     end
-    -- fel_rush,if=!talent.momentum.enabled&!talent.demonic_appetite.enabled&!cooldown.eye_beam.ready&(buff.metamorphosis.down|talent.demon_blades.enabled)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
-    if S.FelRush:IsCastableP() and (not S.Momentum:IsAvailable() and not S.DemonicAppetite:IsAvailable() and not S.EyeBeam:CooldownUpP() and (Player:BuffDownP(S.MetamorphosisBuff) or S.DemonBlades:IsAvailable()) and (S.FelRush:ChargesP() == 2 or (10000000000 > 10 and 10000000000 > 10))) then
+    -- fel_rush,if=!talent.momentum.enabled&talent.demon_blades.enabled&!cooldown.eye_beam.ready&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
+    if S.FelRush:IsCastableP() and (not S.Momentum:IsAvailable() and S.DemonBlades:IsAvailable() and not S.EyeBeam:CooldownUpP() and (S.FelRush:ChargesP() == 2 or (10000000000 > 10 and 10000000000 > 10))) then
       if AR.Cast(S.FelRush) then return ""; end
     end
     -- demons_bite
@@ -254,10 +250,6 @@ local function APL()
     end
   end
   local function Normal()
-    -- pick_up_fragment,if=talent.demonic_appetite.enabled&fury.deficit>=35
-    if S.PickUpFragment:IsCastableP() and (S.DemonicAppetite:IsAvailable() and Player:FuryDeficit() >= 35) then
-      if AR.Cast(S.PickUpFragment) then return ""; end
-    end
     -- vengeful_retreat,if=(talent.prepared.enabled|talent.momentum.enabled)&buff.prepared.down&buff.momentum.down
     if S.VengefulRetreat:IsCastableP() and ((S.Prepared:IsAvailable() or S.Momentum:IsAvailable()) and Player:BuffDownP(S.PreparedBuff) and Player:BuffDownP(S.MomentumBuff)) then
       if AR.Cast(S.VengefulRetreat) then return ""; end
@@ -282,8 +274,8 @@ local function APL()
     if S.DeathSweep:IsCastableP() and (bool(VarBladeDance)) then
       if AR.Cast(S.DeathSweep) then return ""; end
     end
-    -- fel_rush,if=charges=2&!talent.momentum.enabled&!talent.fel_mastery.enabled&!buff.metamorphosis.up
-    if S.FelRush:IsCastableP() and (S.FelRush:ChargesP() == 2 and not S.Momentum:IsAvailable() and not S.FelMastery:IsAvailable() and not Player:BuffP(S.MetamorphosisBuff)) then
+    -- fel_rush,if=charges=2&!talent.momentum.enabled&!talent.fel_mastery.enabled&!buff.metamorphosis.up&talent.demon_blades.enabled
+    if S.FelRush:IsCastableP() and (S.FelRush:ChargesP() == 2 and not S.Momentum:IsAvailable() and not S.FelMastery:IsAvailable() and not Player:BuffP(S.MetamorphosisBuff) and S.DemonBlades:IsAvailable()) then
       if AR.Cast(S.FelRush) then return ""; end
     end
     -- fel_eruption
@@ -306,8 +298,8 @@ local function APL()
     if S.Felblade:IsCastableP() and (Player:FuryDeficit() >= 30 + num(Player:BuffP(S.PreparedBuff)) * 8) then
       if AR.Cast(S.Felblade) then return ""; end
     end
-    -- eye_beam,if=spell_targets.eye_beam_tick>desired_targets|(spell_targets.eye_beam_tick>=3&raid_event.adds.in>cooldown)|(talent.blind_fury.enabled&fury.deficit>=35)|set_bonus.tier21_2pc
-    if S.EyeBeam:IsCastableP() and (Cache.EnemiesCount[20] > desired_targets or (Cache.EnemiesCount[20] >= 3 and 10000000000 > S.EyeBeam:Cooldown()) or (S.BlindFury:IsAvailable() and Player:FuryDeficit() >= 35) or AC.Tier21_2Pc) then
+    -- eye_beam,if=spell_targets.eye_beam_tick>desired_targets|buff.havoc_t21_4pc.remains<2&(!talent.blind_fury.enabled|fury.deficit>=70)&((spell_targets.eye_beam_tick>=3&raid_event.adds.in>cooldown)|talent.blind_fury.enabled|set_bonus.tier21_2pc)
+    if S.EyeBeam:IsCastableP() and (Cache.EnemiesCount[20] > desired_targets or Player:BuffRemainsP(S.HavocT214PcBuff) < 2 and (not S.BlindFury:IsAvailable() or Player:FuryDeficit() >= 70) and ((Cache.EnemiesCount[20] >= 3 and 10000000000 > S.EyeBeam:Cooldown()) or S.BlindFury:IsAvailable() or AC.Tier21_2Pc)) then
       if AR.Cast(S.EyeBeam) then return ""; end
     end
     -- annihilation,if=(talent.demon_blades.enabled|!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance
@@ -326,17 +318,13 @@ local function APL()
     if S.ChaosStrike:IsCastableP() and IsInMeleeRange() and ((S.DemonBlades:IsAvailable() or not S.Momentum:IsAvailable() or Player:BuffP(S.MomentumBuff) or Player:FuryDeficit() < 30 + num(Player:BuffP(S.PreparedBuff)) * 8) and not bool(VarPoolingForChaosStrike) and not bool(VarPoolingForMeta) and not bool(VarPoolingForBladeDance)) then
       if AR.Cast(S.ChaosStrike) then return ""; end
     end
-    -- fel_rush,if=!talent.momentum.enabled&raid_event.movement.in>charges*10&(talent.demon_blades.enabled|buff.metamorphosis.down)
-    if S.FelRush:IsCastableP() and (not S.Momentum:IsAvailable() and 10000000000 > S.FelRush:ChargesP() * 10 and (S.DemonBlades:IsAvailable() or Player:BuffDownP(S.MetamorphosisBuff))) then
+    -- fel_rush,if=!talent.momentum.enabled&raid_event.movement.in>charges*10&talent.demon_blades.enabled
+    if S.FelRush:IsCastableP() and (not S.Momentum:IsAvailable() and 10000000000 > S.FelRush:ChargesP() * 10 and S.DemonBlades:IsAvailable()) then
       if AR.Cast(S.FelRush) then return ""; end
     end
     -- demons_bite
     if S.DemonsBite:IsCastableP() and IsInMeleeRange() and (true) then
       if AR.Cast(S.DemonsBite) then return ""; end
-    end
-    -- throw_glaive,if=buff.out_of_range.up
-    if S.ThrowGlaive:IsCastableP() and (Player:BuffP(S.OutofRangeBuff)) then
-      if AR.Cast(S.ThrowGlaive) then return ""; end
     end
     -- felblade,if=movement.distance>15|buff.out_of_range.up
     if S.Felblade:IsCastableP() and (movement.distance > 15 or Player:BuffP(S.OutofRangeBuff)) then
@@ -350,8 +338,8 @@ local function APL()
     if S.VengefulRetreat:IsCastableP() and (movement.distance > 15) then
       if AR.Cast(S.VengefulRetreat) then return ""; end
     end
-    -- throw_glaive,if=!talent.bloodlet.enabled
-    if S.ThrowGlaive:IsCastableP() and (not S.Bloodlet:IsAvailable()) then
+    -- throw_glaive,if=!talent.bloodlet.enabled&talent.demon_blades.enabled
+    if S.ThrowGlaive:IsCastableP() and (not S.Bloodlet:IsAvailable() and S.DemonBlades:IsAvailable()) then
       if AR.Cast(S.ThrowGlaive) then return ""; end
     end
   end
@@ -391,6 +379,10 @@ local function APL()
   -- call_action_list,name=cooldown,if=gcd.remains=0
   if (Player:GCDRemains() == 0) then
     local ShouldReturn = Cooldown(); if ShouldReturn then return ShouldReturn; end
+  end
+  -- pick_up_fragment,if=fury.deficit>=35&((cooldown.eye_beam.remains>5|!talent.blind_fury.enabled&!set_bonus.tier21_4pc)|(buff.metamorphosis.up&!set_bonus.tier21_4pc))
+  if S.PickUpFragment:IsCastableP() and (Player:FuryDeficit() >= 35 and ((S.EyeBeam:CooldownRemainsP() > 5 or not S.BlindFury:IsAvailable() and not AC.Tier21_4Pc) or (Player:BuffP(S.MetamorphosisBuff) and not AC.Tier21_4Pc))) then
+    if AR.Cast(S.PickUpFragment) then return ""; end
   end
   -- run_action_list,name=demonic,if=talent.demonic.enabled
   if (S.Demonic:IsAvailable()) then

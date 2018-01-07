@@ -261,8 +261,8 @@ local function APL()
     if S.Vanish:IsCastableP() and (not bool(VarDshDfa) and mantle_duration == 0 and S.ShadowDance:ChargesFractional() < VarShdFractional + num((I.MantleoftheMasterAssassin:IsEquipped() and AC.CombatTime() < 30)) * 0.3 and (not I.MantleoftheMasterAssassin:IsEquipped() or Player:BuffP(S.SymbolsofDeathBuff))) then
       if AR.Cast(S.Vanish) then return ""; end
     end
-    -- shadow_dance,if=charges_fractional>=variable.shd_fractional|target.time_to_die<cooldown.symbols_of_death.remains
-    if S.ShadowDance:IsCastableP() and (S.ShadowDance:ChargesFractional() >= VarShdFractional or Target:TimeToDie() < S.SymbolsofDeath:CooldownRemainsP()) then
+    -- shadow_dance,if=dot.nightblade.remains>=5&charges_fractional>=variable.shd_fractional|target.time_to_die<cooldown.symbols_of_death.remains
+    if S.ShadowDance:IsCastableP() and (Target:DebuffRemainsP(S.NightbladeDebuff) >= 5 and S.ShadowDance:ChargesFractional() >= VarShdFractional or Target:TimeToDie() < S.SymbolsofDeath:CooldownRemainsP()) then
       if AR.Cast(S.ShadowDance) then return ""; end
     end
     -- pool_resource,for_next=1,extra_amount=40

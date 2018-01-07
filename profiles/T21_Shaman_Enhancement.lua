@@ -25,12 +25,13 @@ Spell.Shaman.Enhancement = {
   EarthenSpike                          = Spell(188089),
   DoomWinds                             = Spell(204945),
   Strike                                = Spell(),
+  CrashLightning                        = Spell(187874),
+  CrashLightningBuff                    = Spell(187874),
   Windstrike                            = Spell(115356),
   Rockbiter                             = Spell(193786),
   Landslide                             = Spell(197992),
   LandslideBuff                         = Spell(202004),
   FuryofAir                             = Spell(197211),
-  CrashLightning                        = Spell(187874),
   AlphaWolf                             = Spell(198434),
   FeralSpirit                           = Spell(51533),
   Flametongue                           = Spell(193796),
@@ -45,7 +46,6 @@ Spell.Shaman.Enhancement = {
   Ascendance                            = Spell(114051),
   Boulderfist                           = Spell(246035),
   EarthenSpikeDebuff                    = Spell(188089),
-  CrashLightningBuff                    = Spell(187874),
   Windsong                              = Spell(201898),
   CrashingStorm                         = Spell(192246),
   ForceoftheMountainBuff                = Spell(),
@@ -70,7 +70,8 @@ if not Item.Shaman then Item.Shaman = {} end
 Item.Shaman.Enhancement = {
   ProlongedPower                   = Item(142117),
   Item151819                       = Item(151819),
-  Item137084                       = Item(137084)
+  Item137084                       = Item(137084),
+  Item137103                       = Item(137103)
 };
 local I = Item.Shaman.Enhancement;
 
@@ -98,6 +99,7 @@ local VarOcpool60 = 0;
 local VarHailstormcheck = 0;
 local VarFurycheck70 = 0;
 local VarHeartequipped = 0;
+local VarTempestequipped = 0;
 
 local EnemyRanges = {8}
 local function UpdateRanges()
@@ -139,6 +141,14 @@ local function APL()
     -- doom_winds,if=cooldown.strike.up
     if S.DoomWinds:IsCastableP() and (S.Strike:CooldownUpP()) then
       if AR.Cast(S.DoomWinds) then return ""; end
+    end
+    -- crash_lightning,if=!buff.crash_lightning.up&active_enemies>=2
+    if S.CrashLightning:IsCastableP() and (not Player:BuffP(S.CrashLightningBuff) and Cache.EnemiesCount[8] >= 2) then
+      if AR.Cast(S.CrashLightning) then return ""; end
+    end
+    -- windstrike,target_if=!debuff.storm_tempests.up&variable.tempestEquipped
+    if S.Windstrike:IsCastableP() and (true) then
+      if AR.Cast(S.Windstrike) then return ""; end
     end
     -- windstrike
     if S.Windstrike:IsCastableP() and (true) then
@@ -230,6 +240,10 @@ local function APL()
     if S.Rockbiter:IsCastableP() and (Player:BuffP(S.ForceoftheMountainBuff) and S.Rockbiter:ChargesFractional() > 1.7 and Cache.EnemiesCount[8] <= 4) then
       if AR.Cast(S.Rockbiter) then return ""; end
     end
+    -- stormstrike,target_if=!debuff.storm_tempests.up&variable.tempestEquipped
+    if S.Stormstrike:IsCastableP() and (true) then
+      if AR.Cast(S.Stormstrike) then return ""; end
+    end
     -- stormstrike,if=buff.stormbringer.up&variable.furyCheck25
     if S.Stormstrike:IsCastableP() and (Player:BuffP(S.StormbringerBuff) and bool(VarFurycheck25)) then
       if AR.Cast(S.Stormstrike) then return ""; end
@@ -300,8 +314,8 @@ local function APL()
     if S.Rockbiter:IsCastableP() and (true) then
       if AR.Cast(S.Rockbiter) then return ""; end
     end
-    -- crash_lightning,if=(maelstrom>=65|talent.crashing_storm.enabled|active_enemies>=2)&variable.OCPool60&variable.furyCheck45
-    if S.CrashLightning:IsCastableP() and ((Player:Maelstrom() >= 65 or S.CrashingStorm:IsAvailable() or Cache.EnemiesCount[8] >= 2) and bool(VarOcpool60) and bool(VarFurycheck45)) then
+    -- crash_lightning,if=(maelstrom>=45|talent.crashing_storm.enabled|active_enemies>=2)
+    if S.CrashLightning:IsCastableP() and ((Player:Maelstrom() >= 45 or S.CrashingStorm:IsAvailable() or Cache.EnemiesCount[8] >= 2)) then
       if AR.Cast(S.CrashLightning) then return ""; end
     end
     -- flametongue
@@ -358,6 +372,10 @@ local function APL()
   -- variable,name=akainuEquipped,value=(equipped.137084)
   if (true) then
     VarAkainuequipped = num((I.Item137084:IsEquipped()))
+  end
+  -- variable,name=tempestEquipped,value=(equipped.137103)
+  if (true) then
+    VarTempestequipped = num((I.Item137103:IsEquipped()))
   end
   -- variable,name=akainuAS,value=(variable.akainuEquipped&buff.hot_hand.react&!buff.frostbrand.up)
   if (true) then

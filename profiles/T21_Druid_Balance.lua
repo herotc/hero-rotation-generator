@@ -42,7 +42,6 @@ Spell.Druid.Balance = {
   SolarWrath                            = Spell(190984),
   SolarEmpowermentBuff                  = Spell(164545),
   LunarEmpowermentBuff                  = Spell(164547),
-  SouloftheForest                       = Spell(114107),
   AstralCommunion                       = Spell(202359),
   TheEmeraldDreamcatcherBuff            = Spell(208190),
   Incarnation                           = Spell(102560),
@@ -70,8 +69,6 @@ local S = Spell.Druid.Balance;
 if not Item.Druid then Item.Druid = {} end
 Item.Druid.Balance = {
   ProlongedPower                   = Item(142117),
-  LadyandtheChild                  = Item(144295),
-  RadiantMoonlight                 = Item(151800),
   TheEmeraldDreamcatcher           = Item(137062)
 };
 local I = Item.Druid.Balance;
@@ -204,10 +201,6 @@ local function APL()
     -- lunar_strike,if=buff.lunar_empowerment.up
     if S.LunarStrike:IsCastableP() and (Player:BuffP(S.LunarEmpowermentBuff)) then
       if AR.Cast(S.LunarStrike) then return ""; end
-    end
-    -- moonfire,if=equipped.lady_and_the_child&talent.soul_of_the_forest.enabled&(active_enemies<3|(active_enemies<4&!set_bonus.tier20_4pc)|(equipped.radiant_moonlight&active_enemies<7&!set_bonus.tier20_4pc))&spell_haste>0.4&!buff.celestial_alignment.up&!buff.incarnation.up
-    if S.Moonfire:IsCastableP() and (I.LadyandtheChild:IsEquipped() and S.SouloftheForest:IsAvailable() and (Cache.EnemiesCount[40] < 3 or (Cache.EnemiesCount[40] < 4 and not AC.Tier20_4Pc) or (I.RadiantMoonlight:IsEquipped() and Cache.EnemiesCount[40] < 7 and not AC.Tier20_4Pc)) and Player:SpellHaste() > 0.4 and not Player:BuffP(S.CelestialAlignmentBuff) and not Player:BuffP(S.IncarnationBuff)) then
-      if AR.Cast(S.Moonfire) then return ""; end
     end
     -- lunar_strike,if=spell_targets.lunar_strike>=4|spell_haste<0.45
     if S.LunarStrike:IsCastableP() and (Cache.EnemiesCount[40] >= 4 or Player:SpellHaste() < 0.45) then

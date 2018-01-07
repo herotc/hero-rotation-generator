@@ -43,13 +43,13 @@ Spell.DeathKnight.Frost = {
   ChainsofIce                           = Spell(45524),
   ColdHeartBuff                         = Spell(235599),
   PillarofFrost                         = Spell(51271),
+  Obliteration                          = Spell(207256),
   ArcaneTorrent                         = Spell(50613),
   BreathofSindragosaDebuff              = Spell(155166),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
   UseItems                              = Spell(),
   TemptationBuff                        = Spell(234143),
-  Obliteration                          = Spell(207256),
   ObliterationBuff                      = Spell(207256),
   HungeringRuneWeapon                   = Spell(207127),
   Icecap                                = Spell(207126),
@@ -243,16 +243,20 @@ local function APL()
     if S.ChainsofIce:IsCastableP() and (Player:BuffStackP(S.ColdHeartBuff) == 20 and bool(Player:BuffStackP(S.UnholyStrengthBuff)) and S.PillarofFrost:CooldownRemainsP() > 6) then
       if AR.Cast(S.ChainsofIce) then return ""; end
     end
+    -- chains_of_ice,if=buff.cold_heart.stack>=16&(cooldown.obliteration.ready&talent.obliteration.enabled)&buff.pillar_of_frost.up
+    if S.ChainsofIce:IsCastableP() and (Player:BuffStackP(S.ColdHeartBuff) >= 16 and (S.Obliteration:CooldownUpP() and S.Obliteration:IsAvailable()) and Player:BuffP(S.PillarofFrostBuff)) then
+      if AR.Cast(S.ChainsofIce) then return ""; end
+    end
     -- chains_of_ice,if=buff.pillar_of_frost.up&buff.pillar_of_frost.remains<gcd&(buff.cold_heart.stack>=11|(buff.cold_heart.stack>=10&set_bonus.tier20_4pc))
     if S.ChainsofIce:IsCastableP() and (Player:BuffP(S.PillarofFrostBuff) and Player:BuffRemainsP(S.PillarofFrostBuff) < Player:GCD() and (Player:BuffStackP(S.ColdHeartBuff) >= 11 or (Player:BuffStackP(S.ColdHeartBuff) >= 10 and AC.Tier20_4Pc))) then
       if AR.Cast(S.ChainsofIce) then return ""; end
     end
-    -- chains_of_ice,if=buff.cold_heart.stack>16&buff.unholy_strength.react&buff.unholy_strength.remains<gcd&cooldown.pillar_of_frost.remains>6
-    if S.ChainsofIce:IsCastableP() and (Player:BuffStackP(S.ColdHeartBuff) > 16 and bool(Player:BuffStackP(S.UnholyStrengthBuff)) and Player:BuffRemainsP(S.UnholyStrengthBuff) < Player:GCD() and S.PillarofFrost:CooldownRemainsP() > 6) then
+    -- chains_of_ice,if=buff.cold_heart.stack>=17&buff.unholy_strength.react&buff.unholy_strength.remains<gcd&cooldown.pillar_of_frost.remains>6
+    if S.ChainsofIce:IsCastableP() and (Player:BuffStackP(S.ColdHeartBuff) >= 17 and bool(Player:BuffStackP(S.UnholyStrengthBuff)) and Player:BuffRemainsP(S.UnholyStrengthBuff) < Player:GCD() and S.PillarofFrost:CooldownRemainsP() > 6) then
       if AR.Cast(S.ChainsofIce) then return ""; end
     end
-    -- chains_of_ice,if=buff.cold_heart.stack>12&buff.unholy_strength.react&talent.shattering_strikes.enabled
-    if S.ChainsofIce:IsCastableP() and (Player:BuffStackP(S.ColdHeartBuff) > 12 and bool(Player:BuffStackP(S.UnholyStrengthBuff)) and S.ShatteringStrikes:IsAvailable()) then
+    -- chains_of_ice,if=buff.cold_heart.stack>=13&buff.unholy_strength.react&talent.shattering_strikes.enabled
+    if S.ChainsofIce:IsCastableP() and (Player:BuffStackP(S.ColdHeartBuff) >= 13 and bool(Player:BuffStackP(S.UnholyStrengthBuff)) and S.ShatteringStrikes:IsAvailable()) then
       if AR.Cast(S.ChainsofIce) then return ""; end
     end
     -- chains_of_ice,if=buff.cold_heart.stack>=4&target.time_to_die<=gcd

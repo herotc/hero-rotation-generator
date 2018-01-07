@@ -22,6 +22,8 @@ local AR     = AethysRotation
 if not Spell.Shaman then Spell.Shaman = {} end
 Spell.Shaman.Elemental = {
   TotemMastery                          = Spell(210643),
+  FireElemental                         = Spell(198067),
+  ElementalBlast                        = Spell(117014),
   Stormkeeper                           = Spell(205495),
   Ascendance                            = Spell(114050),
   LiquidMagmaTotem                      = Spell(192222),
@@ -31,12 +33,12 @@ Spell.Shaman.Elemental = {
   FlameShockDebuff                      = Spell(188389),
   LavaSurgeBuff                         = Spell(77762),
   LightningRod                          = Spell(210689),
-  ElementalBlast                        = Spell(117014),
   LavaBeam                              = Spell(114074),
   ChainLightning                        = Spell(188443),
   AscendanceBuff                        = Spell(114050),
   StormkeeperBuff                       = Spell(205495),
   EchoesoftheGreatSunderingBuff         = Spell(208722),
+  EarthenStrengthBuff                   = Spell(252141),
   EarthShock                            = Spell(8042),
   SwellingMaelstrom                     = Spell(238105),
   LightningBolt                         = Spell(188196),
@@ -44,12 +46,10 @@ Spell.Shaman.Elemental = {
   ElementalFocusBuff                    = Spell(16246),
   Aftershock                            = Spell(210707),
   ResonanceTotemBuff                    = Spell(202192),
-  EarthenStrengthBuff                   = Spell(252141),
   FrostShock                            = Spell(196840),
   IcefuryBuff                           = Spell(210714),
   Icefury                               = Spell(210714),
   Bloodlust                             = Spell(2825),
-  FireElemental                         = Spell(198067),
   WindShear                             = Spell(57994),
   StormElemental                        = Spell(192249),
   ElementalMastery                      = Spell(16166),
@@ -63,8 +63,9 @@ local S = Spell.Shaman.Elemental;
 if not Item.Shaman then Item.Shaman = {} end
 Item.Shaman.Elemental = {
   ProlongedPower                   = Item(142117),
-  SmolderingHeart                  = Item(151819),
   TheDeceiversBloodPact            = Item(137035),
+  EchoesoftheGreatSundering        = Item(137074),
+  SmolderingHeart                  = Item(151819),
   GnawedThumbRing                  = Item(134526)
 };
 local I = Item.Shaman.Elemental;
@@ -105,17 +106,21 @@ local function APL()
     -- food
     -- augmentation
     -- snapshot_stats
-    -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
-      if AR.CastSuggested(I.ProlongedPower) then return ""; end
-    end
     -- totem_mastery
     if S.TotemMastery:IsCastableP() and (true) then
       if AR.Cast(S.TotemMastery) then return ""; end
     end
-    -- stormkeeper
-    if S.Stormkeeper:IsCastableP() and (true) then
-      if AR.Cast(S.Stormkeeper) then return ""; end
+    -- fire_elemental
+    if S.FireElemental:IsCastableP() and (true) then
+      if AR.Cast(S.FireElemental) then return ""; end
+    end
+    -- potion
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+      if AR.CastSuggested(I.ProlongedPower) then return ""; end
+    end
+    -- elemental_blast
+    if S.ElementalBlast:IsCastableP() and (true) then
+      if AR.Cast(S.ElementalBlast) then return ""; end
     end
   end
   local function Aoe()
@@ -181,20 +186,20 @@ local function APL()
     if S.FlameShock:IsCastableP() and (Player:Maelstrom() >= 20 and Target:DebuffRemainsP(S.FlameShock) <= S.AscendanceBuff:BaseDuration() and S.Ascendance:CooldownRemainsP() + S.AscendanceBuff:BaseDuration() <= S.FlameShock:BaseDuration()) then
       if AR.Cast(S.FlameShock) then return ""; end
     end
-    -- earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up
-    if S.Earthquake:IsCastableP() and (Player:BuffP(S.EchoesoftheGreatSunderingBuff) and not Player:BuffP(S.AscendanceBuff)) then
-      if AR.Cast(S.Earthquake) then return ""; end
-    end
     -- elemental_blast
     if S.ElementalBlast:IsCastableP() and (true) then
       if AR.Cast(S.ElementalBlast) then return ""; end
+    end
+    -- earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)
+    if S.Earthquake:IsCastableP() and (Player:BuffP(S.EchoesoftheGreatSunderingBuff) and not Player:BuffP(S.AscendanceBuff) and (Player:BuffP(S.EarthenStrengthBuff) or S.EchoesoftheGreatSunderingBuff:BaseDuration() <= 3 or Player:Maelstrom() >= 117)) then
+      if AR.Cast(S.Earthquake) then return ""; end
     end
     -- earth_shock,if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92
     if S.EarthShock:IsCastableP() and (Player:Maelstrom() >= 117 or not S.SwellingMaelstrom:ArtifactEnabled() and Player:Maelstrom() >= 92) then
       if AR.Cast(S.EarthShock) then return ""; end
     end
-    -- stormkeeper,if=raid_event.adds.count<3|raid_event.adds.in>50
-    if S.Stormkeeper:IsCastableP() and (0 < 3 or 10000000000 > 50) then
+    -- stormkeeper,if=(raid_event.adds.count<3|raid_event.adds.in>50)&time>5&!buff.ascendance.up
+    if S.Stormkeeper:IsCastableP() and ((0 < 3 or 10000000000 > 50) and AC.CombatTime() > 5 and not Player:BuffP(S.AscendanceBuff)) then
       if AR.Cast(S.Stormkeeper) then return ""; end
     end
     -- liquid_magma_totem,if=raid_event.adds.count<3|raid_event.adds.in>50
@@ -213,8 +218,12 @@ local function APL()
     if S.FlameShock:IsCastableP() and (Player:Maelstrom() >= 20 and Player:BuffP(S.ElementalFocusBuff)) then
       if AR.Cast(S.FlameShock) then return ""; end
     end
-    -- earth_shock,if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.smoldering_heart&equipped.the_deceivers_blood_pact&maelstrom>70&talent.aftershock.enabled
-    if S.EarthShock:IsCastableP() and (Player:Maelstrom() >= 111 or not S.SwellingMaelstrom:ArtifactEnabled() and Player:Maelstrom() >= 86 or I.SmolderingHeart:IsEquipped() and I.TheDeceiversBloodPact:IsEquipped() and Player:Maelstrom() > 70 and S.Aftershock:IsAvailable()) then
+    -- earthquake,if=buff.echoes_of_the_great_sundering.up&(maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.the_deceivers_blood_pact&maelstrom>85&talent.aftershock.enabled)
+    if S.Earthquake:IsCastableP() and (Player:BuffP(S.EchoesoftheGreatSunderingBuff) and (Player:Maelstrom() >= 111 or not S.SwellingMaelstrom:ArtifactEnabled() and Player:Maelstrom() >= 86 or I.TheDeceiversBloodPact:IsEquipped() and Player:Maelstrom() > 85 and S.Aftershock:IsAvailable())) then
+      if AR.Cast(S.Earthquake) then return ""; end
+    end
+    -- earth_shock,if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.the_deceivers_blood_pact&talent.aftershock.enabled&(maelstrom>85&equipped.echoes_of_the_great_sundering|maelstrom>70&equipped.smoldering_heart)
+    if S.EarthShock:IsCastableP() and (Player:Maelstrom() >= 111 or not S.SwellingMaelstrom:ArtifactEnabled() and Player:Maelstrom() >= 86 or I.TheDeceiversBloodPact:IsEquipped() and S.Aftershock:IsAvailable() and (Player:Maelstrom() > 85 and I.EchoesoftheGreatSundering:IsEquipped() or Player:Maelstrom() > 70 and I.SmolderingHeart:IsEquipped())) then
       if AR.Cast(S.EarthShock) then return ""; end
     end
     -- totem_mastery,if=buff.resonance_totem.remains<10|(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&cooldown.ascendance.remains<15)
@@ -255,13 +264,13 @@ local function APL()
     if S.FlameShock:IsCastableP() and (not Target:DebuffP(S.FlameShock) or Target:DebuffRemainsP(S.FlameShockDebuff) <= Player:GCD()) then
       if AR.Cast(S.FlameShock) then return ""; end
     end
-    -- earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up
-    if S.Earthquake:IsCastableP() and (Player:BuffP(S.EchoesoftheGreatSunderingBuff) and not Player:BuffP(S.AscendanceBuff)) then
-      if AR.Cast(S.Earthquake) then return ""; end
-    end
     -- elemental_blast
     if S.ElementalBlast:IsCastableP() and (true) then
       if AR.Cast(S.ElementalBlast) then return ""; end
+    end
+    -- earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)
+    if S.Earthquake:IsCastableP() and (Player:BuffP(S.EchoesoftheGreatSunderingBuff) and not Player:BuffP(S.AscendanceBuff) and (Player:BuffP(S.EarthenStrengthBuff) or S.EchoesoftheGreatSunderingBuff:BaseDuration() <= 3 or Player:Maelstrom() >= 117)) then
+      if AR.Cast(S.Earthquake) then return ""; end
     end
     -- earth_shock,if=(maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=92)&buff.earthen_strength.up
     if S.EarthShock:IsCastableP() and ((Player:Maelstrom() >= 111 or not S.SwellingMaelstrom:ArtifactEnabled() and Player:Maelstrom() >= 92) and Player:BuffP(S.EarthenStrengthBuff)) then
@@ -275,8 +284,8 @@ local function APL()
     if S.EarthShock:IsCastableP() and (Player:Maelstrom() >= 117 or not S.SwellingMaelstrom:ArtifactEnabled() and Player:Maelstrom() >= 92) then
       if AR.Cast(S.EarthShock) then return ""; end
     end
-    -- stormkeeper,if=raid_event.adds.count<3|raid_event.adds.in>50
-    if S.Stormkeeper:IsCastableP() and (0 < 3 or 10000000000 > 50) then
+    -- stormkeeper,if=(raid_event.adds.count<3|raid_event.adds.in>50)&!buff.ascendance.up
+    if S.Stormkeeper:IsCastableP() and ((0 < 3 or 10000000000 > 50) and not Player:BuffP(S.AscendanceBuff)) then
       if AR.Cast(S.Stormkeeper) then return ""; end
     end
     -- icefury,if=(raid_event.movement.in<5|maelstrom<=101&artifact.swelling_maelstrom.enabled|!artifact.swelling_maelstrom.enabled&maelstrom<=76)&!buff.ascendance.up
@@ -303,12 +312,16 @@ local function APL()
     if S.FlameShock:IsCastableP() and (Player:Maelstrom() >= 20 and Player:BuffP(S.ElementalFocusBuff)) then
       if AR.Cast(S.FlameShock) then return ""; end
     end
+    -- earthquake,if=buff.echoes_of_the_great_sundering.up&(maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.the_deceivers_blood_pact&maelstrom>85&talent.aftershock.enabled)
+    if S.Earthquake:IsCastableP() and (Player:BuffP(S.EchoesoftheGreatSunderingBuff) and (Player:Maelstrom() >= 111 or not S.SwellingMaelstrom:ArtifactEnabled() and Player:Maelstrom() >= 86 or I.TheDeceiversBloodPact:IsEquipped() and Player:Maelstrom() > 85 and S.Aftershock:IsAvailable())) then
+      if AR.Cast(S.Earthquake) then return ""; end
+    end
     -- frost_shock,moving=1,if=buff.icefury.up
     if S.FrostShock:IsCastableP() and (Player:BuffP(S.IcefuryBuff)) then
       if AR.Cast(S.FrostShock) then return ""; end
     end
-    -- earth_shock,if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.smoldering_heart&equipped.the_deceivers_blood_pact&maelstrom>70&talent.aftershock.enabled&buff.earthen_strength.up
-    if S.EarthShock:IsCastableP() and (Player:Maelstrom() >= 111 or not S.SwellingMaelstrom:ArtifactEnabled() and Player:Maelstrom() >= 86 or I.SmolderingHeart:IsEquipped() and I.TheDeceiversBloodPact:IsEquipped() and Player:Maelstrom() > 70 and S.Aftershock:IsAvailable() and Player:BuffP(S.EarthenStrengthBuff)) then
+    -- earth_shock,if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.the_deceivers_blood_pact&talent.aftershock.enabled&(maelstrom>85&equipped.echoes_of_the_great_sundering|maelstrom>70&equipped.smoldering_heart)
+    if S.EarthShock:IsCastableP() and (Player:Maelstrom() >= 111 or not S.SwellingMaelstrom:ArtifactEnabled() and Player:Maelstrom() >= 86 or I.TheDeceiversBloodPact:IsEquipped() and S.Aftershock:IsAvailable() and (Player:Maelstrom() > 85 and I.EchoesoftheGreatSundering:IsEquipped() or Player:Maelstrom() > 70 and I.SmolderingHeart:IsEquipped())) then
       if AR.Cast(S.EarthShock) then return ""; end
     end
     -- totem_mastery,if=buff.resonance_totem.remains<10
@@ -345,20 +358,20 @@ local function APL()
     if S.FlameShock:IsCastableP() and (not Target:DebuffP(S.FlameShock) or Target:DebuffRemainsP(S.FlameShockDebuff) <= Player:GCD()) then
       if AR.Cast(S.FlameShock) then return ""; end
     end
-    -- earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up
-    if S.Earthquake:IsCastableP() and (Player:BuffP(S.EchoesoftheGreatSunderingBuff) and not Player:BuffP(S.AscendanceBuff)) then
-      if AR.Cast(S.Earthquake) then return ""; end
-    end
     -- elemental_blast
     if S.ElementalBlast:IsCastableP() and (true) then
       if AR.Cast(S.ElementalBlast) then return ""; end
+    end
+    -- earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)
+    if S.Earthquake:IsCastableP() and (Player:BuffP(S.EchoesoftheGreatSunderingBuff) and not Player:BuffP(S.AscendanceBuff) and (Player:BuffP(S.EarthenStrengthBuff) or S.EchoesoftheGreatSunderingBuff:BaseDuration() <= 3 or Player:Maelstrom() >= 117)) then
+      if AR.Cast(S.Earthquake) then return ""; end
     end
     -- earth_shock,if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92
     if S.EarthShock:IsCastableP() and (Player:Maelstrom() >= 117 or not S.SwellingMaelstrom:ArtifactEnabled() and Player:Maelstrom() >= 92) then
       if AR.Cast(S.EarthShock) then return ""; end
     end
-    -- stormkeeper,if=raid_event.adds.count<3|raid_event.adds.in>50
-    if S.Stormkeeper:IsCastableP() and (0 < 3 or 10000000000 > 50) then
+    -- stormkeeper,if=(raid_event.adds.count<3|raid_event.adds.in>50)&!buff.ascendance.up
+    if S.Stormkeeper:IsCastableP() and ((0 < 3 or 10000000000 > 50) and not Player:BuffP(S.AscendanceBuff)) then
       if AR.Cast(S.Stormkeeper) then return ""; end
     end
     -- liquid_magma_totem,if=raid_event.adds.count<3|raid_event.adds.in>50
@@ -373,8 +386,12 @@ local function APL()
     if S.FlameShock:IsCastableP() and (Player:Maelstrom() >= 20 and Player:BuffP(S.ElementalFocusBuff)) then
       if AR.Cast(S.FlameShock) then return ""; end
     end
-    -- earth_shock,if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.smoldering_heart&equipped.the_deceivers_blood_pact&maelstrom>70&talent.aftershock.enabled
-    if S.EarthShock:IsCastableP() and (Player:Maelstrom() >= 111 or not S.SwellingMaelstrom:ArtifactEnabled() and Player:Maelstrom() >= 86 or I.SmolderingHeart:IsEquipped() and I.TheDeceiversBloodPact:IsEquipped() and Player:Maelstrom() > 70 and S.Aftershock:IsAvailable()) then
+    -- earthquake,if=buff.echoes_of_the_great_sundering.up&(maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.the_deceivers_blood_pact&maelstrom>85&talent.aftershock.enabled)
+    if S.Earthquake:IsCastableP() and (Player:BuffP(S.EchoesoftheGreatSunderingBuff) and (Player:Maelstrom() >= 111 or not S.SwellingMaelstrom:ArtifactEnabled() and Player:Maelstrom() >= 86 or I.TheDeceiversBloodPact:IsEquipped() and Player:Maelstrom() > 85 and S.Aftershock:IsAvailable())) then
+      if AR.Cast(S.Earthquake) then return ""; end
+    end
+    -- earth_shock,if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.the_deceivers_blood_pact&talent.aftershock.enabled&(maelstrom>85&equipped.echoes_of_the_great_sundering|maelstrom>70&equipped.smoldering_heart)
+    if S.EarthShock:IsCastableP() and (Player:Maelstrom() >= 111 or not S.SwellingMaelstrom:ArtifactEnabled() and Player:Maelstrom() >= 86 or I.TheDeceiversBloodPact:IsEquipped() and S.Aftershock:IsAvailable() and (Player:Maelstrom() > 85 and I.EchoesoftheGreatSundering:IsEquipped() or Player:Maelstrom() > 70 and I.SmolderingHeart:IsEquipped())) then
       if AR.Cast(S.EarthShock) then return ""; end
     end
     -- totem_mastery,if=buff.resonance_totem.remains<10|(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&cooldown.ascendance.remains<15)

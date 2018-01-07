@@ -24,9 +24,14 @@ Spell.Rogue.Assassination = {
   ApplyPoison                           = Spell(),
   Stealth                               = Spell(),
   MarkedForDeath                        = Spell(137619),
+  Envenom                               = Spell(32645),
+  EnvenomBuff                           = Spell(32645),
+  Exsanguinate                          = Spell(200806),
+  Exanguinate                           = Spell(),
+  Rupture                               = Spell(1943),
+  FanofKnives                           = Spell(51723),
   Hemorrhage                            = Spell(16511),
   RuptureDebuff                         = Spell(1943),
-  FanofKnives                           = Spell(51723),
   TheDreadlordsDeceitBuff               = Spell(208692),
   Mutilate                              = Spell(1329),
   DeadlyPoisonDotDebuff                 = Spell(177918),
@@ -36,10 +41,7 @@ Spell.Rogue.Assassination = {
   Berserking                            = Spell(26297),
   ArcaneTorrent                         = Spell(50613),
   KingsbaneDebuff                       = Spell(192759),
-  EnvenomBuff                           = Spell(32645),
   Vendetta                              = Spell(79140),
-  Exsanguinate                          = Spell(200806),
-  Rupture                               = Spell(1943),
   GarroteDebuff                         = Spell(703),
   SubterfugeBuff                        = Spell(108208),
   Nightstalker                          = Spell(14062),
@@ -47,7 +49,7 @@ Spell.Rogue.Assassination = {
   ShadowFocus                           = Spell(108209),
   ToxicBlade                            = Spell(245388),
   DeathFromAbove                        = Spell(152150),
-  Envenom                               = Spell(32645),
+  Anticipation                          = Spell(114015),
   DeeperStratagem                       = Spell(193531),
   SurgeofToxinsDebuff                   = Spell(192424),
   ElaboratePlanning                     = Spell(193640),
@@ -58,9 +60,9 @@ Spell.Rogue.Assassination = {
   Garrote                               = Spell(703),
   ToxicBladeDebuff                      = Spell(245389),
   UrgeToKill                            = Spell(),
-  Exanguinate                           = Spell(),
   PoolResource                          = Spell(9999000010),
-  VenomRush                             = Spell(152152)
+  VenomRush                             = Spell(152152),
+  PoisonKnives                          = Spell()
 };
 local S = Spell.Rogue.Assassination;
 
@@ -71,7 +73,8 @@ Item.Rogue.Assassination = {
   InsigniaofRavenholdt             = Item(137049),
   MantleoftheMasterAssassin        = Item(144236),
   DuskwalkersFootpads              = Item(137030),
-  ConvergenceofFates               = Item(140806)
+  ConvergenceofFates               = Item(140806),
+  ZoldyckFamilyTrainingShackles    = Item()
 };
 local I = Item.Rogue.Assassination;
 
@@ -87,6 +90,7 @@ local Settings = {
 };
 
 -- Variables
+local VarUseFokRotation = 0;
 local VarEnergyRegenCombined = 0;
 local VarEnergyTimeToMaxCombined = 0;
 
@@ -130,6 +134,28 @@ local function APL()
       if AR.Cast(S.MarkedForDeath) then return ""; end
     end
   end
+  local function Aoe()
+    -- envenom,if=!buff.envenom.up&combo_points>=cp_max_spend
+    if S.Envenom:IsCastableP() and (not Player:BuffP(S.EnvenomBuff) and Player:ComboPoints() >= cp_max_spend) then
+      if AR.Cast(S.Envenom) then return ""; end
+    end
+    -- call_action_list,name=kb,if=combo_points.deficit>=1+(mantle_duration>=0.2)&(!talent.exsanguinate.enabled|!cooldown.exanguinate.up|time>9)
+    if (Player:ComboPointsDeficit() >= 1 + num((mantle_duration >= 0.2)) and (not S.Exsanguinate:IsAvailable() or not S.Exanguinate:CooldownUpP() or AC.CombatTime() > 9)) then
+      local ShouldReturn = Kb(); if ShouldReturn then return ShouldReturn; end
+    end
+    -- rupture,cycle_targets=1,if=combo_points>=cp_max_spend&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>4
+    if S.Rupture:IsCastableP() and (Player:ComboPoints() >= cp_max_spend and Target:DebuffRefreshableCP(S.Rupture) and (pmultiplier <= 1 or Target:DebuffRemainsP(S.Rupture) <= S.Rupture:TickTime()) and (not bool(exsanguinated) or Target:DebuffRemainsP(S.Rupture) <= S.Rupture:TickTime() * 2) and Target:TimeToDie() - Target:DebuffRemainsP(S.Rupture) > 4) then
+      if AR.Cast(S.Rupture) then return ""; end
+    end
+    -- envenom,if=combo_points>=cp_max_spend
+    if S.Envenom:IsCastableP() and (Player:ComboPoints() >= cp_max_spend) then
+      if AR.Cast(S.Envenom) then return ""; end
+    end
+    -- fan_of_knives
+    if S.FanofKnives:IsCastableP() and (true) then
+      if AR.Cast(S.FanofKnives) then return ""; end
+    end
+  end
   local function Build()
     -- hemorrhage,if=refreshable
     if S.Hemorrhage:IsCastableP() and (Player:BuffRefreshableCP(S.Hemorrhage)) then
@@ -141,6 +167,10 @@ local function APL()
     end
     -- fan_of_knives,if=spell_targets>=2+equipped.insignia_of_ravenholdt|buff.the_dreadlords_deceit.stack>=29
     if S.FanofKnives:IsCastableP() and (Cache.EnemiesCount[10] >= 2 + num(I.InsigniaofRavenholdt:IsEquipped()) or Player:BuffStackP(S.TheDreadlordsDeceitBuff) >= 29) then
+      if AR.Cast(S.FanofKnives) then return ""; end
+    end
+    -- fan_of_knives,if=variable.use_fok_rotation
+    if S.FanofKnives:IsCastableP() and (bool(VarUseFokRotation)) then
       if AR.Cast(S.FanofKnives) then return ""; end
     end
     -- mutilate,cycle_targets=1,if=dot.deadly_poison_dot.refreshable
@@ -215,8 +245,8 @@ local function APL()
     if S.DeathFromAbove:IsCastableP() and (Player:ComboPoints() >= 5) then
       if AR.Cast(S.DeathFromAbove) then return ""; end
     end
-    -- envenom,if=combo_points>=4+(talent.deeper_stratagem.enabled&!set_bonus.tier19_4pc)&(debuff.vendetta.up|mantle_duration>=0.2|debuff.surge_of_toxins.remains<0.2|energy.deficit<=25+variable.energy_regen_combined)
-    if S.Envenom:IsCastableP() and (Player:ComboPoints() >= 4 + num((S.DeeperStratagem:IsAvailable() and not AC.Tier19_4Pc)) and (Target:DebuffP(S.VendettaDebuff) or mantle_duration >= 0.2 or Target:DebuffRemainsP(S.SurgeofToxinsDebuff) < 0.2 or Player:EnergyDeficit() <= 25 + VarEnergyRegenCombined)) then
+    -- envenom,if=(combo_points>=cp_max_spend|!talent.anticipation.enabled&combo_points>=4+(talent.deeper_stratagem.enabled&!set_bonus.tier19_4pc))&(debuff.vendetta.up|mantle_duration>=0.2|debuff.surge_of_toxins.remains<0.2|energy.deficit<=25+variable.energy_regen_combined)
+    if S.Envenom:IsCastableP() and ((Player:ComboPoints() >= cp_max_spend or not S.Anticipation:IsAvailable() and Player:ComboPoints() >= 4 + num((S.DeeperStratagem:IsAvailable() and not AC.Tier19_4Pc))) and (Target:DebuffP(S.VendettaDebuff) or mantle_duration >= 0.2 or Target:DebuffRemainsP(S.SurgeofToxinsDebuff) < 0.2 or Player:EnergyDeficit() <= 25 + VarEnergyRegenCombined)) then
       if AR.Cast(S.Envenom) then return ""; end
     end
     -- envenom,if=talent.elaborate_planning.enabled&combo_points>=3+!talent.exsanguinate.enabled&buff.elaborate_planning.remains<0.2
@@ -250,6 +280,10 @@ local function APL()
     -- garrote,cycle_targets=1,if=talent.subterfuge.enabled&stealthed.rogue&combo_points.deficit>=1&!set_bonus.tier20_4pc&remains<=10&pmultiplier<=1&!exsanguinated&target.time_to_die-remains>2
     if S.Garrote:IsCastableP() and (S.Subterfuge:IsAvailable() and bool(stealthed.rogue) and Player:ComboPointsDeficit() >= 1 and not AC.Tier20_4Pc and Target:DebuffRemainsP(S.Garrote) <= 10 and pmultiplier <= 1 and not bool(exsanguinated) and Target:TimeToDie() - Target:DebuffRemainsP(S.Garrote) > 2) then
       if AR.Cast(S.Garrote) then return ""; end
+    end
+    -- envenom,if=!buff.envenom.up&combo_points>=cp_max_spend&spell_targets.fan_of_knives>(2-variable.use_fok_rotation)
+    if S.Envenom:IsCastableP() and (not Player:BuffP(S.EnvenomBuff) and Player:ComboPoints() >= cp_max_spend and Cache.EnemiesCount[10] > (2 - VarUseFokRotation)) then
+      if AR.Cast(S.Envenom) then return ""; end
     end
     -- rupture,if=!talent.exsanguinate.enabled&combo_points>=3&!ticking&mantle_duration<=0.2&target.time_to_die>6
     if S.Rupture:IsCastableP() and (not S.Exsanguinate:IsAvailable() and Player:ComboPoints() >= 3 and not Target:DebuffP(S.Rupture) and mantle_duration <= 0.2 and Target:TimeToDie() > 6) then
@@ -292,9 +326,17 @@ local function APL()
   if (true) then
     VarEnergyTimeToMaxCombined = Player:EnergyDeficit() / VarEnergyRegenCombined
   end
+  -- variable,name=use_fok_rotation,value=fok_rotation&(dot.deadly_poison_dot.pmultiplier>1|artifact.poison_knives.rank>=5|equipped.zoldyck_family_training_shackles&target.health.pct<30)
+  if (true) then
+    VarUseFokRotation = num(bool(fok_rotation) and (dot.deadly_poison_dot.pmultiplier > 1 or S.PoisonKnives:ArtifactRank() >= 5 or I.ZoldyckFamilyTrainingShackles:IsEquipped() and Target:HealthPercentage() < 30))
+  end
   -- call_action_list,name=cds
   if (true) then
     local ShouldReturn = Cds(); if ShouldReturn then return ShouldReturn; end
+  end
+  -- run_action_list,name=aoe,if=spell_targets.fan_of_knives>(3-variable.use_fok_rotation)
+  if (Cache.EnemiesCount[10] > (3 - VarUseFokRotation)) then
+    return Aoe();
   end
   -- call_action_list,name=maintain
   if (true) then
