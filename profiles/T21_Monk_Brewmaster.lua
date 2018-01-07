@@ -27,16 +27,16 @@ Spell.Monk.Brewmaster = {
   FortifyingBrewBuff                    = Spell(115203),
   FortifyingBrew                        = Spell(115203),
   DampenHarmBuff                        = Spell(122278),
-  DiffuseMagicBuff                      = Spell(122783),
+  DiffuseMagicBuff                      = Spell(),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
   ExplodingKeg                          = Spell(214326),
   InvokeNiuzaotheBlackOx                = Spell(132578),
-  PurifyingBrew                         = Spell(),
+  PurifyingBrew                         = Spell(119582),
   IronskinBrew                          = Spell(115308),
   BlackoutComboBuff                     = Spell(228563),
   Brews                                 = Spell(115308),
-  LightBrewing                          = Spell(),
+  LightBrewing                          = Spell(196721),
   IronskinBrewBuff                      = Spell(215479),
   BlackOxBrew                           = Spell(115399),
   KegSmash                              = Spell(121253),
@@ -152,7 +152,7 @@ local function APL()
   end
   -- purifying_brew,if=stagger.heavy
   if S.PurifyingBrew:IsCastableP() and (bool(stagger.heavy)) then
-    if AR.Cast(S.PurifyingBrew) then return ""; end
+    if AR.Cast(S.PurifyingBrew, Settings.Brewmaster.OffGCDasOffGCD.PurifyingBrew) then return ""; end
   end
   -- ironskin_brew,if=buff.blackout_combo.down&cooldown.brews.charges_fractional>=1.9+talent.light_brewing.enabled&buff.ironskin_brew.remains<=buff.ironskin_brew.duration*3
   if S.IronskinBrew:IsCastableP() and (Player:BuffDownP(S.BlackoutComboBuff) and S.Brews:ChargesFractional() >= 1.9 + num(S.LightBrewing:IsAvailable()) and Player:BuffRemainsP(S.IronskinBrewBuff) <= S.IronskinBrewBuff:BaseDuration() * 3) then
@@ -179,7 +179,7 @@ local function APL()
     if AR.Cast(S.BlackoutStrike) then return ""; end
   end
   -- keg_smash
-  if S.KegSmash:IsUsable() and (true) then
+  if S.KegSmash:IsCastableP() and (true) then
     if AR.Cast(S.KegSmash) then return ""; end
   end
   -- breath_of_fire,if=(buff.bloodlust.down&buff.blackout_combo.down)|(buff.bloodlust.up&buff.blackout_combo.down&dot.breath_of_fire_dot.remains<=0)
