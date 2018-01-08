@@ -167,10 +167,12 @@ class ConditionExpression:
         first_symbol_index = symbols_indexes.index(min(symbols_indexes))
         return valid_symbols[first_symbol_index]
 
-    def has_symbol_in(self, symbols):
+    def has_symbol_in(self, symbols, unary=False):
         """
         Retun true if any symbol in symbols is in the condition expression.
         """
+        if unary:
+            return any(self.simc.startswith(symbol) for symbol in symbols)
         return any(symbol in self.simc for symbol in symbols)
 
     def grow(self):
@@ -193,7 +195,7 @@ class ConditionExpression:
             tree = self.grow_binary_tree(symbol)
         elif '!' in self.simc:
             tree = self.grow_unary_tree('!')
-        elif self.has_symbol_in(FUNCTION_OPERATORS):
+        elif self.has_symbol_in(FUNCTION_OPERATORS, unary=True):
             symbol = self.extract_first_operator(
                 FUNCTION_OPERATORS, unary=True)
             tree = self.grow_unary_tree(symbol)
