@@ -61,8 +61,7 @@ Spell.Rogue.Assassination = {
   ToxicBladeDebuff                      = Spell(245389),
   UrgeToKill                            = Spell(),
   PoolResource                          = Spell(9999000010),
-  VenomRush                             = Spell(152152),
-  PoisonKnives                          = Spell()
+  VenomRush                             = Spell(152152)
 };
 local S = Spell.Rogue.Assassination;
 
@@ -73,8 +72,7 @@ Item.Rogue.Assassination = {
   InsigniaofRavenholdt             = Item(137049),
   MantleoftheMasterAssassin        = Item(144236),
   DuskwalkersFootpads              = Item(137030),
-  ConvergenceofFates               = Item(140806),
-  ZoldyckFamilyTrainingShackles    = Item()
+  ConvergenceofFates               = Item(140806)
 };
 local I = Item.Rogue.Assassination;
 
@@ -90,7 +88,6 @@ local Settings = {
 };
 
 -- Variables
-local VarUseFokRotation = 0;
 local VarEnergyRegenCombined = 0;
 local VarEnergyTimeToMaxCombined = 0;
 
@@ -165,12 +162,12 @@ local function APL()
     if S.Hemorrhage:IsCastableP() and (Player:BuffRefreshableCP(S.Hemorrhage) and Target:DebuffP(S.RuptureDebuff) and Cache.EnemiesCount[10] < 2 + num(I.InsigniaofRavenholdt:IsEquipped())) then
       if AR.Cast(S.Hemorrhage) then return ""; end
     end
-    -- fan_of_knives,if=spell_targets>=2+equipped.insignia_of_ravenholdt|buff.the_dreadlords_deceit.stack>=29
-    if S.FanofKnives:IsCastableP() and (Cache.EnemiesCount[10] >= 2 + num(I.InsigniaofRavenholdt:IsEquipped()) or Player:BuffStackP(S.TheDreadlordsDeceitBuff) >= 29) then
+    -- fan_of_knives,if=spell_targets>1+equipped.insignia_of_ravenholdt|buff.the_dreadlords_deceit.stack>=29
+    if S.FanofKnives:IsCastableP() and (Cache.EnemiesCount[10] > 1 + num(I.InsigniaofRavenholdt:IsEquipped()) or Player:BuffStackP(S.TheDreadlordsDeceitBuff) >= 29) then
       if AR.Cast(S.FanofKnives) then return ""; end
     end
-    -- fan_of_knives,if=variable.use_fok_rotation
-    if S.FanofKnives:IsCastableP() and (bool(VarUseFokRotation)) then
+    -- fan_of_knives,if=fok_rotation
+    if S.FanofKnives:IsCastableP() and (bool(fok_rotation)) then
       if AR.Cast(S.FanofKnives) then return ""; end
     end
     -- mutilate,cycle_targets=1,if=dot.deadly_poison_dot.refreshable
@@ -215,8 +212,8 @@ local function APL()
     if S.Exsanguinate:IsCastableP() and (AC.Tier20_4Pc and Target:DebuffRemainsP(S.GarroteDebuff) > 20 and Target:DebuffRemainsP(S.RuptureDebuff) > 4 + 4 * cp_max_spend) then
       if AR.Cast(S.Exsanguinate) then return ""; end
     end
-    -- vanish,if=talent.nightstalker.enabled&combo_points>=cp_max_spend&!talent.exsanguinate.enabled&mantle_duration=0&((equipped.mantle_of_the_master_assassin&set_bonus.tier19_4pc)|((!equipped.mantle_of_the_master_assassin|!set_bonus.tier19_4pc)&(dot.rupture.refreshable|debuff.vendetta.up)))
-    if S.Vanish:IsCastableP() and (S.Nightstalker:IsAvailable() and Player:ComboPoints() >= cp_max_spend and not S.Exsanguinate:IsAvailable() and mantle_duration == 0 and ((I.MantleoftheMasterAssassin:IsEquipped() and AC.Tier19_4Pc) or ((not I.MantleoftheMasterAssassin:IsEquipped() or not AC.Tier19_4Pc) and (Target:DebuffRefreshableCP(S.RuptureDebuff) or Target:DebuffP(S.VendettaDebuff))))) then
+    -- vanish,if=talent.nightstalker.enabled&combo_points>=cp_max_spend&!talent.exsanguinate.enabled&mantle_duration=0&((equipped.mantle_of_the_master_assassin&set_bonus.tier19_4pc)|((!equipped.mantle_of_the_master_assassin|!set_bonus.tier19_4pc)&debuff.vendetta.up))
+    if S.Vanish:IsCastableP() and (S.Nightstalker:IsAvailable() and Player:ComboPoints() >= cp_max_spend and not S.Exsanguinate:IsAvailable() and mantle_duration == 0 and ((I.MantleoftheMasterAssassin:IsEquipped() and AC.Tier19_4Pc) or ((not I.MantleoftheMasterAssassin:IsEquipped() or not AC.Tier19_4Pc) and Target:DebuffP(S.VendettaDebuff)))) then
       if AR.Cast(S.Vanish) then return ""; end
     end
     -- vanish,if=talent.nightstalker.enabled&combo_points>=cp_max_spend&talent.exsanguinate.enabled&cooldown.exsanguinate.remains<1&(dot.rupture.ticking|time>10)
@@ -281,10 +278,6 @@ local function APL()
     if S.Garrote:IsCastableP() and (S.Subterfuge:IsAvailable() and bool(stealthed.rogue) and Player:ComboPointsDeficit() >= 1 and not AC.Tier20_4Pc and Target:DebuffRemainsP(S.Garrote) <= 10 and pmultiplier <= 1 and not bool(exsanguinated) and Target:TimeToDie() - Target:DebuffRemainsP(S.Garrote) > 2) then
       if AR.Cast(S.Garrote) then return ""; end
     end
-    -- envenom,if=!buff.envenom.up&combo_points>=cp_max_spend&spell_targets.fan_of_knives>(2-variable.use_fok_rotation)
-    if S.Envenom:IsCastableP() and (not Player:BuffP(S.EnvenomBuff) and Player:ComboPoints() >= cp_max_spend and Cache.EnemiesCount[10] > (2 - VarUseFokRotation)) then
-      if AR.Cast(S.Envenom) then return ""; end
-    end
     -- rupture,if=!talent.exsanguinate.enabled&combo_points>=3&!ticking&mantle_duration<=0.2&target.time_to_die>6
     if S.Rupture:IsCastableP() and (not S.Exsanguinate:IsAvailable() and Player:ComboPoints() >= 3 and not Target:DebuffP(S.Rupture) and mantle_duration <= 0.2 and Target:TimeToDie() > 6) then
       if AR.Cast(S.Rupture) then return ""; end
@@ -326,16 +319,12 @@ local function APL()
   if (true) then
     VarEnergyTimeToMaxCombined = Player:EnergyDeficit() / VarEnergyRegenCombined
   end
-  -- variable,name=use_fok_rotation,value=fok_rotation&(dot.deadly_poison_dot.pmultiplier>1|artifact.poison_knives.rank>=5|equipped.zoldyck_family_training_shackles&target.health.pct<30)
-  if (true) then
-    VarUseFokRotation = num(bool(fok_rotation) and (dot.deadly_poison_dot.pmultiplier > 1 or S.PoisonKnives:ArtifactRank() >= 5 or I.ZoldyckFamilyTrainingShackles:IsEquipped() and Target:HealthPercentage() < 30))
-  end
   -- call_action_list,name=cds
   if (true) then
     local ShouldReturn = Cds(); if ShouldReturn then return ShouldReturn; end
   end
-  -- run_action_list,name=aoe,if=spell_targets.fan_of_knives>(3-variable.use_fok_rotation)
-  if (Cache.EnemiesCount[10] > (3 - VarUseFokRotation)) then
+  -- run_action_list,name=aoe,if=spell_targets.fan_of_knives>2
+  if (Cache.EnemiesCount[10] > 2) then
     return Aoe();
   end
   -- call_action_list,name=maintain

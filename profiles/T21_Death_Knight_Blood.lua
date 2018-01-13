@@ -44,7 +44,8 @@ Spell.DeathKnight.Blood = {
   VampiricBloodBuff                     = Spell(55233),
   DancingRuneWeapon                     = Spell(49028),
   VampiricBlood                         = Spell(55233),
-  Trinket                               = Spell()
+  Trinket                               = Spell(),
+  Tombstone                             = Spell()
 };
 local S = Spell.DeathKnight.Blood;
 
@@ -195,6 +196,10 @@ local function APL()
   -- vampiric_blood,if=!equipped.archimondes_hatred_reborn|cooldown.trinket.ready
   if S.VampiricBlood:IsCastableP() and (not I.ArchimondesHatredReborn:IsEquipped() or S.Trinket:CooldownUpP()) then
     if AR.Cast(S.VampiricBlood) then return ""; end
+  end
+  -- tombstone,if=buff.bone_shield.stack>=7
+  if S.Tombstone:IsCastableP() and (Player:BuffStackP(S.BoneShieldBuff) >= 7) then
+    if AR.Cast(S.Tombstone) then return ""; end
   end
   -- call_action_list,name=standard
   if (true) then

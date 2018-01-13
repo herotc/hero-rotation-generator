@@ -70,7 +70,7 @@ local Settings = {
 
 -- Variables
 
-local EnemyRanges = {}
+local EnemyRanges = {8}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do
     AC.GetEnemies(i);
@@ -157,28 +157,32 @@ local function APL()
   if S.BlackOxBrew:IsCastableP() and (bool(incoming_damage_1500ms) and bool(stagger.heavy) and S.Brews:ChargesFractional() <= 0.75) then
     if AR.Cast(S.BlackOxBrew, Settings.Brewmaster.OffGCDasOffGCD.BlackOxBrew) then return ""; end
   end
-  -- black_ox_brew,if=(energy+(energy.regen*(cooldown.keg_smash.remains)))<40&buff.blackout_combo.down&cooldown.keg_smash.up
-  if S.BlackOxBrew:IsCastableP() and ((Player:Energy() + (Player:EnergyRegen() * (S.KegSmash:CooldownRemainsP()))) < 40 and Player:BuffDownP(S.BlackoutComboBuff) and S.KegSmash:CooldownUpP()) then
+  -- black_ox_brew,if=(energy+(energy.regen*cooldown.keg_smash.remains))<40&buff.blackout_combo.down&cooldown.keg_smash.up
+  if S.BlackOxBrew:IsCastableP() and ((Player:Energy() + (Player:EnergyRegen() * S.KegSmash:CooldownRemainsP())) < 40 and Player:BuffDownP(S.BlackoutComboBuff) and S.KegSmash:CooldownUpP()) then
     if AR.Cast(S.BlackOxBrew, Settings.Brewmaster.OffGCDasOffGCD.BlackOxBrew) then return ""; end
   end
   -- arcane_torrent,if=energy<31
   if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (Player:Energy() < 31) then
     if AR.Cast(S.ArcaneTorrent, Settings.Brewmaster.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
   end
+  -- keg_smash,if=spell_targets>=3
+  if S.KegSmash:IsCastableP() and (Cache.EnemiesCount[8] >= 3) then
+    if AR.Cast(S.KegSmash) then return ""; end
+  end
   -- tiger_palm,if=buff.blackout_combo.up
   if S.TigerPalm:IsCastableP() and (Player:BuffP(S.BlackoutComboBuff)) then
     if AR.Cast(S.TigerPalm) then return ""; end
-  end
-  -- blackout_strike,if=cooldown.keg_smash.remains>0
-  if S.BlackoutStrike:IsCastableP() and (S.KegSmash:CooldownRemainsP() > 0) then
-    if AR.Cast(S.BlackoutStrike) then return ""; end
   end
   -- keg_smash
   if S.KegSmash:IsCastableP() and (true) then
     if AR.Cast(S.KegSmash) then return ""; end
   end
-  -- breath_of_fire,if=(buff.bloodlust.down&buff.blackout_combo.down)|(buff.bloodlust.up&buff.blackout_combo.down&dot.breath_of_fire_dot.remains<=0)
-  if S.BreathofFire:IsCastableP() and ((Player:HasNotHeroism() and Player:BuffDownP(S.BlackoutComboBuff)) or (Player:HasHeroism() and Player:BuffDownP(S.BlackoutComboBuff) and Target:DebuffRemainsP(S.BreathofFireDotDebuff) <= 0)) then
+  -- blackout_strike
+  if S.BlackoutStrike:IsCastableP() and (true) then
+    if AR.Cast(S.BlackoutStrike) then return ""; end
+  end
+  -- breath_of_fire,if=buff.blackout_combo.down&(buff.bloodlust.down|(buff.bloodlust.up&&dot.breath_of_fire_dot.refreshable))
+  if S.BreathofFire:IsCastableP() and (Player:BuffDownP(S.BlackoutComboBuff) and (Player:HasNotHeroism() or (Player:HasHeroism() and true and Target:DebuffRefreshableCP(S.BreathofFireDotDebuff)))) then
     if AR.Cast(S.BreathofFire) then return ""; end
   end
   -- rushing_jade_wind
@@ -193,8 +197,8 @@ local function APL()
   if S.ChiWave:IsCastableP() and (true) then
     if AR.Cast(S.ChiWave) then return ""; end
   end
-  -- tiger_palm,if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=55
-  if S.TigerPalm:IsCastableP() and (not S.BlackoutCombo:IsAvailable() and S.KegSmash:CooldownRemainsP() >= Player:GCD() and (Player:Energy() + (Player:EnergyRegen() * (S.KegSmash:CooldownRemainsP()))) >= 55) then
+  -- tiger_palm,if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+gcd)))>=55
+  if S.TigerPalm:IsCastableP() and (not S.BlackoutCombo:IsAvailable() and S.KegSmash:CooldownRemainsP() > Player:GCD() and (Player:Energy() + (Player:EnergyRegen() * (S.KegSmash:CooldownRemainsP() + Player:GCD()))) >= 55) then
     if AR.Cast(S.TigerPalm) then return ""; end
   end
 end

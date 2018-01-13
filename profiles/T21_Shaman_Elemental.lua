@@ -83,7 +83,7 @@ local Settings = {
 
 -- Variables
 
-local EnemyRanges = {40}
+local EnemyRanges = {5, 40}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do
     AC.GetEnemies(i);
@@ -148,9 +148,13 @@ local function APL()
     if S.LavaBurst:IsCastableP() and (Target:DebuffRemainsP(S.FlameShockDebuff) > S.LavaBurst:CastTime() and Player:BuffP(S.LavaSurgeBuff) and not S.LightningRod:IsAvailable() and Cache.EnemiesCount[40] < 4) then
       if AR.Cast(S.LavaBurst) then return ""; end
     end
-    -- elemental_blast,if=!talent.lightning_rod.enabled&spell_targets.chain_lightning<5|talent.lightning_rod.enabled&spell_targets.chain_lightning<4
-    if S.ElementalBlast:IsCastableP() and (not S.LightningRod:IsAvailable() and Cache.EnemiesCount[40] < 5 or S.LightningRod:IsAvailable() and Cache.EnemiesCount[40] < 4) then
+    -- elemental_blast,if=!talent.lightning_rod.enabled&spell_targets.chain_lightning<4
+    if S.ElementalBlast:IsCastableP() and (not S.LightningRod:IsAvailable() and Cache.EnemiesCount[40] < 4) then
       if AR.Cast(S.ElementalBlast) then return ""; end
+    end
+    -- lava_beam,target_if=debuff.lightning_rod.down
+    if S.LavaBeam:IsCastableP() and (true) then
+      if AR.Cast(S.LavaBeam) then return ""; end
     end
     -- lava_beam
     if S.LavaBeam:IsCastableP() and (true) then
@@ -190,8 +194,8 @@ local function APL()
     if S.ElementalBlast:IsCastableP() and (true) then
       if AR.Cast(S.ElementalBlast) then return ""; end
     end
-    -- earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)
-    if S.Earthquake:IsCastableP() and (Player:BuffP(S.EchoesoftheGreatSunderingBuff) and not Player:BuffP(S.AscendanceBuff) and (Player:BuffP(S.EarthenStrengthBuff) or S.EchoesoftheGreatSunderingBuff:BaseDuration() <= 3 or Player:Maelstrom() >= 117)) then
+    -- earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)|!buff.ascendance.up&buff.earthen_strength.up&spell_targets.earthquake>1
+    if S.Earthquake:IsCastableP() and (Player:BuffP(S.EchoesoftheGreatSunderingBuff) and not Player:BuffP(S.AscendanceBuff) and (Player:BuffP(S.EarthenStrengthBuff) or S.EchoesoftheGreatSunderingBuff:BaseDuration() <= 3 or Player:Maelstrom() >= 117) or not Player:BuffP(S.AscendanceBuff) and Player:BuffP(S.EarthenStrengthBuff) and Cache.EnemiesCount[5] > 1) then
       if AR.Cast(S.Earthquake) then return ""; end
     end
     -- earth_shock,if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92
@@ -268,8 +272,8 @@ local function APL()
     if S.ElementalBlast:IsCastableP() and (true) then
       if AR.Cast(S.ElementalBlast) then return ""; end
     end
-    -- earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)
-    if S.Earthquake:IsCastableP() and (Player:BuffP(S.EchoesoftheGreatSunderingBuff) and not Player:BuffP(S.AscendanceBuff) and (Player:BuffP(S.EarthenStrengthBuff) or S.EchoesoftheGreatSunderingBuff:BaseDuration() <= 3 or Player:Maelstrom() >= 117)) then
+    -- earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)|!buff.ascendance.up&buff.earthen_strength.up&spell_targets.earthquake>1
+    if S.Earthquake:IsCastableP() and (Player:BuffP(S.EchoesoftheGreatSunderingBuff) and not Player:BuffP(S.AscendanceBuff) and (Player:BuffP(S.EarthenStrengthBuff) or S.EchoesoftheGreatSunderingBuff:BaseDuration() <= 3 or Player:Maelstrom() >= 117) or not Player:BuffP(S.AscendanceBuff) and Player:BuffP(S.EarthenStrengthBuff) and Cache.EnemiesCount[5] > 1) then
       if AR.Cast(S.Earthquake) then return ""; end
     end
     -- earth_shock,if=(maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=92)&buff.earthen_strength.up
@@ -362,8 +366,8 @@ local function APL()
     if S.ElementalBlast:IsCastableP() and (true) then
       if AR.Cast(S.ElementalBlast) then return ""; end
     end
-    -- earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)
-    if S.Earthquake:IsCastableP() and (Player:BuffP(S.EchoesoftheGreatSunderingBuff) and not Player:BuffP(S.AscendanceBuff) and (Player:BuffP(S.EarthenStrengthBuff) or S.EchoesoftheGreatSunderingBuff:BaseDuration() <= 3 or Player:Maelstrom() >= 117)) then
+    -- earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)|!buff.ascendance.up&buff.earthen_strength.up&spell_targets.earthquake>1
+    if S.Earthquake:IsCastableP() and (Player:BuffP(S.EchoesoftheGreatSunderingBuff) and not Player:BuffP(S.AscendanceBuff) and (Player:BuffP(S.EarthenStrengthBuff) or S.EchoesoftheGreatSunderingBuff:BaseDuration() <= 3 or Player:Maelstrom() >= 117) or not Player:BuffP(S.AscendanceBuff) and Player:BuffP(S.EarthenStrengthBuff) and Cache.EnemiesCount[5] > 1) then
       if AR.Cast(S.Earthquake) then return ""; end
     end
     -- earth_shock,if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92
