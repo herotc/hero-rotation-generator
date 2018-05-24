@@ -6,9 +6,7 @@ Define the objects representing simc executions.
 """
 
 from .lua import LuaNamed, LuaTyped, LuaCastable, LuaExpression, Literal, Method
-from .demonhunter import havoc_melee_condition
-from .druid import guardian_swipe_thrash_value
-from .constants import (IGNORED_EXECUTIONS, SPELL, BUFF, DEBUFF, USABLE,
+from .constants import (IGNORED_EXECUTIONS, SPELL, BUFF, DEBUFF, USABLE, MELEE,
                         INTERRUPT, CD, GCDAOGCD, OGCDAOGCD, NUM, BOOL, FALSE)
 
 
@@ -163,12 +161,19 @@ class Spell(LuaNamed, LuaCastable):
         DEBUFF: 'Debuff',
     }
 
-    @havoc_melee_condition
     def __init__(self, action, simc, type_=SPELL):
         super().__init__(simc)
         self.type_ = type_
         # Castable
         LuaCastable.__init__(self)
+        self.custom_init(action)
+        # Main
+        self.action = action
+        self.ignored = simc in IGNORED_EXECUTIONS
+        if not self.ignored:
+            self.action.context.add_spell(self)
+    
+    def custom_init(self, action):
         if action.player.spell_property(self, USABLE):
             self.condition_method = Method('IsUsable', type_=BOOL)
         else:
@@ -182,10 +187,10 @@ class Spell(LuaNamed, LuaCastable):
                 Literal('Settings.General.InterruptEnabled'))
             self.additional_conditions.append(
                 LuaExpression(action.target, Method('IsInterruptible'), []))
-
-        if action.player.spell_property(self, INTERRUPT):
             self.cast_method = Method('AR.CastAnnotated')
-
+            self.cast_args.append(Literal(FALSE))
+            self.cast_args.append(
+                Literal(INTERRUPT, convert=True, quoted=True))
         if action.player.spell_property(self, GCDAOGCD):
             self.cast_args.append(Literal(
                 f'Settings.{action.player.spec.lua_name()}.'
@@ -194,14 +199,6 @@ class Spell(LuaNamed, LuaCastable):
             self.cast_args.append(Literal(
                 f'Settings.{action.player.spec.lua_name()}.'
                 f'OffGCDasOffGCD.{self.lua_name()}'))
-        if action.player.spell_property(self, INTERRUPT):
-            self.cast_args.append(Literal(FALSE))
-            self.cast_args.append(Literal(INTERRUPT, convert=True, quoted=True))
-        # Main
-        self.action = action
-        self.ignored = simc in IGNORED_EXECUTIONS
-        if not self.ignored:
-            self.action.context.add_spell(self)
 
     def lua_name(self):
         return f'{super().lua_name()}{self.TYPE_SUFFIX[self.type_]}'
@@ -214,7 +211,6 @@ class Spell(LuaNamed, LuaCastable):
             return ''
         return super().print_cast()
 
-    @guardian_swipe_thrash_value
     def print_lua(self):
         """
         Print the lua expression for the spell.

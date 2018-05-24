@@ -10,7 +10,7 @@ from .conditions import ConditionExpression
 from .executions import (Spell, Item, Potion, Variable, CancelBuff,
                          RunActionList, CallActionList)
 from .helpers import indent, convert_type
-from .mage import arcane_burn_phase
+from .decoratormanager import Decorable
 from .constants import (SPELL, ITEM, POTION, VARIABLE, CANCEL_BUFF,
                         USE_ITEM, RUN_ACTION_LIST, CALL_ACTION_LIST,
                         ITEM_ACTIONS, BOOL, NUM)
@@ -218,7 +218,7 @@ class Action:
         return lua_string
 
 
-class Execution:
+class Execution(Decorable):
     """
     Represent an execution, what to do in a specific situation during the
     simulation.
@@ -228,7 +228,6 @@ class Execution:
         self.action = action
         self.execution = execution
 
-    @arcane_burn_phase
     def switch_type(self):
         """
         Return the couple type, object of the execution depending on its value.

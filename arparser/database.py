@@ -86,3 +86,10 @@ for class_ in CLASSES:
 CLASS_FUNCTIONS = {}
 for class_ in CLASSES:
     CLASS_FUNCTIONS.update(class_.CLASS_FUNCTIONS)
+
+DECORATORS = {}
+for class_ in CLASSES:
+    try:
+        DECORATORS.update(class_.DECORATORS)
+    except AttributeError:
+        pass

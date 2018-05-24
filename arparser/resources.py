@@ -6,9 +6,7 @@ Define the objects representing simc resources expressions.
 """
 
 
-from .lua import BuildExpression, Literal, Method
-from .druid import balance_astral_power_value
-from .warlock import warlock_soul_shard_value
+from .lua import Literal, Method, BuildExpression
 
 
 class Resource(BuildExpression):
@@ -93,10 +91,6 @@ class AstralPower(Resource):
     def __init__(self, condition):
         super().__init__(condition, 'astral_power')
 
-    @balance_astral_power_value
-    def value(self):
-        return super().value()
-
 
 class HolyPower(Resource):
     """
@@ -168,10 +162,6 @@ class SoulShard(Resource):
 
     def __init__(self, condition):
         super().__init__(condition, 'soul_shard')
-
-    @warlock_soul_shard_value
-    def value(self):
-        return super().value()
 
 
 class ArcaneCharges(Resource):

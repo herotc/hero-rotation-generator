@@ -9,10 +9,10 @@ import os
 from functools import reduce
 
 from .lua import LuaNamed, Literal
-from .mage import arcane_burn_phase_variables
+from .decoratormanager import decorating_manager
 from .constants import RANGE
 from .database import (CLASS_SPECS, RACES, SPELL_INFO, COMMON, DEFAULT_POTION,
-                       CLASS_FUNCTIONS)
+                       CLASS_FUNCTIONS, DECORATORS)
 
 
 class Unit:
@@ -46,6 +46,8 @@ class Player(Unit, LuaNamed):
         self.spells = None
         self.funs = None
         self.range_ = None
+        for decorator in DECORATORS.get(simc, []):
+            decorating_manager.register(**decorator)
 
     def potion(self):
         """
@@ -54,7 +56,6 @@ class Player(Unit, LuaNamed):
         return self.spec.potion()
 
 
-    @arcane_burn_phase_variables
     def set_spec(self, spec):
         """
         Sets the spec of the player.

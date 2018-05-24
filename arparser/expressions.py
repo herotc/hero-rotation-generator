@@ -5,21 +5,15 @@ Define the objects representing simc expressions.
 @author: skasch
 """
 
-from .lua import LuaExpression, BuildExpression, Method, Literal
+from .lua import LuaExpression, Method, Literal, BuildExpression
 from .executions import Spell, Item, Potion, Variable
 from .resources import (Rune, AstralPower, HolyPower, Insanity, Pain, Focus,
                         Maelstrom, Energy, ComboPoints, SoulShard,
                         ArcaneCharges, Chi, RunicPower, Fury, Rage, Mana)
 from .units import Pet
-from .demonhunter import (havoc_extended_by_demonic_buff,
-                          havoc_metamorphosis_cooldown)
-from .hunter import (marksmanship_lowest_vuln_within,
-                     marksmanship_debuff_ready,
-                     marksmanship_debuff_remains)
-from .mage import arcane_burn_expressions, arcane_max_stack
-from .warlock import affliction_active_uas_stack
 from .constants import (SPELL, BUFF, DEBUFF, BOOL, PET, BLOODLUST, RANGE,
                         FALSE, MAX_INT, POTION)
+from .decoratormanager import Decorable
 
 
 class ActionExpression(BuildExpression):
@@ -251,7 +245,7 @@ class ActionExpression(BuildExpression):
         self.from_aura()
 
 
-class Expression:
+class Expression(Decorable):
     """
     Represent a singleton condition (i.e. without any operator).
     """
@@ -276,7 +270,6 @@ class Expression:
         """
         return self.simc.split('.')
 
-    @arcane_burn_expressions
     def expression(self):
         """
         Return the expression of the condition.
@@ -532,13 +525,6 @@ class Expression:
         Return the condition when the prefix is variable.
         """
         return Variable(self.parent_action, self.condition_list[1])
-
-    @marksmanship_lowest_vuln_within
-    def lowest_vuln_within(self):
-        """
-        Return the condition when the prefix is lowest_vuln_within.
-        """
-        pass
 
 
 class Expires:
@@ -893,14 +879,6 @@ class Debuff(BuildExpression, Aura):
         call = condition.condition_list[2]
         super().__init__(call)
 
-    @marksmanship_debuff_ready
-    def ready(self):
-        Aura.ready(self)
-
-    @marksmanship_debuff_remains
-    def remains(self):
-        Aura.remains(self)
-
 
 class Dot(Debuff):
     """
@@ -943,24 +921,6 @@ class Buff(BuildExpression, Aura):
         call = condition.condition_list[2]
         super().__init__(call)
 
-    @affliction_active_uas_stack
-    def stack(self):
-        super().stack()
-
-    @havoc_extended_by_demonic_buff
-    def extended_by_demonic(self):
-        """
-        Return the arguments for the expression buff.spell.extended_by_demonic.
-        """
-        pass
-
-    @arcane_max_stack
-    def max_stack(self):
-        """
-        Return the arguments for the expression buff.spell.max_stack.
-        """
-        pass
-
 
 class Cooldown(BuildExpression, Expires):
     """
@@ -997,13 +957,6 @@ class Cooldown(BuildExpression, Expires):
         cooldown.spell.charges_fractional.
         """
         self.method = Method('ChargesFractional')
-
-    @havoc_metamorphosis_cooldown
-    def adjusted_remains(self):
-        """
-        Return the arguments for the expression cooldown.spell.adjusted_remains.
-        """
-        pass
 
 
 class RaidEvent(BuildExpression):

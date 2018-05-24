@@ -5,9 +5,6 @@ Druid specific constants and functions.
 @author: skasch
 """
 
-import copy
-
-from .expressions import Method
 from .constants import SPELL, BUFF, DEBUFF, COMMON, RANGE
 
 DRUID = 'druid'
@@ -230,6 +227,7 @@ def balance_astral_power_value(fun):
     """
     Replaces the astral_power expression with a call to FutureAstralPower.
     """
+    from .expressions import Method
 
     def value(self):
         """
@@ -266,6 +264,7 @@ def guardian_print_swipe_thrash(fun):
     Modify the function to add a spell to take into account the fact that swipe
     and thrash are two different spells for guardian.
     """
+    import copy
 
     def add_spell(self, spell):
         """
@@ -283,3 +282,23 @@ def guardian_print_swipe_thrash(fun):
             fun(self, spell)
 
     return add_spell
+
+DECORATORS = {
+    DRUID: [
+        {
+            'class_name': 'AstralPower',
+            'method': 'value',
+            'decorator': balance_astral_power_value,
+        },
+        {
+            'class_name': 'Spell',
+            'method': 'print_lua',
+            'decorator': guardian_swipe_thrash_value,
+        },
+        {
+            'class_name': 'Context',
+            'method': 'add_spell',
+            'decorator': guardian_print_swipe_thrash,
+        },
+    ],
+}

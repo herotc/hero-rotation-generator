@@ -7,7 +7,6 @@ Warlock specific constants and functions.
 
 import os
 
-from .lua import Method
 from .constants import COMMON, SPELL, BUFF, DEBUFF, RANGE
 
 WARLOCK = 'warlock'
@@ -166,6 +165,7 @@ def warlock_soul_shard_value(fun):
     """
     Replaces the soul_shard expression with a call to FutureShard.
     """
+    from .lua import Method
 
     def value(self):
         """
@@ -184,6 +184,7 @@ def affliction_active_uas_stack(fun):
     """
     Replaces the buff.active_uas.stack expression with a call to ActiveUAs.
     """
+    from .lua import Method
 
     def stack(self):
         """
@@ -198,3 +199,18 @@ def affliction_active_uas_stack(fun):
             fun(self)
 
     return stack
+
+DECORATORS = {
+    WARLOCK: [
+        {
+            'class_name': 'SoulShard',
+            'method': 'value',
+            'decorator': warlock_soul_shard_value,
+        },
+        {
+            'class_name': 'Buff',
+            'method': 'stack',
+            'decorator': affliction_active_uas_stack,
+        },
+    ],
+}

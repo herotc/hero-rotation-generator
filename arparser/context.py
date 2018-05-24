@@ -5,11 +5,11 @@ Context of an APL.
 @author: skasch
 """
 
-from .druid import guardian_print_swipe_thrash
+from .decoratormanager import Decorable
 from .constants import PET
 from .database import ITEM_INFO
 
-class Context:
+class Context(Decorable):
     """
     Defines the context of an APL, used to print everything outside the Apl
     main function.
@@ -55,7 +55,6 @@ class Context:
         self.custom_code = [self.NUM_FUNCTION, self.BOOL_FUNCTION]
         self.player = None
 
-    @guardian_print_swipe_thrash
     def add_spell(self, spell):
         """
         Add a spell to the context.

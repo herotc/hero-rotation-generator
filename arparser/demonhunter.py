@@ -5,7 +5,6 @@ Demon Hunter specific constants and functions.
 @author: skasch
 """
 
-from .lua import LuaExpression, Method
 from .constants import MELEE, SPELL, BUFF, DEBUFF, COMMON, RANGE, BOOL
 
 DEMONHUNTER = 'demonhunter'
@@ -116,24 +115,26 @@ def havoc_melee_condition(fun):
     """
     Add class specific conditions.
     """
+    from .lua import LuaExpression, Method
 
-    def __init__(self, action, simc, type_=SPELL):
+    def custom_init(self, action):
         """
         Init of the Spell class.
         """
-        fun(self, action, simc, type_=type_)
+        fun(self, action)
         if (action.player.spec.simc == HAVOC
                 and action.player.spell_property(self, MELEE)):
             self.additional_conditions = (
                 [LuaExpression(None, Method('IsInMeleeRange'), [])]
                 + self.additional_conditions)
-    return __init__
+    return custom_init
 
 
 def havoc_extended_by_demonic_buff(fun):
     """
     Add extended_by_demonic for metamorphosis to buff. expression.
     """
+    from .lua import Method
 
     def extended_by_demonic(self):
         """
@@ -154,6 +155,7 @@ def havoc_metamorphosis_cooldown(fun):
     """
     Add cooldown_adjusted for metamorphosis to cooldown. expression.
     """
+    from .lua import Method
 
     def adjusted_remains(self):
         """
@@ -168,3 +170,23 @@ def havoc_metamorphosis_cooldown(fun):
             fun(self)
 
     return adjusted_remains
+
+DECORATORS = {
+    DEMONHUNTER: [
+        {
+            'class_name': 'Spell',
+            'method': 'custom_init',
+            'decorator': havoc_melee_condition,
+        },
+        {
+            'class_name': 'Buff',
+            'method': 'extended_by_demonic',
+            'decorator': havoc_extended_by_demonic_buff,
+        },
+        {
+            'class_name': 'Cooldown',
+            'method': 'adjusted_remains',
+            'decorator': havoc_metamorphosis_cooldown,
+        },
+    ],
+}

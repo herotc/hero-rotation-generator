@@ -5,8 +5,6 @@ Mage specific constants and functions.
 @author: skasch
 """
 
-from .lua import LuaCastable, Method
-from .executions import Variable
 from .constants import COMMON, SPELL, BUFF, DEBUFF, PET, RANGE
 
 MAGE = 'mage'
@@ -208,6 +206,7 @@ def arcane_burn_phase_variables(fun):
     """
     Inject burn phase specific variables in the context.
     """
+    from .executions import Variable
 
     def set_spec(self, spec):
         """
@@ -225,6 +224,7 @@ def arcane_burn_phase(fun):
     """
     Handle start_burn_phase and stop_burn_phase executions.
     """
+    from .lua import LuaCastable, Method
 
     def switch_type(self):
         """
@@ -253,6 +253,7 @@ def arcane_burn_expressions(fun):
     """
     Handle burn phase specific variables.
     """
+    from .executions import Variable
 
     def expression(self):
         """
@@ -270,6 +271,7 @@ def arcane_max_stack(fun):
     """
     Handle max_stack expressions for Arcane.
     """
+    from .lua import Method
 
     def max_stack(self):
         """
@@ -291,3 +293,28 @@ def arcane_max_stack(fun):
             fun(self)
 
     return max_stack
+
+DECORATORS = {
+    MAGE: [
+        {
+            'class_name': 'Player',
+            'method': 'set_spec',
+            'decorator': arcane_burn_phase_variables,
+        },
+        {
+            'class_name': 'Execution',
+            'method': 'switch_type',
+            'decorator': arcane_burn_phase,
+        },
+        {
+            'class_name': 'Expression',
+            'method': 'expression',
+            'decorator': arcane_burn_expressions,
+        },
+        {
+            'class_name': 'Buff',
+            'method': 'max_stack',
+            'decorator': arcane_max_stack,
+        }
+    ]
+}

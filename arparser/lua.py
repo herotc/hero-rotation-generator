@@ -5,10 +5,11 @@ Define the objects representing lua specific items.
 @author: skasch
 """
 
+from .decoratormanager import Decorable
 from .constants import WORD_REPLACEMENTS, TRUE, FALSE, BOOL, NUM
 
 
-class LuaNamed:
+class LuaNamed(Decorable):
     """
     An abstract class for elements whose named in lua can be parsed from its
     name in simc.
@@ -31,7 +32,7 @@ class LuaNamed:
         return ar_string
 
 
-class LuaTyped:
+class LuaTyped(Decorable):
     """
     An abstract class for elements who have a lua type.
     """
@@ -49,7 +50,7 @@ class LuaTyped:
         return self.type_
 
 
-class LuaCastable:
+class LuaCastable(Decorable):
     """
     The class for castable elements: items and spells.
     """
@@ -210,7 +211,7 @@ class LuaComparison(LuaTyped):
                 f'{self.exp2.print_lua()})')
 
 
-class Method:
+class Method(Decorable):
     """
     Represent a lua method.
     """
@@ -255,7 +256,7 @@ class Literal(LuaTemplated, LuaNamed):
         return str(self.simc)
 
 
-class BuildExpression:
+class BuildExpression(Decorable):
     """
     Build an expression from a call.
     """
@@ -300,8 +301,8 @@ class BuildExpression:
             args = [getattr(self, attribute) for attribute in attributes]
             self.content = model(*args, **kwargs)
         except AttributeError:
-            missing_attr = [not hasattr(self, attribute)
-                            for attribute in attributes]
+            missing_attr = [attribute for attribute in attributes
+                            if not hasattr(self, attribute)]
             error_msg = (f'The {model.__name__} model did not have the '
                          f'following attributes: {", ".join(missing_attr)}')
             raise AttributeError(error_msg)
