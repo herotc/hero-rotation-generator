@@ -11,7 +11,7 @@ from .units import Player, Target
 from .context import Context
 from .helpers import indent
 from .constants import IGNORED_ACTION_LISTS
-from .database import CLASS_SPECS
+from .database import CLASS_SPECS, TEMPLATES
 
 
 class APL:
@@ -19,6 +19,16 @@ class APL:
     The main class representing an Action Priority List (or simc profile),
     extracted from its simc string.
     """
+
+    DEFAULT_TEMPLATE = ('{context}'
+                        '--- ======= ACTION LISTS =======\n'
+                        'local function {function_name}()\n'
+                        '  UpdateRanges()\n'
+                        '{action_lists}\n'
+                        '{precombat_call}\n'
+                        '{main_actions}\n'
+                        'end\n'
+                        '\n{set_apl}')
 
     def __init__(self):
         self.simc_lines = []
@@ -182,6 +192,9 @@ class APL:
         spec_simc = self.player.spec.simc
         apl_id = CLASS_SPECS.get(class_simc, {}).get(spec_simc, 0)
         return f'AR.SetAPL({apl_id}, APL)\n'
+    
+    def template(self):
+        return TEMPLATES.get(self.player.class_.simc, self.DEFAULT_TEMPLATE)
 
     def print_lua(self):
         """
@@ -193,12 +206,11 @@ class APL:
         main_actions = self.main_action_list().print_actions_lua()
         context = self.context.print_lua()
         set_apl = self.print_set_apl()
-        return (f'{context}'
-                f'--- ======= ACTION LISTS =======\n'
-                f'local function {function_name}()\n'
-                f'{indent("UpdateRanges()")}\n'
-                f'{action_lists}\n'
-                f'{precombat_call}\n'
-                f'{main_actions}\n'
-                f'end\n'
-                f'\n{set_apl}')
+        return self.template().format(
+            context=context,
+            function_name=function_name,
+            action_lists=action_lists,
+            precombat_call=precombat_call,
+            main_actions=main_actions,
+            set_apl=set_apl
+        )

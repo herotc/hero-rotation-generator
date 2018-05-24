@@ -93,3 +93,10 @@ for class_ in CLASSES:
         DECORATORS.update(class_.DECORATORS)
     except AttributeError:
         pass
+
+TEMPLATES = {}
+for class_ in CLASSES:
+    try:
+        TEMPLATES.update(class_.TEMPLATES)
+    except AttributeError:
+        pass
