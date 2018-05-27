@@ -59,6 +59,8 @@ SPELL_INFO = {
                                          BUFF:      20572,
                                          OGCDAOGCD: True,
                                          CD:        True},
+        'lights_judgement':             {SPELL:     255647,
+                                         CD:        True},
         'gift_of_the_naaru':            {SPELL:     59547},
         'shadowmeld':                   {SPELL:     58984,
                                          BUFF:      58984},
