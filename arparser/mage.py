@@ -40,6 +40,7 @@ SPELL_INFO = {
             'invisibility':                 {SPELL:     66},
             'counterspell':                 {SPELL:     2139},
             'blink':                        {SPELL:     1953},
+            'arcane_intellect':             {SPELL:     36880},
             # Items
             'deadly_grace':                 {BUFF:      188027},
             # Legendaries
@@ -136,6 +137,7 @@ SPELL_INFO = {
             'icy_veins':                    {SPELL:     12472,
                                              BUFF:      12472},
             'summon_water_elemental':       {SPELL:     31687},
+            'water_elemental':              {SPELL:     31687},
             'water_jet':                    {SPELL:     135029,
                                              PET:       True},
             'winters_chill':                {DEBUFF:    228358},
