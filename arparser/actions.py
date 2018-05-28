@@ -284,8 +284,9 @@ class PrecombatAction(Action):
         if self.show_comments:
             lua_string += f'-- call precombat'
         exec_cast = self.execution().object_().print_cast()
-        lua_string += ('\n'
-                       f'if not Player:AffectingCombat() then\n'
-                       f'  {exec_cast}\n'
-                       f'end')
+        lua_string += (
+            '\n'
+            f'if not Player:AffectingCombat() then\n'
+            f'  {exec_cast}\n'
+            f'end')
         return lua_string

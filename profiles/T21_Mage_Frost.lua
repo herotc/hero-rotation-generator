@@ -21,7 +21,7 @@ local AR     = AethysRotation
 -- Spells
 if not Spell.Mage then Spell.Mage = {} end
 Spell.Mage.Frost = {
-  WaterElemental                        = Spell(),
+  WaterElemental                        = Spell(31687),
   MirrorImage                           = Spell(55342),
   Frostbolt                             = Spell(116),
   WaterJet                              = Spell(135029, "pet"),

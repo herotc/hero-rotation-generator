@@ -36,6 +36,7 @@ CD = 'cd'
 PET = 'pet'
 COMMON = 'common'
 RANGE = 'range'
+AUTOCHECK = 'autocheck'
 
 MAX_INT = 10**10
 

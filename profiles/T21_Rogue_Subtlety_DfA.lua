@@ -132,7 +132,7 @@ local function APL()
       VarShdFractional = 1.725 + 0.725 * num(S.EnvelopingShadows:IsAvailable())
     end
     -- stealth
-    if S.Stealth:IsCastableP() and (true) then
+    if S.Stealth:IsCastableP() and Player:BuffDownP(S.Stealth) and (true) then
       if AR.Cast(S.Stealth) then return ""; end
     end
     -- marked_for_death,precombat=1

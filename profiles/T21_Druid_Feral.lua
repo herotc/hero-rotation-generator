@@ -124,11 +124,11 @@ local function APL()
       VarUseThrash = 1
     end
     -- cat_form
-    if S.CatForm:IsCastableP() and (true) then
+    if S.CatForm:IsCastableP() and Player:BuffDownP(S.CatForm) and (true) then
       if AR.Cast(S.CatForm) then return ""; end
     end
     -- prowl
-    if S.Prowl:IsCastableP() and (true) then
+    if S.Prowl:IsCastableP() and Player:BuffDownP(S.Prowl) and (true) then
       if AR.Cast(S.Prowl) then return ""; end
     end
     -- snapshot_stats

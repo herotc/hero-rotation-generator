@@ -140,7 +140,7 @@ local function APL()
       if AR.Cast(S.MoonkinForm) then return ""; end
     end
     -- blessing_of_elune
-    if S.BlessingofElune:IsCastableP() and (true) then
+    if S.BlessingofElune:IsCastableP() and Player:BuffDownP(S.BlessingofElune) and (true) then
       if AR.Cast(S.BlessingofElune) then return ""; end
     end
     -- snapshot_stats

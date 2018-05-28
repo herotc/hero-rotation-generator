@@ -111,11 +111,11 @@ local function APL()
       if AR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- explosive_trap
-    if S.ExplosiveTrap:IsCastableP() and (true) then
+    if S.ExplosiveTrap:IsCastableP() and Player:DebuffDownP(S.ExplosiveTrap) and (true) then
       if AR.Cast(S.ExplosiveTrap) then return ""; end
     end
     -- steel_trap
-    if S.SteelTrap:IsCastableP() and (true) then
+    if S.SteelTrap:IsCastableP() and Player:DebuffDownP(S.SteelTrap) and (true) then
       if AR.Cast(S.SteelTrap) then return ""; end
     end
     -- dragonsfire_grenade

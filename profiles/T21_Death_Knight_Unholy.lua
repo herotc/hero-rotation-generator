@@ -120,7 +120,7 @@ local function APL()
       if AR.Cast(S.ArmyoftheDead) then return ""; end
     end
     -- blighted_rune_weapon
-    if S.BlightedRuneWeapon:IsCastableP() and (true) then
+    if S.BlightedRuneWeapon:IsCastableP() and Player:BuffDownP(S.BlightedRuneWeapon) and (true) then
       if AR.Cast(S.BlightedRuneWeapon) then return ""; end
     end
   end

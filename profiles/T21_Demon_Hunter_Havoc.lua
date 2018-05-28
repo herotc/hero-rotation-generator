@@ -145,7 +145,7 @@ local function APL()
       if AR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- metamorphosis,if=!(talent.demon_reborn.enabled&(talent.demonic.enabled|set_bonus.tier21_4pc))
-    if S.Metamorphosis:IsCastableP() and (not (S.DemonReborn:IsAvailable() and (S.Demonic:IsAvailable() or AC.Tier21_4Pc))) then
+    if S.Metamorphosis:IsCastableP() and Player:BuffDownP(S.Metamorphosis) and (not (S.DemonReborn:IsAvailable() and (S.Demonic:IsAvailable() or AC.Tier21_4Pc))) then
       if AR.Cast(S.Metamorphosis) then return ""; end
     end
   end

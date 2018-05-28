@@ -7,7 +7,8 @@ Define the objects representing simc executions.
 
 from .lua import LuaNamed, LuaTyped, LuaCastable, LuaExpression, Literal, Method
 from .constants import (IGNORED_EXECUTIONS, SPELL, BUFF, DEBUFF, USABLE, MELEE,
-                        INTERRUPT, CD, GCDAOGCD, OGCDAOGCD, NUM, BOOL, FALSE)
+                        INTERRUPT, CD, GCDAOGCD, OGCDAOGCD, NUM, BOOL, FALSE,
+                        AUTOCHECK)
 
 
 class Item(LuaNamed, LuaCastable):
@@ -166,39 +167,54 @@ class Spell(LuaNamed, LuaCastable):
         self.type_ = type_
         # Castable
         LuaCastable.__init__(self)
-        self.custom_init(action)
-        # Main
         self.action = action
+        self.custom_init()
+        # Main
         self.ignored = simc in IGNORED_EXECUTIONS
         if not self.ignored:
             self.action.context.add_spell(self)
     
-    def custom_init(self, action):
-        if action.player.spell_property(self, USABLE):
+    def custom_init(self):
+        if self.action.player.spell_property(self, USABLE):
             self.condition_method = Method('IsUsable', type_=BOOL)
         else:
             self.condition_method = Method('IsCastableP', type_=BOOL)
 
-        if action.player.spell_property(self, CD):
+        if self.action.player.spell_property(self, CD):
             self.additional_conditions.append(
                 LuaExpression(None, Method('AR.CDsON'), []))
-        if action.player.spell_property(self, INTERRUPT):
+        if self.action.player.spell_property(self, INTERRUPT):
             self.additional_conditions.append(
                 Literal('Settings.General.InterruptEnabled'))
-            self.additional_conditions.append(
-                LuaExpression(action.target, Method('IsInterruptible'), []))
+            self.additional_conditions.append(LuaExpression(
+                self.action.target,
+                Method('IsInterruptible'),
+                []))
             self.cast_method = Method('AR.CastAnnotated')
             self.cast_args.append(Literal(FALSE))
             self.cast_args.append(
                 Literal(INTERRUPT, convert=True, quoted=True))
-        if action.player.spell_property(self, GCDAOGCD):
+        if self.action.player.spell_property(self, GCDAOGCD):
             self.cast_args.append(Literal(
-                f'Settings.{action.player.spec.lua_name()}.'
+                f'Settings.{self.action.player.spec.lua_name()}.'
                 f'GCDasOffGCD.{self.lua_name()}'))
-        if action.player.spell_property(self, OGCDAOGCD):
+        if self.action.player.spell_property(self, OGCDAOGCD):
             self.cast_args.append(Literal(
-                f'Settings.{action.player.spec.lua_name()}.'
+                f'Settings.{self.action.player.spec.lua_name()}.'
                 f'OffGCDasOffGCD.{self.lua_name()}'))
+        if (self.action.player.spell_property(self, AUTOCHECK)
+                or self.action.action_list.name.simc == 'precombat'):
+            if self.action.player.spell_property(self, BUFF):
+                self.additional_conditions.append(
+                    LuaExpression(
+                        self.action.player,
+                        Method('BuffDownP', type_=BOOL),
+                        [self]))
+            elif self.action.player.spell_property(self, DEBUFF):
+                self.additional_conditions.append(LuaExpression(
+                        self.action.player,
+                        Method('DebuffDownP', type_=BOOL),
+                        [self]))
 
     def lua_name(self):
         return f'{super().lua_name()}{self.TYPE_SUFFIX[self.type_]}'

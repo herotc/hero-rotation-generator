@@ -117,13 +117,13 @@ def havoc_melee_condition(fun):
     """
     from .lua import LuaExpression, Method
 
-    def custom_init(self, action):
+    def custom_init(self):
         """
         Init of the Spell class.
         """
-        fun(self, action)
-        if (action.player.spec.simc == HAVOC
-                and action.player.spell_property(self, MELEE)):
+        fun(self)
+        if (self.action.player.spec.simc == HAVOC
+                and self.action.player.spell_property(self, MELEE)):
             self.additional_conditions = (
                 [LuaExpression(None, Method('IsInMeleeRange'), [])]
                 + self.additional_conditions)

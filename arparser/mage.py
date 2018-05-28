@@ -5,7 +5,7 @@ Mage specific constants and functions.
 @author: skasch
 """
 
-from .constants import COMMON, SPELL, BUFF, DEBUFF, PET, RANGE
+from .constants import COMMON, SPELL, BUFF, DEBUFF, PET, RANGE, AUTOCHECK
 
 MAGE = 'mage'
 ARCANE = 'arcane'
@@ -41,7 +41,8 @@ SPELL_INFO = {
             'counterspell':                 {SPELL:     2139},
             'blink':                        {SPELL:     1953},
             'arcane_intellect':             {SPELL:     1459,
-                                             BUFF:      1459},
+                                             BUFF:      1459,
+                                             AUTOCHECK: True},
             # Items
             'deadly_grace':                 {BUFF:      188027},
             # Legendaries

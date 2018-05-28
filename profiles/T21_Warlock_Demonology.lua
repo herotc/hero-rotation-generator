@@ -149,7 +149,7 @@ local function APL()
       if AR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- demonic_empowerment
-    if S.DemonicEmpowerment:IsCastableP() and (true) then
+    if S.DemonicEmpowerment:IsCastableP() and Player:BuffDownP(S.DemonicEmpowerment) and (true) then
       if AR.Cast(S.DemonicEmpowerment) then return ""; end
     end
     -- demonbolt
