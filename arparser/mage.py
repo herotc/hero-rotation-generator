@@ -40,7 +40,7 @@ SPELL_INFO = {
             'invisibility':                 {SPELL:     66},
             'counterspell':                 {SPELL:     2139},
             'blink':                        {SPELL:     1953},
-            'arcane_intellect':             {SPELL:     36880},
+            'arcane_intellect':             {SPELL:     1459},
             # Items
             'deadly_grace':                 {BUFF:      188027},
             # Legendaries
