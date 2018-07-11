@@ -29,7 +29,7 @@ DEFAULT_POTION = {
         UNHOLY: 'prolonged_power',
     }
 }
-
+# TO-DO: Update talents, spellids and buffids for bfa
 SPELL_INFO = {
     DEATHKNIGHT: {
         COMMON: {
@@ -108,10 +108,11 @@ SPELL_INFO = {
             'obliterate':                       {SPELL:     49020},
             'breath_of_sindragosa':             {SPELL:     152279,
                                                  DEBUFF:    155166},
-            'frost_strike':                     {SPELL:     49143},
+            'frost_strike':                     {SPELL:     49143,
+                                                 USABLE:    True},                                     
             'shattering_strikes':               {SPELL:     207057},
             'razorice':                         {DEBUFF:    51714},
-            'sindragosas_fury':                 {SPELL:     190778},
+            'frostwyrms_fury':                  {SPELL:     279302},
             'pillar_of_frost':                  {SPELL:     51271,
                                                  BUFF:      51271},
             'frostscythe':                      {SPELL:     207230,
@@ -121,10 +122,7 @@ SPELL_INFO = {
                                                  RANGE:     30},
             'empower_rune_weapon':              {SPELL:     47568},
             'horn_of_winter':                   {SPELL:     57330},
-            'obliteration':                     {SPELL:     207256,
-                                                 BUFF:      207256},
-            'hungering_rune_weapon':            {SPELL:     207127,
-                                                 BUFF:      207127},
+            'obliteration':                     {SPELL:     281238},
             'icecap':                           {SPELL:     207126},
             'frozen_pulse':                     {SPELL:     194909},
             'freezing_fog':                     {SPELL:     207060},
