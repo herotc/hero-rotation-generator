@@ -126,7 +126,7 @@ local function APL()
   end
   local function Aoe()
     -- death_and_decay,if=spell_targets.death_and_decay>=2
-    if S.DeathandDecay:IsUsable() and (Cache.EnemiesCount[30] >= 2) then
+    if S.DeathandDecay:IsUsableP() and (Cache.EnemiesCount[30] >= 2) then
       if AR.Cast(S.DeathandDecay) then return ""; end
     end
     -- epidemic,if=spell_targets.epidemic>4
@@ -226,11 +226,11 @@ local function APL()
       if AR.Cast(S.ClawingShadows) then return ""; end
     end
     -- death_coil,if=runic_power.deficit<22&(talent.shadow_infusion.enabled|(!talent.dark_arbiter.enabled|cooldown.dark_arbiter.remains>5))
-    if S.DeathCoil:IsCastableP() and (Player:RunicPowerDeficit() < 22 and (S.ShadowInfusion:IsAvailable() or (not S.DarkArbiter:IsAvailable() or S.DarkArbiter:CooldownRemainsP() > 5))) then
+    if S.DeathCoil:IsUsableP() and (Player:RunicPowerDeficit() < 22 and (S.ShadowInfusion:IsAvailable() or (not S.DarkArbiter:IsAvailable() or S.DarkArbiter:CooldownRemainsP() > 5))) then
       if AR.Cast(S.DeathCoil) then return ""; end
     end
     -- death_coil,if=!buff.necrosis.up&buff.sudden_doom.react&((!talent.dark_arbiter.enabled&rune<=3)|cooldown.dark_arbiter.remains>5)
-    if S.DeathCoil:IsCastableP() and (not Player:BuffP(S.NecrosisBuff) and bool(Player:BuffStackP(S.SuddenDoomBuff)) and ((not S.DarkArbiter:IsAvailable() and Player:Rune() <= 3) or S.DarkArbiter:CooldownRemainsP() > 5)) then
+    if S.DeathCoil:IsUsableP() and (not Player:BuffP(S.NecrosisBuff) and bool(Player:BuffStackP(S.SuddenDoomBuff)) and ((not S.DarkArbiter:IsAvailable() and Player:Rune() <= 3) or S.DarkArbiter:CooldownRemainsP() > 5)) then
       if AR.Cast(S.DeathCoil) then return ""; end
     end
     -- festering_strike,if=debuff.festering_wound.stack<6&cooldown.apocalypse.remains<=6
@@ -250,7 +250,7 @@ local function APL()
       if AR.Cast(S.FesteringStrike) then return ""; end
     end
     -- death_coil,if=!buff.necrosis.up&talent.necrosis.enabled&rune.time_to_4>=gcd
-    if S.DeathCoil:IsCastableP() and (not Player:BuffP(S.NecrosisBuff) and S.Necrosis:IsAvailable() and Player:RuneTimeToX(4) >= Player:GCD()) then
+    if S.DeathCoil:IsUsableP() and (not Player:BuffP(S.NecrosisBuff) and S.Necrosis:IsAvailable() and Player:RuneTimeToX(4) >= Player:GCD()) then
       if AR.Cast(S.DeathCoil) then return ""; end
     end
     -- scourge_strike,if=(buff.necrosis.up|buff.unholy_strength.react|rune>=2)&debuff.festering_wound.stack>=1&(debuff.festering_wound.stack>=3|!(talent.castigator.enabled|equipped.132448))&(cooldown.army_of_the_dead.remains>5|rune.time_to_4<=gcd)
@@ -262,13 +262,13 @@ local function APL()
       if AR.Cast(S.ClawingShadows) then return ""; end
     end
     -- death_coil,if=(talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>10)|!talent.dark_arbiter.enabled
-    if S.DeathCoil:IsCastableP() and ((S.DarkArbiter:IsAvailable() and S.DarkArbiter:CooldownRemainsP() > 10) or not S.DarkArbiter:IsAvailable()) then
+    if S.DeathCoil:IsUsableP() and ((S.DarkArbiter:IsAvailable() and S.DarkArbiter:CooldownRemainsP() > 10) or not S.DarkArbiter:IsAvailable()) then
       if AR.Cast(S.DeathCoil) then return ""; end
     end
   end
   local function Valkyr()
     -- death_coil
-    if S.DeathCoil:IsCastableP() and (true) then
+    if S.DeathCoil:IsUsableP() and (true) then
       if AR.Cast(S.DeathCoil) then return ""; end
     end
     -- festering_strike,if=debuff.festering_wound.stack<6&cooldown.apocalypse.remains<3

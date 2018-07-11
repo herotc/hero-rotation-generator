@@ -176,7 +176,7 @@ class Spell(LuaNamed, LuaCastable):
     
     def custom_init(self):
         if self.action.player.spell_property(self, USABLE):
-            self.condition_method = Method('IsUsable', type_=BOOL)
+            self.condition_method = Method('IsUsableP', type_=BOOL)
         else:
             self.condition_method = Method('IsCastableP', type_=BOOL)
 

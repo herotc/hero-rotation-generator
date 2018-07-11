@@ -100,11 +100,11 @@ local function APL()
   end
   local function Standard()
     -- death_strike,if=runic_power.deficit<10
-    if S.DeathStrike:IsUsable() and (Player:RunicPowerDeficit() < 10) then
+    if S.DeathStrike:IsUsableP() and (Player:RunicPowerDeficit() < 10) then
       if AR.Cast(S.DeathStrike) then return ""; end
     end
     -- death_and_decay,if=talent.rapid_decomposition.enabled&!buff.dancing_rune_weapon.up
-    if S.DeathandDecay:IsUsable() and (S.RapidDecomposition:IsAvailable() and not Player:BuffP(S.DancingRuneWeaponBuff)) then
+    if S.DeathandDecay:IsUsableP() and (S.RapidDecomposition:IsAvailable() and not Player:BuffP(S.DancingRuneWeaponBuff)) then
       if AR.Cast(S.DeathandDecay) then return ""; end
     end
     -- blooddrinker,if=!buff.dancing_rune_weapon.up
@@ -128,7 +128,7 @@ local function APL()
       if AR.Cast(S.Bonestorm) then return ""; end
     end
     -- death_strike,if=buff.blood_shield.up|(runic_power.deficit<15&(runic_power.deficit<25|!buff.dancing_rune_weapon.up))
-    if S.DeathStrike:IsUsable() and (Player:BuffP(S.BloodShieldBuff) or (Player:RunicPowerDeficit() < 15 and (Player:RunicPowerDeficit() < 25 or not Player:BuffP(S.DancingRuneWeaponBuff)))) then
+    if S.DeathStrike:IsUsableP() and (Player:BuffP(S.BloodShieldBuff) or (Player:RunicPowerDeficit() < 15 and (Player:RunicPowerDeficit() < 25 or not Player:BuffP(S.DancingRuneWeaponBuff)))) then
       if AR.Cast(S.DeathStrike) then return ""; end
     end
     -- consumption
@@ -140,7 +140,7 @@ local function APL()
       if AR.Cast(S.HeartStrike) then return ""; end
     end
     -- death_and_decay,if=buff.crimson_scourge.up
-    if S.DeathandDecay:IsUsable() and (Player:BuffP(S.CrimsonScourgeBuff)) then
+    if S.DeathandDecay:IsUsableP() and (Player:BuffP(S.CrimsonScourgeBuff)) then
       if AR.Cast(S.DeathandDecay) then return ""; end
     end
     -- blood_boil,if=buff.haemostasis.stack<5&(buff.haemostasis.stack<3|!buff.dancing_rune_weapon.up)
@@ -148,7 +148,7 @@ local function APL()
       if AR.Cast(S.BloodBoil) then return ""; end
     end
     -- death_and_decay
-    if S.DeathandDecay:IsUsable() and (true) then
+    if S.DeathandDecay:IsUsableP() and (true) then
       if AR.Cast(S.DeathandDecay) then return ""; end
     end
     -- heart_strike,if=rune.time_to_3<gcd|buff.bone_shield.stack>6
