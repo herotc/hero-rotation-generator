@@ -22,37 +22,40 @@ local HR     = HeroRotation
 if not Spell.Hunter then Spell.Hunter = {} end
 Spell.Hunter.Survival = {
   SummonPet                             = Spell(),
-  ExplosiveTrap                         = Spell(191433),
   SteelTrap                             = Spell(162488),
-  DragonsfireGrenade                    = Spell(194855),
   Harpoon                               = Spell(190925),
-  ArcaneTorrent                         = Spell(50613),
+  Muzzle                                = Spell(187707),
+  BuffSephuzsSecret                     = Spell(),
+  SephuzsSecretBuff                     = Spell(208052),
+  UseItems                              = Spell(),
   Berserking                            = Spell(26297),
-  AspectoftheEagleBuff                  = Spell(186289),
+  CoordinatedAssault                    = Spell(),
   BloodFury                             = Spell(20572),
+  AncestralCall                         = Spell(),
+  Fireblood                             = Spell(),
+  LightsJudgment                        = Spell(),
+  CoordinatedAssaultBuff                = Spell(),
   BerserkingBuff                        = Spell(26297),
   BloodFuryBuff                         = Spell(20572),
-  SnakeHunter                           = Spell(201078),
   MongooseBite                          = Spell(190928),
   MongooseFuryBuff                      = Spell(190931),
-  AspectoftheEagle                      = Spell(186289),
-  Butchery                              = Spell(212436),
-  Caltrops                              = Spell(187698),
-  Carve                                 = Spell(187708),
-  SerpentSting                          = Spell(87935),
-  SerpentStingDebuff                    = Spell(118253),
-  FlankingStrike                        = Spell(202800),
-  FuryoftheEagle                        = Spell(203415),
-  MoknathalTacticsBuff                  = Spell(201081),
-  Lacerate                              = Spell(185855),
-  LacerateDebuff                        = Spell(185855),
-  RaptorStrike                          = Spell(186270),
-  T212PExposedFlankBuff                 = Spell(251751),
-  SpittingCobra                         = Spell(194407),
   AMurderofCrows                        = Spell(206505),
-  WayoftheMoknathal                     = Spell(201082),
-  UseItems                              = Spell(),
-  Muzzle                                = Spell(187707)
+  Chakrams                              = Spell(),
+  KillCommand                           = Spell(),
+  TipoftheSpearBuff                     = Spell(),
+  WildfireBomb                          = Spell(),
+  WildfireBombDebuff                    = Spell(),
+  Butchery                              = Spell(212436),
+  WildfireInfusion                      = Spell(),
+  ShrapnelBombDebuff                    = Spell(),
+  InternalBleedingDebuff                = Spell(),
+  SerpentSting                          = Spell(87935),
+  VipersVenom                           = Spell(),
+  VipersVenomBuff                       = Spell(),
+  Carve                                 = Spell(187708),
+  TermsofEngagement                     = Spell(),
+  FlankingStrike                        = Spell(202800),
+  RaptorStrike                          = Spell(186270)
 };
 local S = Spell.Hunter.Survival;
 
@@ -60,7 +63,7 @@ local S = Spell.Hunter.Survival;
 if not Item.Hunter then Item.Hunter = {} end
 Item.Hunter.Survival = {
   ProlongedPower                   = Item(142117),
-  Item137043                       = Item(137043)
+  SephuzsSecret                    = Item(132452)
 };
 local I = Item.Hunter.Survival;
 
@@ -76,8 +79,7 @@ local Settings = {
 };
 
 -- Variables
-local VarMoktalented = 0;
-local VarFrizzosequipped = 0;
+local VarCanGcd = 0;
 
 local EnemyRanges = {8, 40}
 local function UpdateRanges()
@@ -110,231 +112,123 @@ local function APL()
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
-    -- explosive_trap
-    if S.ExplosiveTrap:IsCastableP() and Player:DebuffDownP(S.ExplosiveTrap) and (true) then
-      if HR.Cast(S.ExplosiveTrap) then return ""; end
-    end
     -- steel_trap
     if S.SteelTrap:IsCastableP() and Player:DebuffDownP(S.SteelTrap) and (true) then
       if HR.Cast(S.SteelTrap) then return ""; end
-    end
-    -- dragonsfire_grenade
-    if S.DragonsfireGrenade:IsCastableP() and (true) then
-      if HR.Cast(S.DragonsfireGrenade) then return ""; end
     end
     -- harpoon
     if S.Harpoon:IsCastableP() and (true) then
       if HR.Cast(S.Harpoon) then return ""; end
     end
   end
-  local function Cds()
-    -- arcane_torrent,if=focus<=30
-    if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (Player:Focus() <= 30) then
-      if HR.Cast(S.ArcaneTorrent, Settings.Survival.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
-    end
-    -- berserking,if=buff.aspect_of_the_eagle.up
-    if S.Berserking:IsCastableP() and HR.CDsON() and (Player:BuffP(S.AspectoftheEagleBuff)) then
-      if HR.Cast(S.Berserking, Settings.Survival.OffGCDasOffGCD.Berserking) then return ""; end
-    end
-    -- blood_fury,if=buff.aspect_of_the_eagle.up
-    if S.BloodFury:IsCastableP() and HR.CDsON() and (Player:BuffP(S.AspectoftheEagleBuff)) then
-      if HR.Cast(S.BloodFury, Settings.Survival.OffGCDasOffGCD.BloodFury) then return ""; end
-    end
-    -- potion,if=buff.aspect_of_the_eagle.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.AspectoftheEagleBuff) and (Player:BuffP(S.BerserkingBuff) or Player:BuffP(S.BloodFuryBuff) or not Player:IsRace("Troll") and not Player:IsRace("Orc"))) then
-      if HR.CastSuggested(I.ProlongedPower) then return ""; end
-    end
-    -- snake_hunter,if=cooldown.mongoose_bite.charges=0&buff.mongoose_fury.remains>3*gcd&(cooldown.aspect_of_the_eagle.remains>5&!buff.aspect_of_the_eagle.up)
-    if S.SnakeHunter:IsCastableP() and (S.MongooseBite:ChargesP() == 0 and Player:BuffRemainsP(S.MongooseFuryBuff) > 3 * Player:GCD() and (S.AspectoftheEagle:CooldownRemainsP() > 5 and not Player:BuffP(S.AspectoftheEagleBuff))) then
-      if HR.Cast(S.SnakeHunter) then return ""; end
-    end
-    -- aspect_of_the_eagle,if=buff.mongoose_fury.up&(cooldown.mongoose_bite.charges=0|buff.mongoose_fury.remains<11)
-    if S.AspectoftheEagle:IsCastableP() and (Player:BuffP(S.MongooseFuryBuff) and (S.MongooseBite:ChargesP() == 0 or Player:BuffRemainsP(S.MongooseFuryBuff) < 11)) then
-      if HR.Cast(S.AspectoftheEagle) then return ""; end
-    end
-  end
-  local function Aoe()
-    -- butchery
-    if S.Butchery:IsCastableP() and (true) then
-      if HR.Cast(S.Butchery) then return ""; end
-    end
-    -- caltrops,if=!ticking
-    if S.Caltrops:IsCastableP() and (not Target:DebuffP(S.Caltrops)) then
-      if HR.Cast(S.Caltrops) then return ""; end
-    end
-    -- explosive_trap
-    if S.ExplosiveTrap:IsCastableP() and (true) then
-      if HR.Cast(S.ExplosiveTrap) then return ""; end
-    end
-    -- carve,if=(talent.serpent_sting.enabled&dot.serpent_sting.refreshable)|(active_enemies>5)
-    if S.Carve:IsCastableP() and ((S.SerpentSting:IsAvailable() and Target:DebuffRefreshableCP(S.SerpentStingDebuff)) or (Cache.EnemiesCount[8] > 5)) then
-      if HR.Cast(S.Carve) then return ""; end
-    end
-  end
-  local function Bitephase()
-    -- mongoose_bite,if=cooldown.mongoose_bite.charges=3
-    if S.MongooseBite:IsCastableP() and (S.MongooseBite:ChargesP() == 3) then
-      if HR.Cast(S.MongooseBite) then return ""; end
-    end
-    -- flanking_strike,if=buff.mongoose_fury.remains>(gcd*(cooldown.mongoose_bite.charges+1))
-    if S.FlankingStrike:IsCastableP() and (Player:BuffRemainsP(S.MongooseFuryBuff) > (Player:GCD() * (S.MongooseBite:ChargesP() + 1))) then
-      if HR.Cast(S.FlankingStrike) then return ""; end
-    end
-    -- mongoose_bite,if=buff.mongoose_fury.up
-    if S.MongooseBite:IsCastableP() and (Player:BuffP(S.MongooseFuryBuff)) then
-      if HR.Cast(S.MongooseBite) then return ""; end
-    end
-    -- fury_of_the_eagle,if=(!variable.mokTalented|(buff.moknathal_tactics.remains>(gcd*(8%3))))&!buff.aspect_of_the_eagle.up,interrupt_immediate=1,interrupt_if=cooldown.mongoose_bite.charges=3|(ticks_remain<=1&buff.moknathal_tactics.remains<0.7)
-    if S.FuryoftheEagle:IsCastableP() and ((not bool(VarMoktalented) or (Player:BuffRemainsP(S.MoknathalTacticsBuff) > (Player:GCD() * (8 / 3)))) and not Player:BuffP(S.AspectoftheEagleBuff)) then
-      if HR.Cast(S.FuryoftheEagle) then return ""; end
-    end
-    -- lacerate,if=dot.lacerate.refreshable&(focus>((50+35)-((cooldown.flanking_strike.remains%gcd)*(focus.regen*gcd))))
-    if S.Lacerate:IsCastableP() and (Target:DebuffRefreshableCP(S.LacerateDebuff) and (Player:Focus() > ((50 + 35) - ((S.FlankingStrike:CooldownRemainsP() / Player:GCD()) * (Player:FocusRegen() * Player:GCD()))))) then
-      if HR.Cast(S.Lacerate) then return ""; end
-    end
-    -- raptor_strike,if=buff.t21_2p_exposed_flank.up
-    if S.RaptorStrike:IsCastableP() and (Player:BuffP(S.T212PExposedFlankBuff)) then
-      if HR.Cast(S.RaptorStrike) then return ""; end
-    end
-    -- spitting_cobra
-    if S.SpittingCobra:IsCastableP() and (true) then
-      if HR.Cast(S.SpittingCobra) then return ""; end
-    end
-    -- dragonsfire_grenade
-    if S.DragonsfireGrenade:IsCastableP() and (true) then
-      if HR.Cast(S.DragonsfireGrenade) then return ""; end
-    end
-    -- steel_trap
-    if S.SteelTrap:IsCastableP() and (true) then
-      if HR.Cast(S.SteelTrap) then return ""; end
-    end
-    -- a_murder_of_crows
-    if S.AMurderofCrows:IsCastableP() and (true) then
-      if HR.Cast(S.AMurderofCrows) then return ""; end
-    end
-    -- caltrops,if=!ticking
-    if S.Caltrops:IsCastableP() and (not Target:DebuffP(S.Caltrops)) then
-      if HR.Cast(S.Caltrops) then return ""; end
-    end
-    -- explosive_trap
-    if S.ExplosiveTrap:IsCastableP() and (true) then
-      if HR.Cast(S.ExplosiveTrap) then return ""; end
-    end
-  end
-  local function Bitetrigger()
-    -- lacerate,if=remains<14&set_bonus.tier20_4pc&cooldown.mongoose_bite.remains<gcd*3
-    if S.Lacerate:IsCastableP() and (Target:DebuffRemainsP(S.Lacerate) < 14 and HL.Tier20_4Pc and S.MongooseBite:CooldownRemainsP() < Player:GCD() * 3) then
-      if HR.Cast(S.Lacerate) then return ""; end
-    end
-    -- mongoose_bite,if=charges>=2
-    if S.MongooseBite:IsCastableP() and (S.MongooseBite:ChargesP() >= 2) then
-      if HR.Cast(S.MongooseBite) then return ""; end
-    end
-  end
-  local function Fillers()
-    -- flanking_strike,if=cooldown.mongoose_bite.charges<3
-    if S.FlankingStrike:IsCastableP() and (S.MongooseBite:ChargesP() < 3) then
-      if HR.Cast(S.FlankingStrike) then return ""; end
-    end
-    -- spitting_cobra
-    if S.SpittingCobra:IsCastableP() and (true) then
-      if HR.Cast(S.SpittingCobra) then return ""; end
-    end
-    -- dragonsfire_grenade
-    if S.DragonsfireGrenade:IsCastableP() and (true) then
-      if HR.Cast(S.DragonsfireGrenade) then return ""; end
-    end
-    -- lacerate,if=refreshable|!ticking
-    if S.Lacerate:IsCastableP() and (Target:DebuffRefreshableCP(S.Lacerate) or not Target:DebuffP(S.Lacerate)) then
-      if HR.Cast(S.Lacerate) then return ""; end
-    end
-    -- raptor_strike,if=buff.t21_2p_exposed_flank.up&!variable.mokTalented
-    if S.RaptorStrike:IsCastableP() and (Player:BuffP(S.T212PExposedFlankBuff) and not bool(VarMoktalented)) then
-      if HR.Cast(S.RaptorStrike) then return ""; end
-    end
-    -- raptor_strike,if=(talent.serpent_sting.enabled&!dot.serpent_sting.ticking)
-    if S.RaptorStrike:IsCastableP() and ((S.SerpentSting:IsAvailable() and not Target:DebuffP(S.SerpentStingDebuff))) then
-      if HR.Cast(S.RaptorStrike) then return ""; end
-    end
-    -- steel_trap,if=refreshable|!ticking
-    if S.SteelTrap:IsCastableP() and (Target:DebuffRefreshableCP(S.SteelTrap) or not Target:DebuffP(S.SteelTrap)) then
-      if HR.Cast(S.SteelTrap) then return ""; end
-    end
-    -- caltrops,if=refreshable|!ticking
-    if S.Caltrops:IsCastableP() and (Target:DebuffRefreshableCP(S.Caltrops) or not Target:DebuffP(S.Caltrops)) then
-      if HR.Cast(S.Caltrops) then return ""; end
-    end
-    -- explosive_trap
-    if S.ExplosiveTrap:IsCastableP() and (true) then
-      if HR.Cast(S.ExplosiveTrap) then return ""; end
-    end
-    -- butchery,if=variable.frizzosEquipped&dot.lacerate.refreshable&(focus>((50+40)-((cooldown.flanking_strike.remains%gcd)*(focus.regen*gcd))))
-    if S.Butchery:IsCastableP() and (bool(VarFrizzosequipped) and Target:DebuffRefreshableCP(S.LacerateDebuff) and (Player:Focus() > ((50 + 40) - ((S.FlankingStrike:CooldownRemainsP() / Player:GCD()) * (Player:FocusRegen() * Player:GCD()))))) then
-      if HR.Cast(S.Butchery) then return ""; end
-    end
-    -- carve,if=variable.frizzosEquipped&dot.lacerate.refreshable&(focus>((50+40)-((cooldown.flanking_strike.remains%gcd)*(focus.regen*gcd))))
-    if S.Carve:IsCastableP() and (bool(VarFrizzosequipped) and Target:DebuffRefreshableCP(S.LacerateDebuff) and (Player:Focus() > ((50 + 40) - ((S.FlankingStrike:CooldownRemainsP() / Player:GCD()) * (Player:FocusRegen() * Player:GCD()))))) then
-      if HR.Cast(S.Carve) then return ""; end
-    end
-    -- flanking_strike
-    if S.FlankingStrike:IsCastableP() and (true) then
-      if HR.Cast(S.FlankingStrike) then return ""; end
-    end
-    -- raptor_strike,if=(variable.mokTalented&buff.moknathal_tactics.remains<gcd*4)|(focus>((75-focus.regen*gcd)))
-    if S.RaptorStrike:IsCastableP() and ((bool(VarMoktalented) and Player:BuffRemainsP(S.MoknathalTacticsBuff) < Player:GCD() * 4) or (Player:Focus() > ((75 - Player:FocusRegen() * Player:GCD())))) then
-      if HR.Cast(S.RaptorStrike) then return ""; end
-    end
-  end
-  local function Mokmaintain()
-    -- raptor_strike,if=(buff.moknathal_tactics.remains<(gcd)|(buff.moknathal_tactics.stack<3))
-    if S.RaptorStrike:IsCastableP() and ((Player:BuffRemainsP(S.MoknathalTacticsBuff) < (Player:GCD()) or (Player:BuffStackP(S.MoknathalTacticsBuff) < 3))) then
-      if HR.Cast(S.RaptorStrike) then return ""; end
-    end
-  end
   -- call precombat
   if not Player:AffectingCombat() then
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
-  -- variable,name=frizzosEquipped,value=(equipped.137043)
-  if (true) then
-    VarFrizzosequipped = num((I.Item137043:IsEquipped()))
-  end
-  -- variable,name=mokTalented,value=(talent.way_of_the_moknathal.enabled)
-  if (true) then
-    VarMoktalented = num((S.WayoftheMoknathal:IsAvailable()))
+  -- auto_attack
+  -- muzzle,if=equipped.sephuzs_secret&target.debuff.casting.react&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up
+  if S.Muzzle:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (I.SephuzsSecret:IsEquipped() and Target:IsCasting() and S.BuffSephuzsSecret:CooldownUpP() and not Player:BuffP(S.SephuzsSecretBuff)) then
+    if HR.CastAnnotated(S.Muzzle, false, "Interrupt") then return ""; end
   end
   -- use_items
   if S.UseItems:IsCastableP() and (true) then
     if HR.Cast(S.UseItems) then return ""; end
   end
-  -- muzzle,if=target.debuff.casting.react
-  if S.Muzzle:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (Target:IsCasting()) then
-    if HR.CastAnnotated(S.Muzzle, false, "Interrupt") then return ""; end
+  -- berserking,if=cooldown.coordinated_assault.remains>30
+  if S.Berserking:IsCastableP() and HR.CDsON() and (S.CoordinatedAssault:CooldownRemainsP() > 30) then
+    if HR.Cast(S.Berserking, Settings.Survival.OffGCDasOffGCD.Berserking) then return ""; end
   end
-  -- auto_attack
-  -- call_action_list,name=mokMaintain,if=variable.mokTalented
-  if (bool(VarMoktalented)) then
-    local ShouldReturn = Mokmaintain(); if ShouldReturn then return ShouldReturn; end
+  -- blood_fury,if=cooldown.coordinated_assault.remains>30
+  if S.BloodFury:IsCastableP() and HR.CDsON() and (S.CoordinatedAssault:CooldownRemainsP() > 30) then
+    if HR.Cast(S.BloodFury, Settings.Survival.OffGCDasOffGCD.BloodFury) then return ""; end
   end
-  -- call_action_list,name=CDs
+  -- ancestral_call,if=cooldown.coordinated_assault.remains>30
+  if S.AncestralCall:IsCastableP() and (S.CoordinatedAssault:CooldownRemainsP() > 30) then
+    if HR.Cast(S.AncestralCall) then return ""; end
+  end
+  -- fireblood,if=cooldown.coordinated_assault.remains>30
+  if S.Fireblood:IsCastableP() and (S.CoordinatedAssault:CooldownRemainsP() > 30) then
+    if HR.Cast(S.Fireblood) then return ""; end
+  end
+  -- lights_judgment
+  if S.LightsJudgment:IsCastableP() and (true) then
+    if HR.Cast(S.LightsJudgment) then return ""; end
+  end
+  -- potion,if=buff.coordinated_assault.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)
+  if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.CoordinatedAssaultBuff) and (Player:BuffP(S.BerserkingBuff) or Player:BuffP(S.BloodFuryBuff) or not Player:IsRace("Troll") and not Player:IsRace("Orc"))) then
+    if HR.CastSuggested(I.ProlongedPower) then return ""; end
+  end
+  -- variable,name=can_gcd,value=!talent.mongoose_bite.enabled|buff.mongoose_fury.down|(buff.mongoose_fury.remains-(((buff.mongoose_fury.remains*focus.regen+focus)%action.mongoose_bite.cost)*gcd.max)>gcd.max)
   if (true) then
-    local ShouldReturn = Cds(); if ShouldReturn then return ShouldReturn; end
+    VarCanGcd = num(not S.MongooseBite:IsAvailable() or Player:BuffDownP(S.MongooseFuryBuff) or (Player:BuffRemainsP(S.MongooseFuryBuff) - (((Player:BuffRemainsP(S.MongooseFuryBuff) * Player:FocusRegen() + Player:Focus()) / S.MongooseBite:Cost()) * Player:GCD()) > Player:GCD()))
   end
-  -- call_action_list,name=aoe,if=active_enemies>=3
-  if (Cache.EnemiesCount[40] >= 3) then
-    local ShouldReturn = Aoe(); if ShouldReturn then return ShouldReturn; end
+  -- steel_trap
+  if S.SteelTrap:IsCastableP() and (true) then
+    if HR.Cast(S.SteelTrap) then return ""; end
   end
-  -- call_action_list,name=fillers,if=!buff.mongoose_fury.up
-  if (not Player:BuffP(S.MongooseFuryBuff)) then
-    local ShouldReturn = Fillers(); if ShouldReturn then return ShouldReturn; end
+  -- a_murder_of_crows
+  if S.AMurderofCrows:IsCastableP() and (true) then
+    if HR.Cast(S.AMurderofCrows) then return ""; end
   end
-  -- call_action_list,name=biteTrigger,if=!buff.mongoose_fury.up
-  if (not Player:BuffP(S.MongooseFuryBuff)) then
-    local ShouldReturn = Bitetrigger(); if ShouldReturn then return ShouldReturn; end
+  -- coordinated_assault
+  if S.CoordinatedAssault:IsCastableP() and (true) then
+    if HR.Cast(S.CoordinatedAssault) then return ""; end
   end
-  -- call_action_list,name=bitePhase,if=buff.mongoose_fury.up
-  if (Player:BuffP(S.MongooseFuryBuff)) then
-    local ShouldReturn = Bitephase(); if ShouldReturn then return ShouldReturn; end
+  -- chakrams,if=active_enemies>1
+  if S.Chakrams:IsCastableP() and (Cache.EnemiesCount[40] > 1) then
+    if HR.Cast(S.Chakrams) then return ""; end
+  end
+  -- kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&buff.tip_of_the_spear.stack<3&active_enemies<2
+  if S.KillCommand:IsCastableP() and (Player:Focus() + Player:FocusCastRegen(S.KillCommand:ExecuteTime()) < Player:FocusMax() and Player:BuffStackP(S.TipoftheSpearBuff) < 3 and Cache.EnemiesCount[40] < 2) then
+    if HR.Cast(S.KillCommand) then return ""; end
+  end
+  -- wildfire_bomb,if=(focus+cast_regen<focus.max|active_enemies>1)&(dot.wildfire_bomb.refreshable&buff.mongoose_fury.down|full_recharge_time<gcd)
+  if S.WildfireBomb:IsCastableP() and ((Player:Focus() + Player:FocusCastRegen(S.WildfireBomb:ExecuteTime()) < Player:FocusMax() or Cache.EnemiesCount[40] > 1) and (Target:DebuffRefreshableCP(S.WildfireBombDebuff) and Player:BuffDownP(S.MongooseFuryBuff) or S.WildfireBomb:FullRechargeTimeP() < Player:GCD())) then
+    if HR.Cast(S.WildfireBomb) then return ""; end
+  end
+  -- kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&buff.tip_of_the_spear.stack<3
+  if S.KillCommand:IsCastableP() and (Player:Focus() + Player:FocusCastRegen(S.KillCommand:ExecuteTime()) < Player:FocusMax() and Player:BuffStackP(S.TipoftheSpearBuff) < 3) then
+    if HR.Cast(S.KillCommand) then return ""; end
+  end
+  -- butchery,if=(!talent.wildfire_infusion.enabled|full_recharge_time<gcd)&active_enemies>3|(dot.shrapnel_bomb.ticking&dot.internal_bleeding.stack<3)
+  if S.Butchery:IsCastableP() and ((not S.WildfireInfusion:IsAvailable() or S.Butchery:FullRechargeTimeP() < Player:GCD()) and Cache.EnemiesCount[40] > 3 or (Target:DebuffP(S.ShrapnelBombDebuff) and Target:DebuffStackP(S.InternalBleedingDebuff) < 3)) then
+    if HR.Cast(S.Butchery) then return ""; end
+  end
+  -- serpent_sting,if=(active_enemies<2&refreshable&(buff.mongoose_fury.down|(variable.can_gcd&!talent.vipers_venom.enabled)))|buff.vipers_venom.up
+  if S.SerpentSting:IsCastableP() and ((Cache.EnemiesCount[40] < 2 and Target:DebuffRefreshableCP(S.SerpentSting) and (Player:BuffDownP(S.MongooseFuryBuff) or (bool(VarCanGcd) and not S.VipersVenom:IsAvailable()))) or Player:BuffP(S.VipersVenomBuff)) then
+    if HR.Cast(S.SerpentSting) then return ""; end
+  end
+  -- carve,if=active_enemies>2&(active_enemies<6&active_enemies+gcd<cooldown.wildfire_bomb.remains|5+gcd<cooldown.wildfire_bomb.remains)
+  if S.Carve:IsCastableP() and (Cache.EnemiesCount[8] > 2 and (Cache.EnemiesCount[8] < 6 and Cache.EnemiesCount[8] + Player:GCD() < S.WildfireBomb:CooldownRemainsP() or 5 + Player:GCD() < S.WildfireBomb:CooldownRemainsP())) then
+    if HR.Cast(S.Carve) then return ""; end
+  end
+  -- harpoon,if=talent.terms_of_engagement.enabled
+  if S.Harpoon:IsCastableP() and (S.TermsofEngagement:IsAvailable()) then
+    if HR.Cast(S.Harpoon) then return ""; end
+  end
+  -- flanking_strike
+  if S.FlankingStrike:IsCastableP() and (true) then
+    if HR.Cast(S.FlankingStrike) then return ""; end
+  end
+  -- chakrams
+  if S.Chakrams:IsCastableP() and (true) then
+    if HR.Cast(S.Chakrams) then return ""; end
+  end
+  -- serpent_sting,target_if=min:remains,if=refreshable&buff.mongoose_fury.down|buff.vipers_venom.up
+  if S.SerpentSting:IsCastableP() and (Target:DebuffRefreshableCP(S.SerpentSting) and Player:BuffDownP(S.MongooseFuryBuff) or Player:BuffP(S.VipersVenomBuff)) then
+    if HR.Cast(S.SerpentSting) then return ""; end
+  end
+  -- mongoose_bite,target_if=min:dot.internal_bleeding.stack,if=buff.mongoose_fury.up|focus>60
+  if S.MongooseBite:IsCastableP() and (Player:BuffP(S.MongooseFuryBuff) or Player:Focus() > 60) then
+    if HR.Cast(S.MongooseBite) then return ""; end
+  end
+  -- butchery
+  if S.Butchery:IsCastableP() and (true) then
+    if HR.Cast(S.Butchery) then return ""; end
+  end
+  -- raptor_strike,target_if=min:dot.internal_bleeding.stack
+  if S.RaptorStrike:IsCastableP() and (true) then
+    if HR.Cast(S.RaptorStrike) then return ""; end
   end
 end
 

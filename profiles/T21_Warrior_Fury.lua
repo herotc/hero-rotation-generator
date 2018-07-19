@@ -21,44 +21,31 @@ local HR     = HeroRotation
 -- Spells
 if not Spell.Warrior then Spell.Warrior = {} end
 Spell.Warrior.Fury = {
-  Bloodthirst                           = Spell(23881),
-  EnrageBuff                            = Spell(184362),
-  Bladestorm                            = Spell(46924),
-  Whirlwind                             = Spell(190411),
-  MeatCleaverBuff                       = Spell(85739),
+  HeroicLeap                            = Spell(6544),
+  Siegebreaker                          = Spell(),
+  RecklessnessBuff                      = Spell(),
+  Recklessness                          = Spell(),
   Rampage                               = Spell(184367),
   FrothingBerserker                     = Spell(215571),
-  MassacreBuff                          = Spell(206316),
-  Execute                               = Spell(5308),
-  RagingBlow                            = Spell(85288),
-  InnerRage                             = Spell(215573),
-  OdynsFury                             = Spell(205545),
-  BerserkerRage                         = Spell(18499),
-  Outburst                              = Spell(206320),
-  BattleCryBuff                         = Spell(1719),
-  WreckingBallBuff                      = Spell(215570),
-  FuriousSlash                          = Spell(100130),
-  FujiedasFuryBuff                      = Spell(207775),
-  Juggernaut                            = Spell(200875),
-  JuggernautBuff                        = Spell(201009),
-  StoneHeartBuff                        = Spell(225947),
-  Frenzy                                = Spell(206313),
-  FrenzyBuff                            = Spell(202539),
-  HeroicLeap                            = Spell(6544),
-  BattleCry                             = Spell(1719),
-  Bloodbath                             = Spell(12292),
   Carnage                               = Spell(202922),
-  Charge                                = Spell(100),
-  AvatarBuff                            = Spell(107574),
-  Avatar                                = Spell(107574),
+  EnrageBuff                            = Spell(184362),
+  Massacre                              = Spell(206315),
+  Execute                               = Spell(5308),
+  Bloodthirst                           = Spell(23881),
+  RagingBlow                            = Spell(85288),
+  Bladestorm                            = Spell(46924),
+  SiegebreakerDebuff                    = Spell(),
   DragonRoar                            = Spell(118000),
-  BloodbathBuff                         = Spell(12292),
-  RecklessAbandon                       = Spell(202751),
-  UmbralMoonglaives                     = Spell(242553),
-  DragonRoarBuff                        = Spell(118000),
+  FuriousSlash                          = Spell(100130),
+  Whirlwind                             = Spell(190411),
+  Charge                                = Spell(100),
+  FuriousSlashBuff                      = Spell(),
+  FujiedasFuryBuff                      = Spell(207775),
+  MeatCleaverBuff                       = Spell(85739),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
-  ArcaneTorrent                         = Spell(50613)
+  ArcaneTorrent                         = Spell(50613),
+  LightsJudgment                        = Spell()
 };
 local S = Spell.Warrior.Fury;
 
@@ -66,8 +53,6 @@ local S = Spell.Warrior.Fury;
 if not Item.Warrior then Item.Warrior = {} end
 Item.Warrior.Fury = {
   OldWar                           = Item(127844),
-  ConvergenceofFates               = Item(140806),
-  UmbralMoonglaives                = Item(147012),
   KazzalaxFujiedasFury             = Item(137053)
 };
 local I = Item.Warrior.Fury;
@@ -104,131 +89,13 @@ end
 local function APL()
   UpdateRanges()
   local function Precombat()
-    -- flask,type=countless_armies
-    -- food,type=nightborne_delicacy_platter
-    -- augmentation,type=defiled
+    -- flask
+    -- food
+    -- augmentation
     -- snapshot_stats
-    -- potion,name=old_war
+    -- potion
     if I.OldWar:IsReady() and Settings.Commons.UsePotions and (true) then
       if HR.CastSuggested(I.OldWar) then return ""; end
-    end
-  end
-  local function Aoe()
-    -- bloodthirst,if=buff.enrage.down|rage<90
-    if S.Bloodthirst:IsCastableP() and (Player:BuffDownP(S.EnrageBuff) or Player:Rage() < 90) then
-      if HR.Cast(S.Bloodthirst) then return ""; end
-    end
-    -- bladestorm,if=buff.enrage.remains>2&(raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)
-    if S.Bladestorm:IsCastableP() and (Player:BuffRemainsP(S.EnrageBuff) > 2 and (10000000000 > 90 or not false or Cache.EnemiesCount[8] > desired_targets)) then
-      if HR.Cast(S.Bladestorm) then return ""; end
-    end
-    -- whirlwind,if=buff.meat_cleaver.down
-    if S.Whirlwind:IsCastableP() and (Player:BuffDownP(S.MeatCleaverBuff)) then
-      if HR.Cast(S.Whirlwind) then return ""; end
-    end
-    -- rampage,if=buff.meat_cleaver.up&(buff.enrage.down&!talent.frothing_berserker.enabled|buff.massacre.react|rage>=100)
-    if S.Rampage:IsCastableP() and (Player:BuffP(S.MeatCleaverBuff) and (Player:BuffDownP(S.EnrageBuff) and not S.FrothingBerserker:IsAvailable() or bool(Player:BuffStackP(S.MassacreBuff)) or Player:Rage() >= 100)) then
-      if HR.Cast(S.Rampage) then return ""; end
-    end
-    -- bloodthirst
-    if S.Bloodthirst:IsCastableP() and (true) then
-      if HR.Cast(S.Bloodthirst) then return ""; end
-    end
-    -- whirlwind
-    if S.Whirlwind:IsCastableP() and (true) then
-      if HR.Cast(S.Whirlwind) then return ""; end
-    end
-  end
-  local function Cooldowns()
-    -- rampage,if=buff.massacre.react&buff.enrage.remains<1
-    if S.Rampage:IsCastableP() and (bool(Player:BuffStackP(S.MassacreBuff)) and Player:BuffRemainsP(S.EnrageBuff) < 1) then
-      if HR.Cast(S.Rampage) then return ""; end
-    end
-    -- bloodthirst,if=target.health.pct<20&buff.enrage.remains<1
-    if S.Bloodthirst:IsCastableP() and (Target:HealthPercentage() < 20 and Player:BuffRemainsP(S.EnrageBuff) < 1) then
-      if HR.Cast(S.Bloodthirst) then return ""; end
-    end
-    -- execute
-    if S.Execute:IsCastableP() and (true) then
-      if HR.Cast(S.Execute) then return ""; end
-    end
-    -- raging_blow,if=talent.inner_rage.enabled&buff.enrage.up
-    if S.RagingBlow:IsCastableP() and (S.InnerRage:IsAvailable() and Player:BuffP(S.EnrageBuff)) then
-      if HR.Cast(S.RagingBlow) then return ""; end
-    end
-    -- rampage,if=(rage>=100&talent.frothing_berserker.enabled&!set_bonus.tier21_4pc)|set_bonus.tier21_4pc|!talent.frothing_berserker.enabled
-    if S.Rampage:IsCastableP() and ((Player:Rage() >= 100 and S.FrothingBerserker:IsAvailable() and not HL.Tier21_4Pc) or HL.Tier21_4Pc or not S.FrothingBerserker:IsAvailable()) then
-      if HR.Cast(S.Rampage) then return ""; end
-    end
-    -- odyns_fury,if=buff.enrage.up&(cooldown.raging_blow.remains>0|!talent.inner_rage.enabled)
-    if S.OdynsFury:IsCastableP() and (Player:BuffP(S.EnrageBuff) and (S.RagingBlow:CooldownRemainsP() > 0 or not S.InnerRage:IsAvailable())) then
-      if HR.Cast(S.OdynsFury) then return ""; end
-    end
-    -- berserker_rage,if=talent.outburst.enabled&buff.enrage.down&buff.battle_cry.up
-    if S.BerserkerRage:IsCastableP() and (S.Outburst:IsAvailable() and Player:BuffDownP(S.EnrageBuff) and Player:BuffP(S.BattleCryBuff)) then
-      if HR.Cast(S.BerserkerRage) then return ""; end
-    end
-    -- bloodthirst,if=(buff.enrage.remains<1&!talent.outburst.enabled)|!talent.inner_rage.enabled
-    if S.Bloodthirst:IsCastableP() and ((Player:BuffRemainsP(S.EnrageBuff) < 1 and not S.Outburst:IsAvailable()) or not S.InnerRage:IsAvailable()) then
-      if HR.Cast(S.Bloodthirst) then return ""; end
-    end
-    -- whirlwind,if=buff.wrecking_ball.react&buff.enrage.up
-    if S.Whirlwind:IsCastableP() and (bool(Player:BuffStackP(S.WreckingBallBuff)) and Player:BuffP(S.EnrageBuff)) then
-      if HR.Cast(S.Whirlwind) then return ""; end
-    end
-    -- raging_blow
-    if S.RagingBlow:IsCastableP() and (true) then
-      if HR.Cast(S.RagingBlow) then return ""; end
-    end
-    -- bloodthirst
-    if S.Bloodthirst:IsCastableP() and (true) then
-      if HR.Cast(S.Bloodthirst) then return ""; end
-    end
-    -- furious_slash
-    if S.FuriousSlash:IsCastableP() and (true) then
-      if HR.Cast(S.FuriousSlash) then return ""; end
-    end
-  end
-  local function Execute()
-    -- bloodthirst,if=buff.fujiedas_fury.up&buff.fujiedas_fury.remains<2
-    if S.Bloodthirst:IsCastableP() and (Player:BuffP(S.FujiedasFuryBuff) and Player:BuffRemainsP(S.FujiedasFuryBuff) < 2) then
-      if HR.Cast(S.Bloodthirst) then return ""; end
-    end
-    -- execute,if=artifact.juggernaut.enabled&(!buff.juggernaut.up|buff.juggernaut.remains<2)|buff.stone_heart.react
-    if S.Execute:IsCastableP() and (S.Juggernaut:ArtifactEnabled() and (not Player:BuffP(S.JuggernautBuff) or Player:BuffRemainsP(S.JuggernautBuff) < 2) or bool(Player:BuffStackP(S.StoneHeartBuff))) then
-      if HR.Cast(S.Execute) then return ""; end
-    end
-    -- furious_slash,if=talent.frenzy.enabled&buff.frenzy.remains<=2
-    if S.FuriousSlash:IsCastableP() and (S.Frenzy:IsAvailable() and Player:BuffRemainsP(S.FrenzyBuff) <= 2) then
-      if HR.Cast(S.FuriousSlash) then return ""; end
-    end
-    -- rampage,if=buff.massacre.react&buff.enrage.remains<1
-    if S.Rampage:IsCastableP() and (bool(Player:BuffStackP(S.MassacreBuff)) and Player:BuffRemainsP(S.EnrageBuff) < 1) then
-      if HR.Cast(S.Rampage) then return ""; end
-    end
-    -- execute
-    if S.Execute:IsCastableP() and (true) then
-      if HR.Cast(S.Execute) then return ""; end
-    end
-    -- odyns_fury
-    if S.OdynsFury:IsCastableP() and (true) then
-      if HR.Cast(S.OdynsFury) then return ""; end
-    end
-    -- bloodthirst
-    if S.Bloodthirst:IsCastableP() and (true) then
-      if HR.Cast(S.Bloodthirst) then return ""; end
-    end
-    -- furious_slash,if=set_bonus.tier19_2pc
-    if S.FuriousSlash:IsCastableP() and (HL.Tier19_2Pc) then
-      if HR.Cast(S.FuriousSlash) then return ""; end
-    end
-    -- raging_blow
-    if S.RagingBlow:IsCastableP() and (true) then
-      if HR.Cast(S.RagingBlow) then return ""; end
-    end
-    -- furious_slash
-    if S.FuriousSlash:IsCastableP() and (true) then
-      if HR.Cast(S.FuriousSlash) then return ""; end
     end
   end
   local function Movement()
@@ -238,63 +105,45 @@ local function APL()
     end
   end
   local function SingleTarget()
-    -- bloodthirst,if=buff.fujiedas_fury.up&buff.fujiedas_fury.remains<2
-    if S.Bloodthirst:IsCastableP() and (Player:BuffP(S.FujiedasFuryBuff) and Player:BuffRemainsP(S.FujiedasFuryBuff) < 2) then
-      if HR.Cast(S.Bloodthirst) then return ""; end
+    -- siegebreaker,if=buff.recklessness.up|cooldown.recklessness.remains>28
+    if S.Siegebreaker:IsCastableP() and (Player:BuffP(S.RecklessnessBuff) or S.Recklessness:CooldownRemainsP() > 28) then
+      if HR.Cast(S.Siegebreaker) then return ""; end
     end
-    -- furious_slash,if=talent.frenzy.enabled&(buff.frenzy.down|buff.frenzy.remains<=2)
-    if S.FuriousSlash:IsCastableP() and (S.Frenzy:IsAvailable() and (Player:BuffDownP(S.FrenzyBuff) or Player:BuffRemainsP(S.FrenzyBuff) <= 2)) then
-      if HR.Cast(S.FuriousSlash) then return ""; end
-    end
-    -- raging_blow,if=buff.enrage.up&talent.inner_rage.enabled
-    if S.RagingBlow:IsCastableP() and (Player:BuffP(S.EnrageBuff) and S.InnerRage:IsAvailable()) then
-      if HR.Cast(S.RagingBlow) then return ""; end
-    end
-    -- rampage,if=target.health.pct>21&(rage>=100|!talent.frothing_berserker.enabled)&(((cooldown.battle_cry.remains>5|cooldown.bloodbath.remains>5)&!talent.carnage.enabled)|((cooldown.battle_cry.remains>3|cooldown.bloodbath.remains>3)&talent.carnage.enabled))|buff.massacre.react
-    if S.Rampage:IsCastableP() and (Target:HealthPercentage() > 21 and (Player:Rage() >= 100 or not S.FrothingBerserker:IsAvailable()) and (((S.BattleCry:CooldownRemainsP() > 5 or S.Bloodbath:CooldownRemainsP() > 5) and not S.Carnage:IsAvailable()) or ((S.BattleCry:CooldownRemainsP() > 3 or S.Bloodbath:CooldownRemainsP() > 3) and S.Carnage:IsAvailable())) or bool(Player:BuffStackP(S.MassacreBuff))) then
+    -- rampage,if=buff.recklessness.up|(talent.frothing_berserker.enabled|talent.carnage.enabled&(buff.enrage.remains<gcd|rage>90)|talent.massacre.enabled&(buff.enrage.remains<gcd|rage>90))
+    if S.Rampage:IsCastableP() and (Player:BuffP(S.RecklessnessBuff) or (S.FrothingBerserker:IsAvailable() or S.Carnage:IsAvailable() and (Player:BuffRemainsP(S.EnrageBuff) < Player:GCD() or Player:Rage() > 90) or S.Massacre:IsAvailable() and (Player:BuffRemainsP(S.EnrageBuff) < Player:GCD() or Player:Rage() > 90))) then
       if HR.Cast(S.Rampage) then return ""; end
     end
-    -- execute,if=buff.stone_heart.react&((talent.inner_rage.enabled&cooldown.raging_blow.remains>1)|buff.enrage.up)
-    if S.Execute:IsCastableP() and (bool(Player:BuffStackP(S.StoneHeartBuff)) and ((S.InnerRage:IsAvailable() and S.RagingBlow:CooldownRemainsP() > 1) or Player:BuffP(S.EnrageBuff))) then
+    -- execute,if=buff.enrage.up
+    if S.Execute:IsCastableP() and (Player:BuffP(S.EnrageBuff)) then
       if HR.Cast(S.Execute) then return ""; end
+    end
+    -- bloodthirst,if=buff.enrage.down
+    if S.Bloodthirst:IsCastableP() and (Player:BuffDownP(S.EnrageBuff)) then
+      if HR.Cast(S.Bloodthirst) then return ""; end
+    end
+    -- raging_blow,if=charges=2
+    if S.RagingBlow:IsCastableP() and (S.RagingBlow:ChargesP() == 2) then
+      if HR.Cast(S.RagingBlow) then return ""; end
     end
     -- bloodthirst
     if S.Bloodthirst:IsCastableP() and (true) then
       if HR.Cast(S.Bloodthirst) then return ""; end
     end
-    -- furious_slash,if=set_bonus.tier19_2pc&!talent.inner_rage.enabled
-    if S.FuriousSlash:IsCastableP() and (HL.Tier19_2Pc and not S.InnerRage:IsAvailable()) then
-      if HR.Cast(S.FuriousSlash) then return ""; end
+    -- bladestorm,if=prev_gcd.1.rampage&(debuff.siegebreaker.up|!talent.siegebreaker.enabled)
+    if S.Bladestorm:IsCastableP() and (Player:PrevGCDP(1, S.Rampage) and (Target:DebuffP(S.SiegebreakerDebuff) or not S.Siegebreaker:IsAvailable())) then
+      if HR.Cast(S.Bladestorm) then return ""; end
     end
-    -- whirlwind,if=buff.wrecking_ball.react&buff.enrage.up
-    if S.Whirlwind:IsCastableP() and (bool(Player:BuffStackP(S.WreckingBallBuff)) and Player:BuffP(S.EnrageBuff)) then
-      if HR.Cast(S.Whirlwind) then return ""; end
+    -- dragon_roar,if=buff.enrage.up&(debuff.siegebreaker.up|!talent.siegebreaker.enabled)
+    if S.DragonRoar:IsCastableP() and (Player:BuffP(S.EnrageBuff) and (Target:DebuffP(S.SiegebreakerDebuff) or not S.Siegebreaker:IsAvailable())) then
+      if HR.Cast(S.DragonRoar) then return ""; end
     end
-    -- raging_blow
-    if S.RagingBlow:IsCastableP() and (true) then
+    -- raging_blow,if=talent.carnage.enabled|(talent.massacre.enabled&rage<80)|(talent.frothing_berserker.enabled&rage<90)
+    if S.RagingBlow:IsCastableP() and (S.Carnage:IsAvailable() or (S.Massacre:IsAvailable() and Player:Rage() < 80) or (S.FrothingBerserker:IsAvailable() and Player:Rage() < 90)) then
       if HR.Cast(S.RagingBlow) then return ""; end
     end
-    -- furious_slash
-    if S.FuriousSlash:IsCastableP() and (true) then
+    -- furious_slash,if=talent.furious_slash.enabled
+    if S.FuriousSlash:IsCastableP() and (S.FuriousSlash:IsAvailable()) then
       if HR.Cast(S.FuriousSlash) then return ""; end
-    end
-  end
-  local function ThreeTargets()
-    -- execute,if=buff.stone_heart.react
-    if S.Execute:IsCastableP() and (bool(Player:BuffStackP(S.StoneHeartBuff))) then
-      if HR.Cast(S.Execute) then return ""; end
-    end
-    -- rampage,if=buff.meat_cleaver.up&((buff.enrage.down&!talent.frothing_berserker.enabled)|(rage>=100&talent.frothing_berserker.enabled))|buff.massacre.react
-    if S.Rampage:IsCastableP() and (Player:BuffP(S.MeatCleaverBuff) and ((Player:BuffDownP(S.EnrageBuff) and not S.FrothingBerserker:IsAvailable()) or (Player:Rage() >= 100 and S.FrothingBerserker:IsAvailable())) or bool(Player:BuffStackP(S.MassacreBuff))) then
-      if HR.Cast(S.Rampage) then return ""; end
-    end
-    -- raging_blow,if=talent.inner_rage.enabled
-    if S.RagingBlow:IsCastableP() and (S.InnerRage:IsAvailable()) then
-      if HR.Cast(S.RagingBlow) then return ""; end
-    end
-    -- bloodthirst
-    if S.Bloodthirst:IsCastableP() and (true) then
-      if HR.Cast(S.Bloodthirst) then return ""; end
     end
     -- whirlwind
     if S.Whirlwind:IsCastableP() and (true) then
@@ -318,84 +167,48 @@ local function APL()
   if S.HeroicLeap:IsCastableP() and ((raid_event.movement.distance > 25 and 10000000000 > 45) or not false) then
     if HR.Cast(S.HeroicLeap) then return ""; end
   end
-  -- potion,name=old_war,if=buff.battle_cry.up&(buff.avatar.up|!talent.avatar.enabled)
-  if I.OldWar:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.BattleCryBuff) and (Player:BuffP(S.AvatarBuff) or not S.Avatar:IsAvailable())) then
+  -- potion
+  if I.OldWar:IsReady() and Settings.Commons.UsePotions and (true) then
     if HR.CastSuggested(I.OldWar) then return ""; end
   end
-  -- dragon_roar,if=(equipped.convergence_of_fates&cooldown.battle_cry.remains<2)|!equipped.convergence_of_fates&(!cooldown.battle_cry.remains<=10|cooldown.battle_cry.remains<2)|(talent.bloodbath.enabled&(cooldown.bloodbath.remains<1|buff.bloodbath.up))
-  if S.DragonRoar:IsCastableP() and ((I.ConvergenceofFates:IsEquipped() and S.BattleCry:CooldownRemainsP() < 2) or not I.ConvergenceofFates:IsEquipped() and (num(not bool(S.BattleCry:CooldownRemainsP())) <= 10 or S.BattleCry:CooldownRemainsP() < 2) or (S.Bloodbath:IsAvailable() and (S.Bloodbath:CooldownRemainsP() < 1 or Player:BuffP(S.BloodbathBuff)))) then
-    if HR.Cast(S.DragonRoar) then return ""; end
-  end
-  -- rampage,if=cooldown.battle_cry.remains<1&cooldown.bloodbath.remains<1&target.health.pct>20
-  if S.Rampage:IsCastableP() and (S.BattleCry:CooldownRemainsP() < 1 and S.Bloodbath:CooldownRemainsP() < 1 and Target:HealthPercentage() > 20) then
-    if HR.Cast(S.Rampage) then return ""; end
-  end
-  -- furious_slash,if=talent.frenzy.enabled&(buff.frenzy.stack<3|buff.frenzy.remains<3|(cooldown.battle_cry.remains<1&buff.frenzy.remains<9))
-  if S.FuriousSlash:IsCastableP() and (S.Frenzy:IsAvailable() and (Player:BuffStackP(S.FrenzyBuff) < 3 or Player:BuffRemainsP(S.FrenzyBuff) < 3 or (S.BattleCry:CooldownRemainsP() < 1 and Player:BuffRemainsP(S.FrenzyBuff) < 9))) then
+  -- furious_slash,if=talent.furious_slash.enabled&(buff.furious_slash.stack<3|buff.furious_slash.remains<3|(cooldown.recklessness.remains<3&buff.furious_slash.remains<9))
+  if S.FuriousSlash:IsCastableP() and (S.FuriousSlash:IsAvailable() and (Player:BuffStackP(S.FuriousSlashBuff) < 3 or Player:BuffRemainsP(S.FuriousSlashBuff) < 3 or (S.Recklessness:CooldownRemainsP() < 3 and Player:BuffRemainsP(S.FuriousSlashBuff) < 9))) then
     if HR.Cast(S.FuriousSlash) then return ""; end
   end
-  -- use_item,name=umbral_moonglaives,if=equipped.umbral_moonglaives&(cooldown.battle_cry.remains>gcd&cooldown.battle_cry.remains<2|cooldown.battle_cry.remains=0)
-  if I.UmbralMoonglaives:IsReady() and (I.UmbralMoonglaives:IsEquipped() and (S.BattleCry:CooldownRemainsP() > Player:GCD() and S.BattleCry:CooldownRemainsP() < 2 or S.BattleCry:CooldownRemainsP() == 0)) then
-    if HR.CastSuggested(I.UmbralMoonglaives) then return ""; end
-  end
-  -- bloodthirst,if=equipped.kazzalax_fujiedas_fury&buff.fujiedas_fury.down
-  if S.Bloodthirst:IsCastableP() and (I.KazzalaxFujiedasFury:IsEquipped() and Player:BuffDownP(S.FujiedasFuryBuff)) then
+  -- bloodthirst,if=equipped.kazzalax_fujiedas_fury&(buff.fujiedas_fury.down|remains<2)
+  if S.Bloodthirst:IsCastableP() and (I.KazzalaxFujiedasFury:IsEquipped() and (Player:BuffDownP(S.FujiedasFuryBuff) or Player:BuffRemainsP(S.Bloodthirst) < 2)) then
     if HR.Cast(S.Bloodthirst) then return ""; end
   end
-  -- avatar,if=((buff.battle_cry.remains>5|cooldown.battle_cry.remains<12)&target.time_to_die>80)|((target.time_to_die<40)&(buff.battle_cry.remains>6|cooldown.battle_cry.remains<12|(target.time_to_die<20)))
-  if S.Avatar:IsCastableP() and (((Player:BuffRemainsP(S.BattleCryBuff) > 5 or S.BattleCry:CooldownRemainsP() < 12) and Target:TimeToDie() > 80) or ((Target:TimeToDie() < 40) and (Player:BuffRemainsP(S.BattleCryBuff) > 6 or S.BattleCry:CooldownRemainsP() < 12 or (Target:TimeToDie() < 20)))) then
-    if HR.Cast(S.Avatar) then return ""; end
+  -- rampage,if=cooldown.recklessness.remains<3
+  if S.Rampage:IsCastableP() and (S.Recklessness:CooldownRemainsP() < 3) then
+    if HR.Cast(S.Rampage) then return ""; end
   end
-  -- battle_cry,if=gcd.remains=0&talent.reckless_abandon.enabled&!talent.bloodbath.enabled&(equipped.umbral_moonglaives&(prev_off_gcd.umbral_moonglaives|(trinket.cooldown.remains>3&trinket.cooldown.remains<90))|!equipped.umbral_moonglaives)
-  if S.BattleCry:IsCastableP() and (Player:GCDRemains() == 0 and S.RecklessAbandon:IsAvailable() and not S.Bloodbath:IsAvailable() and (I.UmbralMoonglaives:IsEquipped() and (Player:PrevOffGCDP(1, S.UmbralMoonglaives) or (trinket.cooldown.remains > 3 and trinket.cooldown.remains < 90)) or not I.UmbralMoonglaives:IsEquipped())) then
-    if HR.Cast(S.BattleCry) then return ""; end
+  -- recklessness
+  if S.Recklessness:IsCastableP() and (true) then
+    if HR.Cast(S.Recklessness) then return ""; end
   end
-  -- battle_cry,if=gcd.remains=0&talent.bladestorm.enabled&(raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)
-  if S.BattleCry:IsCastableP() and (Player:GCDRemains() == 0 and S.Bladestorm:IsAvailable() and (10000000000 > 90 or not false or Cache.EnemiesCount[8] > desired_targets)) then
-    if HR.Cast(S.BattleCry) then return ""; end
+  -- whirlwind,if=spell_targets.whirlwind>1&!buff.meat_cleaver.up
+  if S.Whirlwind:IsCastableP() and (Cache.EnemiesCount[8] > 1 and not Player:BuffP(S.MeatCleaverBuff)) then
+    if HR.Cast(S.Whirlwind) then return ""; end
   end
-  -- battle_cry,if=gcd.remains=0&buff.dragon_roar.up&(cooldown.bloodthirst.remains=0|buff.enrage.remains>cooldown.bloodthirst.remains)
-  if S.BattleCry:IsCastableP() and (Player:GCDRemains() == 0 and Player:BuffP(S.DragonRoarBuff) and (S.Bloodthirst:CooldownRemainsP() == 0 or Player:BuffRemainsP(S.EnrageBuff) > S.Bloodthirst:CooldownRemainsP())) then
-    if HR.Cast(S.BattleCry) then return ""; end
-  end
-  -- battle_cry,if=(gcd.remains=0|gcd.remains<=0.4&prev_gcd.1.rampage)&(cooldown.bloodbath.remains=0|buff.bloodbath.up|!talent.bloodbath.enabled|(target.time_to_die<12))&(equipped.umbral_moonglaives&(prev_off_gcd.umbral_moonglaives|(trinket.cooldown.remains>3&trinket.cooldown.remains<90))|!equipped.umbral_moonglaives)
-  if S.BattleCry:IsCastableP() and ((Player:GCDRemains() == 0 or Player:GCDRemains() <= 0.4 and Player:PrevGCDP(1, S.Rampage)) and (S.Bloodbath:CooldownRemainsP() == 0 or Player:BuffP(S.BloodbathBuff) or not S.Bloodbath:IsAvailable() or (Target:TimeToDie() < 12)) and (I.UmbralMoonglaives:IsEquipped() and (Player:PrevOffGCDP(1, S.UmbralMoonglaives) or (trinket.cooldown.remains > 3 and trinket.cooldown.remains < 90)) or not I.UmbralMoonglaives:IsEquipped())) then
-    if HR.Cast(S.BattleCry) then return ""; end
-  end
-  -- bloodbath,if=buff.battle_cry.up|(target.time_to_die<14)|(cooldown.battle_cry.remains<2&prev_gcd.1.rampage)
-  if S.Bloodbath:IsCastableP() and (Player:BuffP(S.BattleCryBuff) or (Target:TimeToDie() < 14) or (S.BattleCry:CooldownRemainsP() < 2 and Player:PrevGCDP(1, S.Rampage))) then
-    if HR.Cast(S.Bloodbath) then return ""; end
-  end
-  -- blood_fury,if=buff.battle_cry.up
-  if S.BloodFury:IsCastableP() and HR.CDsON() and (Player:BuffP(S.BattleCryBuff)) then
+  -- blood_fury,if=buff.recklessness.up
+  if S.BloodFury:IsCastableP() and HR.CDsON() and (Player:BuffP(S.RecklessnessBuff)) then
     if HR.Cast(S.BloodFury, Settings.Fury.OffGCDasOffGCD.BloodFury) then return ""; end
   end
-  -- berserking,if=(buff.battle_cry.up&(buff.avatar.up|!talent.avatar.enabled))|(buff.battle_cry.up&target.time_to_die<40)
-  if S.Berserking:IsCastableP() and HR.CDsON() and ((Player:BuffP(S.BattleCryBuff) and (Player:BuffP(S.AvatarBuff) or not S.Avatar:IsAvailable())) or (Player:BuffP(S.BattleCryBuff) and Target:TimeToDie() < 40)) then
+  -- berserking,if=buff.recklessness.up
+  if S.Berserking:IsCastableP() and HR.CDsON() and (Player:BuffP(S.RecklessnessBuff)) then
     if HR.Cast(S.Berserking, Settings.Fury.OffGCDasOffGCD.Berserking) then return ""; end
   end
-  -- arcane_torrent,if=rage<rage.max-40
-  if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (Player:Rage() < Player:RageMax() - 40) then
+  -- arcane_torrent,if=rage<40&!buff.recklessness.up
+  if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (Player:Rage() < 40 and not Player:BuffP(S.RecklessnessBuff)) then
     if HR.Cast(S.ArcaneTorrent, Settings.Fury.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
   end
-  -- run_action_list,name=cooldowns,if=buff.battle_cry.up&spell_targets.whirlwind=1
-  if (Player:BuffP(S.BattleCryBuff) and Cache.EnemiesCount[8] == 1) then
-    return Cooldowns();
+  -- lights_judgment,if=cooldown.recklessness.remains<3
+  if S.LightsJudgment:IsCastableP() and (S.Recklessness:CooldownRemainsP() < 3) then
+    if HR.Cast(S.LightsJudgment) then return ""; end
   end
-  -- run_action_list,name=three_targets,if=target.health.pct>20&(spell_targets.whirlwind=3|spell_targets.whirlwind=4)
-  if (Target:HealthPercentage() > 20 and (Cache.EnemiesCount[8] == 3 or Cache.EnemiesCount[8] == 4)) then
-    return ThreeTargets();
-  end
-  -- run_action_list,name=aoe,if=spell_targets.whirlwind>4
-  if (Cache.EnemiesCount[8] > 4) then
-    return Aoe();
-  end
-  -- run_action_list,name=execute,if=target.health.pct<20
-  if (Target:HealthPercentage() < 20) then
-    return Execute();
-  end
-  -- run_action_list,name=single_target,if=target.health.pct>20
-  if (Target:HealthPercentage() > 20) then
+  -- run_action_list,name=single_target
+  if (true) then
     return SingleTarget();
   end
 end

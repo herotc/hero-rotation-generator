@@ -21,12 +21,12 @@ local HR     = HeroRotation
 -- Spells
 if not Spell.Paladin then Spell.Paladin = {} end
 Spell.Paladin.Protection = {
-  Seraphim                              = Spell(152262),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
   ArcaneTorrent                         = Spell(50613),
+  LightsJudgment                        = Spell(),
   ShieldoftheRighteous                  = Spell(53600),
-  EyeofTyrDebuff                        = Spell(209202),
+  Seraphim                              = Spell(152262),
   AegisofLightBuff                      = Spell(204150),
   ArdentDefenderBuff                    = Spell(31850),
   GuardianofAncientKingsBuff            = Spell(86659),
@@ -36,9 +36,6 @@ Spell.Paladin.Protection = {
   LightoftheProtector                   = Spell(184092),
   HandoftheProtector                    = Spell(213652),
   RighteousProtector                    = Spell(204074),
-  DivineSteed                           = Spell(190784),
-  KnightTemplar                         = Spell(204139),
-  EyeofTyr                              = Spell(209202),
   AegisofLight                          = Spell(204150),
   GuardianofAncientKings                = Spell(86659),
   DivineShield                          = Spell(642),
@@ -51,7 +48,6 @@ Spell.Paladin.Protection = {
   Judgment                              = Spell(20271),
   AvengersShield                        = Spell(31935),
   CrusadersJudgment                     = Spell(),
-  GrandCrusaderBuff                     = Spell(85043),
   BlessedHammer                         = Spell(204019),
   Consecration                          = Spell(26573),
   HammeroftheRighteous                  = Spell(53595),
@@ -63,8 +59,7 @@ local S = Spell.Paladin.Protection;
 if not Item.Paladin then Item.Paladin = {} end
 Item.Paladin.Protection = {
   ProlongedPower                   = Item(142117),
-  ApocalypseDrive                  = Item(151975),
-  Item151812                       = Item(151812)
+  DiimasGlacialAegis               = Item()
 };
 local I = Item.Paladin.Protection;
 
@@ -100,29 +95,19 @@ end
 local function APL()
   UpdateRanges()
   local function Precombat()
-    -- flask,type=flask_of_ten_thousand_scars,if=!talent.seraphim.enabled
-    -- flask,type=flask_of_the_countless_armies,if=(role.attack|talent.seraphim.enabled)
-    -- food,type=seedbattered_fish_plate,if=!talent.seraphim.enabled
-    -- food,type=lavish_suramar_feast,if=(role.attack|talent.seraphim.enabled)
+    -- flask
+    -- food
     -- snapshot_stats
-    -- potion,name=unbending_potion,if=!talent.seraphim.enabled
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (not S.Seraphim:IsAvailable()) then
-      if HR.CastSuggested(I.ProlongedPower) then return ""; end
-    end
-    -- potion,name=old_war,if=(role.attack|talent.seraphim.enabled)&active_enemies<3
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and ((bool(role.attack) or S.Seraphim:IsAvailable()) and Cache.EnemiesCount[30] < 3) then
-      if HR.CastSuggested(I.ProlongedPower) then return ""; end
-    end
-    -- potion,name=prolonged_power,if=(role.attack|talent.seraphim.enabled)&active_enemies>=3
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and ((bool(role.attack) or S.Seraphim:IsAvailable()) and Cache.EnemiesCount[30] >= 3) then
+    -- potion
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
   end
   local function MaxDps()
     -- auto_attack
-    -- use_item,name=apocalypse_drive
-    if I.ApocalypseDrive:IsReady() and (true) then
-      if HR.CastSuggested(I.ApocalypseDrive) then return ""; end
+    -- use_item,name=diimas_glacial_aegis
+    if I.DiimasGlacialAegis:IsReady() and (true) then
+      if HR.CastSuggested(I.DiimasGlacialAegis) then return ""; end
     end
     -- blood_fury
     if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
@@ -135,13 +120,17 @@ local function APL()
     -- arcane_torrent
     if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (true) then
       if HR.Cast(S.ArcaneTorrent, Settings.Protection.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
+    end
+    -- lights_judgment
+    if S.LightsJudgment:IsCastableP() and (true) then
+      if HR.Cast(S.LightsJudgment) then return ""; end
     end
   end
   local function MaxSurvival()
     -- auto_attack
-    -- use_item,name=apocalypse_drive
-    if I.ApocalypseDrive:IsReady() and (true) then
-      if HR.CastSuggested(I.ApocalypseDrive) then return ""; end
+    -- use_item,name=diimas_glacial_aegis
+    if I.DiimasGlacialAegis:IsReady() and (true) then
+      if HR.CastSuggested(I.DiimasGlacialAegis) then return ""; end
     end
     -- blood_fury
     if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
@@ -155,10 +144,14 @@ local function APL()
     if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (true) then
       if HR.Cast(S.ArcaneTorrent, Settings.Protection.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
     end
+    -- lights_judgment
+    if S.LightsJudgment:IsCastableP() and (true) then
+      if HR.Cast(S.LightsJudgment) then return ""; end
+    end
   end
   local function Prot()
-    -- shield_of_the_righteous,if=!talent.seraphim.enabled&(action.shield_of_the_righteous.charges>2)&!(debuff.eye_of_tyr.up&buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)
-    if S.ShieldoftheRighteous:IsCastableP() and (not S.Seraphim:IsAvailable() and (S.ShieldoftheRighteous:ChargesP() > 2) and not (Target:DebuffP(S.EyeofTyrDebuff) and Player:BuffP(S.AegisofLightBuff) and Player:BuffP(S.ArdentDefenderBuff) and Player:BuffP(S.GuardianofAncientKingsBuff) and Player:BuffP(S.DivineShieldBuff) and Player:BuffP(S.ProlongedPowerBuff))) then
+    -- shield_of_the_righteous,if=!talent.seraphim.enabled&(action.shield_of_the_righteous.charges>2)&!(buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)
+    if S.ShieldoftheRighteous:IsCastableP() and (not S.Seraphim:IsAvailable() and (S.ShieldoftheRighteous:ChargesP() > 2) and not (Player:BuffP(S.AegisofLightBuff) and Player:BuffP(S.ArdentDefenderBuff) and Player:BuffP(S.GuardianofAncientKingsBuff) and Player:BuffP(S.DivineShieldBuff) and Player:BuffP(S.ProlongedPowerBuff))) then
       if HR.Cast(S.ShieldoftheRighteous) then return ""; end
     end
     -- bastion_of_light,if=!talent.seraphim.enabled&talent.bastion_of_light.enabled&action.shield_of_the_righteous.charges<1
@@ -189,28 +182,20 @@ local function APL()
     if S.HandoftheProtector:IsCastableP() and ((incoming_damage_9000ms < health.max * 1.2) and health.pct < 55) then
       if HR.Cast(S.HandoftheProtector) then return ""; end
     end
-    -- divine_steed,if=!talent.seraphim.enabled&talent.knight_templar.enabled&incoming_damage_2500ms>health.max*0.4&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)
-    if S.DivineSteed:IsCastableP() and (not S.Seraphim:IsAvailable() and S.KnightTemplar:IsAvailable() and incoming_damage_2500ms > health.max * 0.4 and not (Target:DebuffP(S.EyeofTyrDebuff) or Player:BuffP(S.AegisofLightBuff) or Player:BuffP(S.ArdentDefenderBuff) or Player:BuffP(S.GuardianofAncientKingsBuff) or Player:BuffP(S.DivineShieldBuff) or Player:BuffP(S.ProlongedPowerBuff))) then
-      if HR.Cast(S.DivineSteed) then return ""; end
-    end
-    -- eye_of_tyr,if=!talent.seraphim.enabled&incoming_damage_2500ms>health.max*0.4&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)
-    if S.EyeofTyr:IsCastableP() and (not S.Seraphim:IsAvailable() and incoming_damage_2500ms > health.max * 0.4 and not (Target:DebuffP(S.EyeofTyrDebuff) or Player:BuffP(S.AegisofLightBuff) or Player:BuffP(S.ArdentDefenderBuff) or Player:BuffP(S.GuardianofAncientKingsBuff) or Player:BuffP(S.DivineShieldBuff) or Player:BuffP(S.ProlongedPowerBuff))) then
-      if HR.Cast(S.EyeofTyr) then return ""; end
-    end
-    -- aegis_of_light,if=!talent.seraphim.enabled&incoming_damage_2500ms>health.max*0.4&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)
-    if S.AegisofLight:IsCastableP() and (not S.Seraphim:IsAvailable() and incoming_damage_2500ms > health.max * 0.4 and not (Target:DebuffP(S.EyeofTyrDebuff) or Player:BuffP(S.AegisofLightBuff) or Player:BuffP(S.ArdentDefenderBuff) or Player:BuffP(S.GuardianofAncientKingsBuff) or Player:BuffP(S.DivineShieldBuff) or Player:BuffP(S.ProlongedPowerBuff))) then
+    -- aegis_of_light,if=!talent.seraphim.enabled&incoming_damage_2500ms>health.max*0.4&!(buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)
+    if S.AegisofLight:IsCastableP() and (not S.Seraphim:IsAvailable() and incoming_damage_2500ms > health.max * 0.4 and not (Player:BuffP(S.AegisofLightBuff) or Player:BuffP(S.ArdentDefenderBuff) or Player:BuffP(S.GuardianofAncientKingsBuff) or Player:BuffP(S.DivineShieldBuff) or Player:BuffP(S.ProlongedPowerBuff))) then
       if HR.Cast(S.AegisofLight) then return ""; end
     end
-    -- guardian_of_ancient_kings,if=!talent.seraphim.enabled&incoming_damage_2500ms>health.max*0.4&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)
-    if S.GuardianofAncientKings:IsCastableP() and (not S.Seraphim:IsAvailable() and incoming_damage_2500ms > health.max * 0.4 and not (Target:DebuffP(S.EyeofTyrDebuff) or Player:BuffP(S.AegisofLightBuff) or Player:BuffP(S.ArdentDefenderBuff) or Player:BuffP(S.GuardianofAncientKingsBuff) or Player:BuffP(S.DivineShieldBuff) or Player:BuffP(S.ProlongedPowerBuff))) then
+    -- guardian_of_ancient_kings,if=!talent.seraphim.enabled&incoming_damage_2500ms>health.max*0.4&!(buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)
+    if S.GuardianofAncientKings:IsCastableP() and (not S.Seraphim:IsAvailable() and incoming_damage_2500ms > health.max * 0.4 and not (Player:BuffP(S.AegisofLightBuff) or Player:BuffP(S.ArdentDefenderBuff) or Player:BuffP(S.GuardianofAncientKingsBuff) or Player:BuffP(S.DivineShieldBuff) or Player:BuffP(S.ProlongedPowerBuff))) then
       if HR.Cast(S.GuardianofAncientKings) then return ""; end
     end
-    -- divine_shield,if=!talent.seraphim.enabled&talent.final_stand.enabled&incoming_damage_2500ms>health.max*0.4&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)
-    if S.DivineShield:IsCastableP() and (not S.Seraphim:IsAvailable() and S.FinalStand:IsAvailable() and incoming_damage_2500ms > health.max * 0.4 and not (Target:DebuffP(S.EyeofTyrDebuff) or Player:BuffP(S.AegisofLightBuff) or Player:BuffP(S.ArdentDefenderBuff) or Player:BuffP(S.GuardianofAncientKingsBuff) or Player:BuffP(S.DivineShieldBuff) or Player:BuffP(S.ProlongedPowerBuff))) then
+    -- divine_shield,if=!talent.seraphim.enabled&talent.final_stand.enabled&incoming_damage_2500ms>health.max*0.4&!(buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)
+    if S.DivineShield:IsCastableP() and (not S.Seraphim:IsAvailable() and S.FinalStand:IsAvailable() and incoming_damage_2500ms > health.max * 0.4 and not (Player:BuffP(S.AegisofLightBuff) or Player:BuffP(S.ArdentDefenderBuff) or Player:BuffP(S.GuardianofAncientKingsBuff) or Player:BuffP(S.DivineShieldBuff) or Player:BuffP(S.ProlongedPowerBuff))) then
       if HR.Cast(S.DivineShield) then return ""; end
     end
-    -- ardent_defender,if=!talent.seraphim.enabled&incoming_damage_2500ms>health.max*0.4&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)
-    if S.ArdentDefender:IsCastableP() and (not S.Seraphim:IsAvailable() and incoming_damage_2500ms > health.max * 0.4 and not (Target:DebuffP(S.EyeofTyrDebuff) or Player:BuffP(S.AegisofLightBuff) or Player:BuffP(S.ArdentDefenderBuff) or Player:BuffP(S.GuardianofAncientKingsBuff) or Player:BuffP(S.DivineShieldBuff) or Player:BuffP(S.ProlongedPowerBuff))) then
+    -- ardent_defender,if=!talent.seraphim.enabled&incoming_damage_2500ms>health.max*0.4&!(buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)
+    if S.ArdentDefender:IsCastableP() and (not S.Seraphim:IsAvailable() and incoming_damage_2500ms > health.max * 0.4 and not (Player:BuffP(S.AegisofLightBuff) or Player:BuffP(S.ArdentDefenderBuff) or Player:BuffP(S.GuardianofAncientKingsBuff) or Player:BuffP(S.DivineShieldBuff) or Player:BuffP(S.ProlongedPowerBuff))) then
       if HR.Cast(S.ArdentDefender) then return ""; end
     end
     -- lay_on_hands,if=!talent.seraphim.enabled&health.pct<15
@@ -229,12 +214,8 @@ local function APL()
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (not S.Seraphim:IsAvailable()) then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
-    -- potion,name=draenic_strength,if=incoming_damage_2500ms>health.max*0.4&&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)|target.time_to_die<=25
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (incoming_damage_2500ms > health.max * 0.4 and true and not (Target:DebuffP(S.EyeofTyrDebuff) or Player:BuffP(S.AegisofLightBuff) or Player:BuffP(S.ArdentDefenderBuff) or Player:BuffP(S.GuardianofAncientKingsBuff) or Player:BuffP(S.DivineShieldBuff) or Player:BuffP(S.ProlongedPowerBuff)) or Target:TimeToDie() <= 25) then
-      if HR.CastSuggested(I.ProlongedPower) then return ""; end
-    end
-    -- stoneform,if=!talent.seraphim.enabled&incoming_damage_2500ms>health.max*0.4&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)
-    if S.Stoneform:IsCastableP() and (not S.Seraphim:IsAvailable() and incoming_damage_2500ms > health.max * 0.4 and not (Target:DebuffP(S.EyeofTyrDebuff) or Player:BuffP(S.AegisofLightBuff) or Player:BuffP(S.ArdentDefenderBuff) or Player:BuffP(S.GuardianofAncientKingsBuff) or Player:BuffP(S.DivineShieldBuff) or Player:BuffP(S.ProlongedPowerBuff))) then
+    -- stoneform,if=!talent.seraphim.enabled&incoming_damage_2500ms>health.max*0.4&!(buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)
+    if S.Stoneform:IsCastableP() and (not S.Seraphim:IsAvailable() and incoming_damage_2500ms > health.max * 0.4 and not (Player:BuffP(S.AegisofLightBuff) or Player:BuffP(S.ArdentDefenderBuff) or Player:BuffP(S.GuardianofAncientKingsBuff) or Player:BuffP(S.DivineShieldBuff) or Player:BuffP(S.ProlongedPowerBuff))) then
       if HR.Cast(S.Stoneform) then return ""; end
     end
     -- avenging_wrath,if=!talent.seraphim.enabled
@@ -245,8 +226,8 @@ local function APL()
     if S.Judgment:IsCastableP() and (not S.Seraphim:IsAvailable()) then
       if HR.Cast(S.Judgment) then return ""; end
     end
-    -- avengers_shield,if=!talent.seraphim.enabled&talent.crusaders_judgment.enabled&buff.grand_crusader.up
-    if S.AvengersShield:IsCastableP() and (not S.Seraphim:IsAvailable() and S.CrusadersJudgment:IsAvailable() and Player:BuffP(S.GrandCrusaderBuff)) then
+    -- avengers_shield,if=!talent.seraphim.enabled&talent.crusaders_judgment.enabled
+    if S.AvengersShield:IsCastableP() and (not S.Seraphim:IsAvailable() and S.CrusadersJudgment:IsAvailable()) then
       if HR.Cast(S.AvengersShield) then return ""; end
     end
     -- blessed_hammer,if=!talent.seraphim.enabled
@@ -273,17 +254,9 @@ local function APL()
     if S.AvengingWrath:IsCastableP() and (S.Seraphim:IsAvailable() and (Player:BuffP(S.SeraphimBuff) or S.Seraphim:CooldownRemainsP() < 4)) then
       if HR.Cast(S.AvengingWrath) then return ""; end
     end
-    -- ardent_defender,if=talent.seraphim.enabled&buff.seraphim.up
-    if S.ArdentDefender:IsCastableP() and (S.Seraphim:IsAvailable() and Player:BuffP(S.SeraphimBuff)) then
-      if HR.Cast(S.ArdentDefender) then return ""; end
-    end
     -- shield_of_the_righteous,if=talent.seraphim.enabled&(cooldown.consecration.remains>=0.1&(action.shield_of_the_righteous.charges>2.5&cooldown.seraphim.remains>3)|(buff.seraphim.up))
     if S.ShieldoftheRighteous:IsCastableP() and (S.Seraphim:IsAvailable() and (S.Consecration:CooldownRemainsP() >= 0.1 and (S.ShieldoftheRighteous:ChargesP() > 2.5 and S.Seraphim:CooldownRemainsP() > 3) or (Player:BuffP(S.SeraphimBuff)))) then
       if HR.Cast(S.ShieldoftheRighteous) then return ""; end
-    end
-    -- eye_of_tyr,if=talent.seraphim.enabled&equipped.151812&buff.seraphim.up
-    if S.EyeofTyr:IsCastableP() and (S.Seraphim:IsAvailable() and I.Item151812:IsEquipped() and Player:BuffP(S.SeraphimBuff)) then
-      if HR.Cast(S.EyeofTyr) then return ""; end
     end
     -- avengers_shield,if=talent.seraphim.enabled
     if S.AvengersShield:IsCastableP() and (S.Seraphim:IsAvailable()) then
@@ -305,10 +278,6 @@ local function APL()
     if S.Consecration:IsCastableP() and (S.Seraphim:IsAvailable()) then
       if HR.Cast(S.Consecration) then return ""; end
     end
-    -- eye_of_tyr,if=talent.seraphim.enabled&!equipped.151812
-    if S.EyeofTyr:IsCastableP() and (S.Seraphim:IsAvailable() and not I.Item151812:IsEquipped()) then
-      if HR.Cast(S.EyeofTyr) then return ""; end
-    end
     -- blessed_hammer,if=talent.seraphim.enabled
     if S.BlessedHammer:IsCastableP() and (S.Seraphim:IsAvailable()) then
       if HR.Cast(S.BlessedHammer) then return ""; end
@@ -323,9 +292,9 @@ local function APL()
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- auto_attack
-  -- use_item,name=apocalypse_drive
-  if I.ApocalypseDrive:IsReady() and (true) then
-    if HR.CastSuggested(I.ApocalypseDrive) then return ""; end
+  -- use_item,name=diimas_glacial_aegis
+  if I.DiimasGlacialAegis:IsReady() and (true) then
+    if HR.CastSuggested(I.DiimasGlacialAegis) then return ""; end
   end
   -- blood_fury
   if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
@@ -339,6 +308,10 @@ local function APL()
   if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (true) then
     if HR.Cast(S.ArcaneTorrent, Settings.Protection.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
   end
+  -- lights_judgment
+  if S.LightsJudgment:IsCastableP() and (true) then
+    if HR.Cast(S.LightsJudgment) then return ""; end
+  end
   -- blood_fury
   if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
     if HR.Cast(S.BloodFury, Settings.Protection.OffGCDasOffGCD.BloodFury) then return ""; end
@@ -350,6 +323,10 @@ local function APL()
   -- arcane_torrent
   if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (true) then
     if HR.Cast(S.ArcaneTorrent, Settings.Protection.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
+  end
+  -- lights_judgment
+  if S.LightsJudgment:IsCastableP() and (true) then
+    if HR.Cast(S.LightsJudgment) then return ""; end
   end
   -- call_action_list,name=prot
   if (true) then

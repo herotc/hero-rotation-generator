@@ -24,55 +24,43 @@ Spell.Rogue.Assassination = {
   ApplyPoison                           = Spell(),
   Stealth                               = Spell(),
   MarkedForDeath                        = Spell(137619),
-  Envenom                               = Spell(32645),
-  EnvenomBuff                           = Spell(32645),
-  Exsanguinate                          = Spell(200806),
-  Exanguinate                           = Spell(),
-  Rupture                               = Spell(1943),
-  FanofKnives                           = Spell(51723),
-  Hemorrhage                            = Spell(16511),
-  RuptureDebuff                         = Spell(1943),
-  TheDreadlordsDeceitBuff               = Spell(208692),
-  Mutilate                              = Spell(1329),
-  DeadlyPoisonDotDebuff                 = Spell(177918),
   VendettaDebuff                        = Spell(79140),
   Vanish                                = Spell(1856),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
-  ArcaneTorrent                         = Spell(50613),
-  KingsbaneDebuff                       = Spell(192759),
   Vendetta                              = Spell(79140),
-  GarroteDebuff                         = Spell(703),
-  SubterfugeBuff                        = Spell(108208),
+  RuptureDebuff                         = Spell(1943),
   Nightstalker                          = Spell(14062),
+  Exsanguinate                          = Spell(200806),
   Subterfuge                            = Spell(108208),
-  ShadowFocus                           = Spell(108209),
-  ToxicBlade                            = Spell(245388),
-  DeathFromAbove                        = Spell(152150),
-  Anticipation                          = Spell(114015),
-  DeeperStratagem                       = Spell(193531),
-  SurgeofToxinsDebuff                   = Spell(192424),
-  ElaboratePlanning                     = Spell(193640),
-  ElaboratePlanningBuff                 = Spell(193641),
-  Kingsbane                             = Spell(192759),
-  SinisterCirculation                   = Spell(),
+  GarroteDebuff                         = Spell(703),
   MasterAssassin                        = Spell(),
-  Garrote                               = Spell(703),
+  Rupture                               = Spell(1943),
+  SubterfugeBuff                        = Spell(108208),
+  ToxicBlade                            = Spell(245388),
+  Envenom                               = Spell(32645),
+  DeeperStratagem                       = Spell(193531),
   ToxicBladeDebuff                      = Spell(245389),
-  UrgeToKill                            = Spell(),
+  FanofKnives                           = Spell(51723),
+  HiddenBladesBuff                      = Spell(),
+  TheDreadlordsDeceitBuff               = Spell(208692),
+  Blindside                             = Spell(),
+  BlindsideBuff                         = Spell(),
+  VenomRush                             = Spell(152152),
+  Mutilate                              = Spell(1329),
   PoolResource                          = Spell(9999000010),
-  VenomRush                             = Spell(152152)
+  Garrote                               = Spell(703),
+  CrimsonTempest                        = Spell(),
+  ArcaneTorrent                         = Spell(50613),
+  ArcanePulse                           = Spell(),
+  LightsJudgment                        = Spell()
 };
 local S = Spell.Rogue.Assassination;
 
 -- Items
 if not Item.Rogue then Item.Rogue = {} end
 Item.Rogue.Assassination = {
-  ProlongedPower                   = Item(142117),
-  InsigniaofRavenholdt             = Item(137049),
-  MantleoftheMasterAssassin        = Item(144236),
-  DuskwalkersFootpads              = Item(137030),
-  ConvergenceofFates               = Item(140806)
+  ProlongedPower                   = Item(142117)
 };
 local I = Item.Rogue.Assassination;
 
@@ -89,9 +77,9 @@ local Settings = {
 
 -- Variables
 local VarEnergyRegenCombined = 0;
-local VarEnergyTimeToMaxCombined = 0;
+local VarUseFiller = 0;
 
-local EnemyRanges = {5, 10}
+local EnemyRanges = {10, 15}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do
     HL.GetEnemies(i);
@@ -126,57 +114,9 @@ local function APL()
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
-    -- marked_for_death,if=raid_event.adds.in>40
+    -- marked_for_death,precombat_seconds=5,if=raid_event.adds.in>40
     if S.MarkedForDeath:IsCastableP() and (10000000000 > 40) then
       if HR.Cast(S.MarkedForDeath) then return ""; end
-    end
-  end
-  local function Aoe()
-    -- envenom,if=!buff.envenom.up&combo_points>=cp_max_spend
-    if S.Envenom:IsCastableP() and (not Player:BuffP(S.EnvenomBuff) and Player:ComboPoints() >= cp_max_spend) then
-      if HR.Cast(S.Envenom) then return ""; end
-    end
-    -- call_action_list,name=kb,if=combo_points.deficit>=1+(mantle_duration>=0.2)&(!talent.exsanguinate.enabled|!cooldown.exanguinate.up|time>9)
-    if (Player:ComboPointsDeficit() >= 1 + num((mantle_duration >= 0.2)) and (not S.Exsanguinate:IsAvailable() or not S.Exanguinate:CooldownUpP() or HL.CombatTime() > 9)) then
-      local ShouldReturn = Kb(); if ShouldReturn then return ShouldReturn; end
-    end
-    -- rupture,cycle_targets=1,if=combo_points>=cp_max_spend&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>4
-    if S.Rupture:IsCastableP() and (Player:ComboPoints() >= cp_max_spend and Target:DebuffRefreshableCP(S.Rupture) and (pmultiplier <= 1 or Target:DebuffRemainsP(S.Rupture) <= S.Rupture:TickTime()) and (not bool(exsanguinated) or Target:DebuffRemainsP(S.Rupture) <= S.Rupture:TickTime() * 2) and Target:TimeToDie() - Target:DebuffRemainsP(S.Rupture) > 4) then
-      if HR.Cast(S.Rupture) then return ""; end
-    end
-    -- envenom,if=combo_points>=cp_max_spend
-    if S.Envenom:IsCastableP() and (Player:ComboPoints() >= cp_max_spend) then
-      if HR.Cast(S.Envenom) then return ""; end
-    end
-    -- fan_of_knives
-    if S.FanofKnives:IsCastableP() and (true) then
-      if HR.Cast(S.FanofKnives) then return ""; end
-    end
-  end
-  local function Build()
-    -- hemorrhage,if=refreshable
-    if S.Hemorrhage:IsCastableP() and (Player:BuffRefreshableCP(S.Hemorrhage)) then
-      if HR.Cast(S.Hemorrhage) then return ""; end
-    end
-    -- hemorrhage,cycle_targets=1,if=refreshable&dot.rupture.ticking&spell_targets.fan_of_knives<2+equipped.insignia_of_ravenholdt
-    if S.Hemorrhage:IsCastableP() and (Player:BuffRefreshableCP(S.Hemorrhage) and Target:DebuffP(S.RuptureDebuff) and Cache.EnemiesCount[10] < 2 + num(I.InsigniaofRavenholdt:IsEquipped())) then
-      if HR.Cast(S.Hemorrhage) then return ""; end
-    end
-    -- fan_of_knives,if=spell_targets>1+equipped.insignia_of_ravenholdt|buff.the_dreadlords_deceit.stack>=29
-    if S.FanofKnives:IsCastableP() and (Cache.EnemiesCount[10] > 1 + num(I.InsigniaofRavenholdt:IsEquipped()) or Player:BuffStackP(S.TheDreadlordsDeceitBuff) >= 29) then
-      if HR.Cast(S.FanofKnives) then return ""; end
-    end
-    -- fan_of_knives,if=fok_rotation
-    if S.FanofKnives:IsCastableP() and (bool(fok_rotation)) then
-      if HR.Cast(S.FanofKnives) then return ""; end
-    end
-    -- mutilate,cycle_targets=1,if=dot.deadly_poison_dot.refreshable
-    if S.Mutilate:IsCastableP() and (Target:DebuffRefreshableCP(S.DeadlyPoisonDotDebuff)) then
-      if HR.Cast(S.Mutilate) then return ""; end
-    end
-    -- mutilate
-    if S.Mutilate:IsCastableP() and (true) then
-      if HR.Cast(S.Mutilate) then return ""; end
     end
   end
   local function Cds()
@@ -192,152 +132,148 @@ local function APL()
     if S.Berserking:IsCastableP() and HR.CDsON() and (Target:DebuffP(S.VendettaDebuff)) then
       if HR.Cast(S.Berserking, Settings.Assassination.OffGCDasOffGCD.Berserking) then return ""; end
     end
-    -- arcane_torrent,if=dot.kingsbane.ticking&!buff.envenom.up&energy.deficit>=15+variable.energy_regen_combined*gcd.remains*1.1
-    if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (Target:DebuffP(S.KingsbaneDebuff) and not Player:BuffP(S.EnvenomBuff) and Player:EnergyDeficit() >= 15 + VarEnergyRegenCombined * Player:GCDRemains() * 1.1) then
-      if HR.Cast(S.ArcaneTorrent, Settings.Assassination.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
-    end
     -- marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit*1.5|(raid_event.adds.in>40&combo_points.deficit>=cp_max_spend)
     if S.MarkedForDeath:IsCastableP() and (Target:TimeToDie() < Player:ComboPointsDeficit() * 1.5 or (10000000000 > 40 and Player:ComboPointsDeficit() >= cp_max_spend)) then
       if HR.Cast(S.MarkedForDeath) then return ""; end
     end
-    -- vendetta,if=!talent.exsanguinate.enabled|dot.rupture.ticking
-    if S.Vendetta:IsCastableP() and (not S.Exsanguinate:IsAvailable() or Target:DebuffP(S.RuptureDebuff)) then
+    -- vendetta,if=dot.rupture.ticking
+    if S.Vendetta:IsCastableP() and (Target:DebuffP(S.RuptureDebuff)) then
       if HR.Cast(S.Vendetta) then return ""; end
     end
-    -- exsanguinate,if=!set_bonus.tier20_4pc&(prev_gcd.1.rupture&dot.rupture.remains>4+4*cp_max_spend&!stealthed.rogue|dot.garrote.pmultiplier>1&!cooldown.vanish.up&buff.subterfuge.up)
-    if S.Exsanguinate:IsCastableP() and (not HL.Tier20_4Pc and (Player:PrevGCDP(1, S.Rupture) and Target:DebuffRemainsP(S.RuptureDebuff) > 4 + 4 * cp_max_spend and not bool(stealthed.rogue) or dot.garrote.pmultiplier > 1 and not S.Vanish:CooldownUpP() and Player:BuffP(S.SubterfugeBuff))) then
+    -- vanish,if=talent.nightstalker.enabled&talent.exsanguinate.enabled&combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1
+    if S.Vanish:IsCastableP() and (S.Nightstalker:IsAvailable() and S.Exsanguinate:IsAvailable() and Player:ComboPoints() >= cp_max_spend and S.Exsanguinate:CooldownRemainsP() < 1) then
+      if HR.Cast(S.Vanish) then return ""; end
+    end
+    -- vanish,if=talent.nightstalker.enabled&!talent.exsanguinate.enabled&combo_points>=cp_max_spend&debuff.vendetta.up
+    if S.Vanish:IsCastableP() and (S.Nightstalker:IsAvailable() and not S.Exsanguinate:IsAvailable() and Player:ComboPoints() >= cp_max_spend and Target:DebuffP(S.VendettaDebuff)) then
+      if HR.Cast(S.Vanish) then return ""; end
+    end
+    -- vanish,if=talent.subterfuge.enabled&!stealthed.rogue&dot.garrote.refreshable&(spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives|spell_targets.fan_of_knives>=4&combo_points.deficit>=4)
+    if S.Vanish:IsCastableP() and (S.Subterfuge:IsAvailable() and not bool(stealthed.rogue) and Target:DebuffRefreshableCP(S.GarroteDebuff) and (Cache.EnemiesCount[10] <= 3 and Player:ComboPointsDeficit() >= 1 + Cache.EnemiesCount[10] or Cache.EnemiesCount[10] >= 4 and Player:ComboPointsDeficit() >= 4)) then
+      if HR.Cast(S.Vanish) then return ""; end
+    end
+    -- vanish,if=talent.master_assassin.enabled&!stealthed.all&master_assassin_remains<=0&!dot.rupture.refreshable
+    if S.Vanish:IsCastableP() and (S.MasterAssassin:IsAvailable() and not bool(stealthed.all) and master_assassin_remains <= 0 and not Target:DebuffRefreshableCP(S.RuptureDebuff)) then
+      if HR.Cast(S.Vanish) then return ""; end
+    end
+    -- exsanguinate,if=prev_gcd.1.rupture&dot.rupture.remains>4+4*cp_max_spend&!stealthed.rogue|dot.garrote.pmultiplier>1&!cooldown.vanish.up&buff.subterfuge.up
+    if S.Exsanguinate:IsCastableP() and (Player:PrevGCDP(1, S.Rupture) and Target:DebuffRemainsP(S.RuptureDebuff) > 4 + 4 * cp_max_spend and not bool(stealthed.rogue) or dot.garrote.pmultiplier > 1 and not S.Vanish:CooldownUpP() and Player:BuffP(S.SubterfugeBuff)) then
       if HR.Cast(S.Exsanguinate) then return ""; end
     end
-    -- exsanguinate,if=set_bonus.tier20_4pc&dot.garrote.remains>20&dot.rupture.remains>4+4*cp_max_spend
-    if S.Exsanguinate:IsCastableP() and (HL.Tier20_4Pc and Target:DebuffRemainsP(S.GarroteDebuff) > 20 and Target:DebuffRemainsP(S.RuptureDebuff) > 4 + 4 * cp_max_spend) then
-      if HR.Cast(S.Exsanguinate) then return ""; end
-    end
-    -- vanish,if=talent.nightstalker.enabled&combo_points>=cp_max_spend&!talent.exsanguinate.enabled&mantle_duration=0&((equipped.mantle_of_the_master_assassin&set_bonus.tier19_4pc)|((!equipped.mantle_of_the_master_assassin|!set_bonus.tier19_4pc)&debuff.vendetta.up))
-    if S.Vanish:IsCastableP() and (S.Nightstalker:IsAvailable() and Player:ComboPoints() >= cp_max_spend and not S.Exsanguinate:IsAvailable() and mantle_duration == 0 and ((I.MantleoftheMasterAssassin:IsEquipped() and HL.Tier19_4Pc) or ((not I.MantleoftheMasterAssassin:IsEquipped() or not HL.Tier19_4Pc) and Target:DebuffP(S.VendettaDebuff)))) then
-      if HR.Cast(S.Vanish) then return ""; end
-    end
-    -- vanish,if=talent.nightstalker.enabled&combo_points>=cp_max_spend&talent.exsanguinate.enabled&cooldown.exsanguinate.remains<1&(dot.rupture.ticking|time>10)
-    if S.Vanish:IsCastableP() and (S.Nightstalker:IsAvailable() and Player:ComboPoints() >= cp_max_spend and S.Exsanguinate:IsAvailable() and S.Exsanguinate:CooldownRemainsP() < 1 and (Target:DebuffP(S.RuptureDebuff) or HL.CombatTime() > 10)) then
-      if HR.Cast(S.Vanish) then return ""; end
-    end
-    -- vanish,if=talent.subterfuge.enabled&equipped.mantle_of_the_master_assassin&(debuff.vendetta.up|target.time_to_die<10)&mantle_duration=0
-    if S.Vanish:IsCastableP() and (S.Subterfuge:IsAvailable() and I.MantleoftheMasterAssassin:IsEquipped() and (Target:DebuffP(S.VendettaDebuff) or Target:TimeToDie() < 10) and mantle_duration == 0) then
-      if HR.Cast(S.Vanish) then return ""; end
-    end
-    -- vanish,if=talent.subterfuge.enabled&!equipped.mantle_of_the_master_assassin&!stealthed.rogue&dot.garrote.refreshable&((spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives)|(spell_targets.fan_of_knives>=4&combo_points.deficit>=4))
-    if S.Vanish:IsCastableP() and (S.Subterfuge:IsAvailable() and not I.MantleoftheMasterAssassin:IsEquipped() and not bool(stealthed.rogue) and Target:DebuffRefreshableCP(S.GarroteDebuff) and ((Cache.EnemiesCount[10] <= 3 and Player:ComboPointsDeficit() >= 1 + Cache.EnemiesCount[10]) or (Cache.EnemiesCount[10] >= 4 and Player:ComboPointsDeficit() >= 4))) then
-      if HR.Cast(S.Vanish) then return ""; end
-    end
-    -- vanish,if=talent.shadow_focus.enabled&variable.energy_time_to_max_combined>=2&combo_points.deficit>=4
-    if S.Vanish:IsCastableP() and (S.ShadowFocus:IsAvailable() and VarEnergyTimeToMaxCombined >= 2 and Player:ComboPointsDeficit() >= 4) then
-      if HR.Cast(S.Vanish) then return ""; end
-    end
-    -- toxic_blade,if=combo_points.deficit>=1+(mantle_duration>=0.2)&dot.rupture.remains>8&cooldown.vendetta.remains>10
-    if S.ToxicBlade:IsCastableP() and (Player:ComboPointsDeficit() >= 1 + num((mantle_duration >= 0.2)) and Target:DebuffRemainsP(S.RuptureDebuff) > 8 and S.Vendetta:CooldownRemainsP() > 10) then
+    -- toxic_blade,if=dot.rupture.ticking
+    if S.ToxicBlade:IsCastableP() and (Target:DebuffP(S.RuptureDebuff)) then
       if HR.Cast(S.ToxicBlade) then return ""; end
     end
   end
-  local function Finish()
-    -- death_from_above,if=combo_points>=5
-    if S.DeathFromAbove:IsCastableP() and (Player:ComboPoints() >= 5) then
-      if HR.Cast(S.DeathFromAbove) then return ""; end
-    end
-    -- envenom,if=(combo_points>=cp_max_spend|!talent.anticipation.enabled&combo_points>=4+(talent.deeper_stratagem.enabled&!set_bonus.tier19_4pc))&(debuff.vendetta.up|mantle_duration>=0.2|debuff.surge_of_toxins.remains<0.2|energy.deficit<=25+variable.energy_regen_combined)
-    if S.Envenom:IsCastableP() and ((Player:ComboPoints() >= cp_max_spend or not S.Anticipation:IsAvailable() and Player:ComboPoints() >= 4 + num((S.DeeperStratagem:IsAvailable() and not HL.Tier19_4Pc))) and (Target:DebuffP(S.VendettaDebuff) or mantle_duration >= 0.2 or Target:DebuffRemainsP(S.SurgeofToxinsDebuff) < 0.2 or Player:EnergyDeficit() <= 25 + VarEnergyRegenCombined)) then
+  local function Direct()
+    -- envenom,if=combo_points>=4+talent.deeper_stratagem.enabled&(debuff.vendetta.up|debuff.toxic_blade.up|energy.deficit<=25+variable.energy_regen_combined|spell_targets.fan_of_knives>=2)&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)
+    if S.Envenom:IsCastableP() and (Player:ComboPoints() >= 4 + num(S.DeeperStratagem:IsAvailable()) and (Target:DebuffP(S.VendettaDebuff) or Target:DebuffP(S.ToxicBladeDebuff) or Player:EnergyDeficit() <= 25 + VarEnergyRegenCombined or Cache.EnemiesCount[10] >= 2) and (not S.Exsanguinate:IsAvailable() or S.Exsanguinate:CooldownRemainsP() > 2)) then
       if HR.Cast(S.Envenom) then return ""; end
     end
-    -- envenom,if=talent.elaborate_planning.enabled&combo_points>=3+!talent.exsanguinate.enabled&buff.elaborate_planning.remains<0.2
-    if S.Envenom:IsCastableP() and (S.ElaboratePlanning:IsAvailable() and Player:ComboPoints() >= 3 + num(not S.Exsanguinate:IsAvailable()) and Player:BuffRemainsP(S.ElaboratePlanningBuff) < 0.2) then
-      if HR.Cast(S.Envenom) then return ""; end
+    -- variable,name=use_filler,value=combo_points.deficit>1|energy.deficit<=25+variable.energy_regen_combined|spell_targets.fan_of_knives>=2
+    if (true) then
+      VarUseFiller = num(Player:ComboPointsDeficit() > 1 or Player:EnergyDeficit() <= 25 + VarEnergyRegenCombined or Cache.EnemiesCount[10] >= 2)
+    end
+    -- fan_of_knives,if=variable.use_filler&(buff.hidden_blades.stack>=19|spell_targets.fan_of_knives>=2|buff.the_dreadlords_deceit.stack>=29)
+    if S.FanofKnives:IsCastableP() and (bool(VarUseFiller) and (Player:BuffStackP(S.HiddenBladesBuff) >= 19 or Cache.EnemiesCount[10] >= 2 or Player:BuffStackP(S.TheDreadlordsDeceitBuff) >= 29)) then
+      if HR.Cast(S.FanofKnives) then return ""; end
+    end
+    -- blindside,if=variable.use_filler&(buff.blindside.up|!talent.venom_rush.enabled)
+    if S.Blindside:IsCastableP() and (bool(VarUseFiller) and (Player:BuffP(S.BlindsideBuff) or not S.VenomRush:IsAvailable())) then
+      if HR.Cast(S.Blindside) then return ""; end
+    end
+    -- mutilate,if=variable.use_filler
+    if S.Mutilate:IsCastableP() and (bool(VarUseFiller)) then
+      if HR.Cast(S.Mutilate) then return ""; end
     end
   end
-  local function Kb()
-    -- kingsbane,if=artifact.sinister_circulation.enabled&!(equipped.duskwalkers_footpads&equipped.convergence_of_fates&artifact.master_assassin.rank>=6)&(time>25|!equipped.mantle_of_the_master_assassin|(debuff.vendetta.up&debuff.surge_of_toxins.up))&(talent.subterfuge.enabled|!stealthed.rogue|(talent.nightstalker.enabled&(!equipped.mantle_of_the_master_assassin|!set_bonus.tier19_4pc)))
-    if S.Kingsbane:IsCastableP() and (S.SinisterCirculation:ArtifactEnabled() and not (I.DuskwalkersFootpads:IsEquipped() and I.ConvergenceofFates:IsEquipped() and S.MasterAssassin:ArtifactRank() >= 6) and (HL.CombatTime() > 25 or not I.MantleoftheMasterAssassin:IsEquipped() or (Target:DebuffP(S.VendettaDebuff) and Target:DebuffP(S.SurgeofToxinsDebuff))) and (S.Subterfuge:IsAvailable() or not bool(stealthed.rogue) or (S.Nightstalker:IsAvailable() and (not I.MantleoftheMasterAssassin:IsEquipped() or not HL.Tier19_4Pc)))) then
-      if HR.Cast(S.Kingsbane) then return ""; end
-    end
-    -- kingsbane,if=buff.envenom.up&((debuff.vendetta.up&debuff.surge_of_toxins.up)|cooldown.vendetta.remains<=5.8|cooldown.vendetta.remains>=10)
-    if S.Kingsbane:IsCastableP() and (Player:BuffP(S.EnvenomBuff) and ((Target:DebuffP(S.VendettaDebuff) and Target:DebuffP(S.SurgeofToxinsDebuff)) or S.Vendetta:CooldownRemainsP() <= 5.8 or S.Vendetta:CooldownRemainsP() >= 10)) then
-      if HR.Cast(S.Kingsbane) then return ""; end
-    end
-  end
-  local function Maintain()
-    -- rupture,if=talent.nightstalker.enabled&stealthed.rogue&!set_bonus.tier21_2pc&(!equipped.mantle_of_the_master_assassin|!set_bonus.tier19_4pc)&(talent.exsanguinate.enabled|target.time_to_die-remains>4)
-    if S.Rupture:IsCastableP() and (S.Nightstalker:IsAvailable() and bool(stealthed.rogue) and not HL.Tier21_2Pc and (not I.MantleoftheMasterAssassin:IsEquipped() or not HL.Tier19_4Pc) and (S.Exsanguinate:IsAvailable() or Target:TimeToDie() - Target:DebuffRemainsP(S.Rupture) > 4)) then
+  local function Dot()
+    -- rupture,if=talent.exsanguinate.enabled&((combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1)|(!ticking&(time>10|combo_points>=2)))
+    if S.Rupture:IsCastableP() and (S.Exsanguinate:IsAvailable() and ((Player:ComboPoints() >= cp_max_spend and S.Exsanguinate:CooldownRemainsP() < 1) or (not Target:DebuffP(S.Rupture) and (HL.CombatTime() > 10 or Player:ComboPoints() >= 2)))) then
       if HR.Cast(S.Rupture) then return ""; end
-    end
-    -- garrote,cycle_targets=1,if=talent.subterfuge.enabled&stealthed.rogue&combo_points.deficit>=1&set_bonus.tier20_4pc&((dot.garrote.remains<=13&!debuff.toxic_blade.up)|pmultiplier<=1)&!exsanguinated
-    if S.Garrote:IsCastableP() and (S.Subterfuge:IsAvailable() and bool(stealthed.rogue) and Player:ComboPointsDeficit() >= 1 and HL.Tier20_4Pc and ((Target:DebuffRemainsP(S.GarroteDebuff) <= 13 and not Target:DebuffP(S.ToxicBladeDebuff)) or pmultiplier <= 1) and not bool(exsanguinated)) then
-      if HR.Cast(S.Garrote) then return ""; end
-    end
-    -- garrote,cycle_targets=1,if=talent.subterfuge.enabled&stealthed.rogue&combo_points.deficit>=1&!set_bonus.tier20_4pc&refreshable&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>2
-    if S.Garrote:IsCastableP() and (S.Subterfuge:IsAvailable() and bool(stealthed.rogue) and Player:ComboPointsDeficit() >= 1 and not HL.Tier20_4Pc and Target:DebuffRefreshableCP(S.Garrote) and (not bool(exsanguinated) or Target:DebuffRemainsP(S.Garrote) <= S.Garrote:TickTime() * 2) and Target:TimeToDie() - Target:DebuffRemainsP(S.Garrote) > 2) then
-      if HR.Cast(S.Garrote) then return ""; end
-    end
-    -- garrote,cycle_targets=1,if=talent.subterfuge.enabled&stealthed.rogue&combo_points.deficit>=1&!set_bonus.tier20_4pc&remains<=10&pmultiplier<=1&!exsanguinated&target.time_to_die-remains>2
-    if S.Garrote:IsCastableP() and (S.Subterfuge:IsAvailable() and bool(stealthed.rogue) and Player:ComboPointsDeficit() >= 1 and not HL.Tier20_4Pc and Target:DebuffRemainsP(S.Garrote) <= 10 and pmultiplier <= 1 and not bool(exsanguinated) and Target:TimeToDie() - Target:DebuffRemainsP(S.Garrote) > 2) then
-      if HR.Cast(S.Garrote) then return ""; end
-    end
-    -- rupture,if=!talent.exsanguinate.enabled&combo_points>=3&!ticking&mantle_duration<=0.2&target.time_to_die>6
-    if S.Rupture:IsCastableP() and (not S.Exsanguinate:IsAvailable() and Player:ComboPoints() >= 3 and not Target:DebuffP(S.Rupture) and mantle_duration <= 0.2 and Target:TimeToDie() > 6) then
-      if HR.Cast(S.Rupture) then return ""; end
-    end
-    -- rupture,if=talent.exsanguinate.enabled&((combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1)|(!ticking&(time>10|combo_points>=2+artifact.urge_to_kill.enabled)))
-    if S.Rupture:IsCastableP() and (S.Exsanguinate:IsAvailable() and ((Player:ComboPoints() >= cp_max_spend and S.Exsanguinate:CooldownRemainsP() < 1) or (not Target:DebuffP(S.Rupture) and (HL.CombatTime() > 10 or Player:ComboPoints() >= 2 + num(S.UrgeToKill:ArtifactEnabled()))))) then
-      if HR.Cast(S.Rupture) then return ""; end
-    end
-    -- rupture,cycle_targets=1,if=combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>6
-    if S.Rupture:IsCastableP() and (Player:ComboPoints() >= 4 and Target:DebuffRefreshableCP(S.Rupture) and (pmultiplier <= 1 or Target:DebuffRemainsP(S.Rupture) <= S.Rupture:TickTime()) and (not bool(exsanguinated) or Target:DebuffRemainsP(S.Rupture) <= S.Rupture:TickTime() * 2) and Target:TimeToDie() - Target:DebuffRemainsP(S.Rupture) > 6) then
-      if HR.Cast(S.Rupture) then return ""; end
-    end
-    -- call_action_list,name=kb,if=combo_points.deficit>=1+(mantle_duration>=0.2)&(!talent.exsanguinate.enabled|!cooldown.exanguinate.up|time>9)
-    if (Player:ComboPointsDeficit() >= 1 + num((mantle_duration >= 0.2)) and (not S.Exsanguinate:IsAvailable() or not S.Exanguinate:CooldownUpP() or HL.CombatTime() > 9)) then
-      local ShouldReturn = Kb(); if ShouldReturn then return ShouldReturn; end
     end
     -- pool_resource,for_next=1
     if S.PoolResource:IsCastableP() and (true) then
       if HR.Cast(S.PoolResource) then return ""; end
     end
-    -- garrote,cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>4
-    if S.Garrote:IsCastableP() and ((not S.Subterfuge:IsAvailable() or not (S.Vanish:CooldownUpP() and S.Vendetta:CooldownRemainsP() <= 4)) and Player:ComboPointsDeficit() >= 1 and Target:DebuffRefreshableCP(S.Garrote) and (pmultiplier <= 1 or Target:DebuffRemainsP(S.Garrote) <= S.Garrote:TickTime()) and (not bool(exsanguinated) or Target:DebuffRemainsP(S.Garrote) <= S.Garrote:TickTime() * 2) and Target:TimeToDie() - Target:DebuffRemainsP(S.Garrote) > 4) then
+    -- garrote,cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&(target.time_to_die-remains>4&spell_targets.fan_of_knives<=1|target.time_to_die-remains>12)
+    if S.Garrote:IsCastableP() and ((not S.Subterfuge:IsAvailable() or not (S.Vanish:CooldownUpP() and S.Vendetta:CooldownRemainsP() <= 4)) and Player:ComboPointsDeficit() >= 1 and Target:DebuffRefreshableCP(S.Garrote) and (pmultiplier <= 1 or Target:DebuffRemainsP(S.Garrote) <= S.Garrote:TickTime()) and (not bool(exsanguinated) or Target:DebuffRemainsP(S.Garrote) <= S.Garrote:TickTime() * 2) and (Target:TimeToDie() - Target:DebuffRemainsP(S.Garrote) > 4 and Cache.EnemiesCount[10] <= 1 or Target:TimeToDie() - Target:DebuffRemainsP(S.Garrote) > 12)) then
       if HR.Cast(S.Garrote) then return ""; end
     end
-    -- garrote,if=set_bonus.tier20_4pc&talent.exsanguinate.enabled&prev_gcd.1.rupture&cooldown.exsanguinate.remains<1&(!cooldown.vanish.up|time>12)
-    if S.Garrote:IsCastableP() and (HL.Tier20_4Pc and S.Exsanguinate:IsAvailable() and Player:PrevGCDP(1, S.Rupture) and S.Exsanguinate:CooldownRemainsP() < 1 and (not S.Vanish:CooldownUpP() or HL.CombatTime() > 12)) then
+    -- crimson_tempest,if=spell_targets>=2&remains<2+(spell_targets>=5)&combo_points>=4
+    if S.CrimsonTempest:IsCastableP() and (Cache.EnemiesCount[15] >= 2 and Player:BuffRemainsP(S.CrimsonTempest) < 2 + num((Cache.EnemiesCount[15] >= 5)) and Player:ComboPoints() >= 4) then
+      if HR.Cast(S.CrimsonTempest) then return ""; end
+    end
+    -- rupture,cycle_targets=1,if=combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>4
+    if S.Rupture:IsCastableP() and (Player:ComboPoints() >= 4 and Target:DebuffRefreshableCP(S.Rupture) and (pmultiplier <= 1 or Target:DebuffRemainsP(S.Rupture) <= S.Rupture:TickTime()) and (not bool(exsanguinated) or Target:DebuffRemainsP(S.Rupture) <= S.Rupture:TickTime() * 2) and Target:TimeToDie() - Target:DebuffRemainsP(S.Rupture) > 4) then
+      if HR.Cast(S.Rupture) then return ""; end
+    end
+  end
+  local function Stealthed()
+    -- garrote,cycle_targets=1,if=talent.subterfuge.enabled&refreshable&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>2
+    if S.Garrote:IsCastableP() and (S.Subterfuge:IsAvailable() and Target:DebuffRefreshableCP(S.Garrote) and (not bool(exsanguinated) or Target:DebuffRemainsP(S.Garrote) <= S.Garrote:TickTime() * 2) and Target:TimeToDie() - Target:DebuffRemainsP(S.Garrote) > 2) then
       if HR.Cast(S.Garrote) then return ""; end
+    end
+    -- garrote,cycle_targets=1,if=talent.subterfuge.enabled&remains<=10&pmultiplier<=1&!exsanguinated&target.time_to_die-remains>2
+    if S.Garrote:IsCastableP() and (S.Subterfuge:IsAvailable() and Target:DebuffRemainsP(S.Garrote) <= 10 and pmultiplier <= 1 and not bool(exsanguinated) and Target:TimeToDie() - Target:DebuffRemainsP(S.Garrote) > 2) then
+      if HR.Cast(S.Garrote) then return ""; end
+    end
+    -- rupture,if=combo_points>=4&(talent.nightstalker.enabled|!ticking)&target.time_to_die-remains>6
+    if S.Rupture:IsCastableP() and (Player:ComboPoints() >= 4 and (S.Nightstalker:IsAvailable() or not Target:DebuffP(S.Rupture)) and Target:TimeToDie() - Target:DebuffRemainsP(S.Rupture) > 6) then
+      if HR.Cast(S.Rupture) then return ""; end
+    end
+    -- envenom,if=combo_points>=cp_max_spend
+    if S.Envenom:IsCastableP() and (Player:ComboPoints() >= cp_max_spend) then
+      if HR.Cast(S.Envenom) then return ""; end
+    end
+    -- garrote,if=!talent.subterfuge.enabled&target.time_to_die-remains>4
+    if S.Garrote:IsCastableP() and (not S.Subterfuge:IsAvailable() and Target:TimeToDie() - Target:DebuffRemainsP(S.Garrote) > 4) then
+      if HR.Cast(S.Garrote) then return ""; end
+    end
+    -- fan_of_knives,if=spell_targets>=3
+    if S.FanofKnives:IsCastableP() and (Cache.EnemiesCount[10] >= 3) then
+      if HR.Cast(S.FanofKnives) then return ""; end
+    end
+    -- mutilate
+    if S.Mutilate:IsCastableP() and (true) then
+      if HR.Cast(S.Mutilate) then return ""; end
     end
   end
   -- call precombat
   if not Player:AffectingCombat() then
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
-  -- variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*(7+talent.venom_rush.enabled*3)%2
+  -- variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*7%(2*spell_haste)
   if (true) then
-    VarEnergyRegenCombined = Player:EnergyRegen() + poisoned_bleeds * (7 + num(S.VenomRush:IsAvailable()) * 3) / 2
-  end
-  -- variable,name=energy_time_to_max_combined,value=energy.deficit%variable.energy_regen_combined
-  if (true) then
-    VarEnergyTimeToMaxCombined = Player:EnergyDeficit() / VarEnergyRegenCombined
+    VarEnergyRegenCombined = Player:EnergyRegen() + poisoned_bleeds * 7 / (2 * Player:SpellHaste())
   end
   -- call_action_list,name=cds
   if (true) then
     local ShouldReturn = Cds(); if ShouldReturn then return ShouldReturn; end
   end
-  -- run_action_list,name=aoe,if=spell_targets.fan_of_knives>2
-  if (Cache.EnemiesCount[10] > 2) then
-    return Aoe();
+  -- run_action_list,name=stealthed,if=stealthed.rogue
+  if (bool(stealthed.rogue)) then
+    return Stealthed();
   end
-  -- call_action_list,name=maintain
+  -- call_action_list,name=dot
   if (true) then
-    local ShouldReturn = Maintain(); if ShouldReturn then return ShouldReturn; end
+    local ShouldReturn = Dot(); if ShouldReturn then return ShouldReturn; end
   end
-  -- call_action_list,name=finish,if=(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)&(!dot.rupture.refreshable|(dot.rupture.exsanguinated&dot.rupture.remains>=3.5)|target.time_to_die-dot.rupture.remains<=6)&active_dot.rupture>=spell_targets.rupture
-  if ((not S.Exsanguinate:IsAvailable() or S.Exsanguinate:CooldownRemainsP() > 2) and (not Target:DebuffRefreshableCP(S.RuptureDebuff) or (bool(dot.rupture.exsanguinated) and Target:DebuffRemainsP(S.RuptureDebuff) >= 3.5) or Target:TimeToDie() - Target:DebuffRemainsP(S.RuptureDebuff) <= 6) and active_dot.rupture >= Cache.EnemiesCount[5]) then
-    local ShouldReturn = Finish(); if ShouldReturn then return ShouldReturn; end
+  -- call_action_list,name=direct
+  if (true) then
+    local ShouldReturn = Direct(); if ShouldReturn then return ShouldReturn; end
   end
-  -- call_action_list,name=build,if=combo_points.deficit>1|energy.deficit<=25+variable.energy_regen_combined
-  if (Player:ComboPointsDeficit() > 1 or Player:EnergyDeficit() <= 25 + VarEnergyRegenCombined) then
-    local ShouldReturn = Build(); if ShouldReturn then return ShouldReturn; end
+  -- arcane_torrent,if=energy.deficit>=15+variable.energy_regen_combined
+  if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (Player:EnergyDeficit() >= 15 + VarEnergyRegenCombined) then
+    if HR.Cast(S.ArcaneTorrent, Settings.Assassination.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
+  end
+  -- arcane_pulse
+  if S.ArcanePulse:IsCastableP() and (true) then
+    if HR.Cast(S.ArcanePulse) then return ""; end
+  end
+  -- lights_judgment
+  if S.LightsJudgment:IsCastableP() and (true) then
+    if HR.Cast(S.LightsJudgment) then return ""; end
   end
 end
 

@@ -4,9 +4,7 @@ level=110
 race=tauren
 role=spell
 position=back
-talents=3001331
-artifact=40:0:0:0:0:291:1:292:1:293:1:294:1:295:1:296:1:297:1:298:4:299:4:300:4:301:4:302:4:303:4:304:4:305:4:306:4:1350:1:1387:1:1589:4:1590:1:1591:1:1592:24:1683:1
-crucible=1739:3:1589:3:1777:3
+talents=1301021
 
 # Default consumables
 potion=prolonged_power
@@ -35,128 +33,69 @@ actions.precombat+=/elemental_blast
 # Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
 actions=bloodlust,if=target.health.pct<25|time>0.500
 # In-combat potion is preferentially linked to your Elemental, unless combat will end shortly
-actions+=/potion,if=cooldown.fire_elemental.remains>280|target.time_to_die<=60
+actions+=/potion
 # Interrupt of casts and is reliable trigger of Sephuz Secret.
 actions+=/wind_shear
 actions+=/totem_mastery,if=buff.resonance_totem.remains<2
 actions+=/fire_elemental
 actions+=/storm_elemental
-actions+=/elemental_mastery
+actions+=/earth_elemental,if=cooldown.fire_elemental.remains<120&!talent.storm_elemental.enabled|cooldown.storm_elemental.remains<120&talent.storm_elemental.enabled
 actions+=/use_items
-actions+=/use_item,name=gnawed_thumb_ring,if=equipped.gnawed_thumb_ring&(talent.ascendance.enabled&!buff.ascendance.up|!talent.ascendance.enabled)
 actions+=/blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
 actions+=/berserking,if=!talent.ascendance.enabled|buff.ascendance.up
 actions+=/run_action_list,name=aoe,if=active_enemies>2&(spell_targets.chain_lightning>2|spell_targets.lava_beam>2)
-actions+=/run_action_list,name=single_asc,if=talent.ascendance.enabled
-actions+=/run_action_list,name=single_if,if=talent.icefury.enabled
-actions+=/run_action_list,name=single_lr,if=talent.lightning_rod.enabled
+actions+=/run_action_list,name=single_target
 
 # Multi target action priority list
 actions.aoe=stormkeeper
-actions.aoe+=/ascendance
+actions.aoe+=/ascendance,if=talent.storm_elemental.enabled&cooldown.storm_elemental.remains<120&cooldown.storm_elemental.remains>15|!talent.storm_elemental.enabled
 actions.aoe+=/liquid_magma_totem
-actions.aoe+=/flame_shock,if=spell_targets.chain_lightning<4&maelstrom>=20,target_if=refreshable
+actions.aoe+=/flame_shock,if=spell_targets.chain_lightning<4,target_if=refreshable
 actions.aoe+=/earthquake
 # Only cast Lava Burst on three targets if it is an instant.
-actions.aoe+=/lava_burst,if=dot.flame_shock.remains>cast_time&buff.lava_surge.up&!talent.lightning_rod.enabled&spell_targets.chain_lightning<4
-# If you talented for Lightning Rod casting Elemental Blast at 3 or more targets was found to either be equal or worse than not casting it alltogether. Even though the main target damage suffers quite heavily from this.
-actions.aoe+=/elemental_blast,if=!talent.lightning_rod.enabled&spell_targets.chain_lightning<4
-actions.aoe+=/lava_beam,target_if=debuff.lightning_rod.down
+actions.aoe+=/lava_burst,if=(buff.lava_surge.up|buff.ascendance.up)&spell_targets.chain_lightning<4
+actions.aoe+=/elemental_blast,if=spell_targets.chain_lightning<4
 actions.aoe+=/lava_beam
-actions.aoe+=/chain_lightning,target_if=debuff.lightning_rod.down
 actions.aoe+=/chain_lightning
 actions.aoe+=/lava_burst,moving=1
 actions.aoe+=/flame_shock,moving=1,target_if=refreshable
+actions.aoe+=/frost_shock,moving=1
 
-# Single Target Action Priority List for Ascendance Spec
-actions.single_asc=ascendance,if=dot.flame_shock.remains>buff.ascendance.duration&(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&!buff.stormkeeper.up
-actions.single_asc+=/flame_shock,if=!ticking|dot.flame_shock.remains<=gcd
-actions.single_asc+=/flame_shock,if=maelstrom>=20&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<=duration
-# Keep your EB always on Cooldown.
-actions.single_asc+=/elemental_blast
-# Use your shoulders proc outside of Ascendance and only if at least one of the following is true: you have T21_2 buff, shoulder buff duration is shorter than 3 seconds or you have greater than or equal 117 Maelstrom. Use EQ at two targets. But be aware that you're going to deal significantly less damage to your primary target.
-actions.single_asc+=/earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)|!buff.ascendance.up&buff.earthen_strength.up&spell_targets.earthquake>1
-actions.single_asc+=/earth_shock,if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92
-# Keep SK for large or soon add waves. Don't cast SK during Ascendance.
-actions.single_asc+=/stormkeeper,if=(raid_event.adds.count<3|raid_event.adds.in>50)&time>5&!buff.ascendance.up
-actions.single_asc+=/liquid_magma_totem,if=raid_event.adds.count<3|raid_event.adds.in>50
-actions.single_asc+=/lightning_bolt,if=buff.power_of_the_maelstrom.up&buff.stormkeeper.up&spell_targets.chain_lightning<3
-actions.single_asc+=/lava_burst,if=dot.flame_shock.remains>cast_time&(cooldown_react|buff.ascendance.up)
-actions.single_asc+=/flame_shock,if=maelstrom>=20&buff.elemental_focus.up,target_if=refreshable
-actions.single_asc+=/earthquake,if=buff.echoes_of_the_great_sundering.up&(maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.the_deceivers_blood_pact&maelstrom>85&talent.aftershock.enabled)
-# If you talented for Aftershock, equipped Deceivers Blood Pact and either Smoldering Heart or Echoes of the Great Sundering, you essentially gamble for procs.
-actions.single_asc+=/earth_shock,if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.the_deceivers_blood_pact&talent.aftershock.enabled&(maelstrom>85&equipped.echoes_of_the_great_sundering|maelstrom>70&equipped.smoldering_heart)
-actions.single_asc+=/totem_mastery,if=buff.resonance_totem.remains<10|(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&cooldown.ascendance.remains<15)
-actions.single_asc+=/lava_beam,if=active_enemies>1&spell_targets.lava_beam>1
-actions.single_asc+=/lightning_bolt,if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3
-actions.single_asc+=/chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1
-actions.single_asc+=/lightning_bolt
-actions.single_asc+=/flame_shock,moving=1,target_if=refreshable
-actions.single_asc+=/earth_shock,moving=1
-actions.single_asc+=/flame_shock,moving=1,if=movement.distance>6
-
-# Single Target Action Priority List for Ice Fury Spec
-actions.single_if=flame_shock,if=!ticking|dot.flame_shock.remains<=gcd
-# Keep your EB always on Cooldown.
-actions.single_if+=/elemental_blast
-# Use your shoulders proc outside of Ascendance and only if at least one of the following is true: you have T21_2 buff, shoulder buff duration is shorter than 3 seconds or you have greater than or equal 117 Maelstrom. Use EQ at two targets. But be aware that you're going to deal significantly less damage to your primary target.
-actions.single_if+=/earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)|!buff.ascendance.up&buff.earthen_strength.up&spell_targets.earthquake>1
-actions.single_if+=/earth_shock,if=(maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=92)&buff.earthen_strength.up
-actions.single_if+=/frost_shock,if=buff.icefury.up&maelstrom>=20&!buff.ascendance.up&buff.earthen_strength.up
-actions.single_if+=/earth_shock,if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92
-# Keep SK for large or soon spawning add waves.
-actions.single_if+=/stormkeeper,if=(raid_event.adds.count<3|raid_event.adds.in>50)&!buff.ascendance.up
-actions.single_if+=/icefury,if=(raid_event.movement.in<5|maelstrom<=101&artifact.swelling_maelstrom.enabled|!artifact.swelling_maelstrom.enabled&maelstrom<=76)&!buff.ascendance.up
-actions.single_if+=/liquid_magma_totem,if=raid_event.adds.count<3|raid_event.adds.in>50
-actions.single_if+=/lightning_bolt,if=buff.power_of_the_maelstrom.up&buff.stormkeeper.up&spell_targets.chain_lightning<3
-actions.single_if+=/lava_burst,if=dot.flame_shock.remains>cast_time&cooldown_react
-actions.single_if+=/frost_shock,if=buff.icefury.up&((maelstrom>=20&raid_event.movement.in>buff.icefury.remains)|buff.icefury.remains<(1.5*spell_haste*buff.icefury.stack+1))
-actions.single_if+=/flame_shock,if=maelstrom>=20&buff.elemental_focus.up,target_if=refreshable
-actions.single_if+=/earthquake,if=buff.echoes_of_the_great_sundering.up&(maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.the_deceivers_blood_pact&maelstrom>85&talent.aftershock.enabled)
-actions.single_if+=/frost_shock,moving=1,if=buff.icefury.up
-# If you talented for Aftershock, equipped Deceivers Blood Pact and either Smoldering Heart or Echoes of the Great Sundering, you essentially gamble for procs.
-actions.single_if+=/earth_shock,if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.the_deceivers_blood_pact&talent.aftershock.enabled&(maelstrom>85&equipped.echoes_of_the_great_sundering|maelstrom>70&equipped.smoldering_heart)
-actions.single_if+=/totem_mastery,if=buff.resonance_totem.remains<10
-actions.single_if+=/lightning_bolt,if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3
-actions.single_if+=/chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1
-actions.single_if+=/lightning_bolt
-actions.single_if+=/flame_shock,moving=1,target_if=refreshable
-actions.single_if+=/earth_shock,moving=1
-actions.single_if+=/flame_shock,moving=1,if=movement.distance>6
-
-# Single Target Action Priority List for Lightning Rod Spec
-actions.single_lr=flame_shock,if=!ticking|dot.flame_shock.remains<=gcd
-# Keep your EB always on Cooldown.
-actions.single_lr+=/elemental_blast
-# Use your shoulders proc outside of Ascendance and only if at least one of the following is true: you have T21_2 buff, shoulder buff duration is shorter than 3 seconds or you have greater than or equal 117 Maelstrom. Use EQ at two targets. But be aware that you're going to deal significantly less damage to your primary target.
-actions.single_lr+=/earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&(buff.earthen_strength.up|buff.echoes_of_the_great_sundering.duration<=3|maelstrom>=117)|!buff.ascendance.up&buff.earthen_strength.up&spell_targets.earthquake>1
-actions.single_lr+=/earth_shock,if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92
+# Single Target Action Priority List
+actions.single_target=flame_shock,if=!ticking|dot.flame_shock.remains<=gcd
+actions.single_target+=/ascendance,if=(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&!talent.storm_elemental.enabled
+actions.single_target+=/ascendance,if=(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&cooldown.storm_elemental.remains<=120
+# Don't use Elemental Blast if you could cast a Master of the Elements empowered Earth Shock instead.
+actions.single_target+=/elemental_blast,if=talent.master_of_the_elements.enabled&buff.master_of_the_elements.up&maelstrom<60|!talent.master_of_the_elements.enabled
 # Keep SK for large or soon add waves.
-actions.single_lr+=/stormkeeper,if=(raid_event.adds.count<3|raid_event.adds.in>50)&!buff.ascendance.up
-actions.single_lr+=/liquid_magma_totem,if=raid_event.adds.count<3|raid_event.adds.in>50
-actions.single_lr+=/lava_burst,if=dot.flame_shock.remains>cast_time&cooldown_react
-actions.single_lr+=/flame_shock,if=maelstrom>=20&buff.elemental_focus.up,target_if=refreshable
-actions.single_lr+=/earthquake,if=buff.echoes_of_the_great_sundering.up&(maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.the_deceivers_blood_pact&maelstrom>85&talent.aftershock.enabled)
-# If you talented for Aftershock, equipped Deceivers Blood Pact and either Smoldering Heart or Echoes of the Great Sundering, you essentially gamble for procs.
-actions.single_lr+=/earth_shock,if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86|equipped.the_deceivers_blood_pact&talent.aftershock.enabled&(maelstrom>85&equipped.echoes_of_the_great_sundering|maelstrom>70&equipped.smoldering_heart)
-actions.single_lr+=/totem_mastery,if=buff.resonance_totem.remains<10|(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&cooldown.ascendance.remains<15)
-actions.single_lr+=/lightning_bolt,if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3,target_if=debuff.lightning_rod.down
-actions.single_lr+=/lightning_bolt,if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3
-actions.single_lr+=/chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1,target_if=debuff.lightning_rod.down
-actions.single_lr+=/chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1
-actions.single_lr+=/lightning_bolt,target_if=debuff.lightning_rod.down
-actions.single_lr+=/lightning_bolt
-actions.single_lr+=/flame_shock,moving=1,target_if=refreshable
-actions.single_lr+=/earth_shock,moving=1
-actions.single_lr+=/flame_shock,moving=1,if=movement.distance>6
+actions.single_target+=/stormkeeper,if=raid_event.adds.count<3|raid_event.adds.in>50
+actions.single_target+=/liquid_magma_totem,if=raid_event.adds.count<3|raid_event.adds.in>50
+# Use your proc before casting Earth Shock again.
+actions.single_target+=/earthquake,if=buff.echoes_of_the_great_sundering.up
+# Use the debuff before casting Earth Shock again.
+actions.single_target+=/lightning_bolt,if=debuff.exposed_elements.up&maelstrom>=60&!buff.ascendance.up
+# If possible, use Earth Shock with Master of the Elements.
+actions.single_target+=/earth_shock,if=talent.master_of_the_elements.enabled&(buff.master_of_the_elements.up|maelstrom>=92)|!talent.master_of_the_elements.enabled
+actions.single_target+=/lava_burst,if=cooldown_react|buff.ascendance.up
+actions.single_target+=/flame_shock,target_if=refreshable
+actions.single_target+=/totem_mastery,if=buff.resonance_totem.remains<6|(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&cooldown.ascendance.remains<15)
+actions.single_target+=/frost_shock,if=buff.icefury.up
+actions.single_target+=/icefury
+actions.single_target+=/lava_beam,if=active_enemies>1&spell_targets.lava_beam>1
+actions.single_target+=/chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1
+actions.single_target+=/lightning_bolt
+actions.single_target+=/flame_shock,moving=1,target_if=refreshable
+actions.single_target+=/flame_shock,moving=1,if=movement.distance>6
+# Frost Shock is our movement filler.
+actions.single_target+=/frost_shock,moving=1
 
 head=helm_of_the_awakened_soul,id=152423,bonus_id=3612/1502
-neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_claw
-shoulders=pauldrons_of_venerated_spirits,id=152171,bonus_id=3612/1502
+neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
+shoulders=echoes_of_the_great_sundering,id=137074,bonus_id=3630
 back=drape_of_venerated_spirits,id=152167,bonus_id=3612/1502,enchant=binding_of_intellect
 chest=robes_of_venerated_spirits,id=152166,bonus_id=3612/1502
 wrists=scalding_shatterguards,id=152280,bonus_id=3612/1502
-hands=smoldering_heart,id=151819,bonus_id=3630
+hands=gloves_of_venerated_spirits,id=152168,bonus_id=3612/1502
 waist=worldravager_waistguard,id=152683,bonus_id=3612/1502
 legs=leggings_of_venerated_spirits,id=152170,bonus_id=3612/1502
 feet=the_deceivers_blood_pact,id=137035,bonus_id=3630
@@ -164,17 +103,18 @@ finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=bindin
 finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_critical_strike
 trinket1=acrid_catalyst_injector,id=151955,bonus_id=3612/1502
 trinket2=amanthuls_vision,id=154172,bonus_id=4213
-main_hand=the_fist_of_raden,id=128935,bonus_id=744,gem_id=155853/155850/155853,relic_id=3612:1512/3612:1512/3612:1512
+main_hand=the_fist_of_raden,id=128935,bonus_id=744/1505/1505/1505,gem_id=155853/155850/155853
 off_hand=the_highkeepers_ward,id=128936
 
 # Gear Summary
-# gear_ilvl=974.25
-# gear_stamina=63328
-# gear_intellect=68977
-# gear_crit_rating=11858
-# gear_haste_rating=9060
-# gear_mastery_rating=11348
-# gear_versatility_rating=4719
-# gear_armor=3662
+# gear_ilvl=248.88
+# gear_strength=47
+# gear_stamina=1344
+# gear_intellect=1158
+# gear_crit_rating=485
+# gear_haste_rating=373
+# gear_mastery_rating=515
+# gear_versatility_rating=165
+# gear_armor=613
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1

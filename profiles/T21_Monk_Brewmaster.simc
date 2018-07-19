@@ -4,9 +4,7 @@ level=110
 race=pandaren
 role=tank
 position=front
-talents=2020212
-artifact=52:0:0:0:0:1277:1:1278:4:1279:4:1280:4:1281:4:1282:4:1283:4:1284:4:1285:4:1286:4:1287:1:1288:1:1289:1:1290:1:1291:1:1292:1:1293:1:1374:1:1541:4:1542:1:1543:1:1544:24:1642:1
-crucible=1739:1780:1286/1739:1780:1286/1739:1780:1286
+talents=2020033
 
 # Default consumables
 potion=old_war
@@ -32,7 +30,6 @@ actions.precombat+=/chi_wave
 
 # Executed every time the actor is available.
 actions=auto_attack
-actions+=/greater_gift_of_the_ox
 actions+=/gift_of_the_ox
 actions+=/dampen_harm,if=incoming_damage_1500ms&buff.fortifying_brew.down
 actions+=/fortifying_brew,if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)
@@ -40,7 +37,7 @@ actions+=/use_item,name=archimondes_hatred_reborn
 actions+=/potion
 actions+=/blood_fury
 actions+=/berserking
-actions+=/exploding_keg
+actions+=/lights_judgment
 actions+=/invoke_niuzao_the_black_ox,if=target.time_to_die>45
 actions+=/purifying_brew,if=stagger.heavy|(stagger.moderate&cooldown.brews.charges_fractional>=cooldown.brews.max_charges-0.5&buff.ironskin_brew.remains>=buff.ironskin_brew.duration*2.5)
 # About charge management, by default while tanking (always true on SimC) we lower it by 1 and up to 1.5 if we are tanking with less than half of Ironskin base duration up.
@@ -53,7 +50,7 @@ actions+=/tiger_palm,if=buff.blackout_combo.up
 actions+=/keg_smash
 actions+=/blackout_strike
 actions+=/breath_of_fire,if=buff.blackout_combo.down&(buff.bloodlust.down|(buff.bloodlust.up&&dot.breath_of_fire_dot.refreshable))
-actions+=/rushing_jade_wind
+actions+=/rushing_jade_wind,if=buff.rushing_jade_wind.down
 actions+=/chi_burst
 actions+=/chi_wave
 actions+=/tiger_palm,if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+gcd)))>=55
@@ -72,16 +69,16 @@ finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=bindin
 finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_mastery
 trinket1=golganneths_vitality,id=154174,bonus_id=3997
 trinket2=archimondes_hatred_reborn,id=144249,bonus_id=3630
-main_hand=fu_zan_the_wanderers_companion,id=128938,bonus_id=732,gem_id=152052/152058/152047,relic_id=3612:1502/3612:1502/3612:1502
+main_hand=fu_zan_the_wanderers_companion,id=128938,bonus_id=732/1505/1505/1505,gem_id=155854/155853/155855
 
 # Gear Summary
-# gear_ilvl=970.67
-# gear_agility=44025
-# gear_stamina=59945
-# gear_crit_rating=9769
-# gear_haste_rating=4849
-# gear_mastery_rating=9768
-# gear_versatility_rating=7956
-# gear_armor=2970
+# gear_ilvl=247.40
+# gear_agility=945
+# gear_stamina=1298
+# gear_crit_rating=396
+# gear_haste_rating=196
+# gear_mastery_rating=393
+# gear_versatility_rating=316
+# gear_armor=413
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1

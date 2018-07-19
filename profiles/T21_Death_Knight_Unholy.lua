@@ -23,31 +23,28 @@ if not Spell.DeathKnight then Spell.DeathKnight = {} end
 Spell.DeathKnight.Unholy = {
   RaiseDead                             = Spell(),
   ArmyoftheDead                         = Spell(42650),
-  BlightedRuneWeapon                    = Spell(194918),
   DeathandDecay                         = Spell(43265),
+  Apocalypse                            = Spell(220143),
+  Defile                                = Spell(152280),
   Epidemic                              = Spell(207317),
+  DeathCoil                             = Spell(47541),
   ScourgeStrike                         = Spell(55090),
   ClawingShadows                        = Spell(207311),
+  FesteringStrike                       = Spell(85948),
+  BurstingSores                         = Spell(),
+  FesteringWoundDebuff                  = Spell(194310),
+  SuddenDoomBuff                        = Spell(81340),
   ChainsofIce                           = Spell(45524),
   UnholyStrengthBuff                    = Spell(53365),
-  ColdHeartBuff                         = Spell(235599),
+  ColdHeartItemBuff                     = Spell(),
   MasterofGhoulsBuff                    = Spell(246995),
-  SoulReaperDebuff                      = Spell(130736),
-  Apocalypse                            = Spell(220143),
-  FesteringWoundDebuff                  = Spell(194310),
-  DarkArbiter                           = Spell(207349),
   DarkTransformation                    = Spell(63560),
   SummonGargoyle                        = Spell(49206),
+  UnholyFrenzy                          = Spell(),
   SoulReaper                            = Spell(130736),
-  ShadowInfusion                        = Spell(198943),
-  DeathCoil                             = Spell(47541),
-  NecrosisBuff                          = Spell(216974),
-  SuddenDoomBuff                        = Spell(81340),
-  FesteringStrike                       = Spell(85948),
-  Defile                                = Spell(152280),
-  BlightedRuneWeaponBuff                = Spell(194918),
-  Castigator                            = Spell(207305),
-  Necrosis                              = Spell(207346),
+  UnholyBlight                          = Spell(),
+  Pestilence                            = Spell(),
+  UnholyFrenzyBuff                      = Spell(),
   MindFreeze                            = Spell(47528),
   ArcaneTorrent                         = Spell(50613),
   BloodFury                             = Spell(20572),
@@ -64,8 +61,6 @@ Item.DeathKnight.Unholy = {
   ProlongedPower                   = Item(142117),
   ColdHeart                        = Item(151796),
   Item137075                       = Item(137075),
-  Item140806                       = Item(140806),
-  Item132448                       = Item(132448),
   FeloiledInfernalMachine          = Item(144482),
   RingofCollapsingFutures          = Item(142173)
 };
@@ -83,8 +78,9 @@ local Settings = {
 };
 
 -- Variables
+local VarPoolingForGargoyle = 0;
 
-local EnemyRanges = {8, 10, 30}
+local EnemyRanges = {5, 30}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do
     HL.GetEnemies(i);
@@ -119,177 +115,133 @@ local function APL()
     if S.ArmyoftheDead:IsCastableP() and (true) then
       if HR.Cast(S.ArmyoftheDead) then return ""; end
     end
-    -- blighted_rune_weapon
-    if S.BlightedRuneWeapon:IsCastableP() and Player:BuffDownP(S.BlightedRuneWeapon) and (true) then
-      if HR.Cast(S.BlightedRuneWeapon) then return ""; end
-    end
   end
   local function Aoe()
-    -- death_and_decay,if=spell_targets.death_and_decay>=2
-    if S.DeathandDecay:IsUsableP() and (Cache.EnemiesCount[30] >= 2) then
+    -- death_and_decay,if=cooldown.apocalypse.remains
+    if S.DeathandDecay:IsUsableP() and (bool(S.Apocalypse:CooldownRemainsP())) then
       if HR.Cast(S.DeathandDecay) then return ""; end
     end
-    -- epidemic,if=spell_targets.epidemic>4
-    if S.Epidemic:IsCastableP() and (Cache.EnemiesCount[10] > 4) then
+    -- defile
+    if S.Defile:IsCastableP() and (true) then
+      if HR.Cast(S.Defile) then return ""; end
+    end
+    -- epidemic,if=death_and_decay.ticking&rune<2&!variable.pooling_for_gargoyle
+    if S.Epidemic:IsCastableP() and (bool(death_and_decay.ticking) and Player:Rune() < 2 and not bool(VarPoolingForGargoyle)) then
       if HR.Cast(S.Epidemic) then return ""; end
     end
-    -- scourge_strike,if=spell_targets.scourge_strike>=2&(death_and_decay.ticking|defile.ticking)
-    if S.ScourgeStrike:IsCastableP() and (Cache.EnemiesCount[8] >= 2 and (bool(death_and_decay.ticking) or bool(defile.ticking))) then
+    -- death_coil,if=death_and_decay.ticking&rune<2&!talent.epidemic.enabled&!variable.pooling_for_gargoyle
+    if S.DeathCoil:IsUsableP() and (bool(death_and_decay.ticking) and Player:Rune() < 2 and not S.Epidemic:IsAvailable() and not bool(VarPoolingForGargoyle)) then
+      if HR.Cast(S.DeathCoil) then return ""; end
+    end
+    -- scourge_strike,if=death_and_decay.ticking&cooldown.apocalypse.remains
+    if S.ScourgeStrike:IsCastableP() and (bool(death_and_decay.ticking) and bool(S.Apocalypse:CooldownRemainsP())) then
       if HR.Cast(S.ScourgeStrike) then return ""; end
     end
-    -- clawing_shadows,if=spell_targets.clawing_shadows>=2&(death_and_decay.ticking|defile.ticking)
-    if S.ClawingShadows:IsCastableP() and (Cache.EnemiesCount[8] >= 2 and (bool(death_and_decay.ticking) or bool(defile.ticking))) then
+    -- clawing_shadows,if=death_and_decay.ticking&cooldown.apocalypse.remains
+    if S.ClawingShadows:IsCastableP() and (bool(death_and_decay.ticking) and bool(S.Apocalypse:CooldownRemainsP())) then
       if HR.Cast(S.ClawingShadows) then return ""; end
     end
-    -- epidemic,if=spell_targets.epidemic>2
-    if S.Epidemic:IsCastableP() and (Cache.EnemiesCount[10] > 2) then
+    -- epidemic,if=!variable.pooling_for_gargoyle
+    if S.Epidemic:IsCastableP() and (not bool(VarPoolingForGargoyle)) then
       if HR.Cast(S.Epidemic) then return ""; end
+    end
+    -- festering_strike,if=talent.bursting_sores.enabled&spell_targets.bursting_sores>=2&debuff.festering_wound.stack<=1
+    if S.FesteringStrike:IsCastableP() and (S.BurstingSores:IsAvailable() and Cache.EnemiesCount[5] >= 2 and Target:DebuffStackP(S.FesteringWoundDebuff) <= 1) then
+      if HR.Cast(S.FesteringStrike) then return ""; end
+    end
+    -- death_coil,if=buff.sudden_doom.react&rune.deficit>=4
+    if S.DeathCoil:IsUsableP() and (bool(Player:BuffStackP(S.SuddenDoomBuff)) and Player:RuneDeficit() >= 4) then
+      if HR.Cast(S.DeathCoil) then return ""; end
     end
   end
   local function ColdHeart()
-    -- chains_of_ice,if=buff.unholy_strength.remains<gcd&buff.unholy_strength.react&buff.cold_heart.stack>16
-    if S.ChainsofIce:IsCastableP() and (Player:BuffRemainsP(S.UnholyStrengthBuff) < Player:GCD() and bool(Player:BuffStackP(S.UnholyStrengthBuff)) and Player:BuffStackP(S.ColdHeartBuff) > 16) then
+    -- chains_of_ice,if=buff.unholy_strength.remains<gcd&buff.unholy_strength.react&buff.cold_heart_item.stack>16
+    if S.ChainsofIce:IsCastableP() and (Player:BuffRemainsP(S.UnholyStrengthBuff) < Player:GCD() and bool(Player:BuffStackP(S.UnholyStrengthBuff)) and Player:BuffStackP(S.ColdHeartItemBuff) > 16) then
       if HR.Cast(S.ChainsofIce) then return ""; end
     end
-    -- chains_of_ice,if=buff.master_of_ghouls.remains<gcd&buff.master_of_ghouls.up&buff.cold_heart.stack>17
-    if S.ChainsofIce:IsCastableP() and (Player:BuffRemainsP(S.MasterofGhoulsBuff) < Player:GCD() and Player:BuffP(S.MasterofGhoulsBuff) and Player:BuffStackP(S.ColdHeartBuff) > 17) then
+    -- chains_of_ice,if=buff.master_of_ghouls.remains<gcd&buff.master_of_ghouls.up&buff.cold_heart_item.stack>17
+    if S.ChainsofIce:IsCastableP() and (Player:BuffRemainsP(S.MasterofGhoulsBuff) < Player:GCD() and Player:BuffP(S.MasterofGhoulsBuff) and Player:BuffStackP(S.ColdHeartItemBuff) > 17) then
       if HR.Cast(S.ChainsofIce) then return ""; end
     end
-    -- chains_of_ice,if=buff.cold_heart.stack=20&buff.unholy_strength.react
-    if S.ChainsofIce:IsCastableP() and (Player:BuffStackP(S.ColdHeartBuff) == 20 and bool(Player:BuffStackP(S.UnholyStrengthBuff))) then
+    -- chains_of_ice,if=buff.cold_heart_item.stack=20&buff.unholy_strength.react
+    if S.ChainsofIce:IsCastableP() and (Player:BuffStackP(S.ColdHeartItemBuff) == 20 and bool(Player:BuffStackP(S.UnholyStrengthBuff))) then
       if HR.Cast(S.ChainsofIce) then return ""; end
     end
   end
   local function Cooldowns()
-    -- call_action_list,name=cold_heart,if=equipped.cold_heart&buff.cold_heart.stack>10&!debuff.soul_reaper.up
-    if (I.ColdHeart:IsEquipped() and Player:BuffStackP(S.ColdHeartBuff) > 10 and not Target:DebuffP(S.SoulReaperDebuff)) then
+    -- call_action_list,name=cold_heart,if=equipped.cold_heart&buff.cold_heart_item.stack>10
+    if (I.ColdHeart:IsEquipped() and Player:BuffStackP(S.ColdHeartItemBuff) > 10) then
       local ShouldReturn = ColdHeart(); if ShouldReturn then return ShouldReturn; end
     end
     -- army_of_the_dead
     if S.ArmyoftheDead:IsCastableP() and (true) then
       if HR.Cast(S.ArmyoftheDead) then return ""; end
     end
-    -- apocalypse,if=debuff.festering_wound.stack>=6
-    if S.Apocalypse:IsCastableP() and (Target:DebuffStackP(S.FesteringWoundDebuff) >= 6) then
+    -- apocalypse,if=debuff.festering_wound.stack>=4
+    if S.Apocalypse:IsCastableP() and (Target:DebuffStackP(S.FesteringWoundDebuff) >= 4) then
       if HR.Cast(S.Apocalypse) then return ""; end
     end
-    -- dark_arbiter,if=(!equipped.137075|cooldown.dark_transformation.remains<2)&runic_power.deficit<30
-    if S.DarkArbiter:IsCastableP() and ((not I.Item137075:IsEquipped() or S.DarkTransformation:CooldownRemainsP() < 2) and Player:RunicPowerDeficit() < 30) then
-      if HR.Cast(S.DarkArbiter) then return ""; end
+    -- dark_transformation,if=(equipped.137075&cooldown.summon_gargoyle.remains>40)|(!equipped.137075|!talent.summon_gargoyle.enabled)
+    if S.DarkTransformation:IsCastableP() and ((I.Item137075:IsEquipped() and S.SummonGargoyle:CooldownRemainsP() > 40) or (not I.Item137075:IsEquipped() or not S.SummonGargoyle:IsAvailable())) then
+      if HR.Cast(S.DarkTransformation) then return ""; end
     end
-    -- summon_gargoyle,if=(!equipped.137075|cooldown.dark_transformation.remains<10)&rune.time_to_4>=gcd
-    if S.SummonGargoyle:IsCastableP() and ((not I.Item137075:IsEquipped() or S.DarkTransformation:CooldownRemainsP() < 10) and Player:RuneTimeToX(4) >= Player:GCD()) then
+    -- summon_gargoyle,if=runic_power.deficit<14
+    if S.SummonGargoyle:IsCastableP() and (Player:RunicPowerDeficit() < 14) then
       if HR.Cast(S.SummonGargoyle) then return ""; end
     end
-    -- soul_reaper,if=(debuff.festering_wound.stack>=6&cooldown.apocalypse.remains<=gcd)|(debuff.festering_wound.stack>=3&rune>=3&cooldown.apocalypse.remains>20)
-    if S.SoulReaper:IsCastableP() and ((Target:DebuffStackP(S.FesteringWoundDebuff) >= 6 and S.Apocalypse:CooldownRemainsP() <= Player:GCD()) or (Target:DebuffStackP(S.FesteringWoundDebuff) >= 3 and Player:Rune() >= 3 and S.Apocalypse:CooldownRemainsP() > 20)) then
+    -- unholy_frenzy,if=debuff.festering_wound.stack<4
+    if S.UnholyFrenzy:IsCastableP() and (Target:DebuffStackP(S.FesteringWoundDebuff) < 4) then
+      if HR.Cast(S.UnholyFrenzy) then return ""; end
+    end
+    -- unholy_frenzy,if=active_enemies>=2&((cooldown.death_and_decay.remains<=gcd&!talent.defile.enabled)|(cooldown.defile.remains<=gcd&talent.defile.enabled))
+    if S.UnholyFrenzy:IsCastableP() and (Cache.EnemiesCount[30] >= 2 and ((S.DeathandDecay:CooldownRemainsP() <= Player:GCD() and not S.Defile:IsAvailable()) or (S.Defile:CooldownRemainsP() <= Player:GCD() and S.Defile:IsAvailable()))) then
+      if HR.Cast(S.UnholyFrenzy) then return ""; end
+    end
+    -- soul_reaper,target_if=(target.time_to_die<8|rune<=2)&!buff.unholy_frenzy.up
+    if S.SoulReaper:IsCastableP() and (true) then
       if HR.Cast(S.SoulReaper) then return ""; end
     end
-    -- call_action_list,name=dt,if=cooldown.dark_transformation.ready
-    if (S.DarkTransformation:CooldownUpP()) then
-      local ShouldReturn = Dt(); if ShouldReturn then return ShouldReturn; end
-    end
-  end
-  local function Dt()
-    -- dark_transformation,if=equipped.137075&talent.dark_arbiter.enabled&(talent.shadow_infusion.enabled|cooldown.dark_arbiter.remains>52)&cooldown.dark_arbiter.remains>30&!equipped.140806
-    if S.DarkTransformation:IsCastableP() and (I.Item137075:IsEquipped() and S.DarkArbiter:IsAvailable() and (S.ShadowInfusion:IsAvailable() or S.DarkArbiter:CooldownRemainsP() > 52) and S.DarkArbiter:CooldownRemainsP() > 30 and not I.Item140806:IsEquipped()) then
-      if HR.Cast(S.DarkTransformation) then return ""; end
-    end
-    -- dark_transformation,if=equipped.137075&(talent.shadow_infusion.enabled|cooldown.dark_arbiter.remains>(52*1.333))&equipped.140806&cooldown.dark_arbiter.remains>(30*1.333)
-    if S.DarkTransformation:IsCastableP() and (I.Item137075:IsEquipped() and (S.ShadowInfusion:IsAvailable() or S.DarkArbiter:CooldownRemainsP() > (52 * 1.333)) and I.Item140806:IsEquipped() and S.DarkArbiter:CooldownRemainsP() > (30 * 1.333)) then
-      if HR.Cast(S.DarkTransformation) then return ""; end
-    end
-    -- dark_transformation,if=equipped.137075&target.time_to_die<cooldown.dark_arbiter.remains-8
-    if S.DarkTransformation:IsCastableP() and (I.Item137075:IsEquipped() and Target:TimeToDie() < S.DarkArbiter:CooldownRemainsP() - 8) then
-      if HR.Cast(S.DarkTransformation) then return ""; end
-    end
-    -- dark_transformation,if=equipped.137075&(talent.shadow_infusion.enabled|cooldown.summon_gargoyle.remains>55)&cooldown.summon_gargoyle.remains>35
-    if S.DarkTransformation:IsCastableP() and (I.Item137075:IsEquipped() and (S.ShadowInfusion:IsAvailable() or S.SummonGargoyle:CooldownRemainsP() > 55) and S.SummonGargoyle:CooldownRemainsP() > 35) then
-      if HR.Cast(S.DarkTransformation) then return ""; end
-    end
-    -- dark_transformation,if=equipped.137075&target.time_to_die<cooldown.summon_gargoyle.remains-8
-    if S.DarkTransformation:IsCastableP() and (I.Item137075:IsEquipped() and Target:TimeToDie() < S.SummonGargoyle:CooldownRemainsP() - 8) then
-      if HR.Cast(S.DarkTransformation) then return ""; end
-    end
-    -- dark_transformation,if=!equipped.137075&rune.time_to_4>=gcd
-    if S.DarkTransformation:IsCastableP() and (not I.Item137075:IsEquipped() and Player:RuneTimeToX(4) >= Player:GCD()) then
-      if HR.Cast(S.DarkTransformation) then return ""; end
+    -- unholy_blight
+    if S.UnholyBlight:IsCastableP() and (true) then
+      if HR.Cast(S.UnholyBlight) then return ""; end
     end
   end
   local function Generic()
-    -- scourge_strike,if=debuff.soul_reaper.up&debuff.festering_wound.up
-    if S.ScourgeStrike:IsCastableP() and (Target:DebuffP(S.SoulReaperDebuff) and Target:DebuffP(S.FesteringWoundDebuff)) then
-      if HR.Cast(S.ScourgeStrike) then return ""; end
-    end
-    -- clawing_shadows,if=debuff.soul_reaper.up&debuff.festering_wound.up
-    if S.ClawingShadows:IsCastableP() and (Target:DebuffP(S.SoulReaperDebuff) and Target:DebuffP(S.FesteringWoundDebuff)) then
-      if HR.Cast(S.ClawingShadows) then return ""; end
-    end
-    -- death_coil,if=runic_power.deficit<22&(talent.shadow_infusion.enabled|(!talent.dark_arbiter.enabled|cooldown.dark_arbiter.remains>5))
-    if S.DeathCoil:IsUsableP() and (Player:RunicPowerDeficit() < 22 and (S.ShadowInfusion:IsAvailable() or (not S.DarkArbiter:IsAvailable() or S.DarkArbiter:CooldownRemainsP() > 5))) then
+    -- death_coil,if=buff.sudden_doom.react&!variable.pooling_for_gargoyle|pet.gargoyle.active
+    if S.DeathCoil:IsUsableP() and (bool(Player:BuffStackP(S.SuddenDoomBuff)) and not bool(VarPoolingForGargoyle) or bool(pet.gargoyle.active)) then
       if HR.Cast(S.DeathCoil) then return ""; end
     end
-    -- death_coil,if=!buff.necrosis.up&buff.sudden_doom.react&((!talent.dark_arbiter.enabled&rune<=3)|cooldown.dark_arbiter.remains>5)
-    if S.DeathCoil:IsUsableP() and (not Player:BuffP(S.NecrosisBuff) and bool(Player:BuffStackP(S.SuddenDoomBuff)) and ((not S.DarkArbiter:IsAvailable() and Player:Rune() <= 3) or S.DarkArbiter:CooldownRemainsP() > 5)) then
+    -- death_coil,if=runic_power.deficit<14&(cooldown.apocalypse.remains>5|debuff.festering_wound.stack>4)&!variable.pooling_for_gargoyle
+    if S.DeathCoil:IsUsableP() and (Player:RunicPowerDeficit() < 14 and (S.Apocalypse:CooldownRemainsP() > 5 or Target:DebuffStackP(S.FesteringWoundDebuff) > 4) and not bool(VarPoolingForGargoyle)) then
       if HR.Cast(S.DeathCoil) then return ""; end
     end
-    -- festering_strike,if=debuff.festering_wound.stack<6&cooldown.apocalypse.remains<=6
-    if S.FesteringStrike:IsCastableP() and (Target:DebuffStackP(S.FesteringWoundDebuff) < 6 and S.Apocalypse:CooldownRemainsP() <= 6) then
-      if HR.Cast(S.FesteringStrike) then return ""; end
+    -- death_and_decay,if=talent.pestilence.enabled&cooldown.apocalypse.remains
+    if S.DeathandDecay:IsUsableP() and (S.Pestilence:IsAvailable() and bool(S.Apocalypse:CooldownRemainsP())) then
+      if HR.Cast(S.DeathandDecay) then return ""; end
     end
-    -- defile
-    if S.Defile:IsCastableP() and (true) then
+    -- defile,if=cooldown.apocalypse.remains
+    if S.Defile:IsCastableP() and (bool(S.Apocalypse:CooldownRemainsP())) then
       if HR.Cast(S.Defile) then return ""; end
     end
-    -- call_action_list,name=aoe,if=active_enemies>=2
-    if (Cache.EnemiesCount[30] >= 2) then
-      local ShouldReturn = Aoe(); if ShouldReturn then return ShouldReturn; end
-    end
-    -- festering_strike,if=(buff.blighted_rune_weapon.stack*2+debuff.festering_wound.stack)<=2|((buff.blighted_rune_weapon.stack*2+debuff.festering_wound.stack)<=4&talent.castigator.enabled)&(cooldown.army_of_the_dead.remains>5|rune.time_to_4<=gcd)
-    if S.FesteringStrike:IsCastableP() and ((Player:BuffStackP(S.BlightedRuneWeaponBuff) * 2 + Target:DebuffStackP(S.FesteringWoundDebuff)) <= 2 or ((Player:BuffStackP(S.BlightedRuneWeaponBuff) * 2 + Target:DebuffStackP(S.FesteringWoundDebuff)) <= 4 and S.Castigator:IsAvailable()) and (S.ArmyoftheDead:CooldownRemainsP() > 5 or Player:RuneTimeToX(4) <= Player:GCD())) then
-      if HR.Cast(S.FesteringStrike) then return ""; end
-    end
-    -- death_coil,if=!buff.necrosis.up&talent.necrosis.enabled&rune.time_to_4>=gcd
-    if S.DeathCoil:IsUsableP() and (not Player:BuffP(S.NecrosisBuff) and S.Necrosis:IsAvailable() and Player:RuneTimeToX(4) >= Player:GCD()) then
-      if HR.Cast(S.DeathCoil) then return ""; end
-    end
-    -- scourge_strike,if=(buff.necrosis.up|buff.unholy_strength.react|rune>=2)&debuff.festering_wound.stack>=1&(debuff.festering_wound.stack>=3|!(talent.castigator.enabled|equipped.132448))&(cooldown.army_of_the_dead.remains>5|rune.time_to_4<=gcd)
-    if S.ScourgeStrike:IsCastableP() and ((Player:BuffP(S.NecrosisBuff) or bool(Player:BuffStackP(S.UnholyStrengthBuff)) or Player:Rune() >= 2) and Target:DebuffStackP(S.FesteringWoundDebuff) >= 1 and (Target:DebuffStackP(S.FesteringWoundDebuff) >= 3 or not (S.Castigator:IsAvailable() or I.Item132448:IsEquipped())) and (S.ArmyoftheDead:CooldownRemainsP() > 5 or Player:RuneTimeToX(4) <= Player:GCD())) then
+    -- scourge_strike,if=((debuff.festering_wound.up&cooldown.apocalypse.remains>5)|debuff.festering_wound.stack>4)&cooldown.army_of_the_dead.remains>5
+    if S.ScourgeStrike:IsCastableP() and (((Target:DebuffP(S.FesteringWoundDebuff) and S.Apocalypse:CooldownRemainsP() > 5) or Target:DebuffStackP(S.FesteringWoundDebuff) > 4) and S.ArmyoftheDead:CooldownRemainsP() > 5) then
       if HR.Cast(S.ScourgeStrike) then return ""; end
     end
-    -- clawing_shadows,if=(buff.necrosis.up|buff.unholy_strength.react|rune>=2)&debuff.festering_wound.stack>=1&(debuff.festering_wound.stack>=3|!equipped.132448)&(cooldown.army_of_the_dead.remains>5|rune.time_to_4<=gcd)
-    if S.ClawingShadows:IsCastableP() and ((Player:BuffP(S.NecrosisBuff) or bool(Player:BuffStackP(S.UnholyStrengthBuff)) or Player:Rune() >= 2) and Target:DebuffStackP(S.FesteringWoundDebuff) >= 1 and (Target:DebuffStackP(S.FesteringWoundDebuff) >= 3 or not I.Item132448:IsEquipped()) and (S.ArmyoftheDead:CooldownRemainsP() > 5 or Player:RuneTimeToX(4) <= Player:GCD())) then
+    -- clawing_shadows,if=((debuff.festering_wound.up&cooldown.apocalypse.remains>5)|debuff.festering_wound.stack>4)&cooldown.army_of_the_dead.remains>5
+    if S.ClawingShadows:IsCastableP() and (((Target:DebuffP(S.FesteringWoundDebuff) and S.Apocalypse:CooldownRemainsP() > 5) or Target:DebuffStackP(S.FesteringWoundDebuff) > 4) and S.ArmyoftheDead:CooldownRemainsP() > 5) then
       if HR.Cast(S.ClawingShadows) then return ""; end
     end
-    -- death_coil,if=(talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>10)|!talent.dark_arbiter.enabled
-    if S.DeathCoil:IsUsableP() and ((S.DarkArbiter:IsAvailable() and S.DarkArbiter:CooldownRemainsP() > 10) or not S.DarkArbiter:IsAvailable()) then
+    -- death_coil,if=runic_power.deficit<20&!variable.pooling_for_gargoyle
+    if S.DeathCoil:IsUsableP() and (Player:RunicPowerDeficit() < 20 and not bool(VarPoolingForGargoyle)) then
       if HR.Cast(S.DeathCoil) then return ""; end
     end
-  end
-  local function Valkyr()
-    -- death_coil
-    if S.DeathCoil:IsUsableP() and (true) then
+    -- festering_strike,if=((((debuff.festering_wound.stack<4&!buff.unholy_frenzy.up)|debuff.festering_wound.stack<3)&cooldown.apocalypse.remains<3)|debuff.festering_wound.stack<1)&cooldown.army_of_the_dead.remains>5
+    if S.FesteringStrike:IsCastableP() and (((((Target:DebuffStackP(S.FesteringWoundDebuff) < 4 and not Player:BuffP(S.UnholyFrenzyBuff)) or Target:DebuffStackP(S.FesteringWoundDebuff) < 3) and S.Apocalypse:CooldownRemainsP() < 3) or Target:DebuffStackP(S.FesteringWoundDebuff) < 1) and S.ArmyoftheDead:CooldownRemainsP() > 5) then
+      if HR.Cast(S.FesteringStrike) then return ""; end
+    end
+    -- death_coil,if=!variable.pooling_for_gargoyle
+    if S.DeathCoil:IsUsableP() and (not bool(VarPoolingForGargoyle)) then
       if HR.Cast(S.DeathCoil) then return ""; end
-    end
-    -- festering_strike,if=debuff.festering_wound.stack<6&cooldown.apocalypse.remains<3
-    if S.FesteringStrike:IsCastableP() and (Target:DebuffStackP(S.FesteringWoundDebuff) < 6 and S.Apocalypse:CooldownRemainsP() < 3) then
-      if HR.Cast(S.FesteringStrike) then return ""; end
-    end
-    -- call_action_list,name=aoe,if=active_enemies>=2
-    if (Cache.EnemiesCount[30] >= 2) then
-      local ShouldReturn = Aoe(); if ShouldReturn then return ShouldReturn; end
-    end
-    -- festering_strike,if=debuff.festering_wound.stack<=4
-    if S.FesteringStrike:IsCastableP() and (Target:DebuffStackP(S.FesteringWoundDebuff) <= 4) then
-      if HR.Cast(S.FesteringStrike) then return ""; end
-    end
-    -- scourge_strike,if=debuff.festering_wound.up
-    if S.ScourgeStrike:IsCastableP() and (Target:DebuffP(S.FesteringWoundDebuff)) then
-      if HR.Cast(S.ScourgeStrike) then return ""; end
-    end
-    -- clawing_shadows,if=debuff.festering_wound.up
-    if S.ClawingShadows:IsCastableP() and (Target:DebuffP(S.FesteringWoundDebuff)) then
-      if HR.Cast(S.ClawingShadows) then return ""; end
     end
   end
   -- call precombat
@@ -301,37 +253,37 @@ local function APL()
   if S.MindFreeze:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (true) then
     if HR.CastAnnotated(S.MindFreeze, false, "Interrupt") then return ""; end
   end
-  -- arcane_torrent,if=runic_power.deficit>20&(pet.valkyr_battlemaiden.active|!talent.dark_arbiter.enabled)
-  if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (Player:RunicPowerDeficit() > 20 and (bool(pet.valkyr_battlemaiden.active) or not S.DarkArbiter:IsAvailable())) then
+  -- variable,name=pooling_for_gargoyle,value=(cooldown.summon_gargoyle.remains<5&(cooldown.dark_transformation.remains<5|!equipped.137075))&talent.summon_gargoyle.enabled
+  if (true) then
+    VarPoolingForGargoyle = num((S.SummonGargoyle:CooldownRemainsP() < 5 and (S.DarkTransformation:CooldownRemainsP() < 5 or not I.Item137075:IsEquipped())) and S.SummonGargoyle:IsAvailable())
+  end
+  -- arcane_torrent,if=runic_power.deficit>65&(pet.gargoyle.active|!talent.summon_gargoyle.enabled)&rune.deficit>=5
+  if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (Player:RunicPowerDeficit() > 65 and (bool(pet.gargoyle.active) or not S.SummonGargoyle:IsAvailable()) and Player:RuneDeficit() >= 5) then
     if HR.Cast(S.ArcaneTorrent, Settings.Unholy.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
   end
-  -- blood_fury,if=pet.valkyr_battlemaiden.active|!talent.dark_arbiter.enabled
-  if S.BloodFury:IsCastableP() and HR.CDsON() and (bool(pet.valkyr_battlemaiden.active) or not S.DarkArbiter:IsAvailable()) then
+  -- blood_fury,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled
+  if S.BloodFury:IsCastableP() and HR.CDsON() and (bool(pet.gargoyle.active) or not S.SummonGargoyle:IsAvailable()) then
     if HR.Cast(S.BloodFury, Settings.Unholy.OffGCDasOffGCD.BloodFury) then return ""; end
   end
-  -- berserking,if=pet.valkyr_battlemaiden.active|!talent.dark_arbiter.enabled
-  if S.Berserking:IsCastableP() and HR.CDsON() and (bool(pet.valkyr_battlemaiden.active) or not S.DarkArbiter:IsAvailable()) then
+  -- berserking,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled
+  if S.Berserking:IsCastableP() and HR.CDsON() and (bool(pet.gargoyle.active) or not S.SummonGargoyle:IsAvailable()) then
     if HR.Cast(S.Berserking, Settings.Unholy.OffGCDasOffGCD.Berserking) then return ""; end
   end
   -- use_items
   if S.UseItems:IsCastableP() and (true) then
     if HR.Cast(S.UseItems) then return ""; end
   end
-  -- use_item,name=feloiled_infernal_machine,if=pet.valkyr_battlemaiden.active|!talent.dark_arbiter.enabled
-  if I.FeloiledInfernalMachine:IsReady() and (bool(pet.valkyr_battlemaiden.active) or not S.DarkArbiter:IsAvailable()) then
+  -- use_item,name=feloiled_infernal_machine,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled
+  if I.FeloiledInfernalMachine:IsReady() and (bool(pet.gargoyle.active) or not S.SummonGargoyle:IsAvailable()) then
     if HR.CastSuggested(I.FeloiledInfernalMachine) then return ""; end
   end
   -- use_item,name=ring_of_collapsing_futures,if=(buff.temptation.stack=0&target.time_to_die>60)|target.time_to_die<60
   if I.RingofCollapsingFutures:IsReady() and ((Player:BuffStackP(S.TemptationBuff) == 0 and Target:TimeToDie() > 60) or Target:TimeToDie() < 60) then
     if HR.CastSuggested(I.RingofCollapsingFutures) then return ""; end
   end
-  -- potion,if=buff.unholy_strength.react
-  if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (bool(Player:BuffStackP(S.UnholyStrengthBuff))) then
+  -- potion,if=cooldown.army_of_the_dead.ready|pet.gargoyle.active|buff.unholy_frenzy.up
+  if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (S.ArmyoftheDead:CooldownUpP() or bool(pet.gargoyle.active) or Player:BuffP(S.UnholyFrenzyBuff)) then
     if HR.CastSuggested(I.ProlongedPower) then return ""; end
-  end
-  -- blighted_rune_weapon,if=debuff.festering_wound.stack<=4
-  if S.BlightedRuneWeapon:IsCastableP() and (Target:DebuffStackP(S.FesteringWoundDebuff) <= 4) then
-    if HR.Cast(S.BlightedRuneWeapon) then return ""; end
   end
   -- outbreak,target_if=(dot.virulent_plague.tick_time_remains+tick_time<=dot.virulent_plague.remains)&dot.virulent_plague.remains<=gcd
   if S.Outbreak:IsCastableP() and (true) then
@@ -341,9 +293,9 @@ local function APL()
   if (true) then
     local ShouldReturn = Cooldowns(); if ShouldReturn then return ShouldReturn; end
   end
-  -- run_action_list,name=valkyr,if=pet.valkyr_battlemaiden.active&talent.dark_arbiter.enabled
-  if (bool(pet.valkyr_battlemaiden.active) and S.DarkArbiter:IsAvailable()) then
-    return Valkyr();
+  -- call_action_list,name=aoe,if=active_enemies>=2
+  if (Cache.EnemiesCount[30] >= 2) then
+    local ShouldReturn = Aoe(); if ShouldReturn then return ShouldReturn; end
   end
   -- call_action_list,name=generic
   if (true) then

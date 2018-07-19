@@ -25,56 +25,42 @@ Spell.Rogue.Outlaw = {
   MarkedForDeath                        = Spell(137619),
   RolltheBones                          = Spell(193316),
   SliceandDice                          = Spell(5171),
-  CurseoftheDreadblades                 = Spell(202665),
-  BladeFlurryBuff                       = Spell(13877),
-  BladeFlurry                           = Spell(13877),
-  GhostlyStrike                         = Spell(196937),
-  BroadsidesBuff                        = Spell(193356),
+  AdrenalineRush                        = Spell(13750),
   PistolShot                            = Spell(185763),
+  BroadsideBuff                         = Spell(),
   QuickDraw                             = Spell(196938),
   OpportunityBuff                       = Spell(195627),
-  GreenskinsWaterloggedWristcuffsBuff   = Spell(209420),
-  BlunderbussBuff                       = Spell(202895),
-  SaberSlash                            = Spell(193315),
+  SinisterStrike                        = Spell(),
   AdrenalineRushBuff                    = Spell(13750),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
-  ArcaneTorrent                         = Spell(50613),
-  CannonballBarrage                     = Spell(185767),
-  AdrenalineRush                        = Spell(13750),
   TrueBearingBuff                       = Spell(193359),
-  Sprint                                = Spell(2983),
-  DeathFromAbove                        = Spell(152150),
-  Darkflight                            = Spell(68992),
-  SprintBuff                            = Spell(2983),
-  BetweentheEyes                        = Spell(199804),
-  RunThrough                            = Spell(2098),
-  GhostlyStrikeDebuff                   = Spell(196937),
-  JollyRogerBuff                        = Spell(199603),
-  HiddenBladeBuff                       = Spell(202753),
-  Ambush                                = Spell(8676),
+  BladeFlurry                           = Spell(13877),
+  BladeFlurryBuff                       = Spell(13877),
+  GhostlyStrike                         = Spell(196937),
+  KillingSpree                          = Spell(51690),
+  BladeRush                             = Spell(),
   Vanish                                = Spell(1856),
   Shadowmeld                            = Spell(58984),
-  LoadedDiceBuff                        = Spell(240837),
-  DeeperStratagem                       = Spell(193531),
-  Anticipation                          = Spell(114015),
-  DeathFromAboveBuff                    = Spell(163786),
   SliceandDiceBuff                      = Spell(5171),
   RolltheBonesBuff                      = Spell(),
-  KillingSpree                          = Spell(51690),
-  Gouge                                 = Spell(1776),
-  DirtyTricks                           = Spell(108216)
+  BetweentheEyes                        = Spell(199804),
+  RuthlessPrecisionBuff                 = Spell(),
+  Dispatch                              = Spell(),
+  Ambush                                = Spell(8676),
+  LoadedDiceBuff                        = Spell(240837),
+  GrandMeleeBuff                        = Spell(),
+  SkullandCrossbonesBuff                = Spell(),
+  ArcaneTorrent                         = Spell(50613),
+  ArcanePulse                           = Spell(),
+  LightsJudgment                        = Spell()
 };
 local S = Spell.Rogue.Outlaw;
 
 -- Items
 if not Item.Rogue then Item.Rogue = {} end
 Item.Rogue.Outlaw = {
-  ProlongedPower                   = Item(142117),
-  ShivarranSymmetry                = Item(141321),
-  ThraxisTricksyTreads             = Item(137031),
-  GreenskinsWaterloggedWristcuffs  = Item(137099),
-  MantleoftheMasterAssassin        = Item(144236)
+  ProlongedPower                   = Item(142117)
 };
 local I = Item.Rogue.Outlaw;
 
@@ -90,12 +76,11 @@ local Settings = {
 };
 
 -- Variables
-local VarSsUseable = 0;
+local VarBladeFlurrySync = 0;
 local VarAmbushCondition = 0;
 local VarRtbReroll = 0;
-local VarSsUseableNoreroll = 0;
 
-local EnemyRanges = {8, 35}
+local EnemyRanges = {8}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do
     HL.GetEnemies(i);
@@ -126,45 +111,31 @@ local function APL()
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
-    -- marked_for_death,if=raid_event.adds.in>40
+    -- marked_for_death,precombat_seconds=5,if=raid_event.adds.in>40
     if S.MarkedForDeath:IsCastableP() and (10000000000 > 40) then
       if HR.Cast(S.MarkedForDeath) then return ""; end
     end
-    -- roll_the_bones,if=!talent.slice_and_dice.enabled
-    if S.RolltheBones:IsCastableP() and (not S.SliceandDice:IsAvailable()) then
+    -- roll_the_bones,precombat_seconds=2
+    if S.RolltheBones:IsCastableP() and (true) then
       if HR.Cast(S.RolltheBones) then return ""; end
     end
-    -- curse_of_the_dreadblades,if=combo_points.deficit>=4
-    if S.CurseoftheDreadblades:IsCastableP() and (Player:ComboPointsDeficit() >= 4) then
-      if HR.Cast(S.CurseoftheDreadblades) then return ""; end
+    -- slice_and_dice,precombat_seconds=2
+    if S.SliceandDice:IsCastableP() and Player:BuffDownP(S.SliceandDice) and (true) then
+      if HR.Cast(S.SliceandDice) then return ""; end
     end
-  end
-  local function Bf()
-    -- cancel_buff,name=blade_flurry,if=spell_targets.blade_flurry<2&buff.blade_flurry.up
-    if (Cache.EnemiesCount[8] < 2 and Player:BuffP(S.BladeFlurryBuff)) then
-      -- if HR.Cancel(S.BladeFlurryBuff) then return ""; end
-    end
-    -- cancel_buff,name=blade_flurry,if=equipped.shivarran_symmetry&cooldown.blade_flurry.up&buff.blade_flurry.up&spell_targets.blade_flurry>=2
-    if (I.ShivarranSymmetry:IsEquipped() and S.BladeFlurry:CooldownUpP() and Player:BuffP(S.BladeFlurryBuff) and Cache.EnemiesCount[8] >= 2) then
-      -- if HR.Cancel(S.BladeFlurryBuff) then return ""; end
-    end
-    -- blade_flurry,if=spell_targets.blade_flurry>=2&!buff.blade_flurry.up
-    if S.BladeFlurry:IsCastableP() and (Cache.EnemiesCount[8] >= 2 and not Player:BuffP(S.BladeFlurryBuff)) then
-      if HR.Cast(S.BladeFlurry) then return ""; end
+    -- adrenaline_rush,precombat_seconds=1
+    if S.AdrenalineRush:IsCastableP() and Player:BuffDownP(S.AdrenalineRush) and (true) then
+      if HR.Cast(S.AdrenalineRush) then return ""; end
     end
   end
   local function Build()
-    -- ghostly_strike,if=combo_points.deficit>=1+buff.broadsides.up&refreshable
-    if S.GhostlyStrike:IsCastableP() and (Player:ComboPointsDeficit() >= 1 + num(Player:BuffP(S.BroadsidesBuff)) and Target:DebuffRefreshableCP(S.GhostlyStrike)) then
-      if HR.Cast(S.GhostlyStrike) then return ""; end
-    end
-    -- pistol_shot,if=combo_points.deficit>=1+buff.broadsides.up+talent.quick_draw.enabled&buff.opportunity.up&(energy.time_to_max>2-talent.quick_draw.enabled|(buff.greenskins_waterlogged_wristcuffs.up&(buff.blunderbuss.up|buff.greenskins_waterlogged_wristcuffs.remains<2)))
-    if S.PistolShot:IsCastableP() and (Player:ComboPointsDeficit() >= 1 + num(Player:BuffP(S.BroadsidesBuff)) + num(S.QuickDraw:IsAvailable()) and Player:BuffP(S.OpportunityBuff) and (Player:EnergyTimeToMaxPredicted() > 2 - num(S.QuickDraw:IsAvailable()) or (Player:BuffP(S.GreenskinsWaterloggedWristcuffsBuff) and (Player:BuffP(S.BlunderbussBuff) or Player:BuffRemainsP(S.GreenskinsWaterloggedWristcuffsBuff) < 2)))) then
+    -- pistol_shot,if=combo_points.deficit>=1+buff.broadside.up+talent.quick_draw.enabled&buff.opportunity.up
+    if S.PistolShot:IsCastableP() and (Player:ComboPointsDeficit() >= 1 + num(Player:BuffP(S.BroadsideBuff)) + num(S.QuickDraw:IsAvailable()) and Player:BuffP(S.OpportunityBuff)) then
       if HR.Cast(S.PistolShot) then return ""; end
     end
-    -- saber_slash,if=variable.ss_useable
-    if S.SaberSlash:IsCastableP() and (bool(VarSsUseable)) then
-      if HR.Cast(S.SaberSlash) then return ""; end
+    -- sinister_strike
+    if S.SinisterStrike:IsCastableP() and (true) then
+      if HR.Cast(S.SinisterStrike) then return ""; end
     end
   end
   local function Cds()
@@ -180,134 +151,106 @@ local function APL()
     if S.Berserking:IsCastableP() and HR.CDsON() and (true) then
       if HR.Cast(S.Berserking, Settings.Outlaw.OffGCDasOffGCD.Berserking) then return ""; end
     end
-    -- arcane_torrent,if=energy.deficit>40
-    if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (Player:EnergyDeficit() > 40) then
-      if HR.Cast(S.ArcaneTorrent, Settings.Outlaw.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
-    end
-    -- cannonball_barrage,if=spell_targets.cannonball_barrage>=1
-    if S.CannonballBarrage:IsCastableP() and (Cache.EnemiesCount[35] >= 1) then
-      if HR.Cast(S.CannonballBarrage) then return ""; end
-    end
-    -- adrenaline_rush,if=!buff.adrenaline_rush.up&energy.deficit>0
-    if S.AdrenalineRush:IsCastableP() and (not Player:BuffP(S.AdrenalineRushBuff) and Player:EnergyDeficit() > 0) then
+    -- adrenaline_rush,if=!buff.adrenaline_rush.up&energy.time_to_max>1
+    if S.AdrenalineRush:IsCastableP() and (not Player:BuffP(S.AdrenalineRushBuff) and Player:EnergyTimeToMaxPredicted() > 1) then
       if HR.Cast(S.AdrenalineRush) then return ""; end
     end
     -- marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|((raid_event.adds.in>40|buff.true_bearing.remains>15-buff.adrenaline_rush.up*5)&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)
     if S.MarkedForDeath:IsCastableP() and (Target:TimeToDie() < Player:ComboPointsDeficit() or ((10000000000 > 40 or Player:BuffRemainsP(S.TrueBearingBuff) > 15 - num(Player:BuffP(S.AdrenalineRushBuff)) * 5) and not bool(stealthed.rogue) and Player:ComboPointsDeficit() >= cp_max_spend - 1)) then
       if HR.Cast(S.MarkedForDeath) then return ""; end
     end
-    -- sprint,if=!talent.death_from_above.enabled&equipped.thraxis_tricksy_treads&!variable.ss_useable
-    if S.Sprint:IsCastableP() and (not S.DeathFromAbove:IsAvailable() and I.ThraxisTricksyTreads:IsEquipped() and not bool(VarSsUseable)) then
-      if HR.Cast(S.Sprint) then return ""; end
+    -- blade_flurry,if=spell_targets>=2&!buff.blade_flurry.up&(!raid_event.adds.exists|raid_event.adds.remains>8|cooldown.blade_flurry.charges=1&raid_event.adds.in>(2-cooldown.blade_flurry.charges_fractional)*25)
+    if S.BladeFlurry:IsCastableP() and (Cache.EnemiesCount[8] >= 2 and not Player:BuffP(S.BladeFlurryBuff) and (not false or 0 > 8 or S.BladeFlurry:ChargesP() == 1 and 10000000000 > (2 - S.BladeFlurry:ChargesFractional()) * 25)) then
+      if HR.Cast(S.BladeFlurry) then return ""; end
     end
-    -- darkflight,if=equipped.thraxis_tricksy_treads&!variable.ss_useable&buff.sprint.down
-    if S.Darkflight:IsCastableP() and (I.ThraxisTricksyTreads:IsEquipped() and not bool(VarSsUseable) and Player:BuffDownP(S.SprintBuff)) then
-      if HR.Cast(S.Darkflight) then return ""; end
+    -- ghostly_strike,if=variable.blade_flurry_sync&combo_points.deficit>=1+buff.broadside.up
+    if S.GhostlyStrike:IsCastableP() and (bool(VarBladeFlurrySync) and Player:ComboPointsDeficit() >= 1 + num(Player:BuffP(S.BroadsideBuff))) then
+      if HR.Cast(S.GhostlyStrike) then return ""; end
     end
-    -- curse_of_the_dreadblades,if=combo_points.deficit>=4&(buff.true_bearing.up|buff.adrenaline_rush.up|time_to_die<20)
-    if S.CurseoftheDreadblades:IsCastableP() and (Player:ComboPointsDeficit() >= 4 and (Player:BuffP(S.TrueBearingBuff) or Player:BuffP(S.AdrenalineRushBuff) or Target:TimeToDie() < 20)) then
-      if HR.Cast(S.CurseoftheDreadblades) then return ""; end
+    -- killing_spree,if=variable.blade_flurry_sync&(energy.time_to_max>5|energy<15)
+    if S.KillingSpree:IsCastableP() and (bool(VarBladeFlurrySync) and (Player:EnergyTimeToMaxPredicted() > 5 or Player:Energy() < 15)) then
+      if HR.Cast(S.KillingSpree) then return ""; end
+    end
+    -- blade_rush,if=variable.blade_flurry_sync&energy.time_to_max>1
+    if S.BladeRush:IsCastableP() and (bool(VarBladeFlurrySync) and Player:EnergyTimeToMaxPredicted() > 1) then
+      if HR.Cast(S.BladeRush) then return ""; end
+    end
+    -- vanish,if=!stealthed.all&variable.ambush_condition
+    if S.Vanish:IsCastableP() and (not bool(stealthed.all) and bool(VarAmbushCondition)) then
+      if HR.Cast(S.Vanish) then return ""; end
+    end
+    -- shadowmeld,if=!stealthed.all&variable.ambush_condition
+    if S.Shadowmeld:IsCastableP() and (not bool(stealthed.all) and bool(VarAmbushCondition)) then
+      if HR.Cast(S.Shadowmeld) then return ""; end
     end
   end
   local function Finish()
-    -- between_the_eyes,if=equipped.greenskins_waterlogged_wristcuffs&!buff.greenskins_waterlogged_wristcuffs.up
-    if S.BetweentheEyes:IsCastableP() and (I.GreenskinsWaterloggedWristcuffs:IsEquipped() and not Player:BuffP(S.GreenskinsWaterloggedWristcuffsBuff)) then
+    -- slice_and_dice,if=buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8
+    if S.SliceandDice:IsCastableP() and (Player:BuffRemainsP(S.SliceandDiceBuff) < Target:TimeToDie() and Player:BuffRemainsP(S.SliceandDiceBuff) < (1 + Player:ComboPoints()) * 1.8) then
+      if HR.Cast(S.SliceandDice) then return ""; end
+    end
+    -- roll_the_bones,if=(buff.roll_the_bones.remains<=3|variable.rtb_reroll)&(target.time_to_die>20|buff.roll_the_bones.remains<target.time_to_die)
+    if S.RolltheBones:IsCastableP() and ((Player:BuffRemainsP(S.RolltheBonesBuff) <= 3 or bool(VarRtbReroll)) and (Target:TimeToDie() > 20 or Player:BuffRemainsP(S.RolltheBonesBuff) < Target:TimeToDie())) then
+      if HR.Cast(S.RolltheBones) then return ""; end
+    end
+    -- between_the_eyes,if=buff.ruthless_precision.up|azerite.ace_up_your_sleeve.enabled|azerite.deadshot.enabled
+    if S.BetweentheEyes:IsCastableP() and (Player:BuffP(S.RuthlessPrecisionBuff) or bool(azerite.ace_up_your_sleeve.enabled) or bool(azerite.deadshot.enabled)) then
       if HR.Cast(S.BetweentheEyes) then return ""; end
     end
-    -- run_through,if=!talent.death_from_above.enabled|energy.time_to_max<cooldown.death_from_above.remains+3.5
-    if S.RunThrough:IsCastableP() and (not S.DeathFromAbove:IsAvailable() or Player:EnergyTimeToMaxPredicted() < S.DeathFromAbove:CooldownRemainsP() + 3.5) then
-      if HR.Cast(S.RunThrough) then return ""; end
+    -- dispatch
+    if S.Dispatch:IsCastableP() and (true) then
+      if HR.Cast(S.Dispatch) then return ""; end
     end
   end
   local function Stealth()
-    -- variable,name=ambush_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadsides.up&energy>60&!buff.jolly_roger.up&!buff.hidden_blade.up
-    if (true) then
-      VarAmbushCondition = num(Player:ComboPointsDeficit() >= 2 + 2 * num((S.GhostlyStrike:IsAvailable() and not Target:DebuffP(S.GhostlyStrikeDebuff))) + num(Player:BuffP(S.BroadsidesBuff)) and Player:Energy() > 60 and not Player:BuffP(S.JollyRogerBuff) and not Player:BuffP(S.HiddenBladeBuff))
-    end
-    -- ambush,if=variable.ambush_condition
-    if S.Ambush:IsCastableP() and (bool(VarAmbushCondition)) then
+    -- ambush
+    if S.Ambush:IsCastableP() and (true) then
       if HR.Cast(S.Ambush) then return ""; end
-    end
-    -- vanish,if=(variable.ambush_condition|equipped.mantle_of_the_master_assassin&!variable.rtb_reroll&!variable.ss_useable)&mantle_duration=0
-    if S.Vanish:IsCastableP() and ((bool(VarAmbushCondition) or I.MantleoftheMasterAssassin:IsEquipped() and not bool(VarRtbReroll) and not bool(VarSsUseable)) and mantle_duration == 0) then
-      if HR.Cast(S.Vanish) then return ""; end
-    end
-    -- shadowmeld,if=variable.ambush_condition
-    if S.Shadowmeld:IsCastableP() and (bool(VarAmbushCondition)) then
-      if HR.Cast(S.Shadowmeld) then return ""; end
     end
   end
   -- call precombat
   if not Player:AffectingCombat() then
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
-  -- variable,name=rtb_reroll,value=!talent.slice_and_dice.enabled&buff.loaded_dice.up&(rtb_buffs<2|(rtb_buffs<4&!buff.true_bearing.up))
+  -- variable,name=rtb_reroll,value=rtb_buffs<2&(buff.loaded_dice.up|!buff.grand_melee.up&!buff.ruthless_precision.up)
   if (true) then
-    VarRtbReroll = num(not S.SliceandDice:IsAvailable() and Player:BuffP(S.LoadedDiceBuff) and (rtb_buffs < 2 or (rtb_buffs < 4 and not Player:BuffP(S.TrueBearingBuff))))
+    VarRtbReroll = num(rtb_buffs < 2 and (Player:BuffP(S.LoadedDiceBuff) or not Player:BuffP(S.GrandMeleeBuff) and not Player:BuffP(S.RuthlessPrecisionBuff)))
   end
-  -- variable,name=ss_useable_noreroll,value=(combo_points<4+talent.deeper_stratagem.enabled)
+  -- variable,name=ambush_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&cooldown.ghostly_strike.remains<1)+buff.broadside.up&energy>60&!buff.skull_and_crossbones.up
   if (true) then
-    VarSsUseableNoreroll = num((Player:ComboPoints() < 4 + num(S.DeeperStratagem:IsAvailable())))
+    VarAmbushCondition = num(Player:ComboPointsDeficit() >= 2 + 2 * num((S.GhostlyStrike:IsAvailable() and S.GhostlyStrike:CooldownRemainsP() < 1)) + num(Player:BuffP(S.BroadsideBuff)) and Player:Energy() > 60 and not Player:BuffP(S.SkullandCrossbonesBuff))
   end
-  -- variable,name=ss_useable,value=(talent.anticipation.enabled&combo_points<5)|(!talent.anticipation.enabled&((variable.rtb_reroll&combo_points<4+talent.deeper_stratagem.enabled)|(!variable.rtb_reroll&variable.ss_useable_noreroll)))
+  -- variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&raid_event.adds.in>20|buff.blade_flurry.up
   if (true) then
-    VarSsUseable = num((S.Anticipation:IsAvailable() and Player:ComboPoints() < 5) or (not S.Anticipation:IsAvailable() and ((bool(VarRtbReroll) and Player:ComboPoints() < 4 + num(S.DeeperStratagem:IsAvailable())) or (not bool(VarRtbReroll) and bool(VarSsUseableNoreroll)))))
+    VarBladeFlurrySync = num(Cache.EnemiesCount[8] < 2 and 10000000000 > 20 or Player:BuffP(S.BladeFlurryBuff))
   end
-  -- call_action_list,name=bf
-  if (true) then
-    local ShouldReturn = Bf(); if ShouldReturn then return ShouldReturn; end
+  -- call_action_list,name=stealth,if=stealthed.all
+  if (bool(stealthed.all)) then
+    local ShouldReturn = Stealth(); if ShouldReturn then return ShouldReturn; end
   end
   -- call_action_list,name=cds
   if (true) then
     local ShouldReturn = Cds(); if ShouldReturn then return ShouldReturn; end
   end
-  -- call_action_list,name=stealth,if=stealthed.rogue|cooldown.vanish.up|cooldown.shadowmeld.up
-  if (bool(stealthed.rogue) or S.Vanish:CooldownUpP() or S.Shadowmeld:CooldownUpP()) then
-    local ShouldReturn = Stealth(); if ShouldReturn then return ShouldReturn; end
-  end
-  -- death_from_above,if=energy.time_to_max>2&!variable.ss_useable_noreroll
-  if S.DeathFromAbove:IsCastableP() and (Player:EnergyTimeToMaxPredicted() > 2 and not bool(VarSsUseableNoreroll)) then
-    if HR.Cast(S.DeathFromAbove) then return ""; end
-  end
-  -- sprint,if=equipped.thraxis_tricksy_treads&buff.death_from_above.up&buff.death_from_above.remains<=0.15
-  if S.Sprint:IsCastableP() and (I.ThraxisTricksyTreads:IsEquipped() and Player:BuffP(S.DeathFromAboveBuff) and Player:BuffRemainsP(S.DeathFromAboveBuff) <= 0.15) then
-    if HR.Cast(S.Sprint) then return ""; end
-  end
-  -- adrenaline_rush,if=buff.death_from_above.up&buff.death_from_above.remains<=0.15
-  if S.AdrenalineRush:IsCastableP() and (Player:BuffP(S.DeathFromAboveBuff) and Player:BuffRemainsP(S.DeathFromAboveBuff) <= 0.15) then
-    if HR.Cast(S.AdrenalineRush) then return ""; end
-  end
-  -- slice_and_dice,if=!variable.ss_useable&buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8&!buff.slice_and_dice.improved&!buff.loaded_dice.up
-  if S.SliceandDice:IsCastableP() and (not bool(VarSsUseable) and Player:BuffRemainsP(S.SliceandDiceBuff) < Target:TimeToDie() and Player:BuffRemainsP(S.SliceandDiceBuff) < (1 + Player:ComboPoints()) * 1.8 and not bool(buff.slice_and_dice.improved) and not Player:BuffP(S.LoadedDiceBuff)) then
-    if HR.Cast(S.SliceandDice) then return ""; end
-  end
-  -- slice_and_dice,if=buff.loaded_dice.up&combo_points>=cp_max_spend&(!buff.slice_and_dice.improved|buff.slice_and_dice.remains<4)
-  if S.SliceandDice:IsCastableP() and (Player:BuffP(S.LoadedDiceBuff) and Player:ComboPoints() >= cp_max_spend and (not bool(buff.slice_and_dice.improved) or Player:BuffRemainsP(S.SliceandDiceBuff) < 4)) then
-    if HR.Cast(S.SliceandDice) then return ""; end
-  end
-  -- slice_and_dice,if=buff.slice_and_dice.improved&buff.slice_and_dice.remains<=2&combo_points>=2&!buff.loaded_dice.up
-  if S.SliceandDice:IsCastableP() and (bool(buff.slice_and_dice.improved) and Player:BuffRemainsP(S.SliceandDiceBuff) <= 2 and Player:ComboPoints() >= 2 and not Player:BuffP(S.LoadedDiceBuff)) then
-    if HR.Cast(S.SliceandDice) then return ""; end
-  end
-  -- roll_the_bones,if=!variable.ss_useable&(target.time_to_die>20|buff.roll_the_bones.remains<target.time_to_die)&(buff.roll_the_bones.remains<=3|variable.rtb_reroll)
-  if S.RolltheBones:IsCastableP() and (not bool(VarSsUseable) and (Target:TimeToDie() > 20 or Player:BuffRemainsP(S.RolltheBonesBuff) < Target:TimeToDie()) and (Player:BuffRemainsP(S.RolltheBonesBuff) <= 3 or bool(VarRtbReroll))) then
-    if HR.Cast(S.RolltheBones) then return ""; end
-  end
-  -- killing_spree,if=energy.time_to_max>5|energy<15
-  if S.KillingSpree:IsCastableP() and (Player:EnergyTimeToMaxPredicted() > 5 or Player:Energy() < 15) then
-    if HR.Cast(S.KillingSpree) then return ""; end
+  -- call_action_list,name=finish,if=combo_points>=cp_max_spend-(buff.broadside.up+buff.opportunity.up)*(talent.quick_draw.enabled&(!talent.marked_for_death.enabled|cooldown.marked_for_death.remains>1))
+  if (Player:ComboPoints() >= cp_max_spend - (num(Player:BuffP(S.BroadsideBuff)) + num(Player:BuffP(S.OpportunityBuff))) * num((S.QuickDraw:IsAvailable() and (not S.MarkedForDeath:IsAvailable() or S.MarkedForDeath:CooldownRemainsP() > 1)))) then
+    local ShouldReturn = Finish(); if ShouldReturn then return ShouldReturn; end
   end
   -- call_action_list,name=build
   if (true) then
     local ShouldReturn = Build(); if ShouldReturn then return ShouldReturn; end
   end
-  -- call_action_list,name=finish,if=!variable.ss_useable
-  if (not bool(VarSsUseable)) then
-    local ShouldReturn = Finish(); if ShouldReturn then return ShouldReturn; end
+  -- arcane_torrent,if=energy.deficit>=15+energy.regen
+  if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (Player:EnergyDeficit() >= 15 + Player:EnergyRegen()) then
+    if HR.Cast(S.ArcaneTorrent, Settings.Outlaw.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
   end
-  -- gouge,if=talent.dirty_tricks.enabled&combo_points.deficit>=1
-  if S.Gouge:IsCastableP() and (S.DirtyTricks:IsAvailable() and Player:ComboPointsDeficit() >= 1) then
-    if HR.Cast(S.Gouge) then return ""; end
+  -- arcane_pulse
+  if S.ArcanePulse:IsCastableP() and (true) then
+    if HR.Cast(S.ArcanePulse) then return ""; end
+  end
+  -- lights_judgment
+  if S.LightsJudgment:IsCastableP() and (true) then
+    if HR.Cast(S.LightsJudgment) then return ""; end
   end
 end
 

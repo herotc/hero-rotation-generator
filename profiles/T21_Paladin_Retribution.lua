@@ -23,35 +23,27 @@ if not Spell.Paladin then Spell.Paladin = {} end
 Spell.Paladin.Retribution = {
   AvengingWrathBuff                     = Spell(31884),
   CrusadeBuff                           = Spell(224668),
-  BloodFury                             = Spell(20572),
-  Berserking                            = Spell(26297),
-  ArcaneTorrent                         = Spell(50613),
-  BladeofJustice                        = Spell(184575),
-  DivineHammer                          = Spell(198034),
-  HolyWrath                             = Spell(210220),
+  LightsJudgment                        = Spell(),
   ShieldofVengeance                     = Spell(184662),
   AvengingWrath                         = Spell(31884),
+  InquisitionBuff                       = Spell(),
+  Inquisition                           = Spell(),
   Crusade                               = Spell(224668),
+  DivineJudgment                        = Spell(),
+  DivineRightBuff                       = Spell(),
   ExecutionSentence                     = Spell(213757),
-  Judgment                              = Spell(20271),
-  JudgmentDebuff                        = Spell(231663),
   DivineStorm                           = Spell(53385),
   DivinePurposeBuff                     = Spell(223819),
-  JusticarsVengeance                    = Spell(215661),
   TemplarsVerdict                       = Spell(85256),
-  ScarletInquisitorsExpurgationBuff     = Spell(248103),
-  WakeofAshesDebuff                     = Spell(205273),
-  LiadrinsFuryUnleashedBuff             = Spell(208408),
-  AshesToAshes                          = Spell(),
+  HammerofWrath                         = Spell(),
   WakeofAshes                           = Spell(205273),
-  WhisperoftheNathrezimBuff             = Spell(207633),
-  ExecutionSentenceDebuff               = Spell(213757),
-  Zeal                                  = Spell(217020),
-  CrusaderStrike                        = Spell(35395),
-  GreaterJudgment                       = Spell(218178),
-  TheFiresofJustice                     = Spell(203316),
+  BladeofJustice                        = Spell(184575),
+  Judgment                              = Spell(20271),
   Consecration                          = Spell(26573),
-  HammerofJustice                       = Spell(853),
+  CrusaderStrike                        = Spell(35395),
+  ArcaneTorrent                         = Spell(50613),
+  ExecutionSentenceDebuff               = Spell(213757),
+  Sequence                              = Spell(),
   Rebuke                                = Spell(96231)
 };
 local S = Spell.Paladin.Retribution;
@@ -59,11 +51,7 @@ local S = Spell.Paladin.Retribution;
 -- Items
 if not Item.Paladin then Item.Paladin = {} end
 Item.Paladin.Retribution = {
-  OldWar                           = Item(127844),
-  Item137048                       = Item(137048),
-  Item137020                       = Item(137020),
-  Item144358                       = Item(144358),
-  Item137065                       = Item(137065)
+  OldWar                           = Item(127844)
 };
 local I = Item.Paladin.Retribution;
 
@@ -80,8 +68,9 @@ local Settings = {
 
 -- Variables
 local VarDsCastable = 0;
+local VarHow = 0;
 
-local EnemyRanges = {8}
+local EnemyRanges = {5, 8}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do
     HL.GetEnemies(i);
@@ -100,177 +89,137 @@ end
 local function APL()
   UpdateRanges()
   local function Precombat()
-    -- flask,type=flask_of_the_countless_armies
-    -- food,type=azshari_salad
-    -- augmentation,type=defiled
+    -- flask
+    -- food
+    -- augmentation
     -- snapshot_stats
-    -- potion,name=old_war
+    -- potion
     if I.OldWar:IsReady() and Settings.Commons.UsePotions and (true) then
       if HR.CastSuggested(I.OldWar) then return ""; end
     end
   end
   local function Cooldowns()
-    -- potion,name=old_war,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<25|target.time_to_die<=40)
+    -- potion,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<25|target.time_to_die<=40)
     if I.OldWar:IsReady() and Settings.Commons.UsePotions and ((Player:HasHeroism() or Player:BuffP(S.AvengingWrathBuff) or Player:BuffP(S.CrusadeBuff) and Player:BuffRemainsP(S.CrusadeBuff) < 25 or Target:TimeToDie() <= 40)) then
       if HR.CastSuggested(I.OldWar) then return ""; end
     end
-    -- blood_fury
-    if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
-      if HR.Cast(S.BloodFury, Settings.Retribution.OffGCDasOffGCD.BloodFury) then return ""; end
-    end
-    -- berserking
-    if S.Berserking:IsCastableP() and HR.CDsON() and (true) then
-      if HR.Cast(S.Berserking, Settings.Retribution.OffGCDasOffGCD.Berserking) then return ""; end
-    end
-    -- arcane_torrent,if=(buff.crusade.up|buff.avenging_wrath.up)&holy_power=2&(cooldown.blade_of_justice.remains>gcd|cooldown.divine_hammer.remains>gcd)
-    if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and ((Player:BuffP(S.CrusadeBuff) or Player:BuffP(S.AvengingWrathBuff)) and Player:HolyPower() == 2 and (S.BladeofJustice:CooldownRemainsP() > Player:GCD() or S.DivineHammer:CooldownRemainsP() > Player:GCD())) then
-      if HR.Cast(S.ArcaneTorrent, Settings.Retribution.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
-    end
-    -- holy_wrath
-    if S.HolyWrath:IsCastableP() and (true) then
-      if HR.Cast(S.HolyWrath) then return ""; end
+    -- lights_judgment,if=spell_targets.lights_judgment>=2|(!raid_event.adds.exists|raid_event.adds.in>75)
+    if S.LightsJudgment:IsCastableP() and (Cache.EnemiesCount[5] >= 2 or (not false or 10000000000 > 75)) then
+      if HR.Cast(S.LightsJudgment) then return ""; end
     end
     -- shield_of_vengeance
     if S.ShieldofVengeance:IsCastableP() and (true) then
       if HR.Cast(S.ShieldofVengeance) then return ""; end
     end
-    -- avenging_wrath
-    if S.AvengingWrath:IsCastableP() and (true) then
+    -- avenging_wrath,if=buff.inquisition.up|!talent.inquisition.enabled
+    if S.AvengingWrath:IsCastableP() and (Player:BuffP(S.InquisitionBuff) or not S.Inquisition:IsAvailable()) then
       if HR.Cast(S.AvengingWrath) then return ""; end
     end
-    -- crusade,if=holy_power>=3|((equipped.137048|race.blood_elf)&holy_power>=2)
-    if S.Crusade:IsCastableP() and (Player:HolyPower() >= 3 or ((I.Item137048:IsEquipped() or Player:IsRace("BloodElf")) and Player:HolyPower() >= 2)) then
+    -- crusade,if=holy_power>=4
+    if S.Crusade:IsCastableP() and (Player:HolyPower() >= 4) then
       if HR.Cast(S.Crusade) then return ""; end
     end
   end
   local function Finishers()
-    -- execution_sentence,if=spell_targets.divine_storm<=3&(cooldown.judgment.remains<gcd*4.25|debuff.judgment.remains>gcd*4.25)
-    if S.ExecutionSentence:IsCastableP() and (Cache.EnemiesCount[8] <= 3 and (S.Judgment:CooldownRemainsP() < Player:GCD() * 4.25 or Target:DebuffRemainsP(S.JudgmentDebuff) > Player:GCD() * 4.25)) then
+    -- variable,name=ds_castable,value=spell_targets.divine_storm>=3|talent.divine_judgment.enabled&spell_targets.divine_storm>=2|azerite.divine_right.enabled&target.health.pct<=20&buff.divine_right.down
+    if (true) then
+      VarDsCastable = num(Cache.EnemiesCount[8] >= 3 or S.DivineJudgment:IsAvailable() and Cache.EnemiesCount[8] >= 2 or bool(azerite.divine_right.enabled) and Target:HealthPercentage() <= 20 and Player:BuffDownP(S.DivineRightBuff))
+    end
+    -- inquisition,if=buff.inquisition.down|buff.inquisition.remains<5&holy_power>=3|talent.execution_sentence.enabled&cooldown.execution_sentence.remains<10&buff.inquisition.remains<15|cooldown.avenging_wrath.remains<15&buff.inquisition.remains<20&holy_power>=3
+    if S.Inquisition:IsCastableP() and (Player:BuffDownP(S.InquisitionBuff) or Player:BuffRemainsP(S.InquisitionBuff) < 5 and Player:HolyPower() >= 3 or S.ExecutionSentence:IsAvailable() and S.ExecutionSentence:CooldownRemainsP() < 10 and Player:BuffRemainsP(S.InquisitionBuff) < 15 or S.AvengingWrath:CooldownRemainsP() < 15 and Player:BuffRemainsP(S.InquisitionBuff) < 20 and Player:HolyPower() >= 3) then
+      if HR.Cast(S.Inquisition) then return ""; end
+    end
+    -- execution_sentence,if=spell_targets.divine_storm<=3&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)
+    if S.ExecutionSentence:IsCastableP() and (Cache.EnemiesCount[8] <= 3 and (not S.Crusade:IsAvailable() or S.Crusade:CooldownRemainsP() > Player:GCD() * 2)) then
       if HR.Cast(S.ExecutionSentence) then return ""; end
     end
-    -- divine_storm,if=debuff.judgment.up&variable.ds_castable&buff.divine_purpose.react
-    if S.DivineStorm:IsCastableP() and (Target:DebuffP(S.JudgmentDebuff) and bool(VarDsCastable) and bool(Player:BuffStackP(S.DivinePurposeBuff))) then
+    -- divine_storm,if=variable.ds_castable&buff.divine_purpose.react
+    if S.DivineStorm:IsCastableP() and (bool(VarDsCastable) and bool(Player:BuffStackP(S.DivinePurposeBuff))) then
       if HR.Cast(S.DivineStorm) then return ""; end
     end
-    -- divine_storm,if=debuff.judgment.up&variable.ds_castable&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)
-    if S.DivineStorm:IsCastableP() and (Target:DebuffP(S.JudgmentDebuff) and bool(VarDsCastable) and (not S.Crusade:IsAvailable() or S.Crusade:CooldownRemainsP() > Player:GCD() * 2)) then
+    -- divine_storm,if=variable.ds_castable&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)
+    if S.DivineStorm:IsCastableP() and (bool(VarDsCastable) and (not S.Crusade:IsAvailable() or S.Crusade:CooldownRemainsP() > Player:GCD() * 2)) then
       if HR.Cast(S.DivineStorm) then return ""; end
     end
-    -- justicars_vengeance,if=debuff.judgment.up&buff.divine_purpose.react&!equipped.137020
-    if S.JusticarsVengeance:IsCastableP() and (Target:DebuffP(S.JudgmentDebuff) and bool(Player:BuffStackP(S.DivinePurposeBuff)) and not I.Item137020:IsEquipped()) then
-      if HR.Cast(S.JusticarsVengeance) then return ""; end
-    end
-    -- templars_verdict,if=debuff.judgment.up&buff.divine_purpose.react
-    if S.TemplarsVerdict:IsCastableP() and (Target:DebuffP(S.JudgmentDebuff) and bool(Player:BuffStackP(S.DivinePurposeBuff))) then
+    -- templars_verdict,if=buff.divine_purpose.react&(!talent.execution_sentence.enabled|cooldown.execution_sentence.remains>gcd)
+    if S.TemplarsVerdict:IsCastableP() and (bool(Player:BuffStackP(S.DivinePurposeBuff)) and (not S.ExecutionSentence:IsAvailable() or S.ExecutionSentence:CooldownRemainsP() > Player:GCD())) then
       if HR.Cast(S.TemplarsVerdict) then return ""; end
     end
-    -- templars_verdict,if=debuff.judgment.up&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)&(!talent.execution_sentence.enabled|cooldown.execution_sentence.remains>gcd)
-    if S.TemplarsVerdict:IsCastableP() and (Target:DebuffP(S.JudgmentDebuff) and (not S.Crusade:IsAvailable() or S.Crusade:CooldownRemainsP() > Player:GCD() * 2) and (not S.ExecutionSentence:IsAvailable() or S.ExecutionSentence:CooldownRemainsP() > Player:GCD())) then
+    -- templars_verdict,if=(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)&(!talent.execution_sentence.enabled|buff.crusade.up&buff.crusade.stack<10|cooldown.execution_sentence.remains>gcd*2)
+    if S.TemplarsVerdict:IsCastableP() and ((not S.Crusade:IsAvailable() or S.Crusade:CooldownRemainsP() > Player:GCD() * 2) and (not S.ExecutionSentence:IsAvailable() or Player:BuffP(S.CrusadeBuff) and Player:BuffStackP(S.CrusadeBuff) < 10 or S.ExecutionSentence:CooldownRemainsP() > Player:GCD() * 2)) then
       if HR.Cast(S.TemplarsVerdict) then return ""; end
     end
   end
   local function Generators()
-    -- variable,name=ds_castable,value=spell_targets.divine_storm>=2|(buff.scarlet_inquisitors_expurgation.stack>=29&(equipped.144358&(dot.wake_of_ashes.ticking&time>10|dot.wake_of_ashes.remains<gcd))|(buff.scarlet_inquisitors_expurgation.stack>=29&(buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=15|cooldown.crusade.remains>15&!buff.crusade.up)|cooldown.avenging_wrath.remains>15)&!equipped.144358)
+    -- variable,name=HoW,value=(!talent.hammer_of_wrath.enabled|target.health.pct>=20&(buff.avenging_wrath.down|buff.crusade.down))
     if (true) then
-      VarDsCastable = num(Cache.EnemiesCount[8] >= 2 or (Player:BuffStackP(S.ScarletInquisitorsExpurgationBuff) >= 29 and (I.Item144358:IsEquipped() and (Target:DebuffP(S.WakeofAshesDebuff) and HL.CombatTime() > 10 or Target:DebuffRemainsP(S.WakeofAshesDebuff) < Player:GCD())) or (Player:BuffStackP(S.ScarletInquisitorsExpurgationBuff) >= 29 and (Player:BuffP(S.AvengingWrathBuff) or Player:BuffP(S.CrusadeBuff) and Player:BuffStackP(S.CrusadeBuff) >= 15 or S.Crusade:CooldownRemainsP() > 15 and not Player:BuffP(S.CrusadeBuff)) or S.AvengingWrath:CooldownRemainsP() > 15) and not I.Item144358:IsEquipped()))
+      VarHow = num((not S.HammerofWrath:IsAvailable() or Target:HealthPercentage() >= 20 and (Player:BuffDownP(S.AvengingWrathBuff) or Player:BuffDownP(S.CrusadeBuff))))
     end
-    -- call_action_list,name=finishers,if=(buff.crusade.up&buff.crusade.stack<15|buff.liadrins_fury_unleashed.up)|(artifact.ashes_to_ashes.enabled&cooldown.wake_of_ashes.remains<gcd*2)
-    if ((Player:BuffP(S.CrusadeBuff) and Player:BuffStackP(S.CrusadeBuff) < 15 or Player:BuffP(S.LiadrinsFuryUnleashedBuff)) or (S.AshesToAshes:ArtifactEnabled() and S.WakeofAshes:CooldownRemainsP() < Player:GCD() * 2)) then
+    -- call_action_list,name=finishers,if=holy_power>=5
+    if (Player:HolyPower() >= 5) then
       local ShouldReturn = Finishers(); if ShouldReturn then return ShouldReturn; end
     end
-    -- call_action_list,name=finishers,if=talent.execution_sentence.enabled&(cooldown.judgment.remains<gcd*4.25|debuff.judgment.remains>gcd*4.25)&cooldown.execution_sentence.up|buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains<gcd*1.5
-    if (S.ExecutionSentence:IsAvailable() and (S.Judgment:CooldownRemainsP() < Player:GCD() * 4.25 or Target:DebuffRemainsP(S.JudgmentDebuff) > Player:GCD() * 4.25) and S.ExecutionSentence:CooldownUpP() or Player:BuffP(S.WhisperoftheNathrezimBuff) and Player:BuffRemainsP(S.WhisperoftheNathrezimBuff) < Player:GCD() * 1.5) then
-      local ShouldReturn = Finishers(); if ShouldReturn then return ShouldReturn; end
-    end
-    -- judgment,if=dot.execution_sentence.ticking&dot.execution_sentence.remains<gcd*2&debuff.judgment.remains<gcd*2|set_bonus.tier21_4pc
-    if S.Judgment:IsCastableP() and (Target:DebuffP(S.ExecutionSentenceDebuff) and Target:DebuffRemainsP(S.ExecutionSentenceDebuff) < Player:GCD() * 2 and Target:DebuffRemainsP(S.JudgmentDebuff) < Player:GCD() * 2 or HL.Tier21_4Pc) then
-      if HR.Cast(S.Judgment) then return ""; end
-    end
-    -- blade_of_justice,if=holy_power<=2&(set_bonus.tier20_2pc|set_bonus.tier20_4pc)
-    if S.BladeofJustice:IsCastableP() and (Player:HolyPower() <= 2 and (HL.Tier20_2Pc or HL.Tier20_4Pc)) then
-      if HR.Cast(S.BladeofJustice) then return ""; end
-    end
-    -- divine_hammer,if=holy_power<=2&(set_bonus.tier20_2pc|set_bonus.tier20_4pc)
-    if S.DivineHammer:IsCastableP() and (Player:HolyPower() <= 2 and (HL.Tier20_2Pc or HL.Tier20_4Pc)) then
-      if HR.Cast(S.DivineHammer) then return ""; end
-    end
-    -- wake_of_ashes,if=(!raid_event.adds.exists|raid_event.adds.in>15)&(holy_power<=0|holy_power=1&(cooldown.blade_of_justice.remains>gcd|cooldown.divine_hammer.remains>gcd)|holy_power=2&((cooldown.zeal.charges_fractional<=0.65|cooldown.crusader_strike.charges_fractional<=0.65)))
-    if S.WakeofAshes:IsCastableP() and ((not false or 10000000000 > 15) and (Player:HolyPower() <= 0 or Player:HolyPower() == 1 and (S.BladeofJustice:CooldownRemainsP() > Player:GCD() or S.DivineHammer:CooldownRemainsP() > Player:GCD()) or Player:HolyPower() == 2 and ((S.Zeal:ChargesFractional() <= 0.65 or S.CrusaderStrike:ChargesFractional() <= 0.65)))) then
+    -- wake_of_ashes,if=(!raid_event.adds.exists|raid_event.adds.in>20)&(holy_power<=0|holy_power=1&cooldown.blade_of_justice.remains>gcd)
+    if S.WakeofAshes:IsCastableP() and ((not false or 10000000000 > 20) and (Player:HolyPower() <= 0 or Player:HolyPower() == 1 and S.BladeofJustice:CooldownRemainsP() > Player:GCD())) then
       if HR.Cast(S.WakeofAshes) then return ""; end
     end
-    -- blade_of_justice,if=holy_power<=3&!set_bonus.tier20_4pc
-    if S.BladeofJustice:IsCastableP() and (Player:HolyPower() <= 3 and not HL.Tier20_4Pc) then
+    -- blade_of_justice,if=holy_power<=2|(holy_power=3&(cooldown.hammer_of_wrath.remains>gcd*2|variable.HoW))
+    if S.BladeofJustice:IsCastableP() and (Player:HolyPower() <= 2 or (Player:HolyPower() == 3 and (S.HammerofWrath:CooldownRemainsP() > Player:GCD() * 2 or bool(VarHow)))) then
       if HR.Cast(S.BladeofJustice) then return ""; end
     end
-    -- divine_hammer,if=holy_power<=3&!set_bonus.tier20_4pc
-    if S.DivineHammer:IsCastableP() and (Player:HolyPower() <= 3 and not HL.Tier20_4Pc) then
-      if HR.Cast(S.DivineHammer) then return ""; end
-    end
-    -- judgment
-    if S.Judgment:IsCastableP() and (true) then
+    -- judgment,if=holy_power<=2|(holy_power<=4&(cooldown.blade_of_justice.remains>gcd*2|variable.HoW))
+    if S.Judgment:IsCastableP() and (Player:HolyPower() <= 2 or (Player:HolyPower() <= 4 and (S.BladeofJustice:CooldownRemainsP() > Player:GCD() * 2 or bool(VarHow)))) then
       if HR.Cast(S.Judgment) then return ""; end
     end
-    -- call_action_list,name=finishers,if=buff.divine_purpose.up
-    if (Player:BuffP(S.DivinePurposeBuff)) then
-      local ShouldReturn = Finishers(); if ShouldReturn then return ShouldReturn; end
+    -- hammer_of_wrath,if=holy_power<=4
+    if S.HammerofWrath:IsCastableP() and (Player:HolyPower() <= 4) then
+      if HR.Cast(S.HammerofWrath) then return ""; end
     end
-    -- zeal,if=cooldown.zeal.charges_fractional>=1.65&holy_power<=4&(cooldown.blade_of_justice.remains>gcd*2|cooldown.divine_hammer.remains>gcd*2)&debuff.judgment.remains>gcd
-    if S.Zeal:IsCastableP() and (S.Zeal:ChargesFractional() >= 1.65 and Player:HolyPower() <= 4 and (S.BladeofJustice:CooldownRemainsP() > Player:GCD() * 2 or S.DivineHammer:CooldownRemainsP() > Player:GCD() * 2) and Target:DebuffRemainsP(S.JudgmentDebuff) > Player:GCD()) then
-      if HR.Cast(S.Zeal) then return ""; end
-    end
-    -- crusader_strike,if=cooldown.crusader_strike.charges_fractional>=1.65&holy_power<=4&(cooldown.blade_of_justice.remains>gcd*2|cooldown.divine_hammer.remains>gcd*2)&debuff.judgment.remains>gcd&(talent.greater_judgment.enabled|!set_bonus.tier20_4pc&talent.the_fires_of_justice.enabled)
-    if S.CrusaderStrike:IsCastableP() and (S.CrusaderStrike:ChargesFractional() >= 1.65 and Player:HolyPower() <= 4 and (S.BladeofJustice:CooldownRemainsP() > Player:GCD() * 2 or S.DivineHammer:CooldownRemainsP() > Player:GCD() * 2) and Target:DebuffRemainsP(S.JudgmentDebuff) > Player:GCD() and (S.GreaterJudgment:IsAvailable() or not HL.Tier20_4Pc and S.TheFiresofJustice:IsAvailable())) then
-      if HR.Cast(S.CrusaderStrike) then return ""; end
-    end
-    -- consecration
-    if S.Consecration:IsCastableP() and (true) then
+    -- consecration,if=holy_power<=2|holy_power<=3&cooldown.blade_of_justice.remains>gcd*2|holy_power=4&cooldown.blade_of_justice.remains>gcd*2&cooldown.judgment.remains>gcd*2
+    if S.Consecration:IsCastableP() and (Player:HolyPower() <= 2 or Player:HolyPower() <= 3 and S.BladeofJustice:CooldownRemainsP() > Player:GCD() * 2 or Player:HolyPower() == 4 and S.BladeofJustice:CooldownRemainsP() > Player:GCD() * 2 and S.Judgment:CooldownRemainsP() > Player:GCD() * 2) then
       if HR.Cast(S.Consecration) then return ""; end
     end
-    -- hammer_of_justice,if=equipped.137065&target.health.pct>=75&holy_power<=4
-    if S.HammerofJustice:IsCastableP() and (I.Item137065:IsEquipped() and Target:HealthPercentage() >= 75 and Player:HolyPower() <= 4) then
-      if HR.Cast(S.HammerofJustice) then return ""; end
+    -- call_action_list,name=finishers,if=talent.hammer_of_wrath.enabled&(target.health.pct<=20|buff.avenging_wrath.up|buff.crusade.up)&(buff.divine_purpose.up|buff.crusade.stack<10)
+    if (S.HammerofWrath:IsAvailable() and (Target:HealthPercentage() <= 20 or Player:BuffP(S.AvengingWrathBuff) or Player:BuffP(S.CrusadeBuff)) and (Player:BuffP(S.DivinePurposeBuff) or Player:BuffStackP(S.CrusadeBuff) < 10)) then
+      local ShouldReturn = Finishers(); if ShouldReturn then return ShouldReturn; end
+    end
+    -- crusader_strike,if=cooldown.crusader_strike.charges_fractional>=1.75&(holy_power<=2|holy_power<=3&cooldown.blade_of_justice.remains>gcd*2|holy_power=4&cooldown.blade_of_justice.remains>gcd*2&cooldown.judgment.remains>gcd*2&cooldown.consecration.remains>gcd*2)
+    if S.CrusaderStrike:IsCastableP() and (S.CrusaderStrike:ChargesFractional() >= 1.75 and (Player:HolyPower() <= 2 or Player:HolyPower() <= 3 and S.BladeofJustice:CooldownRemainsP() > Player:GCD() * 2 or Player:HolyPower() == 4 and S.BladeofJustice:CooldownRemainsP() > Player:GCD() * 2 and S.Judgment:CooldownRemainsP() > Player:GCD() * 2 and S.Consecration:CooldownRemainsP() > Player:GCD() * 2)) then
+      if HR.Cast(S.CrusaderStrike) then return ""; end
     end
     -- call_action_list,name=finishers
     if (true) then
       local ShouldReturn = Finishers(); if ShouldReturn then return ShouldReturn; end
     end
-    -- zeal
-    if S.Zeal:IsCastableP() and (true) then
-      if HR.Cast(S.Zeal) then return ""; end
-    end
-    -- crusader_strike
-    if S.CrusaderStrike:IsCastableP() and (true) then
+    -- crusader_strike,if=holy_power<=4
+    if S.CrusaderStrike:IsCastableP() and (Player:HolyPower() <= 4) then
       if HR.Cast(S.CrusaderStrike) then return ""; end
+    end
+    -- arcane_torrent,if=(debuff.execution_sentence.up|(talent.hammer_of_wrath.enabled&(target.health.pct>=20|buff.avenging_wrath.down|buff.crusade.down))|!talent.execution_sentence.enabled|!talent.hammer_of_wrath.enabled)&holy_power<=4
+    if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and ((Target:DebuffP(S.ExecutionSentenceDebuff) or (S.HammerofWrath:IsAvailable() and (Target:HealthPercentage() >= 20 or Player:BuffDownP(S.AvengingWrathBuff) or Player:BuffDownP(S.CrusadeBuff))) or not S.ExecutionSentence:IsAvailable() or not S.HammerofWrath:IsAvailable()) and Player:HolyPower() <= 4) then
+      if HR.Cast(S.ArcaneTorrent, Settings.Retribution.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
     end
   end
   local function Opener()
-    -- blood_fury
-    if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
-      if HR.Cast(S.BloodFury, Settings.Retribution.OffGCDasOffGCD.BloodFury) then return ""; end
+    -- sequence,if=talent.wake_of_ashes.enabled&talent.crusade.enabled&talent.execution_sentence.enabled&!talent.hammer_of_wrath.enabled,name=wake_opener_ES_CS:shield_of_vengeance:blade_of_justice:judgment:crusade:templars_verdict:wake_of_ashes:templars_verdict:crusader_strike:execution_sentence
+    if S.Sequence:IsCastableP() and (S.WakeofAshes:IsAvailable() and S.Crusade:IsAvailable() and S.ExecutionSentence:IsAvailable() and not S.HammerofWrath:IsAvailable()) then
+      if HR.Cast(S.Sequence) then return ""; end
     end
-    -- berserking
-    if S.Berserking:IsCastableP() and HR.CDsON() and (true) then
-      if HR.Cast(S.Berserking, Settings.Retribution.OffGCDasOffGCD.Berserking) then return ""; end
+    -- sequence,if=talent.wake_of_ashes.enabled&talent.crusade.enabled&!talent.execution_sentence.enabled&!talent.hammer_of_wrath.enabled,name=wake_opener_CS:shield_of_vengeance:blade_of_justice:judgment:crusade:templars_verdict:wake_of_ashes:templars_verdict:crusader_strike:templars_verdict
+    if S.Sequence:IsCastableP() and (S.WakeofAshes:IsAvailable() and S.Crusade:IsAvailable() and not S.ExecutionSentence:IsAvailable() and not S.HammerofWrath:IsAvailable()) then
+      if HR.Cast(S.Sequence) then return ""; end
     end
-    -- arcane_torrent,if=!set_bonus.tier20_2pc
-    if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (not HL.Tier20_2Pc) then
-      if HR.Cast(S.ArcaneTorrent, Settings.Retribution.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
+    -- sequence,if=talent.wake_of_ashes.enabled&talent.crusade.enabled&talent.execution_sentence.enabled&talent.hammer_of_wrath.enabled,name=wake_opener_ES_HoW:shield_of_vengeance:blade_of_justice:judgment:crusade:templars_verdict:wake_of_ashes:templars_verdict:hammer_of_wrath:execution_sentence
+    if S.Sequence:IsCastableP() and (S.WakeofAshes:IsAvailable() and S.Crusade:IsAvailable() and S.ExecutionSentence:IsAvailable() and S.HammerofWrath:IsAvailable()) then
+      if HR.Cast(S.Sequence) then return ""; end
     end
-    -- judgment
-    if S.Judgment:IsCastableP() and (true) then
-      if HR.Cast(S.Judgment) then return ""; end
+    -- sequence,if=talent.wake_of_ashes.enabled&talent.crusade.enabled&!talent.execution_sentence.enabled&talent.hammer_of_wrath.enabled,name=wake_opener_HoW:shield_of_vengeance:blade_of_justice:judgment:crusade:templars_verdict:wake_of_ashes:templars_verdict:hammer_of_wrath:templars_verdict
+    if S.Sequence:IsCastableP() and (S.WakeofAshes:IsAvailable() and S.Crusade:IsAvailable() and not S.ExecutionSentence:IsAvailable() and S.HammerofWrath:IsAvailable()) then
+      if HR.Cast(S.Sequence) then return ""; end
     end
-    -- blade_of_justice,if=equipped.137048|race.blood_elf|!cooldown.wake_of_ashes.up
-    if S.BladeofJustice:IsCastableP() and (I.Item137048:IsEquipped() or Player:IsRace("BloodElf") or not S.WakeofAshes:CooldownUpP()) then
-      if HR.Cast(S.BladeofJustice) then return ""; end
-    end
-    -- divine_hammer,if=equipped.137048|race.blood_elf|!cooldown.wake_of_ashes.up
-    if S.DivineHammer:IsCastableP() and (I.Item137048:IsEquipped() or Player:IsRace("BloodElf") or not S.WakeofAshes:CooldownUpP()) then
-      if HR.Cast(S.DivineHammer) then return ""; end
-    end
-    -- wake_of_ashes
-    if S.WakeofAshes:IsCastableP() and (true) then
-      if HR.Cast(S.WakeofAshes) then return ""; end
+    -- sequence,if=talent.wake_of_ashes.enabled&talent.inquisition.enabled,name=wake_opener_Inq:shield_of_vengeance:blade_of_justice:judgment:inquisition:avenging_wrath:wake_of_ashes
+    if S.Sequence:IsCastableP() and (S.WakeofAshes:IsAvailable() and S.Inquisition:IsAvailable()) then
+      if HR.Cast(S.Sequence) then return ""; end
     end
   end
   -- call precombat
@@ -282,8 +231,8 @@ local function APL()
   if S.Rebuke:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (true) then
     if HR.CastAnnotated(S.Rebuke, false, "Interrupt") then return ""; end
   end
-  -- call_action_list,name=opener,if=time<2
-  if (HL.CombatTime() < 2) then
+  -- call_action_list,name=opener
+  if (true) then
     local ShouldReturn = Opener(); if ShouldReturn then return ShouldReturn; end
   end
   -- call_action_list,name=cooldowns

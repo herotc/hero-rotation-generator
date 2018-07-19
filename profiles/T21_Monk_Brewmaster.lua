@@ -30,7 +30,7 @@ Spell.Monk.Brewmaster = {
   DiffuseMagicBuff                      = Spell(),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
-  ExplodingKeg                          = Spell(214326),
+  LightsJudgment                        = Spell(),
   InvokeNiuzaotheBlackOx                = Spell(132578),
   PurifyingBrew                         = Spell(119582),
   Brews                                 = Spell(115308),
@@ -45,6 +45,7 @@ Spell.Monk.Brewmaster = {
   BreathofFire                          = Spell(115181),
   BreathofFireDotDebuff                 = Spell(123725),
   RushingJadeWind                       = Spell(116847),
+  RushingJadeWindBuff                   = Spell(116847),
   BlackoutCombo                         = Spell(196736)
 };
 local S = Spell.Monk.Brewmaster;
@@ -111,7 +112,6 @@ local function APL()
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- auto_attack
-  -- greater_gift_of_the_ox
   -- gift_of_the_ox
   -- dampen_harm,if=incoming_damage_1500ms&buff.fortifying_brew.down
   if S.DampenHarm:IsCastableP() and (bool(incoming_damage_1500ms) and Player:BuffDownP(S.FortifyingBrewBuff)) then
@@ -137,9 +137,9 @@ local function APL()
   if S.Berserking:IsCastableP() and HR.CDsON() and (true) then
     if HR.Cast(S.Berserking, Settings.Brewmaster.OffGCDasOffGCD.Berserking) then return ""; end
   end
-  -- exploding_keg
-  if S.ExplodingKeg:IsCastableP() and (true) then
-    if HR.Cast(S.ExplodingKeg) then return ""; end
+  -- lights_judgment
+  if S.LightsJudgment:IsCastableP() and (true) then
+    if HR.Cast(S.LightsJudgment) then return ""; end
   end
   -- invoke_niuzao_the_black_ox,if=target.time_to_die>45
   if S.InvokeNiuzaotheBlackOx:IsCastableP() and HR.CDsON() and (Target:TimeToDie() > 45) then
@@ -185,8 +185,8 @@ local function APL()
   if S.BreathofFire:IsCastableP() and (Player:BuffDownP(S.BlackoutComboBuff) and (Player:HasNotHeroism() or (Player:HasHeroism() and true and Target:DebuffRefreshableCP(S.BreathofFireDotDebuff)))) then
     if HR.Cast(S.BreathofFire) then return ""; end
   end
-  -- rushing_jade_wind
-  if S.RushingJadeWind:IsCastableP() and (true) then
+  -- rushing_jade_wind,if=buff.rushing_jade_wind.down
+  if S.RushingJadeWind:IsCastableP() and (Player:BuffDownP(S.RushingJadeWindBuff)) then
     if HR.Cast(S.RushingJadeWind) then return ""; end
   end
   -- chi_burst

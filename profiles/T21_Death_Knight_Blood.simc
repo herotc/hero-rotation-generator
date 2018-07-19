@@ -5,8 +5,6 @@ race=blood_elf
 role=tank
 position=front
 talents=3112033
-artifact=15:0:0:0:0:272:4:273:4:274:4:275:4:276:4:277:4:278:4:279:4:280:4:281:1:282:1:283:1:284:1:285:1:286:1:289:1:1331:1:1359:1:1481:4:1482:1:1483:1:1484:24:1627:1
-crucible=1739:3:1778:3:275:3
 
 # Default consumables
 potion=old_war
@@ -35,25 +33,20 @@ actions+=/arcane_torrent,if=runic_power.deficit>20
 actions+=/blood_fury
 actions+=/berserking,if=buff.dancing_rune_weapon.up
 actions+=/use_items
-actions+=/use_item,name=archimondes_hatred_reborn,if=buff.vampiric_blood.up
 actions+=/potion,if=buff.dancing_rune_weapon.up
-actions+=/dancing_rune_weapon,if=(!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready)&!cooldown.death_and_decay.ready
-actions+=/vampiric_blood,if=!equipped.archimondes_hatred_reborn|cooldown.trinket.ready
+actions+=/dancing_rune_weapon,if=(!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready)
 actions+=/tombstone,if=buff.bone_shield.stack>=7
 actions+=/call_action_list,name=standard
 
 actions.standard=death_strike,if=runic_power.deficit<10
-actions.standard+=/death_and_decay,if=talent.rapid_decomposition.enabled&!buff.dancing_rune_weapon.up
 actions.standard+=/blooddrinker,if=!buff.dancing_rune_weapon.up
 actions.standard+=/marrowrend,if=buff.bone_shield.remains<=gcd*2
 actions.standard+=/blood_boil,if=charges_fractional>=1.8&buff.haemostasis.stack<5&(buff.haemostasis.stack<3|!buff.dancing_rune_weapon.up)
 actions.standard+=/marrowrend,if=(buff.bone_shield.stack<5&talent.ossuary.enabled)|buff.bone_shield.remains<gcd*3
 actions.standard+=/bonestorm,if=runic_power>=100&spell_targets.bonestorm>=3
 actions.standard+=/death_strike,if=buff.blood_shield.up|(runic_power.deficit<15&(runic_power.deficit<25|!buff.dancing_rune_weapon.up))
-actions.standard+=/consumption
 actions.standard+=/heart_strike,if=buff.dancing_rune_weapon.up
 actions.standard+=/death_and_decay,if=buff.crimson_scourge.up
-actions.standard+=/blood_boil,if=buff.haemostasis.stack<5&(buff.haemostasis.stack<3|!buff.dancing_rune_weapon.up)
 actions.standard+=/death_and_decay
 actions.standard+=/heart_strike,if=rune.time_to_3<gcd|buff.bone_shield.stack>6
 
@@ -71,16 +64,16 @@ finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_
 finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_haste
 trinket1=aggramars_conviction,id=154173,bonus_id=3997
 trinket2=astral_alchemist_stone,id=151607,bonus_id=3609/601/3608
-main_hand=maw_of_the_damned,id=128402,gem_id=155847/155855/155852,relic_id=3612:1512/3612:1512/3612:1512,enchant=rune_of_the_fallen_crusader
+main_hand=maw_of_the_damned,id=128402,bonus_id=716/1505/1505/1505,gem_id=155847/155852/155855,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=965.60
-# gear_strength=39726
-# gear_stamina=61354
-# gear_crit_rating=12378
-# gear_haste_rating=8984
-# gear_mastery_rating=6251
-# gear_versatility_rating=4475
-# gear_armor=5284
+# gear_ilvl=243.60
+# gear_strength=849
+# gear_stamina=1309
+# gear_crit_rating=493
+# gear_haste_rating=364
+# gear_mastery_rating=250
+# gear_versatility_rating=185
+# gear_armor=897
 # set_bonus=tier20_2pc=1
 # set_bonus=tier21_2pc=1

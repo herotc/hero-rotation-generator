@@ -22,10 +22,8 @@ local HR     = HeroRotation
 if not Spell.DeathKnight then Spell.DeathKnight = {} end
 Spell.DeathKnight.Blood = {
   DeathStrike                           = Spell(49998),
-  DeathandDecay                         = Spell(43265),
-  RapidDecomposition                    = Spell(194662),
-  DancingRuneWeaponBuff                 = Spell(81256),
   BloodDrinker                          = Spell(206931),
+  DancingRuneWeaponBuff                 = Spell(81256),
   Marrowrend                            = Spell(195182),
   BoneShieldBuff                        = Spell(195181),
   BloodBoil                             = Spell(50842),
@@ -33,18 +31,15 @@ Spell.DeathKnight.Blood = {
   Ossuary                               = Spell(219786),
   Bonestorm                             = Spell(194844),
   BloodShieldBuff                       = Spell(77535),
-  Consumption                           = Spell(205223),
   HeartStrike                           = Spell(206930),
+  DeathandDecay                         = Spell(43265),
   CrimsonScourgeBuff                    = Spell(81141),
   MindFreeze                            = Spell(47528),
   ArcaneTorrent                         = Spell(50613),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
   UseItems                              = Spell(),
-  VampiricBloodBuff                     = Spell(55233),
   DancingRuneWeapon                     = Spell(49028),
-  VampiricBlood                         = Spell(55233),
-  Trinket                               = Spell(),
   Tombstone                             = Spell()
 };
 local S = Spell.DeathKnight.Blood;
@@ -52,8 +47,7 @@ local S = Spell.DeathKnight.Blood;
 -- Items
 if not Item.DeathKnight then Item.DeathKnight = {} end
 Item.DeathKnight.Blood = {
-  ProlongedPower                   = Item(142117),
-  ArchimondesHatredReborn          = Item(144249)
+  ProlongedPower                   = Item(142117)
 };
 local I = Item.DeathKnight.Blood;
 
@@ -103,10 +97,6 @@ local function APL()
     if S.DeathStrike:IsUsableP() and (Player:RunicPowerDeficit() < 10) then
       if HR.Cast(S.DeathStrike) then return ""; end
     end
-    -- death_and_decay,if=talent.rapid_decomposition.enabled&!buff.dancing_rune_weapon.up
-    if S.DeathandDecay:IsUsableP() and (S.RapidDecomposition:IsAvailable() and not Player:BuffP(S.DancingRuneWeaponBuff)) then
-      if HR.Cast(S.DeathandDecay) then return ""; end
-    end
     -- blooddrinker,if=!buff.dancing_rune_weapon.up
     if S.BloodDrinker:IsCastableP() and (not Player:BuffP(S.DancingRuneWeaponBuff)) then
       if HR.Cast(S.BloodDrinker, Settings.Blood.GCDasOffGCD.BloodDrinker) then return ""; end
@@ -131,10 +121,6 @@ local function APL()
     if S.DeathStrike:IsUsableP() and (Player:BuffP(S.BloodShieldBuff) or (Player:RunicPowerDeficit() < 15 and (Player:RunicPowerDeficit() < 25 or not Player:BuffP(S.DancingRuneWeaponBuff)))) then
       if HR.Cast(S.DeathStrike) then return ""; end
     end
-    -- consumption
-    if S.Consumption:IsCastableP() and (true) then
-      if HR.Cast(S.Consumption) then return ""; end
-    end
     -- heart_strike,if=buff.dancing_rune_weapon.up
     if S.HeartStrike:IsCastableP() and (Player:BuffP(S.DancingRuneWeaponBuff)) then
       if HR.Cast(S.HeartStrike) then return ""; end
@@ -142,10 +128,6 @@ local function APL()
     -- death_and_decay,if=buff.crimson_scourge.up
     if S.DeathandDecay:IsUsableP() and (Player:BuffP(S.CrimsonScourgeBuff)) then
       if HR.Cast(S.DeathandDecay) then return ""; end
-    end
-    -- blood_boil,if=buff.haemostasis.stack<5&(buff.haemostasis.stack<3|!buff.dancing_rune_weapon.up)
-    if S.BloodBoil:IsCastableP() and (Player:BuffStackP(S.HaemostasisBuff) < 5 and (Player:BuffStackP(S.HaemostasisBuff) < 3 or not Player:BuffP(S.DancingRuneWeaponBuff))) then
-      if HR.Cast(S.BloodBoil) then return ""; end
     end
     -- death_and_decay
     if S.DeathandDecay:IsUsableP() and (true) then
@@ -181,21 +163,13 @@ local function APL()
   if S.UseItems:IsCastableP() and (true) then
     if HR.Cast(S.UseItems) then return ""; end
   end
-  -- use_item,name=archimondes_hatred_reborn,if=buff.vampiric_blood.up
-  if I.ArchimondesHatredReborn:IsReady() and (Player:BuffP(S.VampiricBloodBuff)) then
-    if HR.CastSuggested(I.ArchimondesHatredReborn) then return ""; end
-  end
   -- potion,if=buff.dancing_rune_weapon.up
   if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.DancingRuneWeaponBuff)) then
     if HR.CastSuggested(I.ProlongedPower) then return ""; end
   end
-  -- dancing_rune_weapon,if=(!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready)&!cooldown.death_and_decay.ready
-  if S.DancingRuneWeapon:IsCastableP() and HR.CDsON() and ((not S.BloodDrinker:IsAvailable() or not S.BloodDrinker:CooldownUpP()) and not S.DeathandDecay:CooldownUpP()) then
+  -- dancing_rune_weapon,if=(!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready)
+  if S.DancingRuneWeapon:IsCastableP() and HR.CDsON() and ((not S.BloodDrinker:IsAvailable() or not S.BloodDrinker:CooldownUpP())) then
     if HR.Cast(S.DancingRuneWeapon, Settings.Blood.OffGCDasOffGCD.DancingRuneWeapon) then return ""; end
-  end
-  -- vampiric_blood,if=!equipped.archimondes_hatred_reborn|cooldown.trinket.ready
-  if S.VampiricBlood:IsCastableP() and (not I.ArchimondesHatredReborn:IsEquipped() or S.Trinket:CooldownUpP()) then
-    if HR.Cast(S.VampiricBlood) then return ""; end
   end
   -- tombstone,if=buff.bone_shield.stack>=7
   if S.Tombstone:IsCastableP() and (Player:BuffStackP(S.BoneShieldBuff) >= 7) then
