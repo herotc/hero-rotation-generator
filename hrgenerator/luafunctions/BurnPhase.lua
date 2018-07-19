@@ -1,6 +1,6 @@
 local function StartBurnPhase ()
   varBurnPhase = 1
-  varBurnPhaseStart = AC.GetTime()
+  varBurnPhaseStart = HL.GetTime()
 end
 
 local function StopBurnPhase ()

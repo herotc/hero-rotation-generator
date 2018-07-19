@@ -20,7 +20,7 @@ class LuaNamed(Decorable):
 
     def lua_name(self):
         """
-        Return the AethysRotation name of the spell.
+        Return the HeroRotation name of the spell.
         """
         ar_words = [word.title() for word in self.simc.split('_')]
         ar_words = [WORD_REPLACEMENTS[ar_word]
@@ -60,7 +60,7 @@ class LuaCastable(Decorable):
         self.condition_args = []
         self.additional_conditions = []
         if cast_method is None:
-            self.cast_method = Method('AR.Cast')
+            self.cast_method = Method('HR.Cast')
         else:
             self.cast_method = cast_method
         if cast_args is None:

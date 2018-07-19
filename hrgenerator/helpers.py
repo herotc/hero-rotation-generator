@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Define function helpers for arparser.
+Define function helpers for hrgenerator.
 
 @author: skasch
 """

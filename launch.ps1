@@ -1,1 +1,1 @@
-python -m arparser -p (get-item .\profiles\*.simc)
+python -m hrgenerator -p (get-item .\profiles\*.simc)

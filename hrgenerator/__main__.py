@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Script to run when running arparser in command line.
+Script to run when running hrgenerator in command line.
 
 @author: skasch
 """
@@ -9,7 +9,7 @@ import argparse
 
 from .apl import APL
 
-def arparser_args(parser):
+def hrgenerator_args(parser):
     """
     Add arguments to argparse parser
     """
@@ -36,10 +36,10 @@ def change_ext(file_path, ext='lua'):
 
 def main():
     """
-    Function to process if ARParser is used as a script.
+    Function to process if HRGenerator is used as a script.
     """
     parser = argparse.ArgumentParser()
-    arparser_args(parser)
+    hrgenerator_args(parser)
     args = parser.parse_args()
     try:
         assert args.exports is None or len(args.profiles) == len(args.exports)

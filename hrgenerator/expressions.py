@@ -668,7 +668,7 @@ class SetBonus(BuildExpression):
         is equipped or not.
         """
         simc = self.condition.condition_list[1]
-        self.simc = f'AC.{"_".join(word.title() for word in simc.split("_"))}'
+        self.simc = f'HL.{"_".join(word.title() for word in simc.split("_"))}'
 
 
 class Equipped(BuildExpression):
@@ -791,7 +791,7 @@ class Time(BuildExpression):
         """
         Return the arguments for the expression time.
         """
-        self.method = Method('AC.CombatTime')
+        self.method = Method('HL.CombatTime')
 
 
 class Artifact(BuildExpression):

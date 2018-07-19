@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Initialize the arparser package.
+Initialize the hrgenerator package.
 
 @author: skasch
 """

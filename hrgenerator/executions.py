@@ -21,7 +21,7 @@ class Item(LuaNamed, LuaCastable):
         # Castable
         LuaCastable.__init__(self)
         self.condition_method = Method('IsReady', type_=BOOL)
-        self.cast_method = Method('AR.CastSuggested')
+        self.cast_method = Method('HR.CastSuggested')
         # Item
         self.action = action
         self.iid = ''
@@ -135,7 +135,7 @@ class CancelBuff(LuaNamed, LuaCastable):
         super().__init__(simc)
         # Castble
         LuaCastable.__init__(self)
-        self.cast_method = Method('AR.Cancel')
+        self.cast_method = Method('HR.Cancel')
         self.cast_template = '-- if {} then return ""; end'
         # Main
         self.action = action
@@ -182,7 +182,7 @@ class Spell(LuaNamed, LuaCastable):
 
         if self.action.player.spell_property(self, CD):
             self.additional_conditions.append(
-                LuaExpression(None, Method('AR.CDsON'), []))
+                LuaExpression(None, Method('HR.CDsON'), []))
         if self.action.player.spell_property(self, INTERRUPT):
             self.additional_conditions.append(
                 Literal('Settings.General.InterruptEnabled'))
@@ -190,7 +190,7 @@ class Spell(LuaNamed, LuaCastable):
                 self.action.target,
                 Method('IsInterruptible'),
                 []))
-            self.cast_method = Method('AR.CastAnnotated')
+            self.cast_method = Method('HR.CastAnnotated')
             self.cast_args.append(Literal(FALSE))
             self.cast_args.append(
                 Literal(INTERRUPT, convert=True, quoted=True))

@@ -1,4 +1,4 @@
-# Notes for the development of AethysRotation Parser
+# Notes for the development of HeroRotation Generator
 
 ## Structure
 

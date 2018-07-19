@@ -1,11 +1,11 @@
 from setuptools import setup
 
-setup(name='arparser',
-      version='0.1.2',
-      description='An AethysRotation simc profile parser',
-      url='http://github.com/simcminmax/arparser',
+setup(name='hrgenerator',
+      version='0.1.3',
+      description='Parses SimC APLs to generate HeroRotation class module',
+      url='https://github.com/herotc/hero-rotation-generator',
       author='Skasch',
       author_email='romain.mondoncancel@gmail.com',
       license='GPLv3',
-      packages=['arparser'],
+      packages=['hrgenerator'],
       zip_safe=False)

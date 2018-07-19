@@ -1,11 +1,10 @@
-# ARParser
+# hero-rotation-generator
 
-Parser to generate AethysRotation APLs from simc profiles
+Parses SimC APLs to generate HeroRotation class module.
 
 ## Refresh profiles
 
-The launch scripts are designed to automatically parse all the `.simc` profiles
-present in the `/profiles` folder.
+The launch scripts are designed to automatically parse all the `.simc` profiles present in the `/profiles` folder.
 
 ### Windows
 
@@ -31,16 +30,16 @@ Using the command prompt in the root folder of the project,
 
 ## Usage
 
-The `arparser` package can be used as a script with the following command:
+The `hrgenerator` package can be used as a script with the following command:
 
 ```bash
-python -m arparser
+python -m hrgenerator
 ```
 
 You can get help from the module used as a script with:
 
 ```bash
-python -m arparser --help
+python -m hrgenerator --help
 ```
 
 The module can also be used in python in the following fashion:

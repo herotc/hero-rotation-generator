@@ -20,17 +20,17 @@ class Context(Decorable):
         '--- ======= LOCALIZE =======\n'
         '-- Addon\n'
         'local addonName, addonTable = ...\n'
-        '-- AethysCore\n'
-        'local AC     = AethysCore\n'
-        'local Cache  = AethysCache\n'
-        'local Unit   = AC.Unit\n'
+        '-- HeroLib\n'
+        'local HL     = HeroLib\n'
+        'local Cache  = HeroCache\n'
+        'local Unit   = HL.Unit\n'
         'local Player = Unit.Player\n'
         'local Target = Unit.Target\n'
         'local Pet    = Unit.Pet\n'
-        'local Spell  = AC.Spell\n'
-        'local Item   = AC.Item\n'
-        '-- AethysRotation\n'
-        'local AR     = AethysRotation\n')
+        'local Spell  = HL.Spell\n'
+        'local Item   = HL.Item\n'
+        '-- HeroRotation\n'
+        'local HR     = HeroRotation\n')
 
     CONTENT_HEADER = (
         '--- ============================ CONTENT ===========================\n'
@@ -159,7 +159,7 @@ class Context(Decorable):
         return (f'local EnemyRanges = {{{lua_ranges}}}\n'
                 f'local function UpdateRanges()\n'
                 f'  for _, i in ipairs(EnemyRanges) do\n'
-                f'    AC.GetEnemies(i);\n'
+                f'    HL.GetEnemies(i);\n'
                 f'  end\n'
                 f'end\n')
 
@@ -174,11 +174,11 @@ class Context(Decorable):
             'local ShouldReturn; -- Used to get the return string\n'
             '\n'
             '-- GUI Settings\n'
-            'local Everyone = AR.Commons.Everyone;\n'
+            'local Everyone = HR.Commons.Everyone;\n'
             'local Settings = {\n'
-            '  General = AR.GUISettings.General,\n'
-            f'  Commons = AR.GUISettings.APL.{class_}.Commons,\n'
-            f'  {spec} = AR.GUISettings.APL.{class_}.{spec}\n'
+            '  General = HR.GUISettings.General,\n'
+            f'  Commons = HR.GUISettings.APL.{class_}.Commons,\n'
+            f'  {spec} = HR.GUISettings.APL.{class_}.{spec}\n'
             '};\n')
 
     def print_lua(self):

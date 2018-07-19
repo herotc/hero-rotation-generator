@@ -186,12 +186,12 @@ class APL:
 
     def print_set_apl(self):
         """
-        Print the call to SetAPL to set the APL into AR.
+        Print the call to SetAPL to set the APL into HR.
         """
         class_simc = self.player.class_.simc
         spec_simc = self.player.spec.simc
         apl_id = CLASS_SPECS.get(class_simc, {}).get(spec_simc, 0)
-        return f'AR.SetAPL({apl_id}, APL)\n'
+        return f'HR.SetAPL({apl_id}, APL)\n'
     
     def template(self):
         return TEMPLATES.get(self.player.class_.simc, self.DEFAULT_TEMPLATE)

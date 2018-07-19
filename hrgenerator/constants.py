@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Initialize the arparser package.
+Initialize the hrgenerator package.
 
 @author: skasch
 """
@@ -47,7 +47,7 @@ MAX_INT = 10**10
 IGNORED_ACTION_LISTS = [
 ]
 
-# Named executions which should be ignored by ARParser
+# Named executions which should be ignored by HRGenerator
 IGNORED_EXECUTIONS = [
     'auto_attack',
     'auto_shot',
@@ -65,7 +65,7 @@ ITEM_ACTIONS = [
 ]
 
 # Mostly, words to lowercase when converting to lua names to match
-# AethysRotation naming convention
+# HeroRotation naming convention
 WORD_REPLACEMENTS = {
     'And': 'and',
     'Blooddrinker': 'BloodDrinker',

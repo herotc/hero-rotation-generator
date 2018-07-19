@@ -2,17 +2,17 @@
 --- ======= LOCALIZE =======
 -- Addon
 local addonName, addonTable = ...
--- AethysCore
-local AC     = AethysCore
-local Cache  = AethysCache
-local Unit   = AC.Unit
+-- HeroLib
+local HL     = HeroLib
+local Cache  = HeroCache
+local Unit   = HL.Unit
 local Player = Unit.Player
 local Target = Unit.Target
 local Pet    = Unit.Pet
-local Spell  = AC.Spell
-local Item   = AC.Item
--- AethysRotation
-local AR     = AethysRotation
+local Spell  = HL.Spell
+local Item   = HL.Item
+-- HeroRotation
+local HR     = HeroRotation
 
 --- ============================ CONTENT ===========================
 --- ======= APL LOCALS =======
@@ -82,11 +82,11 @@ local I = Item.Rogue.Outlaw;
 local ShouldReturn; -- Used to get the return string
 
 -- GUI Settings
-local Everyone = AR.Commons.Everyone;
+local Everyone = HR.Commons.Everyone;
 local Settings = {
-  General = AR.GUISettings.General,
-  Commons = AR.GUISettings.APL.Rogue.Commons,
-  Outlaw = AR.GUISettings.APL.Rogue.Outlaw
+  General = HR.GUISettings.General,
+  Commons = HR.GUISettings.APL.Rogue.Commons,
+  Outlaw = HR.GUISettings.APL.Rogue.Outlaw
 };
 
 -- Variables
@@ -98,7 +98,7 @@ local VarSsUseableNoreroll = 0;
 local EnemyRanges = {8, 35}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do
-    AC.GetEnemies(i);
+    HL.GetEnemies(i);
   end
 end
 
@@ -120,103 +120,103 @@ local function APL()
     -- snapshot_stats
     -- stealth
     if S.Stealth:IsCastableP() and (true) then
-      if AR.Cast(S.Stealth) then return ""; end
+      if HR.Cast(S.Stealth) then return ""; end
     end
     -- potion
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
-      if AR.CastSuggested(I.ProlongedPower) then return ""; end
+      if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- marked_for_death,if=raid_event.adds.in>40
     if S.MarkedForDeath:IsCastableP() and (10000000000 > 40) then
-      if AR.Cast(S.MarkedForDeath) then return ""; end
+      if HR.Cast(S.MarkedForDeath) then return ""; end
     end
     -- roll_the_bones,if=!talent.slice_and_dice.enabled
     if S.RolltheBones:IsCastableP() and (not S.SliceandDice:IsAvailable()) then
-      if AR.Cast(S.RolltheBones) then return ""; end
+      if HR.Cast(S.RolltheBones) then return ""; end
     end
     -- curse_of_the_dreadblades,if=combo_points.deficit>=4
     if S.CurseoftheDreadblades:IsCastableP() and (Player:ComboPointsDeficit() >= 4) then
-      if AR.Cast(S.CurseoftheDreadblades) then return ""; end
+      if HR.Cast(S.CurseoftheDreadblades) then return ""; end
     end
   end
   local function Bf()
     -- cancel_buff,name=blade_flurry,if=spell_targets.blade_flurry<2&buff.blade_flurry.up
     if (Cache.EnemiesCount[8] < 2 and Player:BuffP(S.BladeFlurryBuff)) then
-      -- if AR.Cancel(S.BladeFlurryBuff) then return ""; end
+      -- if HR.Cancel(S.BladeFlurryBuff) then return ""; end
     end
     -- cancel_buff,name=blade_flurry,if=equipped.shivarran_symmetry&cooldown.blade_flurry.up&buff.blade_flurry.up&spell_targets.blade_flurry>=2
     if (I.ShivarranSymmetry:IsEquipped() and S.BladeFlurry:CooldownUpP() and Player:BuffP(S.BladeFlurryBuff) and Cache.EnemiesCount[8] >= 2) then
-      -- if AR.Cancel(S.BladeFlurryBuff) then return ""; end
+      -- if HR.Cancel(S.BladeFlurryBuff) then return ""; end
     end
     -- blade_flurry,if=spell_targets.blade_flurry>=2&!buff.blade_flurry.up
     if S.BladeFlurry:IsCastableP() and (Cache.EnemiesCount[8] >= 2 and not Player:BuffP(S.BladeFlurryBuff)) then
-      if AR.Cast(S.BladeFlurry) then return ""; end
+      if HR.Cast(S.BladeFlurry) then return ""; end
     end
   end
   local function Build()
     -- ghostly_strike,if=combo_points.deficit>=1+buff.broadsides.up&refreshable
     if S.GhostlyStrike:IsCastableP() and (Player:ComboPointsDeficit() >= 1 + num(Player:BuffP(S.BroadsidesBuff)) and Target:DebuffRefreshableCP(S.GhostlyStrike)) then
-      if AR.Cast(S.GhostlyStrike) then return ""; end
+      if HR.Cast(S.GhostlyStrike) then return ""; end
     end
     -- pistol_shot,if=combo_points.deficit>=1+buff.broadsides.up+talent.quick_draw.enabled&buff.opportunity.up&(energy.time_to_max>2-talent.quick_draw.enabled|(buff.greenskins_waterlogged_wristcuffs.up&(buff.blunderbuss.up|buff.greenskins_waterlogged_wristcuffs.remains<2)))
     if S.PistolShot:IsCastableP() and (Player:ComboPointsDeficit() >= 1 + num(Player:BuffP(S.BroadsidesBuff)) + num(S.QuickDraw:IsAvailable()) and Player:BuffP(S.OpportunityBuff) and (Player:EnergyTimeToMaxPredicted() > 2 - num(S.QuickDraw:IsAvailable()) or (Player:BuffP(S.GreenskinsWaterloggedWristcuffsBuff) and (Player:BuffP(S.BlunderbussBuff) or Player:BuffRemainsP(S.GreenskinsWaterloggedWristcuffsBuff) < 2)))) then
-      if AR.Cast(S.PistolShot) then return ""; end
+      if HR.Cast(S.PistolShot) then return ""; end
     end
     -- saber_slash,if=variable.ss_useable
     if S.SaberSlash:IsCastableP() and (bool(VarSsUseable)) then
-      if AR.Cast(S.SaberSlash) then return ""; end
+      if HR.Cast(S.SaberSlash) then return ""; end
     end
   end
   local function Cds()
     -- potion,if=buff.bloodlust.react|target.time_to_die<=60|buff.adrenaline_rush.up
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:HasHeroism() or Target:TimeToDie() <= 60 or Player:BuffP(S.AdrenalineRushBuff)) then
-      if AR.CastSuggested(I.ProlongedPower) then return ""; end
+      if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- blood_fury
-    if S.BloodFury:IsCastableP() and AR.CDsON() and (true) then
-      if AR.Cast(S.BloodFury, Settings.Outlaw.OffGCDasOffGCD.BloodFury) then return ""; end
+    if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
+      if HR.Cast(S.BloodFury, Settings.Outlaw.OffGCDasOffGCD.BloodFury) then return ""; end
     end
     -- berserking
-    if S.Berserking:IsCastableP() and AR.CDsON() and (true) then
-      if AR.Cast(S.Berserking, Settings.Outlaw.OffGCDasOffGCD.Berserking) then return ""; end
+    if S.Berserking:IsCastableP() and HR.CDsON() and (true) then
+      if HR.Cast(S.Berserking, Settings.Outlaw.OffGCDasOffGCD.Berserking) then return ""; end
     end
     -- arcane_torrent,if=energy.deficit>40
-    if S.ArcaneTorrent:IsCastableP() and AR.CDsON() and (Player:EnergyDeficit() > 40) then
-      if AR.Cast(S.ArcaneTorrent, Settings.Outlaw.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
+    if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (Player:EnergyDeficit() > 40) then
+      if HR.Cast(S.ArcaneTorrent, Settings.Outlaw.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
     end
     -- cannonball_barrage,if=spell_targets.cannonball_barrage>=1
     if S.CannonballBarrage:IsCastableP() and (Cache.EnemiesCount[35] >= 1) then
-      if AR.Cast(S.CannonballBarrage) then return ""; end
+      if HR.Cast(S.CannonballBarrage) then return ""; end
     end
     -- adrenaline_rush,if=!buff.adrenaline_rush.up&energy.deficit>0
     if S.AdrenalineRush:IsCastableP() and (not Player:BuffP(S.AdrenalineRushBuff) and Player:EnergyDeficit() > 0) then
-      if AR.Cast(S.AdrenalineRush) then return ""; end
+      if HR.Cast(S.AdrenalineRush) then return ""; end
     end
     -- marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|((raid_event.adds.in>40|buff.true_bearing.remains>15-buff.adrenaline_rush.up*5)&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)
     if S.MarkedForDeath:IsCastableP() and (Target:TimeToDie() < Player:ComboPointsDeficit() or ((10000000000 > 40 or Player:BuffRemainsP(S.TrueBearingBuff) > 15 - num(Player:BuffP(S.AdrenalineRushBuff)) * 5) and not bool(stealthed.rogue) and Player:ComboPointsDeficit() >= cp_max_spend - 1)) then
-      if AR.Cast(S.MarkedForDeath) then return ""; end
+      if HR.Cast(S.MarkedForDeath) then return ""; end
     end
     -- sprint,if=!talent.death_from_above.enabled&equipped.thraxis_tricksy_treads&!variable.ss_useable
     if S.Sprint:IsCastableP() and (not S.DeathFromAbove:IsAvailable() and I.ThraxisTricksyTreads:IsEquipped() and not bool(VarSsUseable)) then
-      if AR.Cast(S.Sprint) then return ""; end
+      if HR.Cast(S.Sprint) then return ""; end
     end
     -- darkflight,if=equipped.thraxis_tricksy_treads&!variable.ss_useable&buff.sprint.down
     if S.Darkflight:IsCastableP() and (I.ThraxisTricksyTreads:IsEquipped() and not bool(VarSsUseable) and Player:BuffDownP(S.SprintBuff)) then
-      if AR.Cast(S.Darkflight) then return ""; end
+      if HR.Cast(S.Darkflight) then return ""; end
     end
     -- curse_of_the_dreadblades,if=combo_points.deficit>=4&(buff.true_bearing.up|buff.adrenaline_rush.up|time_to_die<20)
     if S.CurseoftheDreadblades:IsCastableP() and (Player:ComboPointsDeficit() >= 4 and (Player:BuffP(S.TrueBearingBuff) or Player:BuffP(S.AdrenalineRushBuff) or Target:TimeToDie() < 20)) then
-      if AR.Cast(S.CurseoftheDreadblades) then return ""; end
+      if HR.Cast(S.CurseoftheDreadblades) then return ""; end
     end
   end
   local function Finish()
     -- between_the_eyes,if=equipped.greenskins_waterlogged_wristcuffs&!buff.greenskins_waterlogged_wristcuffs.up
     if S.BetweentheEyes:IsCastableP() and (I.GreenskinsWaterloggedWristcuffs:IsEquipped() and not Player:BuffP(S.GreenskinsWaterloggedWristcuffsBuff)) then
-      if AR.Cast(S.BetweentheEyes) then return ""; end
+      if HR.Cast(S.BetweentheEyes) then return ""; end
     end
     -- run_through,if=!talent.death_from_above.enabled|energy.time_to_max<cooldown.death_from_above.remains+3.5
     if S.RunThrough:IsCastableP() and (not S.DeathFromAbove:IsAvailable() or Player:EnergyTimeToMaxPredicted() < S.DeathFromAbove:CooldownRemainsP() + 3.5) then
-      if AR.Cast(S.RunThrough) then return ""; end
+      if HR.Cast(S.RunThrough) then return ""; end
     end
   end
   local function Stealth()
@@ -226,15 +226,15 @@ local function APL()
     end
     -- ambush,if=variable.ambush_condition
     if S.Ambush:IsCastableP() and (bool(VarAmbushCondition)) then
-      if AR.Cast(S.Ambush) then return ""; end
+      if HR.Cast(S.Ambush) then return ""; end
     end
     -- vanish,if=(variable.ambush_condition|equipped.mantle_of_the_master_assassin&!variable.rtb_reroll&!variable.ss_useable)&mantle_duration=0
     if S.Vanish:IsCastableP() and ((bool(VarAmbushCondition) or I.MantleoftheMasterAssassin:IsEquipped() and not bool(VarRtbReroll) and not bool(VarSsUseable)) and mantle_duration == 0) then
-      if AR.Cast(S.Vanish) then return ""; end
+      if HR.Cast(S.Vanish) then return ""; end
     end
     -- shadowmeld,if=variable.ambush_condition
     if S.Shadowmeld:IsCastableP() and (bool(VarAmbushCondition)) then
-      if AR.Cast(S.Shadowmeld) then return ""; end
+      if HR.Cast(S.Shadowmeld) then return ""; end
     end
   end
   -- call precombat
@@ -267,35 +267,35 @@ local function APL()
   end
   -- death_from_above,if=energy.time_to_max>2&!variable.ss_useable_noreroll
   if S.DeathFromAbove:IsCastableP() and (Player:EnergyTimeToMaxPredicted() > 2 and not bool(VarSsUseableNoreroll)) then
-    if AR.Cast(S.DeathFromAbove) then return ""; end
+    if HR.Cast(S.DeathFromAbove) then return ""; end
   end
   -- sprint,if=equipped.thraxis_tricksy_treads&buff.death_from_above.up&buff.death_from_above.remains<=0.15
   if S.Sprint:IsCastableP() and (I.ThraxisTricksyTreads:IsEquipped() and Player:BuffP(S.DeathFromAboveBuff) and Player:BuffRemainsP(S.DeathFromAboveBuff) <= 0.15) then
-    if AR.Cast(S.Sprint) then return ""; end
+    if HR.Cast(S.Sprint) then return ""; end
   end
   -- adrenaline_rush,if=buff.death_from_above.up&buff.death_from_above.remains<=0.15
   if S.AdrenalineRush:IsCastableP() and (Player:BuffP(S.DeathFromAboveBuff) and Player:BuffRemainsP(S.DeathFromAboveBuff) <= 0.15) then
-    if AR.Cast(S.AdrenalineRush) then return ""; end
+    if HR.Cast(S.AdrenalineRush) then return ""; end
   end
   -- slice_and_dice,if=!variable.ss_useable&buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8&!buff.slice_and_dice.improved&!buff.loaded_dice.up
   if S.SliceandDice:IsCastableP() and (not bool(VarSsUseable) and Player:BuffRemainsP(S.SliceandDiceBuff) < Target:TimeToDie() and Player:BuffRemainsP(S.SliceandDiceBuff) < (1 + Player:ComboPoints()) * 1.8 and not bool(buff.slice_and_dice.improved) and not Player:BuffP(S.LoadedDiceBuff)) then
-    if AR.Cast(S.SliceandDice) then return ""; end
+    if HR.Cast(S.SliceandDice) then return ""; end
   end
   -- slice_and_dice,if=buff.loaded_dice.up&combo_points>=cp_max_spend&(!buff.slice_and_dice.improved|buff.slice_and_dice.remains<4)
   if S.SliceandDice:IsCastableP() and (Player:BuffP(S.LoadedDiceBuff) and Player:ComboPoints() >= cp_max_spend and (not bool(buff.slice_and_dice.improved) or Player:BuffRemainsP(S.SliceandDiceBuff) < 4)) then
-    if AR.Cast(S.SliceandDice) then return ""; end
+    if HR.Cast(S.SliceandDice) then return ""; end
   end
   -- slice_and_dice,if=buff.slice_and_dice.improved&buff.slice_and_dice.remains<=2&combo_points>=2&!buff.loaded_dice.up
   if S.SliceandDice:IsCastableP() and (bool(buff.slice_and_dice.improved) and Player:BuffRemainsP(S.SliceandDiceBuff) <= 2 and Player:ComboPoints() >= 2 and not Player:BuffP(S.LoadedDiceBuff)) then
-    if AR.Cast(S.SliceandDice) then return ""; end
+    if HR.Cast(S.SliceandDice) then return ""; end
   end
   -- roll_the_bones,if=!variable.ss_useable&(target.time_to_die>20|buff.roll_the_bones.remains<target.time_to_die)&(buff.roll_the_bones.remains<=3|variable.rtb_reroll)
   if S.RolltheBones:IsCastableP() and (not bool(VarSsUseable) and (Target:TimeToDie() > 20 or Player:BuffRemainsP(S.RolltheBonesBuff) < Target:TimeToDie()) and (Player:BuffRemainsP(S.RolltheBonesBuff) <= 3 or bool(VarRtbReroll))) then
-    if AR.Cast(S.RolltheBones) then return ""; end
+    if HR.Cast(S.RolltheBones) then return ""; end
   end
   -- killing_spree,if=energy.time_to_max>5|energy<15
   if S.KillingSpree:IsCastableP() and (Player:EnergyTimeToMaxPredicted() > 5 or Player:Energy() < 15) then
-    if AR.Cast(S.KillingSpree) then return ""; end
+    if HR.Cast(S.KillingSpree) then return ""; end
   end
   -- call_action_list,name=build
   if (true) then
@@ -307,8 +307,8 @@ local function APL()
   end
   -- gouge,if=talent.dirty_tricks.enabled&combo_points.deficit>=1
   if S.Gouge:IsCastableP() and (S.DirtyTricks:IsAvailable() and Player:ComboPointsDeficit() >= 1) then
-    if AR.Cast(S.Gouge) then return ""; end
+    if HR.Cast(S.Gouge) then return ""; end
   end
 end
 
-AR.SetAPL(260, APL)
+HR.SetAPL(260, APL)
