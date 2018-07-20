@@ -5,15 +5,15 @@ Define the objects representing simc actions.
 @author: skasch
 """
 
-from .lua import Literal
+from ..objects.lua import Literal
 from .conditions import ConditionExpression
-from .executions import (Spell, Item, Potion, Variable, CancelBuff,
-                         RunActionList, CallActionList)
-from .helpers import indent, convert_type
-from .decoratormanager import Decorable
-from .constants import (SPELL, ITEM, POTION, VARIABLE, CANCEL_BUFF,
-                        USE_ITEM, RUN_ACTION_LIST, CALL_ACTION_LIST,
-                        ITEM_ACTIONS, BOOL, NUM)
+from ..objects.executions import (Spell, Item, Potion, Variable, CancelBuff,
+                                  RunActionList, CallActionList)
+from ..abstract.helpers import indent, convert_type
+from ..abstract.decoratormanager import Decorable
+from ..constants import (SPELL, ITEM, POTION, VARIABLE, CANCEL_BUFF,
+                         USE_ITEM, RUN_ACTION_LIST, CALL_ACTION_LIST,
+                         ITEM_ACTIONS, BOOL, NUM)
 
 
 class ActionList:

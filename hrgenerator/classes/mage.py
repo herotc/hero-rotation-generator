@@ -5,7 +5,7 @@ Mage specific constants and functions.
 @author: skasch
 """
 
-from .constants import COMMON, SPELL, BUFF, DEBUFF, PET, RANGE, AUTOCHECK
+from ..constants import COMMON, SPELL, BUFF, DEBUFF, PET, RANGE, AUTOCHECK
 
 MAGE = 'mage'
 ARCANE = 'arcane'
@@ -210,7 +210,7 @@ def arcane_burn_phase_variables(fun):
     """
     Inject burn phase specific variables in the context.
     """
-    from .executions import Variable
+    from ..objects.executions import Variable
 
     def set_spec(self, spec):
         """
@@ -228,7 +228,7 @@ def arcane_burn_phase(fun):
     """
     Handle start_burn_phase and stop_burn_phase executions.
     """
-    from .lua import LuaCastable, Method
+    from ..objects.lua import LuaCastable, Method
 
     def switch_type(self):
         """
@@ -257,7 +257,7 @@ def arcane_burn_expressions(fun):
     """
     Handle burn phase specific variables.
     """
-    from .executions import Variable
+    from ..objects.executions import Variable
 
     def expression(self):
         """
@@ -275,7 +275,7 @@ def arcane_max_stack(fun):
     """
     Handle max_stack expressions for Arcane.
     """
-    from .lua import Method
+    from ..objects.lua import Method
 
     def max_stack(self):
         """

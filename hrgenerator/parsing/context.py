@@ -5,9 +5,9 @@ Context of an APL.
 @author: skasch
 """
 
-from .decoratormanager import Decorable
-from .constants import PET
-from .database import ITEM_INFO
+from ..abstract.decoratormanager import Decorable
+from ..constants import PET
+from ..database import ITEM_INFO
 
 class Context(Decorable):
     """

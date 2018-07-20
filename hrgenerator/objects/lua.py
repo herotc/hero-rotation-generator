@@ -5,8 +5,8 @@ Define the objects representing lua specific items.
 @author: skasch
 """
 
-from .decoratormanager import Decorable
-from .constants import WORD_REPLACEMENTS, TRUE, FALSE, BOOL, NUM
+from ..abstract.decoratormanager import Decorable
+from ..constants import WORD_REPLACEMENTS, TRUE, FALSE, BOOL, NUM
 
 
 class LuaNamed(Decorable):

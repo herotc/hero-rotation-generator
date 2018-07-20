@@ -5,7 +5,7 @@ Priest specific constants and functions.
 @author: skasch
 """
 
-from .constants import COMMON, SPELL, BUFF, DEBUFF, INTERRUPT, RANGE
+from ..constants import COMMON, SPELL, BUFF, DEBUFF, INTERRUPT, RANGE
 
 PRIEST = 'priest'
 DISCIPLINE = 'discipline'

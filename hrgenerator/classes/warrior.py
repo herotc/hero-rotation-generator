@@ -5,7 +5,7 @@ Warrior specific constants and functions.
 @author: skasch
 """
 
-from .constants import COMMON, SPELL, BUFF, DEBUFF, RANGE
+from ..constants import COMMON, SPELL, BUFF, DEBUFF, RANGE
 
 WARRIOR = 'warrior'
 ARMS = 'arms'

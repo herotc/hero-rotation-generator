@@ -5,7 +5,7 @@ Define function helpers for hrgenerator.
 @author: skasch
 """
 
-from .constants import TYPE_CONVERSION
+from ..constants import TYPE_CONVERSION
 
 
 def indent(string, length=2):

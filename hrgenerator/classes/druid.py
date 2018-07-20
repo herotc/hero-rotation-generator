@@ -5,7 +5,7 @@ Druid specific constants and functions.
 @author: skasch
 """
 
-from .constants import SPELL, BUFF, DEBUFF, COMMON, RANGE
+from ..constants import SPELL, BUFF, DEBUFF, COMMON, RANGE
 
 DRUID = 'druid'
 BALANCE = 'balance'
@@ -227,7 +227,7 @@ def balance_astral_power_value(fun):
     """
     Replaces the astral_power expression with a call to FutureAstralPower.
     """
-    from .expressions import Method
+    from ..objects.expressions import Method
 
     def value(self):
         """

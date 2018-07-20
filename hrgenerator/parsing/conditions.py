@@ -5,13 +5,13 @@ Define the objects representing simc conditions.
 @author: skasch
 """
 
-from .expressions import Expression
-from .helpers import convert_type
-from .constants import (BOOL, NUM,
-                        BINARY_OPERATORS, UNARY_OPERATORS,
-                        LOGIC_OPERATORS, COMPARISON_OPERATORS,
-                        ADDITION_OPERATORS, MULTIPLIACTION_OPERATORS,
-                        FUNCTION_OPERATORS)
+from ..objects.expressions import Expression
+from ..abstract.helpers import convert_type
+from ..constants import (BOOL, NUM,
+                         BINARY_OPERATORS, UNARY_OPERATORS,
+                         LOGIC_OPERATORS, COMPARISON_OPERATORS,
+                         ADDITION_OPERATORS, MULTIPLIACTION_OPERATORS,
+                         FUNCTION_OPERATORS)
 
 
 class BinaryOperator:

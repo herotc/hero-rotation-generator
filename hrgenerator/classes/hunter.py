@@ -5,7 +5,8 @@ Hunter specific constants and functions.
 @author: skasch
 """
 
-from .constants import COMMON, SPELL, BUFF, DEBUFF, PET, INTERRUPT, RANGE, BOOL
+from ..constants import (COMMON, SPELL, BUFF, DEBUFF,
+                         PET, INTERRUPT, RANGE, BOOL)
 
 HUNTER = 'hunter'
 BEAST_MASTERY = 'beast_mastery'
@@ -170,8 +171,8 @@ def marksmanship_lowest_vuln_within(fun):
     """
     Call TargetDebuffRemainsP function for lowest_vuln_within.
     """
-    from .executions import Spell
-    from .lua import LuaExpression, Method
+    from ..objects.executions import Spell
+    from ..objects.lua import LuaExpression, Method
 
 
     def lowest_vuln_within(self):
@@ -193,7 +194,7 @@ def marksmanship_debuff_remains(fun):
     """
     Call TargetDebuffRemainsP function for lowest_vuln_within.
     """
-    from .lua import Method
+    from ..objects.lua import Method
 
     def remains(self):
         """
@@ -213,7 +214,7 @@ def marksmanship_debuff_ready(fun):
     """
     Call TargetDebuffRemainsP function for lowest_vuln_within.
     """
-    from .lua import Method
+    from ..objects.lua import Method
 
     def ready(self):
         """

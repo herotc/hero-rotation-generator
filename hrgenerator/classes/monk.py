@@ -5,9 +5,9 @@ Monk specific constants and functions.
 @author: skasch
 """
 
-from .constants import (SPELL, BUFF, DEBUFF, COMMON,
-                        OGCDAOGCD, USABLE, INTERRUPT,
-                        CD, RANGE)
+from ..constants import (SPELL, BUFF, DEBUFF, COMMON,
+                         OGCDAOGCD, USABLE, INTERRUPT,
+                         CD, RANGE)
 
 MONK = 'monk'
 BREWMASTER = 'brewmaster'
