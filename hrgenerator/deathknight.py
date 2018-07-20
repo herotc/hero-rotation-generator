@@ -110,7 +110,6 @@ SPELL_INFO = {
                                                  DEBUFF:    155166},
             'frost_strike':                     {SPELL:     49143,
                                                  USABLE:    True},                                     
-            'shattering_strikes':               {SPELL:     207057},
             'razorice':                         {DEBUFF:    51714},
             'frostwyrms_fury':                  {SPELL:     279302},
             'pillar_of_frost':                  {SPELL:     51271,
