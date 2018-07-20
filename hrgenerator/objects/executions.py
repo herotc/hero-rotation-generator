@@ -5,10 +5,11 @@ Define the objects representing simc executions.
 @author: skasch
 """
 
-from .lua import LuaNamed, LuaTyped, LuaCastable, LuaExpression, Literal, Method
-from .constants import (IGNORED_EXECUTIONS, SPELL, BUFF, DEBUFF, USABLE, MELEE,
-                        INTERRUPT, CD, GCDAOGCD, OGCDAOGCD, NUM, BOOL, FALSE,
-                        AUTOCHECK)
+from .lua import (LuaNamed, LuaTyped, LuaCastable, 
+                  LuaExpression, Literal, Method)
+from ..constants import (IGNORED_EXECUTIONS, SPELL, BUFF, DEBUFF, USABLE,
+                         MELEE, INTERRUPT, CD, GCDAOGCD, OGCDAOGCD, NUM, BOOL,
+                         FALSE, AUTOCHECK)
 
 
 class Item(LuaNamed, LuaCastable):

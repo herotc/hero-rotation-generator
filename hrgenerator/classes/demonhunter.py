@@ -5,7 +5,7 @@ Demon Hunter specific constants and functions.
 @author: skasch
 """
 
-from .constants import MELEE, SPELL, BUFF, DEBUFF, COMMON, RANGE, BOOL
+from ..constants import MELEE, SPELL, BUFF, DEBUFF, COMMON, RANGE, BOOL
 
 DEMONHUNTER = 'demonhunter'
 HAVOC = 'havoc'
@@ -115,7 +115,7 @@ def havoc_melee_condition(fun):
     """
     Add class specific conditions.
     """
-    from .lua import LuaExpression, Method
+    from ..objects.lua import LuaExpression, Method
 
     def custom_init(self):
         """
@@ -134,7 +134,7 @@ def havoc_extended_by_demonic_buff(fun):
     """
     Add extended_by_demonic for metamorphosis to buff. expression.
     """
-    from .lua import Method
+    from ..objects.lua import Method
 
     def extended_by_demonic(self):
         """
@@ -155,7 +155,7 @@ def havoc_metamorphosis_cooldown(fun):
     """
     Add cooldown_adjusted for metamorphosis to cooldown. expression.
     """
-    from .lua import Method
+    from ..objects.lua import Method
 
     def adjusted_remains(self):
         """

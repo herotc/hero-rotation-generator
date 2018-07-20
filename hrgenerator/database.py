@@ -5,18 +5,18 @@ Initialize the hrgenerator package.
 @author: skasch
 """
 
-from . import deathknight
-from . import demonhunter
-from . import druid
-from . import hunter
-from . import mage
-from . import monk
-from . import paladin
-from . import priest
-from . import rogue
-from . import shaman
-from . import warlock
-from . import warrior
+from .classes import deathknight
+from .classes import demonhunter
+from .classes import druid
+from .classes import hunter
+from .classes import mage
+from .classes import monk
+from .classes import paladin
+from .classes import priest
+from .classes import rogue
+from .classes import shaman
+from .classes import warlock
+from .classes import warrior
 from .constants import SPELL, BUFF, OGCDAOGCD, CD, COMMON
 
 CLASSES = [deathknight, demonhunter, druid, hunter, mage, monk, paladin, priest,

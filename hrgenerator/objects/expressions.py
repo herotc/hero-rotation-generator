@@ -11,9 +11,9 @@ from .resources import (Rune, AstralPower, HolyPower, Insanity, Pain, Focus,
                         Maelstrom, Energy, ComboPoints, SoulShard,
                         ArcaneCharges, Chi, RunicPower, Fury, Rage, Mana)
 from .units import Pet
-from .constants import (SPELL, BUFF, DEBUFF, BOOL, PET, BLOODLUST, RANGE,
-                        FALSE, MAX_INT, POTION)
-from .decoratormanager import Decorable
+from ..constants import (SPELL, BUFF, DEBUFF, BOOL, PET, BLOODLUST, RANGE,
+                         FALSE, MAX_INT, POTION)
+from ..abstract.decoratormanager import Decorable
 
 
 class ActionExpression(BuildExpression):

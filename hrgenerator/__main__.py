@@ -7,7 +7,7 @@ Script to run when running hrgenerator in command line.
 
 import argparse
 
-from .apl import APL
+from .parsing.apl import APL
 
 def hrgenerator_args(parser):
     """

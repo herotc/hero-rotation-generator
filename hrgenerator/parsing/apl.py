@@ -6,12 +6,13 @@ Define the APL class to represent and parse a simc profile.
 """
 
 from collections import OrderedDict
+
 from .actions import ActionList, PrecombatAction
-from .units import Player, Target
+from ..objects.units import Player, Target
 from .context import Context
-from .helpers import indent
-from .constants import IGNORED_ACTION_LISTS
-from .database import CLASS_SPECS, TEMPLATES
+from ..abstract.helpers import indent
+from ..constants import IGNORED_ACTION_LISTS
+from ..database import CLASS_SPECS, TEMPLATES
 
 
 class APL:

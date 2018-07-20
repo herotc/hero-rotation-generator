@@ -9,10 +9,10 @@ import os
 from functools import reduce
 
 from .lua import LuaNamed, Literal
-from .decoratormanager import decorating_manager
-from .constants import RANGE
-from .database import (CLASS_SPECS, RACES, SPELL_INFO, COMMON, DEFAULT_POTION,
-                       CLASS_FUNCTIONS, DECORATORS)
+from ..abstract.decoratormanager import decorating_manager
+from ..constants import RANGE
+from ..database import (CLASS_SPECS, RACES, SPELL_INFO, COMMON, DEFAULT_POTION,
+                        CLASS_FUNCTIONS, DECORATORS)
 
 
 class Unit:
@@ -85,6 +85,7 @@ class Player(Unit, LuaNamed):
         lua_fun = ''
         lua_file_path = os.path.join(
             os.path.dirname(__file__),
+            '..',
             'luafunctions',
             f'{function_name}.lua'
         )
