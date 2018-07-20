@@ -21,26 +21,26 @@ local HR     = HeroRotation
 -- Spells
 if not Spell.Priest then Spell.Priest = {} end
 Spell.Priest.Shadow = {
-  Shadowform                            = Spell(),
-  ShadowformBuff                        = Spell(),
+  Shadowform                            = Spell(232698),
+  ShadowformBuff                        = Spell(232698),
   MindBlast                             = Spell(8092),
   ShadowWordVoid                        = Spell(205351),
   VoidEruption                          = Spell(228260),
-  DarkAscension                         = Spell(),
+  DarkAscension                         = Spell(280711),
   VoidformBuff                          = Spell(194249),
   Mindbender                            = Spell(200174),
   Shadowfiend                           = Spell(34433),
-  VoidBolt                              = Spell(231688),
-  DarkVoid                              = Spell(),
+  VoidBolt                              = Spell(205448),
+  DarkVoid                              = Spell(263346),
   ShadowWordPainDebuff                  = Spell(589),
   SurrenderToMadness                    = Spell(193223),
   ShadowCrash                           = Spell(205385),
-  MindSear                              = Spell(),
+  MindSear                              = Spell(48045),
   ShadowWordPain                        = Spell(589),
   ShadowWordDeath                       = Spell(32379),
   Misery                                = Spell(238558),
   VampiricTouch                         = Spell(34914),
-  VoidTorrent                           = Spell(205065),
+  VoidTorrent                           = Spell(263165),
   VampiricTouchDebuff                   = Spell(34914),
   MindFlay                              = Spell(15407)
 };
@@ -66,7 +66,7 @@ local Settings = {
 
 -- Variables
 
-local EnemyRanges = {5, 40}
+local EnemyRanges = {40}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do
     HL.GetEnemies(i);
@@ -94,7 +94,7 @@ local function APL()
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- shadowform,if=!buff.shadowform.up
-    if S.Shadowform:IsCastableP() and (not Player:BuffP(S.ShadowformBuff)) then
+    if S.Shadowform:IsCastableP() and Player:BuffDownP(S.Shadowform) and (not Player:BuffP(S.ShadowformBuff)) then
       if HR.Cast(S.Shadowform) then return ""; end
     end
     -- mind_blast
@@ -337,7 +337,7 @@ local function APL()
     if HR.CastSuggested(I.ProlongedPower) then return ""; end
   end
   -- run_action_list,name=aoe,if=spell_targets.mind_sear>(5+1*talent.misery.enabled)
-  if (Cache.EnemiesCount[5] > (5 + 1 * num(S.Misery:IsAvailable()))) then
+  if (Cache.EnemiesCount[40] > (5 + 1 * num(S.Misery:IsAvailable()))) then
     return Aoe();
   end
   -- run_action_list,name=cleave,if=active_enemies>1
