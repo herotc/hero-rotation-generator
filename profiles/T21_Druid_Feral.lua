@@ -33,21 +33,20 @@ Spell.Druid.Feral = {
   TigersFury                            = Spell(5217),
   TigersFuryBuff                        = Spell(5217),
   Berserking                            = Spell(26297),
-  FeralFrenzy                           = Spell(),
+  FeralFrenzy                           = Spell(274837),
   Incarnation                           = Spell(102543),
   BerserkBuff                           = Spell(106951),
   Shadowmeld                            = Spell(58984),
   Rake                                  = Spell(1822),
   RakeDebuff                            = Spell(155722),
   BloodtalonsBuff                       = Spell(145152),
-  UseItems                              = Spell(),
   ProwlBuff                             = Spell(5215),
   ShadowmeldBuff                        = Spell(58984),
   FerociousBite                         = Spell(22568),
   PredatorySwiftnessBuff                = Spell(69369),
   RipDebuff                             = Spell(1079),
   ApexPredatorBuff                      = Spell(252752),
-  MomentofClarity                       = Spell(),
+  MomentofClarity                       = Spell(236068),
   PoolResource                          = Spell(9999000010),
   SavageRoar                            = Spell(52610),
   SavageRoarBuff                        = Spell(52610),
@@ -170,10 +169,6 @@ local function APL()
     -- shadowmeld,if=combo_points<5&energy>=action.rake.cost&dot.rake.pmultiplier<2.1&buff.tigers_fury.up&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>18)&!buff.incarnation.up
     if S.Shadowmeld:IsCastableP() and (Player:ComboPoints() < 5 and Player:Energy() >= S.Rake:Cost() and dot.rake.pmultiplier < 2.1 and Player:BuffP(S.TigersFuryBuff) and (Player:BuffP(S.BloodtalonsBuff) or not S.Bloodtalons:IsAvailable()) and (not S.Incarnation:IsAvailable() or S.Incarnation:CooldownRemainsP() > 18) and not Player:BuffP(S.IncarnationBuff)) then
       if HR.Cast(S.Shadowmeld) then return ""; end
-    end
-    -- use_items
-    if S.UseItems:IsCastableP() and (true) then
-      if HR.Cast(S.UseItems) then return ""; end
     end
   end
   local function SingleTarget()
