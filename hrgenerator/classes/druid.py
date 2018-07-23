@@ -214,6 +214,7 @@ CLASS_FUNCTIONS = {
             'FutureAstralPower',
         ],
         FERAL: [
+            'FeralPMultiplierRegistration',
         ],
         GUARDIAN: [
             'Swipe',
