@@ -43,6 +43,7 @@ SPELL_INFO = {
             'arcane_intellect':             {SPELL:     1459,
                                              BUFF:      1459,
                                              AUTOCHECK: True},
+            'shimmer':                      {SPELL:     212653},
             # Items
             'deadly_grace':                 {BUFF:      188027},
             # Legendaries
@@ -88,6 +89,9 @@ SPELL_INFO = {
             'mark_of_aluneth':              {SPELL:     224968},
             'prismatic_barrier':            {SPELL:     235450},
             'greater_invisibility':         {SPELL:     110959},
+            'summon_arcane_familiar':       {SPELL:     205022},
+            'clearcasting':                 {BUFF:      263725},
+            'rule_of_threes':               {BUFF:      264774},
         },
         FIRE: {
             'fireball':                     {SPELL:     133},
@@ -189,6 +193,7 @@ ITEM_INFO = {
     'belovirs_final_stand':             133977,
     'prydaz_xavarics_magnum_opus':      132444,
     'shard_of_the_exodar':              132410,
+    'gravity_spiral':                   144274,
 }
 
 CLASS_FUNCTIONS = {
