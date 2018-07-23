@@ -368,6 +368,12 @@ class Expression(Decorable):
         """
         return PrevOffGCD.build(self)
 
+    def persistent_multiplier(self):
+        """
+        Return the condition when the prefix is persistent_multiplier.
+        """
+        return PMultiplier.build(self)
+
     def gcd(self):
         """
         Return the condition when the prefix is gcd.
@@ -650,6 +656,13 @@ class Aura(Expires):
         """
         self.ready()
 
+    def pmultiplier(self):
+        """
+        Return the arguments for the expression {aura}.spell.pmultiplier.
+        """
+        self.method = Method('PMultiplier')
+        self.args = [Spell(self.condition.parent_action, self.spell.simc)]
+
 
 class SetBonus(BuildExpression):
     """
@@ -770,6 +783,24 @@ class GCD(BuildExpression):
         """
         self.method = Method('GCD')
 
+class PMultiplier(BuildExpression):
+    """
+    Represent the expression for a persistent_multiplier condition.
+    """
+
+    def __init__(self, condition):
+        self.condition = condition
+        call = 'value'
+        self.object_ = condition.player_unit
+        self.method = None
+        self.args = [condition.parent_action.execution().object_()]
+        super().__init__(call)
+
+    def value(self):
+        """
+        Return the arguments for the expression persistent_multiplier
+        """
+        self.method = Method('PMultiplier')
 
 class Time(BuildExpression):
     """
