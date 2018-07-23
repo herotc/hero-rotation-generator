@@ -5,6 +5,8 @@ Define the objects representing lua specific items.
 @author: skasch
 """
 
+from inspect import getargspec
+
 from ..abstract.decoratormanager import Decorable
 from ..constants import WORD_REPLACEMENTS, TRUE, FALSE, BOOL, NUM
 
@@ -22,14 +24,12 @@ class LuaNamed(Decorable):
         """
         Return the HeroRotation name of the spell.
         """
-        ar_words = [word.title() for word in self.simc.split('_')]
-        ar_words = [WORD_REPLACEMENTS[ar_word]
-                    if ar_word in WORD_REPLACEMENTS else ar_word
-                    for ar_word in ar_words]
-        ar_string = ''.join(ar_words)
+        lua_words = [w.title() for w in self.simc.split('_')]
+        lua_words = [WORD_REPLACEMENTS.get(w, w) for w in lua_words]
+        lua_string = ''.join(lua_words)
         # Recapitalize first letter if lowered
-        ar_string = ar_string[0].upper() + ar_string[1:]
-        return ar_string
+        lua_string = lua_string[0].upper() + lua_string[1:]
+        return lua_string
 
 
 class LuaTyped(Decorable):
@@ -59,18 +59,9 @@ class LuaCastable(Decorable):
         self.condition_method = None
         self.condition_args = []
         self.additional_conditions = []
-        if cast_method is None:
-            self.cast_method = Method('HR.Cast')
-        else:
-            self.cast_method = cast_method
-        if cast_args is None:
-            self.cast_args = [self]
-        else:
-            self.cast_args = cast_args
-        if cast_template is None:
-            self.cast_template = 'if {} then return ""; end'
-        else:
-            self.cast_template = cast_template
+        self.cast_method = cast_method or Method('HR.Cast')
+        self.cast_args = [self] if cast_args is None else cast_args
+        self.cast_template = cast_template or 'if {} then return ""; end'
 
     def main_condition(self):
         """
@@ -126,6 +117,26 @@ class LuaTemplated(LuaTyped):
         Print the lua code for the composite object.
         """
         return self.template.format(**self.attributes)
+
+
+class LuaComparison(LuaTyped):
+    """"
+    Abstract class representing a generic lua comparison of the form:
+    exp1 <comp> exp2.
+    """
+
+    def __init__(self, exp1, exp2, symbol):
+        self.exp1 = exp1
+        self.exp2 = exp2
+        self.symbol = symbol
+        super().__init__(type_=BOOL)
+
+    def print_lua(self):
+        """
+        Print the lua code for the comparison.
+        """
+        return (f'({self.exp1.print_lua()} {self.symbol} '
+                f'{self.exp2.print_lua()})')
 
 
 class LuaExpression(LuaTemplated):
@@ -191,26 +202,6 @@ class LuaRange(LuaArray):
                           type_=type_)
 
 
-class LuaComparison(LuaTyped):
-    """"
-    Abstract class representing a generic lua comparison of the form:
-    exp1 <comp> exp2.
-    """
-
-    def __init__(self, exp1, exp2, symbol):
-        self.exp1 = exp1
-        self.exp2 = exp2
-        self.symbol = symbol
-        super().__init__(type_=BOOL)
-
-    def print_lua(self):
-        """
-        Print the lua code for the comparison.
-        """
-        return (f'({self.exp1.print_lua()} {self.symbol} '
-                f'{self.exp2.print_lua()})')
-
-
 class Method(Decorable):
     """
     Represent a lua method.
@@ -261,7 +252,7 @@ class BuildExpression(Decorable):
     Build an expression from a call.
     """
 
-    def __init__(self, call, model='expression'):
+    def __init__(self, call, model=LuaExpression):
         self.model = model
         self.content = None
         call = 'ready' if call == 'up' else call
@@ -273,36 +264,32 @@ class BuildExpression(Decorable):
         """
         Call the right builder depending on the model.
         """
-        if self.model == 'array':
-            type_ = getattr(self, 'type_', None)
-            self.try_builder(LuaArray, ['object_', 'method', 'index'],
-                             type_=type_)
-        elif self.model == 'range':
-            type_ = getattr(self, 'type_', None)
-            self.try_builder(LuaRange, ['condition', 'range_'], type_=type_)
-        elif self.model == 'expression':
-            type_ = getattr(self, 'type_', None)
-            self.try_builder(LuaExpression, ['object_', 'method', 'args'],
-                             type_=type_)
-        elif self.model == 'literal':
-            convert = getattr(self, 'convert', False)
-            quoted = getattr(self, 'quoted', False)
-            type_ = getattr(self, 'type_', None)
-            self.try_builder(Literal, ['simc'], convert=convert, quoted=quoted,
-                             type_=type_)
-        else:
-            raise AttributeError(f'The model {self.model} is invalid.')
+        # getargspec returns the trace of the model. For example, for LuaRange:
+        # arg_spec.args = ['self', 'condition', 'range_', 'type_']
+        # arg_spec.defaults = (None,)
+        # As defaults are for the last args, we know type_=None by default.
+        try:
+            arg_spec = getargspec(self.model)
+            arg_names = arg_spec.args[1:-len(arg_spec.defaults)]
+            kwarg_names = arg_spec.args[-len(arg_spec.defaults):]
+            self.try_builder(self.model, arg_names, kwarg_names)
+        except AttributeError:
+            raise AttributeError(f'The model {self.model.__name__} '
+                                 'is invalid.')
 
-    def try_builder(self, model, attributes, **kwargs):
+    def try_builder(self, model, arg_names, kwarg_names):
         """
         Try to build the model.
         """
         try:
-            args = [getattr(self, attribute) for attribute in attributes]
+            args = [getattr(self, arg_name) for arg_name in arg_names]
+            kwargs = {kwarg_name: getattr(self, kwarg_name)
+                      for kwarg_name in kwarg_names
+                      if hasattr(self, kwarg_name)}
             self.content = model(*args, **kwargs)
         except AttributeError:
-            missing_attr = [attribute for attribute in attributes
-                            if not hasattr(self, attribute)]
+            missing_attr = [arg_name for arg_name in arg_names
+                            if not hasattr(self, arg_name)]
             error_msg = (f'The {model.__name__} model did not have the '
                          f'following attributes: {", ".join(missing_attr)}')
             raise AttributeError(error_msg)

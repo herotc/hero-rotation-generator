@@ -5,7 +5,7 @@ Define the objects representing simc expressions.
 @author: skasch
 """
 
-from .lua import LuaExpression, Method, Literal, BuildExpression
+from .lua import LuaExpression, LuaRange, Method, Literal, BuildExpression
 from .executions import Spell, Item, Potion, Variable
 from .resources import (Rune, AstralPower, HolyPower, Insanity, Pain, Focus,
                         Maelstrom, Energy, ComboPoints, SoulShard,
@@ -150,7 +150,7 @@ class ActionExpression(BuildExpression):
         self.range_ = self.condition.player_unit.spell_property(
             self.action_object(), RANGE,
             self.condition.player_unit.spec_range())
-        self.model = 'range'
+        self.model = LuaRange
 
     def cast_regen(self):
         """
@@ -674,7 +674,7 @@ class SetBonus(BuildExpression):
         self.condition = condition
         self.simc = None
         self.type_ = BOOL
-        super().__init__('lua_tier_name', model='literal')
+        super().__init__('lua_tier_name', model=Literal)
 
     def lua_tier_name(self):
         """
@@ -897,7 +897,7 @@ class SpellTargets(BuildExpression):
         self.condition = condition
         self.range_ = condition.player_unit.spell_property(
             condition.condition_list[1], RANGE, 5)
-        super().__init__(None, model='range')
+        super().__init__(None, model=LuaRange)
 
 
 class Debuff(BuildExpression, Aura):
@@ -1000,7 +1000,7 @@ class RaidEvent(BuildExpression):
         self.condition = condition
         self.simc = None
         call = '_'.join(condition.condition_list[1:])
-        super().__init__(call, model='literal')
+        super().__init__(call, model=Literal)
 
     def adds_in(self):
         """
