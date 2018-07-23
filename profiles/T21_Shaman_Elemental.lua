@@ -46,12 +46,15 @@ Spell.Shaman.Elemental = {
   ResonanceTotemBuff                    = Spell(202192),
   IcefuryBuff                           = Spell(210714),
   Icefury                               = Spell(210714),
+  LavaBeamBuff                          = Spell(),
+  ChainLightningBuff                    = Spell(),
   Bloodlust                             = Spell(2825),
   WindShear                             = Spell(57994),
   EarthElemental                        = Spell(),
   UseItems                              = Spell(),
   BloodFury                             = Spell(20572),
-  Berserking                            = Spell(26297)
+  Berserking                            = Spell(26297),
+  AoeBuff                               = Spell()
 };
 local S = Spell.Shaman.Elemental;
 
@@ -167,7 +170,7 @@ local function APL()
   end
   local function SingleTarget()
     -- flame_shock,if=!ticking|dot.flame_shock.remains<=gcd
-    if S.FlameShock:IsCastableP() and (not Target:DebuffP(S.FlameShock) or Target:DebuffRemainsP(S.FlameShockDebuff) <= Player:GCD()) then
+    if S.FlameShock:IsCastableP() and (not Target:DebuffP(S.FlameShockDebuff) or Target:DebuffRemainsP(S.FlameShockDebuff) <= Player:GCD()) then
       if HR.Cast(S.FlameShock) then return ""; end
     end
     -- ascendance,if=(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&!talent.storm_elemental.enabled

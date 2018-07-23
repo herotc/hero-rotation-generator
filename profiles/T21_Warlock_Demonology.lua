@@ -40,15 +40,19 @@ Spell.Warlock.Demonology = {
   DemonicCoreBuff                       = Spell(),
   SummonVilefiend                       = Spell(),
   NetherPortal                          = Spell(),
+  ShadowBoltBuff                        = Spell(),
+  DemonboltBuff                         = Spell(),
+  HandofGuldanBuff                      = Spell(),
   NetherPortalBuff                      = Spell(),
+  SummonDemonicTyrantBuff               = Spell(),
   PowerSiphon                           = Spell(),
   UseItems                              = Spell(),
   Berserking                            = Spell(26297),
   BloodFury                             = Spell(20572),
   Fireblood                             = Spell(),
   Doom                                  = Spell(603),
-  DemonicStrength                       = Spell(),
-  DoomDebuff                            = Spell(603)
+  DoomDebuff                            = Spell(603),
+  DemonicStrength                       = Spell()
 };
 local S = Spell.Warlock.Demonology;
 
@@ -285,7 +289,7 @@ local function APL()
     if HR.Cast(S.Fireblood) then return ""; end
   end
   -- doom,if=!ticking&time_to_die>30&spell_targets.implosion<2
-  if S.Doom:IsCastableP() and (not Target:DebuffP(S.Doom) and Target:TimeToDie() > 30 and Cache.EnemiesCount[40] < 2) then
+  if S.Doom:IsCastableP() and (not Target:DebuffP(S.DoomDebuff) and Target:TimeToDie() > 30 and Cache.EnemiesCount[40] < 2) then
     if HR.Cast(S.Doom) then return ""; end
   end
   -- demonic_strength
@@ -325,7 +329,7 @@ local function APL()
     if HR.CastSuggested(I.ProlongedPower) then return ""; end
   end
   -- doom,if=talent.doom.enabled&refreshable&time_to_die>(dot.doom.remains+30)
-  if S.Doom:IsCastableP() and (S.Doom:IsAvailable() and Target:DebuffRefreshableCP(S.Doom) and Target:TimeToDie() > (Target:DebuffRemainsP(S.DoomDebuff) + 30)) then
+  if S.Doom:IsCastableP() and (S.Doom:IsAvailable() and Target:DebuffRefreshableCP(S.DoomDebuff) and Target:TimeToDie() > (Target:DebuffRemainsP(S.DoomDebuff) + 30)) then
     if HR.Cast(S.Doom) then return ""; end
   end
   -- hand_of_guldan,if=soul_shard>=5|(soul_shard>=3&cooldown.call_dreadstalkers.remains>4&(!talent.summon_vilefiend.enabled|cooldown.summon_vilefiend.remains>3))

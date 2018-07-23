@@ -27,7 +27,7 @@ Spell.DeathKnight.Frost = {
   Frostscythe                           = Spell(207230),
   FrostStrike                           = Spell(49143),
   HowlingBlast                          = Spell(49184),
-  RimeBuff                              = Spell(59052),
+  RimeBuff                              = Spell(),
   KillingMachineBuff                    = Spell(51124),
   RunicAttenuation                      = Spell(207104),
   Obliterate                            = Spell(49020),
@@ -35,9 +35,9 @@ Spell.DeathKnight.Frost = {
   ArcaneTorrent                         = Spell(50613),
   PillarofFrost                         = Spell(51271),
   ChainsofIce                           = Spell(45524),
-  ColdHeartItemBuff                     = Spell(),
-  ColdHeartTalentBuff                   = Spell(),
-  PillarofFrostBuff                     = Spell(51271),
+  ColdHeartItemBuff                     = Spell(235599),
+  ColdHeartTalentBuff                   = Spell(281209),
+  PillarofFrostBuff                     = Spell(),
   FrostwyrmsFury                        = Spell(279302),
   UseItems                              = Spell(),
   BreathofSindragosa                    = Spell(152279),
@@ -52,8 +52,9 @@ Spell.DeathKnight.Frost = {
   MindFreeze                            = Spell(47528),
   FrostFeverDebuff                      = Spell(),
   IcyTalonsBuff                         = Spell(194879),
-  BreathofSindragosaDebuff              = Spell(155166),
-  Obliteration                          = Spell(281238)
+  BreathofSindragosaDebuff              = Spell(),
+  Obliteration                          = Spell(281238),
+  AoeBuff                               = Spell()
 };
 local S = Spell.DeathKnight.Frost;
 
@@ -161,8 +162,8 @@ local function APL()
       if HR.Cast(S.HornofWinter) then return ""; end
     end
     -- arcane_torrent
-    if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (true) then
-      if HR.Cast(S.ArcaneTorrent, Settings.Frost.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
+    if S.ArcaneTorrent:IsCastableP() and (true) then
+      if HR.Cast(S.ArcaneTorrent, Settings.Frost.GCDasOffGCD.ArcaneTorrent) then return ""; end
     end
   end
   local function BosPooling()
@@ -237,8 +238,8 @@ local function APL()
       if HR.Cast(S.Obliterate) then return ""; end
     end
     -- arcane_torrent,if=runic_power.deficit>20
-    if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (Player:RunicPowerDeficit() > 20) then
-      if HR.Cast(S.ArcaneTorrent, Settings.Frost.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
+    if S.ArcaneTorrent:IsCastableP() and (Player:RunicPowerDeficit() > 20) then
+      if HR.Cast(S.ArcaneTorrent, Settings.Frost.GCDasOffGCD.ArcaneTorrent) then return ""; end
     end
   end
   local function ColdHeart()
@@ -265,24 +266,24 @@ local function APL()
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- blood_fury,if=buff.pillar_of_frost.up&buff.empower_rune_weapon.up
-    if S.BloodFury:IsCastableP() and HR.CDsON() and (Player:BuffP(S.PillarofFrostBuff) and Player:BuffP(S.EmpowerRuneWeaponBuff)) then
+    if S.BloodFury:IsCastableP() and (Player:BuffP(S.PillarofFrostBuff) and Player:BuffP(S.EmpowerRuneWeaponBuff)) then
       if HR.Cast(S.BloodFury, Settings.Frost.OffGCDasOffGCD.BloodFury) then return ""; end
     end
     -- berserking,if=buff.pillar_of_frost.up
-    if S.Berserking:IsCastableP() and HR.CDsON() and (Player:BuffP(S.PillarofFrostBuff)) then
+    if S.Berserking:IsCastableP() and (Player:BuffP(S.PillarofFrostBuff)) then
       if HR.Cast(S.Berserking, Settings.Frost.OffGCDasOffGCD.Berserking) then return ""; end
     end
     -- pillar_of_frost,if=cooldown.empower_rune_weapon.remains
     if S.PillarofFrost:IsCastableP() and (bool(S.EmpowerRuneWeapon:CooldownRemainsP())) then
-      if HR.Cast(S.PillarofFrost) then return ""; end
+      if HR.Cast(S.PillarofFrost, Settings.Frost.GCDasOffGCD.PillarofFrost) then return ""; end
     end
     -- empower_rune_weapon,if=cooldown.pillar_of_frost.ready&!talent.breath_of_sindragosa.enabled&rune.time_to_5>gcd&runic_power.deficit>=10
     if S.EmpowerRuneWeapon:IsCastableP() and (S.PillarofFrost:CooldownUpP() and not S.BreathofSindragosa:IsAvailable() and Player:RuneTimeToX(5) > Player:GCD() and Player:RunicPowerDeficit() >= 10) then
-      if HR.Cast(S.EmpowerRuneWeapon) then return ""; end
+      if HR.Cast(S.EmpowerRuneWeapon, Settings.Frost.GCDasOffGCD.EmpowerRuneWeapon) then return ""; end
     end
     -- empower_rune_weapon,if=cooldown.pillar_of_frost.ready&talent.breath_of_sindragosa.enabled&rune>=3&runic_power>60
     if S.EmpowerRuneWeapon:IsCastableP() and (S.PillarofFrost:CooldownUpP() and S.BreathofSindragosa:IsAvailable() and Player:Rune() >= 3 and Player:RunicPower() > 60) then
-      if HR.Cast(S.EmpowerRuneWeapon) then return ""; end
+      if HR.Cast(S.EmpowerRuneWeapon, Settings.Frost.GCDasOffGCD.EmpowerRuneWeapon) then return ""; end
     end
     -- call_action_list,name=cold_heart,if=(equipped.cold_heart|talent.cold_heart.enabled)&(((buff.cold_heart_item.stack>=10|buff.cold_heart_talent.stack>=10)&debuff.razorice.stack=5)|target.time_to_die<=gcd)
     if ((I.ColdHeart:IsEquipped() or S.ColdHeart:IsAvailable()) and (((Player:BuffStackP(S.ColdHeartItemBuff) >= 10 or Player:BuffStackP(S.ColdHeartTalentBuff) >= 10) and Target:DebuffStackP(S.RazoriceDebuff) == 5) or Target:TimeToDie() <= Player:GCD())) then
@@ -369,8 +370,8 @@ local function APL()
       if HR.Cast(S.HornofWinter) then return ""; end
     end
     -- arcane_torrent
-    if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (true) then
-      if HR.Cast(S.ArcaneTorrent, Settings.Frost.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
+    if S.ArcaneTorrent:IsCastableP() and (true) then
+      if HR.Cast(S.ArcaneTorrent, Settings.Frost.GCDasOffGCD.ArcaneTorrent) then return ""; end
     end
   end
   -- call precombat
@@ -396,7 +397,7 @@ local function APL()
   end
   -- breath_of_sindragosa,if=cooldown.empower_rune_weapon.remains&cooldown.pillar_of_frost.remains
   if S.BreathofSindragosa:IsCastableP() and (bool(S.EmpowerRuneWeapon:CooldownRemainsP()) and bool(S.PillarofFrost:CooldownRemainsP())) then
-    if HR.Cast(S.BreathofSindragosa) then return ""; end
+    if HR.Cast(S.BreathofSindragosa, Settings.Frost.GCDasOffGCD.BreathofSindragosa) then return ""; end
   end
   -- call_action_list,name=cooldowns
   if (true) then

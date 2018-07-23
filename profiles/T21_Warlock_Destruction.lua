@@ -32,7 +32,9 @@ Spell.Warlock.Destruction = {
   RainofFire                            = Spell(5740),
   Immolate                              = Spell(348),
   ChannelDemonfire                      = Spell(196447),
+  ImmolateDebuff                        = Spell(157736),
   ChaosBolt                             = Spell(116858),
+  ChaosBoltBuff                         = Spell(),
   FireandBrimstone                      = Spell(196408),
   Havoc                                 = Spell(80240),
   RoaringBlaze                          = Spell(205184),
@@ -44,6 +46,8 @@ Spell.Warlock.Destruction = {
   Flashover                             = Spell(),
   BackdraftBuff                         = Spell(117828),
   Shadowburn                            = Spell(17877),
+  ShadowburnDebuff                      = Spell(17877),
+  IncinerateBuff                        = Spell(),
   InternalCombustion                    = Spell(),
   Berserking                            = Spell(26297),
   BloodFury                             = Spell(20572),
@@ -164,7 +168,7 @@ local function APL()
       if HR.Cast(S.RainofFire) then return ""; end
     end
     -- immolate,if=talent.channel_demonfire.enabled&!remains&cooldown.channel_demonfire.remains<=action.chaos_bolt.execute_time
-    if S.Immolate:IsCastableP() and (S.ChannelDemonfire:IsAvailable() and not bool(Target:DebuffRemainsP(S.Immolate)) and S.ChannelDemonfire:CooldownRemainsP() <= S.ChaosBolt:ExecuteTime()) then
+    if S.Immolate:IsCastableP() and (S.ChannelDemonfire:IsAvailable() and not bool(Target:DebuffRemainsP(S.ImmolateDebuff)) and S.ChannelDemonfire:CooldownRemainsP() <= S.ChaosBolt:ExecuteTime()) then
       if HR.Cast(S.Immolate) then return ""; end
     end
     -- channel_demonfire
@@ -172,7 +176,7 @@ local function APL()
       if HR.Cast(S.ChannelDemonfire) then return ""; end
     end
     -- immolate,cycle_targets=1,if=refreshable&((!talent.fire_and_brimstone.enabled|spell_targets.incinerate<=5)|talent.cataclysm.enabled&cooldown.cataclysm.remains>=12)
-    if S.Immolate:IsCastableP() and (Target:DebuffRefreshableCP(S.Immolate) and ((not S.FireandBrimstone:IsAvailable() or Cache.EnemiesCount[5] <= 5) or S.Cataclysm:IsAvailable() and S.Cataclysm:CooldownRemainsP() >= 12)) then
+    if S.Immolate:IsCastableP() and (Target:DebuffRefreshableCP(S.ImmolateDebuff) and ((not S.FireandBrimstone:IsAvailable() or Cache.EnemiesCount[5] <= 5) or S.Cataclysm:IsAvailable() and S.Cataclysm:CooldownRemainsP() >= 12)) then
       if HR.Cast(S.Immolate) then return ""; end
     end
     -- havoc,cycle_targets=1,if=spell_targets.infernal_awakening<4&!(target=sim.target)&target.time_to_die>10&(talent.roaring_blaze.enabled|talent.eradication.enabled|talent.grimoire_of_supremacy.enabled&cooldown.infernal.remains<165&pet.infernal.active)
@@ -217,7 +221,7 @@ local function APL()
     return Aoe();
   end
   -- immolate,cycle_targets=1,if=(cooldown.havoc.remains<15|!debuff.havoc.remains)&(refreshable|talent.internal_combustion.enabled&action.chaos_bolt.in_flight&remains-action.chaos_bolt.travel_time-5<duration*0.3)
-  if S.Immolate:IsCastableP() and ((S.Havoc:CooldownRemainsP() < 15 or not bool(Target:DebuffRemainsP(S.HavocDebuff))) and (Target:DebuffRefreshableCP(S.Immolate) or S.InternalCombustion:IsAvailable() and S.ChaosBolt:InFlight() and Target:DebuffRemainsP(S.Immolate) - S.ChaosBolt:TravelTime() - 5 < S.Immolate:BaseDuration() * 0.3)) then
+  if S.Immolate:IsCastableP() and ((S.Havoc:CooldownRemainsP() < 15 or not bool(Target:DebuffRemainsP(S.HavocDebuff))) and (Target:DebuffRefreshableCP(S.ImmolateDebuff) or S.InternalCombustion:IsAvailable() and S.ChaosBolt:InFlight() and Target:DebuffRemainsP(S.ImmolateDebuff) - S.ChaosBolt:TravelTime() - 5 < S.ImmolateDebuff:BaseDuration() * 0.3)) then
     if HR.Cast(S.Immolate) then return ""; end
   end
   -- summon_infernal,if=target.time_to_die>=210|!cooldown.dark_soul_instability.remains|target.time_to_die<=30+gcd|!talent.dark_soul_instability.enabled

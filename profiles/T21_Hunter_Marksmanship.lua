@@ -24,7 +24,9 @@ Spell.Hunter.Marksmanship = {
   HuntersMark                           = Spell(),
   DoubleTap                             = Spell(),
   AimedShot                             = Spell(19434),
+  AimedShotBuff                         = Spell(),
   ExplosiveShot                         = Spell(212431),
+  ExplosiveShotBuff                     = Spell(),
   CounterShot                           = Spell(147362),
   BuffSephuzsSecret                     = Spell(),
   SephuzsSecretBuff                     = Spell(208052),
@@ -40,15 +42,20 @@ Spell.Hunter.Marksmanship = {
   TrueshotBuff                          = Spell(193526),
   ProlongedPowerBuff                    = Spell(229206),
   Barrage                               = Spell(120360),
+  BarrageBuff                           = Spell(),
   Multishot                             = Spell(2643),
+  MultishotBuff                         = Spell(),
   PreciseShotsBuff                      = Spell(),
   ArcaneShot                            = Spell(185358),
+  ArcaneShotBuff                        = Spell(),
   DoubleTapBuff                         = Spell(),
   TrickShotsBuff                        = Spell(),
+  RapidFireBuff                         = Spell(),
   PiercingShot                          = Spell(198670),
   AMurderofCrows                        = Spell(131894),
   SteadyFocusBuff                       = Spell(),
   SerpentSting                          = Spell(),
+  SerpentStingBuff                      = Spell(),
   SteadyShot                            = Spell()
 };
 local S = Spell.Hunter.Marksmanship;
@@ -242,7 +249,7 @@ local function APL()
     if HR.Cast(S.ArcaneShot) then return ""; end
   end
   -- serpent_sting,if=refreshable
-  if S.SerpentSting:IsCastableP() and (Player:BuffRefreshableCP(S.SerpentSting)) then
+  if S.SerpentSting:IsCastableP() and (Player:BuffRefreshableCP(S.SerpentStingBuff)) then
     if HR.Cast(S.SerpentSting) then return ""; end
   end
   -- steady_shot

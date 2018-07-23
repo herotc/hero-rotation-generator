@@ -24,7 +24,7 @@ Spell.DeathKnight.Unholy = {
   RaiseDead                             = Spell(),
   ArmyoftheDead                         = Spell(42650),
   DeathandDecay                         = Spell(43265),
-  Apocalypse                            = Spell(220143),
+  Apocalypse                            = Spell(275699),
   Defile                                = Spell(152280),
   Epidemic                              = Spell(207317),
   DeathCoil                             = Spell(47541),
@@ -36,22 +36,23 @@ Spell.DeathKnight.Unholy = {
   SuddenDoomBuff                        = Spell(81340),
   ChainsofIce                           = Spell(45524),
   UnholyStrengthBuff                    = Spell(53365),
-  ColdHeartItemBuff                     = Spell(),
+  ColdHeartItemBuff                     = Spell(235599),
   MasterofGhoulsBuff                    = Spell(246995),
   DarkTransformation                    = Spell(63560),
   SummonGargoyle                        = Spell(49206),
-  UnholyFrenzy                          = Spell(),
-  SoulReaper                            = Spell(130736),
-  UnholyBlight                          = Spell(),
-  Pestilence                            = Spell(),
+  UnholyFrenzy                          = Spell(207289),
   UnholyFrenzyBuff                      = Spell(),
+  SoulReaper                            = Spell(130736),
+  UnholyBlight                          = Spell(115989),
+  Pestilence                            = Spell(277234),
   MindFreeze                            = Spell(47528),
   ArcaneTorrent                         = Spell(50613),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
   UseItems                              = Spell(),
   TemptationBuff                        = Spell(234143),
-  Outbreak                              = Spell(77575)
+  Outbreak                              = Spell(77575),
+  AoeBuff                               = Spell()
 };
 local S = Spell.DeathKnight.Unholy;
 
@@ -113,12 +114,12 @@ local function APL()
     end
     -- army_of_the_dead
     if S.ArmyoftheDead:IsCastableP() and (true) then
-      if HR.Cast(S.ArmyoftheDead) then return ""; end
+      if HR.Cast(S.ArmyoftheDead, Settings.Unholy.GCDasOffGCD.ArmyoftheDead) then return ""; end
     end
   end
   local function Aoe()
     -- death_and_decay,if=cooldown.apocalypse.remains
-    if S.DeathandDecay:IsUsableP() and (bool(S.Apocalypse:CooldownRemainsP())) then
+    if S.DeathandDecay:IsCastableP() and (bool(S.Apocalypse:CooldownRemainsP())) then
       if HR.Cast(S.DeathandDecay) then return ""; end
     end
     -- defile
@@ -126,7 +127,7 @@ local function APL()
       if HR.Cast(S.Defile) then return ""; end
     end
     -- epidemic,if=death_and_decay.ticking&rune<2&!variable.pooling_for_gargoyle
-    if S.Epidemic:IsCastableP() and (bool(death_and_decay.ticking) and Player:Rune() < 2 and not bool(VarPoolingForGargoyle)) then
+    if S.Epidemic:IsUsableP() and (bool(death_and_decay.ticking) and Player:Rune() < 2 and not bool(VarPoolingForGargoyle)) then
       if HR.Cast(S.Epidemic) then return ""; end
     end
     -- death_coil,if=death_and_decay.ticking&rune<2&!talent.epidemic.enabled&!variable.pooling_for_gargoyle
@@ -142,7 +143,7 @@ local function APL()
       if HR.Cast(S.ClawingShadows) then return ""; end
     end
     -- epidemic,if=!variable.pooling_for_gargoyle
-    if S.Epidemic:IsCastableP() and (not bool(VarPoolingForGargoyle)) then
+    if S.Epidemic:IsUsableP() and (not bool(VarPoolingForGargoyle)) then
       if HR.Cast(S.Epidemic) then return ""; end
     end
     -- festering_strike,if=talent.bursting_sores.enabled&spell_targets.bursting_sores>=2&debuff.festering_wound.stack<=1
@@ -175,7 +176,7 @@ local function APL()
     end
     -- army_of_the_dead
     if S.ArmyoftheDead:IsCastableP() and (true) then
-      if HR.Cast(S.ArmyoftheDead) then return ""; end
+      if HR.Cast(S.ArmyoftheDead, Settings.Unholy.GCDasOffGCD.ArmyoftheDead) then return ""; end
     end
     -- apocalypse,if=debuff.festering_wound.stack>=4
     if S.Apocalypse:IsCastableP() and (Target:DebuffStackP(S.FesteringWoundDebuff) >= 4) then
@@ -216,7 +217,7 @@ local function APL()
       if HR.Cast(S.DeathCoil) then return ""; end
     end
     -- death_and_decay,if=talent.pestilence.enabled&cooldown.apocalypse.remains
-    if S.DeathandDecay:IsUsableP() and (S.Pestilence:IsAvailable() and bool(S.Apocalypse:CooldownRemainsP())) then
+    if S.DeathandDecay:IsCastableP() and (S.Pestilence:IsAvailable() and bool(S.Apocalypse:CooldownRemainsP())) then
       if HR.Cast(S.DeathandDecay) then return ""; end
     end
     -- defile,if=cooldown.apocalypse.remains
@@ -258,15 +259,15 @@ local function APL()
     VarPoolingForGargoyle = num((S.SummonGargoyle:CooldownRemainsP() < 5 and (S.DarkTransformation:CooldownRemainsP() < 5 or not I.Item137075:IsEquipped())) and S.SummonGargoyle:IsAvailable())
   end
   -- arcane_torrent,if=runic_power.deficit>65&(pet.gargoyle.active|!talent.summon_gargoyle.enabled)&rune.deficit>=5
-  if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (Player:RunicPowerDeficit() > 65 and (bool(pet.gargoyle.active) or not S.SummonGargoyle:IsAvailable()) and Player:RuneDeficit() >= 5) then
-    if HR.Cast(S.ArcaneTorrent, Settings.Unholy.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
+  if S.ArcaneTorrent:IsCastableP() and (Player:RunicPowerDeficit() > 65 and (bool(pet.gargoyle.active) or not S.SummonGargoyle:IsAvailable()) and Player:RuneDeficit() >= 5) then
+    if HR.Cast(S.ArcaneTorrent, Settings.Unholy.GCDasOffGCD.ArcaneTorrent) then return ""; end
   end
   -- blood_fury,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled
-  if S.BloodFury:IsCastableP() and HR.CDsON() and (bool(pet.gargoyle.active) or not S.SummonGargoyle:IsAvailable()) then
+  if S.BloodFury:IsCastableP() and (bool(pet.gargoyle.active) or not S.SummonGargoyle:IsAvailable()) then
     if HR.Cast(S.BloodFury, Settings.Unholy.OffGCDasOffGCD.BloodFury) then return ""; end
   end
   -- berserking,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled
-  if S.Berserking:IsCastableP() and HR.CDsON() and (bool(pet.gargoyle.active) or not S.SummonGargoyle:IsAvailable()) then
+  if S.Berserking:IsCastableP() and (bool(pet.gargoyle.active) or not S.SummonGargoyle:IsAvailable()) then
     if HR.Cast(S.Berserking, Settings.Unholy.OffGCDasOffGCD.Berserking) then return ""; end
   end
   -- use_items

@@ -33,6 +33,7 @@ Spell.Priest.Shadow = {
   VoidBolt                              = Spell(205448),
   DarkVoid                              = Spell(263346),
   ShadowWordPainDebuff                  = Spell(589),
+  VoidBoltBuff                          = Spell(),
   SurrenderToMadness                    = Spell(193223),
   ShadowCrash                           = Spell(205385),
   MindSear                              = Spell(48045),
@@ -42,7 +43,9 @@ Spell.Priest.Shadow = {
   VampiricTouch                         = Spell(34914),
   VoidTorrent                           = Spell(263165),
   VampiricTouchDebuff                   = Spell(34914),
-  MindFlay                              = Spell(15407)
+  MindFlay                              = Spell(15407),
+  CleaveBuff                            = Spell(),
+  SingleBuff                            = Spell()
 };
 local S = Spell.Priest.Shadow;
 
@@ -312,11 +315,11 @@ local function APL()
       if HR.Cast(S.VoidTorrent) then return ""; end
     end
     -- shadow_word_pain,if=refreshable&target.time_to_die>4&!talent.misery.enabled&!talent.dark_void.enabled
-    if S.ShadowWordPain:IsCastableP() and (Target:DebuffRefreshableCP(S.ShadowWordPain) and Target:TimeToDie() > 4 and not S.Misery:IsAvailable() and not S.DarkVoid:IsAvailable()) then
+    if S.ShadowWordPain:IsCastableP() and (Target:DebuffRefreshableCP(S.ShadowWordPainDebuff) and Target:TimeToDie() > 4 and not S.Misery:IsAvailable() and not S.DarkVoid:IsAvailable()) then
       if HR.Cast(S.ShadowWordPain) then return ""; end
     end
     -- vampiric_touch,if=refreshable&target.time_to_die>6|(talent.misery.enabled&dot.shadow_word_pain.refreshable)
-    if S.VampiricTouch:IsCastableP() and (Target:DebuffRefreshableCP(S.VampiricTouch) and Target:TimeToDie() > 6 or (S.Misery:IsAvailable() and Target:DebuffRefreshableCP(S.ShadowWordPainDebuff))) then
+    if S.VampiricTouch:IsCastableP() and (Target:DebuffRefreshableCP(S.VampiricTouchDebuff) and Target:TimeToDie() > 6 or (S.Misery:IsAvailable() and Target:DebuffRefreshableCP(S.ShadowWordPainDebuff))) then
       if HR.Cast(S.VampiricTouch) then return ""; end
     end
     -- mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(cooldown.void_bolt.up|cooldown.mind_blast.up)

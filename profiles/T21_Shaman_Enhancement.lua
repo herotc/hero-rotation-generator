@@ -28,8 +28,10 @@ Spell.Shaman.Enhancement = {
   Rockbiter                             = Spell(193786),
   Landslide                             = Spell(197992),
   LandslideBuff                         = Spell(202004),
+  RockbiterBuff                         = Spell(),
   Windstrike                            = Spell(115356),
   FuryofAir                             = Spell(197211),
+  FuryofAirBuff                         = Spell(197211),
   Flametongue                           = Spell(193796),
   FlametongueBuff                       = Spell(194084),
   Frostbrand                            = Spell(196834),
@@ -144,7 +146,7 @@ local function APL()
       if HR.Cast(S.Rockbiter) then return ""; end
     end
     -- fury_of_air,if=!ticking&maelstrom>22
-    if S.FuryofAir:IsCastableP() and (not Player:BuffP(S.FuryofAir) and Player:Maelstrom() > 22) then
+    if S.FuryofAir:IsCastableP() and (not Player:BuffP(S.FuryofAirBuff) and Player:Maelstrom() > 22) then
       if HR.Cast(S.FuryofAir) then return ""; end
     end
     -- flametongue,if=!buff.flametongue.up

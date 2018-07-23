@@ -22,6 +22,7 @@ local HR     = HeroRotation
 if not Spell.Warrior then Spell.Warrior = {} end
 Spell.Warrior.Arms = {
   Rend                                  = Spell(772),
+  RendDebuff                            = Spell(772),
   ColossusSmashDebuff                   = Spell(198804),
   Skullsplitter                         = Spell(),
   DeadlyCalm                            = Spell(227266),
@@ -107,7 +108,7 @@ local function APL()
   end
   local function Execute()
     -- rend,if=remains<=duration*0.3&debuff.colossus_smash.down
-    if S.Rend:IsCastableP() and (Target:DebuffRemainsP(S.Rend) <= S.Rend:BaseDuration() * 0.3 and Target:DebuffDownP(S.ColossusSmashDebuff)) then
+    if S.Rend:IsCastableP() and (Target:DebuffRemainsP(S.RendDebuff) <= S.RendDebuff:BaseDuration() * 0.3 and Target:DebuffDownP(S.ColossusSmashDebuff)) then
       if HR.Cast(S.Rend) then return ""; end
     end
     -- skullsplitter,if=rage<70&((cooldown.deadly_calm.remains>3&!buff.deadly_calm.up)|!talent.deadly_calm.enabled)
@@ -203,7 +204,7 @@ local function APL()
   end
   local function SingleTarget()
     -- rend,if=remains<=duration*0.3&debuff.colossus_smash.down
-    if S.Rend:IsCastableP() and (Target:DebuffRemainsP(S.Rend) <= S.Rend:BaseDuration() * 0.3 and Target:DebuffDownP(S.ColossusSmashDebuff)) then
+    if S.Rend:IsCastableP() and (Target:DebuffRemainsP(S.RendDebuff) <= S.RendDebuff:BaseDuration() * 0.3 and Target:DebuffDownP(S.ColossusSmashDebuff)) then
       if HR.Cast(S.Rend) then return ""; end
     end
     -- skullsplitter,if=rage<70&(cooldown.deadly_calm.remains>3|!talent.deadly_calm.enabled)

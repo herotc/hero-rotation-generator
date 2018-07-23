@@ -27,7 +27,9 @@ Spell.Warlock.Affliction = {
   Haunt                                 = Spell(48181),
   ShadowBolt                            = Spell(),
   SummonDarkglare                       = Spell(),
+  DgSoonBuff                            = Spell(),
   UnstableAffliction                    = Spell(30108),
+  UnstableAfflictionDebuff              = Spell(30108),
   Agony                                 = Spell(980),
   Deathbolt                             = Spell(),
   SiphonLife                            = Spell(63106),
@@ -41,8 +43,10 @@ Spell.Warlock.Affliction = {
   UnstableAffliction3Debuff             = Spell(),
   UnstableAffliction4Debuff             = Spell(),
   UnstableAffliction5Debuff             = Spell(),
+  RegularBuff                           = Spell(),
   CorruptionDebuff                      = Spell(172),
   DarkSoul                              = Spell(),
+  SiphonLifeDebuff                      = Spell(63106),
   Corruption                            = Spell(172),
   PhantomSingularity                    = Spell(205179),
   VileTaint                             = Spell(),
@@ -259,19 +263,19 @@ local function APL()
     if HR.Cast(S.SummonDarkglare) then return ""; end
   end
   -- agony,cycle_targets=1,max_cycle_targets=5,if=remains<=gcd&active_enemies<=7
-  if S.Agony:IsCastableP() and (Target:DebuffRemainsP(S.Agony) <= Player:GCD() and Cache.EnemiesCount[40] <= 7) then
+  if S.Agony:IsCastableP() and (Target:DebuffRemainsP(S.AgonyDebuff) <= Player:GCD() and Cache.EnemiesCount[40] <= 7) then
     if HR.Cast(S.Agony) then return ""; end
   end
   -- agony,cycle_targets=1,max_cycle_targets=5,if=refreshable&target.time_to_die>10&(!(cooldown.summon_darkglare.remains<=soul_shard*cast_time)|active_enemies<2)&active_enemies<=7
-  if S.Agony:IsCastableP() and (Target:DebuffRefreshableCP(S.Agony) and Target:TimeToDie() > 10 and (not (S.SummonDarkglare:CooldownRemainsP() <= FutureShard() * S.Agony:CastTime()) or Cache.EnemiesCount[40] < 2) and Cache.EnemiesCount[40] <= 7) then
+  if S.Agony:IsCastableP() and (Target:DebuffRefreshableCP(S.AgonyDebuff) and Target:TimeToDie() > 10 and (not (S.SummonDarkglare:CooldownRemainsP() <= FutureShard() * S.Agony:CastTime()) or Cache.EnemiesCount[40] < 2) and Cache.EnemiesCount[40] <= 7) then
     if HR.Cast(S.Agony) then return ""; end
   end
   -- agony,cycle_targets=1,max_cycle_targets=4,if=remains<=gcd&active_enemies>7
-  if S.Agony:IsCastableP() and (Target:DebuffRemainsP(S.Agony) <= Player:GCD() and Cache.EnemiesCount[40] > 7) then
+  if S.Agony:IsCastableP() and (Target:DebuffRemainsP(S.AgonyDebuff) <= Player:GCD() and Cache.EnemiesCount[40] > 7) then
     if HR.Cast(S.Agony) then return ""; end
   end
   -- agony,cycle_targets=1,max_cycle_targets=4,if=refreshable&target.time_to_die>10&(!(cooldown.summon_darkglare.remains<=soul_shard*cast_time)|active_enemies<2)&active_enemies>7
-  if S.Agony:IsCastableP() and (Target:DebuffRefreshableCP(S.Agony) and Target:TimeToDie() > 10 and (not (S.SummonDarkglare:CooldownRemainsP() <= FutureShard() * S.Agony:CastTime()) or Cache.EnemiesCount[40] < 2) and Cache.EnemiesCount[40] > 7) then
+  if S.Agony:IsCastableP() and (Target:DebuffRefreshableCP(S.AgonyDebuff) and Target:TimeToDie() > 10 and (not (S.SummonDarkglare:CooldownRemainsP() <= FutureShard() * S.Agony:CastTime()) or Cache.EnemiesCount[40] < 2) and Cache.EnemiesCount[40] > 7) then
     if HR.Cast(S.Agony) then return ""; end
   end
   -- dark_soul
@@ -279,19 +283,19 @@ local function APL()
     if HR.Cast(S.DarkSoul) then return ""; end
   end
   -- siphon_life,cycle_targets=1,max_cycle_targets=1,if=refreshable&target.time_to_die>10&((!(cooldown.summon_darkglare.remains<=soul_shard*cast_time)&active_enemies>4)|active_enemies<2)
-  if S.SiphonLife:IsCastableP() and (Target:DebuffRefreshableCP(S.SiphonLife) and Target:TimeToDie() > 10 and ((not (S.SummonDarkglare:CooldownRemainsP() <= FutureShard() * S.SiphonLife:CastTime()) and Cache.EnemiesCount[40] > 4) or Cache.EnemiesCount[40] < 2)) then
+  if S.SiphonLife:IsCastableP() and (Target:DebuffRefreshableCP(S.SiphonLifeDebuff) and Target:TimeToDie() > 10 and ((not (S.SummonDarkglare:CooldownRemainsP() <= FutureShard() * S.SiphonLife:CastTime()) and Cache.EnemiesCount[40] > 4) or Cache.EnemiesCount[40] < 2)) then
     if HR.Cast(S.SiphonLife) then return ""; end
   end
   -- siphon_life,cycle_targets=1,max_cycle_targets=2,if=refreshable&target.time_to_die>10&!(cooldown.summon_darkglare.remains<=soul_shard*cast_time)&active_enemies=2
-  if S.SiphonLife:IsCastableP() and (Target:DebuffRefreshableCP(S.SiphonLife) and Target:TimeToDie() > 10 and not (S.SummonDarkglare:CooldownRemainsP() <= FutureShard() * S.SiphonLife:CastTime()) and Cache.EnemiesCount[40] == 2) then
+  if S.SiphonLife:IsCastableP() and (Target:DebuffRefreshableCP(S.SiphonLifeDebuff) and Target:TimeToDie() > 10 and not (S.SummonDarkglare:CooldownRemainsP() <= FutureShard() * S.SiphonLife:CastTime()) and Cache.EnemiesCount[40] == 2) then
     if HR.Cast(S.SiphonLife) then return ""; end
   end
   -- siphon_life,cycle_targets=1,max_cycle_targets=3,if=refreshable&target.time_to_die>10&!(cooldown.summon_darkglare.remains<=soul_shard*cast_time)&active_enemies=3
-  if S.SiphonLife:IsCastableP() and (Target:DebuffRefreshableCP(S.SiphonLife) and Target:TimeToDie() > 10 and not (S.SummonDarkglare:CooldownRemainsP() <= FutureShard() * S.SiphonLife:CastTime()) and Cache.EnemiesCount[40] == 3) then
+  if S.SiphonLife:IsCastableP() and (Target:DebuffRefreshableCP(S.SiphonLifeDebuff) and Target:TimeToDie() > 10 and not (S.SummonDarkglare:CooldownRemainsP() <= FutureShard() * S.SiphonLife:CastTime()) and Cache.EnemiesCount[40] == 3) then
     if HR.Cast(S.SiphonLife) then return ""; end
   end
   -- corruption,cycle_targets=1,if=active_enemies<3&refreshable&target.time_to_die>10
-  if S.Corruption:IsCastableP() and (Cache.EnemiesCount[40] < 3 and Target:DebuffRefreshableCP(S.Corruption) and Target:TimeToDie() > 10) then
+  if S.Corruption:IsCastableP() and (Cache.EnemiesCount[40] < 3 and Target:DebuffRefreshableCP(S.CorruptionDebuff) and Target:TimeToDie() > 10) then
     if HR.Cast(S.Corruption) then return ""; end
   end
   -- seed_of_corruption,line_cd=10,if=dot.corruption.ticks_remain<=2&spell_targets.seed_of_corruption_aoe>=3

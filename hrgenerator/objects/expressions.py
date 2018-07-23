@@ -52,15 +52,16 @@ class ActionExpression(BuildExpression):
         """
         The action aura when referring to the action as a buff or debuff.
         """
-        if self.condition.player_unit.spell_property(
-                self.action_object(), DEBUFF):
+        action_object = self.action_object()
+        if self.condition.player_unit.spell_property(action_object, DEBUFF):
             aura_type = DEBUFF
             aura_object = self.condition.target_unit
         else:
             aura_type = BUFF
             aura_object = self.condition.player_unit
-        return Aura(self.condition, aura_type, aura_object,
-                    spell=self.action_object())
+        aura_action = Spell(self.condition.parent_action, action_object.simc,
+                            type_=aura_type)
+        return Aura(self.condition, aura_type, aura_object, spell=aura_action)
 
     def from_aura(self):
         """
@@ -225,21 +226,21 @@ class ActionExpression(BuildExpression):
 
     def tick_time(self):
         """
-        Return the arguments for the expression action.spell.duration.
+        Return the arguments for the expression action.spell.tick_time.
         """
         self.aura_model.tick_time()
         self.from_aura()
 
     def ticking(self):
         """
-        Return the arguments for the expression action.spell.duration.
+        Return the arguments for the expression action.spell.ticking.
         """
         self.aura_model.ticking()
         self.from_aura()
 
     def refreshable(self):
         """
-        Return the arguments for the expression action.spell.duration.
+        Return the arguments for the expression action.spell.refreshable.
         """
         self.aura_model.refreshable()
         self.from_aura()

@@ -37,6 +37,7 @@ Spell.Rogue.Subtlety = {
   SymbolsofDeath                        = Spell(212283),
   NightbladeDebuff                      = Spell(195452),
   ShurikenTornado                       = Spell(),
+  ShurikenTornadoBuff                   = Spell(),
   SymbolsofDeathBuff                    = Spell(212283),
   ShadowDanceBuff                       = Spell(185313),
   ShadowDance                           = Spell(185313),
@@ -54,6 +55,7 @@ Spell.Rogue.Subtlety = {
   StealthBuff                           = Spell(1784),
   DeeperStratagem                       = Spell(193531),
   FindWeakness                          = Spell(),
+  ShadowstrikeBuff                      = Spell(),
   Alacrity                              = Spell(),
   ShadowFocus                           = Spell(108209),
   ArcaneTorrent                         = Spell(50613),
@@ -182,15 +184,15 @@ local function APL()
   end
   local function Finish()
     -- nightblade,if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&remains<tick_time*2&(spell_targets.shuriken_storm<4|!buff.symbols_of_death.up)
-    if S.Nightblade:IsCastableP() and ((not S.DarkShadow:IsAvailable() or not Player:BuffP(S.ShadowDanceBuff)) and Target:TimeToDie() - Target:DebuffRemainsP(S.Nightblade) > 6 and Target:DebuffRemainsP(S.Nightblade) < S.Nightblade:TickTime() * 2 and (Cache.EnemiesCount[10] < 4 or not Player:BuffP(S.SymbolsofDeathBuff))) then
+    if S.Nightblade:IsCastableP() and ((not S.DarkShadow:IsAvailable() or not Player:BuffP(S.ShadowDanceBuff)) and Target:TimeToDie() - Target:DebuffRemainsP(S.NightbladeDebuff) > 6 and Target:DebuffRemainsP(S.NightbladeDebuff) < S.NightbladeDebuff:TickTime() * 2 and (Cache.EnemiesCount[10] < 4 or not Player:BuffP(S.SymbolsofDeathBuff))) then
       if HR.Cast(S.Nightblade) then return ""; end
     end
     -- nightblade,cycle_targets=1,if=spell_targets.shuriken_storm>=2&(spell_targets.shuriken_storm<=5|talent.secret_technique.enabled)&!buff.shadow_dance.up&target.time_to_die>=(5+(2*combo_points))&refreshable
-    if S.Nightblade:IsCastableP() and (Cache.EnemiesCount[10] >= 2 and (Cache.EnemiesCount[10] <= 5 or S.SecretTechnique:IsAvailable()) and not Player:BuffP(S.ShadowDanceBuff) and Target:TimeToDie() >= (5 + (2 * Player:ComboPoints())) and Target:DebuffRefreshableCP(S.Nightblade)) then
+    if S.Nightblade:IsCastableP() and (Cache.EnemiesCount[10] >= 2 and (Cache.EnemiesCount[10] <= 5 or S.SecretTechnique:IsAvailable()) and not Player:BuffP(S.ShadowDanceBuff) and Target:TimeToDie() >= (5 + (2 * Player:ComboPoints())) and Target:DebuffRefreshableCP(S.NightbladeDebuff)) then
       if HR.Cast(S.Nightblade) then return ""; end
     end
     -- nightblade,if=remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5&target.time_to_die-remains>cooldown.symbols_of_death.remains+5
-    if S.Nightblade:IsCastableP() and (Target:DebuffRemainsP(S.Nightblade) < S.SymbolsofDeath:CooldownRemainsP() + 10 and S.SymbolsofDeath:CooldownRemainsP() <= 5 and Target:TimeToDie() - Target:DebuffRemainsP(S.Nightblade) > S.SymbolsofDeath:CooldownRemainsP() + 5) then
+    if S.Nightblade:IsCastableP() and (Target:DebuffRemainsP(S.NightbladeDebuff) < S.SymbolsofDeath:CooldownRemainsP() + 10 and S.SymbolsofDeath:CooldownRemainsP() <= 5 and Target:TimeToDie() - Target:DebuffRemainsP(S.NightbladeDebuff) > S.SymbolsofDeath:CooldownRemainsP() + 5) then
       if HR.Cast(S.Nightblade) then return ""; end
     end
     -- secret_technique,if=buff.symbols_of_death.up&(!talent.dark_shadow.enabled|spell_targets.shuriken_storm<2|buff.shadow_dance.up)
@@ -242,7 +244,7 @@ local function APL()
       local ShouldReturn = Finish(); if ShouldReturn then return ShouldReturn; end
     end
     -- shadowstrike,cycle_targets=1,if=talent.secret_technique.enabled&talent.find_weakness.enabled&debuff.find_weakness.remains<1&spell_targets.shuriken_storm=2&target.time_to_die-remains>6
-    if S.Shadowstrike:IsCastableP() and (S.SecretTechnique:IsAvailable() and S.FindWeakness:IsAvailable() and Target:DebuffRemainsP(S.FindWeaknessDebuff) < 1 and Cache.EnemiesCount[10] == 2 and Target:TimeToDie() - Player:BuffRemainsP(S.Shadowstrike) > 6) then
+    if S.Shadowstrike:IsCastableP() and (S.SecretTechnique:IsAvailable() and S.FindWeakness:IsAvailable() and Target:DebuffRemainsP(S.FindWeaknessDebuff) < 1 and Cache.EnemiesCount[10] == 2 and Target:TimeToDie() - Player:BuffRemainsP(S.ShadowstrikeBuff) > 6) then
       if HR.Cast(S.Shadowstrike) then return ""; end
     end
     -- shuriken_storm,if=spell_targets.shuriken_storm>=3
@@ -267,7 +269,7 @@ local function APL()
     return Stealthed();
   end
   -- nightblade,if=target.time_to_die>6&remains<gcd.max&combo_points>=4-(time<10)*2
-  if S.Nightblade:IsCastableP() and (Target:TimeToDie() > 6 and Target:DebuffRemainsP(S.Nightblade) < Player:GCD() and Player:ComboPoints() >= 4 - num((HL.CombatTime() < 10)) * 2) then
+  if S.Nightblade:IsCastableP() and (Target:TimeToDie() > 6 and Target:DebuffRemainsP(S.NightbladeDebuff) < Player:GCD() and Player:ComboPoints() >= 4 - num((HL.CombatTime() < 10)) * 2) then
     if HR.Cast(S.Nightblade) then return ""; end
   end
   -- call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&combo_points.deficit>=4

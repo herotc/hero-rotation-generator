@@ -27,6 +27,7 @@ Spell.Paladin.Protection = {
   LightsJudgment                        = Spell(),
   ShieldoftheRighteous                  = Spell(53600),
   Seraphim                              = Spell(152262),
+  ShieldoftheRighteousBuff              = Spell(),
   AegisofLightBuff                      = Spell(204150),
   ArdentDefenderBuff                    = Spell(31850),
   GuardianofAncientKingsBuff            = Spell(86659),
@@ -51,7 +52,8 @@ Spell.Paladin.Protection = {
   BlessedHammer                         = Spell(204019),
   Consecration                          = Spell(26573),
   HammeroftheRighteous                  = Spell(53595),
-  SeraphimBuff                          = Spell(152262)
+  SeraphimBuff                          = Spell(152262),
+  JudgmentBuff                          = Spell()
 };
 local S = Spell.Paladin.Protection;
 

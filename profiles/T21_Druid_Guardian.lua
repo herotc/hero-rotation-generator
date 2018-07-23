@@ -36,6 +36,7 @@ Spell.Druid.Guardian = {
   ThrashBear                            = Spell(77758),
   UseItems                              = Spell(),
   Maul                                  = Spell(6807),
+  MaulBuff                              = Spell(),
   Pulverize                             = Spell(80313),
   Moonfire                              = Spell(8921),
   GalacticGuardian                      = Spell(203964),
@@ -44,6 +45,7 @@ Spell.Druid.Guardian = {
   JaggedClaws                           = Spell(),
   SouloftheForest                       = Spell(158477),
   Mangle                                = Spell(33917),
+  MangleBuff                            = Spell(),
   SwipeBear                             = Spell(213771)
 };
 local S = Spell.Druid.Guardian;

@@ -40,6 +40,7 @@ Spell.Monk.Brewmaster = {
   BlackOxBrew                           = Spell(115399),
   KegSmash                              = Spell(121253),
   ArcaneTorrent                         = Spell(50613),
+  KegSmashBuff                          = Spell(),
   TigerPalm                             = Spell(100780),
   BlackoutStrike                        = Spell(205523),
   BreathofFire                          = Spell(115181),

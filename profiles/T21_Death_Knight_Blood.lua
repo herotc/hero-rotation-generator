@@ -27,12 +27,13 @@ Spell.DeathKnight.Blood = {
   Marrowrend                            = Spell(195182),
   BoneShieldBuff                        = Spell(195181),
   BloodBoil                             = Spell(50842),
+  BloodBoilBuff                         = Spell(),
   HaemostasisBuff                       = Spell(235558),
   Ossuary                               = Spell(219786),
   Bonestorm                             = Spell(194844),
   BloodShieldBuff                       = Spell(77535),
   HeartStrike                           = Spell(206930),
-  DeathandDecay                         = Spell(43265),
+  DeathandDecay                         = Spell(),
   CrimsonScourgeBuff                    = Spell(81141),
   MindFreeze                            = Spell(47528),
   ArcaneTorrent                         = Spell(50613),
@@ -126,11 +127,11 @@ local function APL()
       if HR.Cast(S.HeartStrike) then return ""; end
     end
     -- death_and_decay,if=buff.crimson_scourge.up
-    if S.DeathandDecay:IsUsableP() and (Player:BuffP(S.CrimsonScourgeBuff)) then
+    if S.DeathandDecay:IsCastableP() and (Player:BuffP(S.CrimsonScourgeBuff)) then
       if HR.Cast(S.DeathandDecay) then return ""; end
     end
     -- death_and_decay
-    if S.DeathandDecay:IsUsableP() and (true) then
+    if S.DeathandDecay:IsCastableP() and (true) then
       if HR.Cast(S.DeathandDecay) then return ""; end
     end
     -- heart_strike,if=rune.time_to_3<gcd|buff.bone_shield.stack>6
@@ -148,15 +149,15 @@ local function APL()
     if HR.CastAnnotated(S.MindFreeze, false, "Interrupt") then return ""; end
   end
   -- arcane_torrent,if=runic_power.deficit>20
-  if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (Player:RunicPowerDeficit() > 20) then
-    if HR.Cast(S.ArcaneTorrent, Settings.Blood.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
+  if S.ArcaneTorrent:IsCastableP() and (Player:RunicPowerDeficit() > 20) then
+    if HR.Cast(S.ArcaneTorrent, Settings.Blood.GCDasOffGCD.ArcaneTorrent) then return ""; end
   end
   -- blood_fury
-  if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
+  if S.BloodFury:IsCastableP() and (true) then
     if HR.Cast(S.BloodFury, Settings.Blood.OffGCDasOffGCD.BloodFury) then return ""; end
   end
   -- berserking,if=buff.dancing_rune_weapon.up
-  if S.Berserking:IsCastableP() and HR.CDsON() and (Player:BuffP(S.DancingRuneWeaponBuff)) then
+  if S.Berserking:IsCastableP() and (Player:BuffP(S.DancingRuneWeaponBuff)) then
     if HR.Cast(S.Berserking, Settings.Blood.OffGCDasOffGCD.Berserking) then return ""; end
   end
   -- use_items

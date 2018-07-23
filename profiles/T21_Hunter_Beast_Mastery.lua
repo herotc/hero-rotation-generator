@@ -41,12 +41,16 @@ Spell.Hunter.BeastMastery = {
   SpittingCobra                         = Spell(),
   Stampede                              = Spell(201430),
   Multishot                             = Spell(2643),
+  MultishotBuff                         = Spell(),
   BeastCleaveBuff                       = Spell(118455, "pet"),
   ChimaeraShot                          = Spell(53209),
   KillCommand                           = Spell(34026),
   DireBeast                             = Spell(120679),
+  BarbedShotBuff                        = Spell(),
   Barrage                               = Spell(120360),
-  CobraShot                             = Spell(193455)
+  CobraShot                             = Spell(193455),
+  CobraShotBuff                         = Spell(),
+  KillCommandBuff                       = Spell()
 };
 local S = Spell.Hunter.BeastMastery;
 

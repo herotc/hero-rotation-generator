@@ -39,20 +39,27 @@ Spell.Hunter.Survival = {
   BloodFuryBuff                         = Spell(20572),
   MongooseBite                          = Spell(190928),
   MongooseFuryBuff                      = Spell(190931),
+  MongooseBiteBuff                      = Spell(),
   AMurderofCrows                        = Spell(206505),
   Chakrams                              = Spell(),
+  ChakramsBuff                          = Spell(),
   KillCommand                           = Spell(),
+  KillCommandBuff                       = Spell(),
   TipoftheSpearBuff                     = Spell(),
   WildfireBomb                          = Spell(),
+  WildfireBombBuff                      = Spell(),
   WildfireBombDebuff                    = Spell(),
   Butchery                              = Spell(212436),
   WildfireInfusion                      = Spell(),
+  ButcheryBuff                          = Spell(),
   ShrapnelBombDebuff                    = Spell(),
   InternalBleedingDebuff                = Spell(),
   SerpentSting                          = Spell(87935),
+  SerpentStingDebuff                    = Spell(118253),
   VipersVenom                           = Spell(),
   VipersVenomBuff                       = Spell(),
   Carve                                 = Spell(187708),
+  CarveBuff                             = Spell(),
   TermsofEngagement                     = Spell(),
   FlankingStrike                        = Spell(202800),
   RaptorStrike                          = Spell(186270)
@@ -195,7 +202,7 @@ local function APL()
     if HR.Cast(S.Butchery) then return ""; end
   end
   -- serpent_sting,if=(active_enemies<2&refreshable&(buff.mongoose_fury.down|(variable.can_gcd&!talent.vipers_venom.enabled)))|buff.vipers_venom.up
-  if S.SerpentSting:IsCastableP() and ((Cache.EnemiesCount[40] < 2 and Target:DebuffRefreshableCP(S.SerpentSting) and (Player:BuffDownP(S.MongooseFuryBuff) or (bool(VarCanGcd) and not S.VipersVenom:IsAvailable()))) or Player:BuffP(S.VipersVenomBuff)) then
+  if S.SerpentSting:IsCastableP() and ((Cache.EnemiesCount[40] < 2 and Target:DebuffRefreshableCP(S.SerpentStingDebuff) and (Player:BuffDownP(S.MongooseFuryBuff) or (bool(VarCanGcd) and not S.VipersVenom:IsAvailable()))) or Player:BuffP(S.VipersVenomBuff)) then
     if HR.Cast(S.SerpentSting) then return ""; end
   end
   -- carve,if=active_enemies>2&(active_enemies<6&active_enemies+gcd<cooldown.wildfire_bomb.remains|5+gcd<cooldown.wildfire_bomb.remains)
@@ -215,7 +222,7 @@ local function APL()
     if HR.Cast(S.Chakrams) then return ""; end
   end
   -- serpent_sting,target_if=min:remains,if=refreshable&buff.mongoose_fury.down|buff.vipers_venom.up
-  if S.SerpentSting:IsCastableP() and (Target:DebuffRefreshableCP(S.SerpentSting) and Player:BuffDownP(S.MongooseFuryBuff) or Player:BuffP(S.VipersVenomBuff)) then
+  if S.SerpentSting:IsCastableP() and (Target:DebuffRefreshableCP(S.SerpentStingDebuff) and Player:BuffDownP(S.MongooseFuryBuff) or Player:BuffP(S.VipersVenomBuff)) then
     if HR.Cast(S.SerpentSting) then return ""; end
   end
   -- mongoose_bite,target_if=min:dot.internal_bleeding.stack,if=buff.mongoose_fury.up|focus>60

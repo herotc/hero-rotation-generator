@@ -30,6 +30,7 @@ Spell.Mage.Arcane = {
   ArcaneChargeBuff                      = Spell(36032),
   PresenceofMind                        = Spell(205025),
   NetherTempest                         = Spell(114923),
+  NetherTempestBuff                     = Spell(),
   RuneofPowerBuff                       = Spell(116014),
   ArcanePowerBuff                       = Spell(12042),
   TimeWarp                              = Spell(80353),
@@ -40,11 +41,14 @@ Spell.Mage.Arcane = {
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
   ArcaneOrb                             = Spell(153626),
+  ArcaneOrbBuff                         = Spell(),
   Resonance                             = Spell(205028),
   PresenceofMindBuff                    = Spell(205025),
   Overpowered                           = Spell(155147),
   ArcaneBarrage                         = Spell(44425),
+  ArcaneBarrageBuff                     = Spell(),
   ArcaneExplosion                       = Spell(1449),
+  ArcaneExplosionBuff                   = Spell(),
   ArcaneMissiles                        = Spell(5143),
   ClearcastingBuff                      = Spell(),
   RuleofThreesBuff                      = Spell(),
@@ -167,7 +171,7 @@ local function APL()
       if HR.Cast(S.ChargedUp) then return ""; end
     end
     -- nether_tempest,if=(refreshable|!ticking)&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.rune_of_power.down&buff.arcane_power.down
-    if S.NetherTempest:IsCastableP() and ((Player:BuffRefreshableCP(S.NetherTempest) or not Player:BuffP(S.NetherTempest)) and Player:BuffStackP(S.ArcaneChargeBuff) == Player:ArcaneChargesMax() and Player:BuffDownP(S.RuneofPowerBuff) and Player:BuffDownP(S.ArcanePowerBuff)) then
+    if S.NetherTempest:IsCastableP() and ((Player:BuffRefreshableCP(S.NetherTempestBuff) or not Player:BuffP(S.NetherTempestBuff)) and Player:BuffStackP(S.ArcaneChargeBuff) == Player:ArcaneChargesMax() and Player:BuffDownP(S.RuneofPowerBuff) and Player:BuffDownP(S.ArcanePowerBuff)) then
       if HR.Cast(S.NetherTempest) then return ""; end
     end
     -- time_warp,if=buff.bloodlust.down&((buff.arcane_power.down&cooldown.arcane_power.remains=0)|(target.time_to_die<=buff.bloodlust.duration))
@@ -253,7 +257,7 @@ local function APL()
       if HR.Cast(S.PresenceofMind) then return ""; end
     end
     -- nether_tempest,if=(refreshable|!ticking)&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.rune_of_power.down&buff.arcane_power.down
-    if S.NetherTempest:IsCastableP() and ((Player:BuffRefreshableCP(S.NetherTempest) or not Player:BuffP(S.NetherTempest)) and Player:BuffStackP(S.ArcaneChargeBuff) == Player:ArcaneChargesMax() and Player:BuffDownP(S.RuneofPowerBuff) and Player:BuffDownP(S.ArcanePowerBuff)) then
+    if S.NetherTempest:IsCastableP() and ((Player:BuffRefreshableCP(S.NetherTempestBuff) or not Player:BuffP(S.NetherTempestBuff)) and Player:BuffStackP(S.ArcaneChargeBuff) == Player:ArcaneChargesMax() and Player:BuffDownP(S.RuneofPowerBuff) and Player:BuffDownP(S.ArcanePowerBuff)) then
       if HR.Cast(S.NetherTempest) then return ""; end
     end
     -- arcane_blast,if=(buff.rule_of_threes.up|buff.rhonins_assaulting_armwraps.react)&buff.arcane_charge.stack>=3
