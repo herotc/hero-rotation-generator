@@ -55,9 +55,12 @@ IGNORED_EXECUTIONS = [
     'flask',
     'augmentation',
     'snapshot_stats',
+    'use_items',
     # Monk Brewmaster
     'greater_gift_of_the_ox',
     'gift_of_the_ox',
+    # Druid Feral
+    'dash',
 ]
 
 # Strings to recognize as items
