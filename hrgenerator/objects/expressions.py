@@ -375,6 +375,13 @@ class Expression(Decorable):
         """
         return PMultiplier.build(self)
 
+    def desired_targets(self):
+        """
+        Return the condition when the prefix is desired_targets.
+        """
+        self.simc = 1
+        return Literal(self.simc)
+
     def gcd(self):
         """
         Return the condition when the prefix is gcd.
