@@ -27,14 +27,12 @@ Spell.Warlock.Destruction = {
   Incinerate                            = Spell(29722),
   SummonInfernal                        = Spell(1122),
   DarkSoulInstability                   = Spell(),
-  UseItems                              = Spell(),
   Cataclysm                             = Spell(152108),
   RainofFire                            = Spell(5740),
   Immolate                              = Spell(348),
   ChannelDemonfire                      = Spell(196447),
   ImmolateDebuff                        = Spell(157736),
   ChaosBolt                             = Spell(116858),
-  ChaosBoltBuff                         = Spell(),
   FireandBrimstone                      = Spell(196408),
   Havoc                                 = Spell(80240),
   RoaringBlaze                          = Spell(205184),
@@ -47,7 +45,6 @@ Spell.Warlock.Destruction = {
   BackdraftBuff                         = Spell(117828),
   Shadowburn                            = Spell(17877),
   ShadowburnDebuff                      = Spell(17877),
-  IncinerateBuff                        = Spell(),
   InternalCombustion                    = Spell(),
   Berserking                            = Spell(26297),
   BloodFury                             = Spell(20572),
@@ -156,9 +153,6 @@ local function APL()
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- use_items
-    if S.UseItems:IsCastableP() and (true) then
-      if HR.Cast(S.UseItems) then return ""; end
-    end
     -- cataclysm
     if S.Cataclysm:IsCastableP() and (true) then
       if HR.Cast(S.Cataclysm) then return ""; end
@@ -249,9 +243,6 @@ local function APL()
     if HR.Cast(S.Fireblood) then return ""; end
   end
   -- use_items
-  if S.UseItems:IsCastableP() and (true) then
-    if HR.Cast(S.UseItems) then return ""; end
-  end
   -- havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10
   if S.Havoc:IsCastableP() and (not (target == sim.target) and Target:TimeToDie() > 10) then
     if HR.Cast(S.Havoc) then return ""; end

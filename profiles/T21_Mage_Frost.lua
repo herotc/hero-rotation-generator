@@ -41,23 +41,19 @@ Spell.Mage.Frost = {
   IcyVeins                              = Spell(12472),
   RuneofPower                           = Spell(116011),
   RuneofPowerBuff                       = Spell(116014),
-  UseItems                              = Spell(),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
-  LightsJudgment                        = Spell(),
+  LightsJudgment                        = Spell(255647),
   Blink                                 = Spell(1953),
   IceFloes                              = Spell(108839),
   IceFloesBuff                          = Spell(108839),
   WintersChillDebuff                    = Spell(228358),
-  BlizzardBuff                          = Spell(),
-  FrozenOrbBuff                         = Spell(),
   GlacialSpikeBuff                      = Spell(199844),
   SplittingIce                          = Spell(56377),
   ZannesuJourneyBuff                    = Spell(206397),
   Counterspell                          = Spell(2139),
   TimeWarp                              = Spell(80353),
   ExhaustionBuff                        = Spell(57723),
-  AoeBuff                               = Spell(),
   FreezingRain                          = Spell(240555)
 };
 local S = Spell.Mage.Frost;
@@ -211,9 +207,6 @@ local function APL()
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- use_items
-    if S.UseItems:IsCastableP() and (true) then
-      if HR.Cast(S.UseItems) then return ""; end
-    end
     -- blood_fury
     if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
       if HR.Cast(S.BloodFury, Settings.Frost.OffGCDasOffGCD.BloodFury) then return ""; end
@@ -223,7 +216,7 @@ local function APL()
       if HR.Cast(S.Berserking, Settings.Frost.OffGCDasOffGCD.Berserking) then return ""; end
     end
     -- lights_judgment
-    if S.LightsJudgment:IsCastableP() and (true) then
+    if S.LightsJudgment:IsCastableP() and HR.CDsON() and (true) then
       if HR.Cast(S.LightsJudgment) then return ""; end
     end
   end

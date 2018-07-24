@@ -50,7 +50,7 @@ Spell.Warrior.Arms = {
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
   ArcaneTorrent                         = Spell(50613),
-  LightsJudgment                        = Spell(),
+  LightsJudgment                        = Spell(255647),
   Avatar                                = Spell(107574),
   Massacre                              = Spell()
 };
@@ -282,7 +282,7 @@ local function APL()
     if HR.Cast(S.ArcaneTorrent, Settings.Arms.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
   end
   -- lights_judgment,if=debuff.colossus_smash.down
-  if S.LightsJudgment:IsCastableP() and (Target:DebuffDownP(S.ColossusSmashDebuff)) then
+  if S.LightsJudgment:IsCastableP() and HR.CDsON() and (Target:DebuffDownP(S.ColossusSmashDebuff)) then
     if HR.Cast(S.LightsJudgment) then return ""; end
   end
   -- avatar,if=cooldown.colossus_smash.remains<8|(talent.warbreaker.enabled&cooldown.warbreaker.remains<8)

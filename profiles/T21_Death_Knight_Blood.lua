@@ -27,7 +27,6 @@ Spell.DeathKnight.Blood = {
   Marrowrend                            = Spell(195182),
   BoneShieldBuff                        = Spell(195181),
   BloodBoil                             = Spell(50842),
-  BloodBoilBuff                         = Spell(),
   HaemostasisBuff                       = Spell(235558),
   Ossuary                               = Spell(219786),
   Bonestorm                             = Spell(194844),
@@ -39,7 +38,6 @@ Spell.DeathKnight.Blood = {
   ArcaneTorrent                         = Spell(50613),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
-  UseItems                              = Spell(),
   DancingRuneWeapon                     = Spell(49028),
   Tombstone                             = Spell()
 };
@@ -161,9 +159,6 @@ local function APL()
     if HR.Cast(S.Berserking, Settings.Blood.OffGCDasOffGCD.Berserking) then return ""; end
   end
   -- use_items
-  if S.UseItems:IsCastableP() and (true) then
-    if HR.Cast(S.UseItems) then return ""; end
-  end
   -- potion,if=buff.dancing_rune_weapon.up
   if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.DancingRuneWeaponBuff)) then
     if HR.CastSuggested(I.ProlongedPower) then return ""; end

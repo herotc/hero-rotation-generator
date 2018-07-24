@@ -37,7 +37,6 @@ Spell.Rogue.Subtlety = {
   SymbolsofDeath                        = Spell(212283),
   NightbladeDebuff                      = Spell(195452),
   ShurikenTornado                       = Spell(),
-  ShurikenTornadoBuff                   = Spell(),
   SymbolsofDeathBuff                    = Spell(212283),
   ShadowDanceBuff                       = Spell(185313),
   ShadowDance                           = Spell(185313),
@@ -55,12 +54,11 @@ Spell.Rogue.Subtlety = {
   StealthBuff                           = Spell(1784),
   DeeperStratagem                       = Spell(193531),
   FindWeakness                          = Spell(),
-  ShadowstrikeBuff                      = Spell(),
   Alacrity                              = Spell(),
   ShadowFocus                           = Spell(108209),
   ArcaneTorrent                         = Spell(50613),
   ArcanePulse                           = Spell(),
-  LightsJudgment                        = Spell()
+  LightsJudgment                        = Spell(255647)
 };
 local S = Spell.Rogue.Subtlety;
 
@@ -244,7 +242,7 @@ local function APL()
       local ShouldReturn = Finish(); if ShouldReturn then return ShouldReturn; end
     end
     -- shadowstrike,cycle_targets=1,if=talent.secret_technique.enabled&talent.find_weakness.enabled&debuff.find_weakness.remains<1&spell_targets.shuriken_storm=2&target.time_to_die-remains>6
-    if S.Shadowstrike:IsCastableP() and (S.SecretTechnique:IsAvailable() and S.FindWeakness:IsAvailable() and Target:DebuffRemainsP(S.FindWeaknessDebuff) < 1 and Cache.EnemiesCount[10] == 2 and Target:TimeToDie() - Player:BuffRemainsP(S.ShadowstrikeBuff) > 6) then
+    if S.Shadowstrike:IsCastableP() and (S.SecretTechnique:IsAvailable() and S.FindWeakness:IsAvailable() and Target:DebuffRemainsP(S.FindWeaknessDebuff) < 1 and Cache.EnemiesCount[10] == 2 and Target:TimeToDie() - remains > 6) then
       if HR.Cast(S.Shadowstrike) then return ""; end
     end
     -- shuriken_storm,if=spell_targets.shuriken_storm>=3
@@ -293,7 +291,7 @@ local function APL()
     if HR.Cast(S.ArcanePulse) then return ""; end
   end
   -- lights_judgment
-  if S.LightsJudgment:IsCastableP() and (true) then
+  if S.LightsJudgment:IsCastableP() and HR.CDsON() and (true) then
     if HR.Cast(S.LightsJudgment) then return ""; end
   end
 end

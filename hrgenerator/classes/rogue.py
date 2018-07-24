@@ -73,6 +73,8 @@ SPELL_INFO = {
             'elaborate_planning':                   {SPELL:     193640,
                                                      BUFF:      193641},
             'venom_rush':                           {SPELL:     152152},
+            'crimson_tempest':                      {SPELL:     121411,
+                                                     BUFF:      121411},
         },
         OUTLAW: {
             'blade_flurry':                         {SPELL:     13877,

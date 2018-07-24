@@ -40,13 +40,8 @@ Spell.Warlock.Demonology = {
   DemonicCoreBuff                       = Spell(),
   SummonVilefiend                       = Spell(),
   NetherPortal                          = Spell(),
-  ShadowBoltBuff                        = Spell(),
-  DemonboltBuff                         = Spell(),
-  HandofGuldanBuff                      = Spell(),
   NetherPortalBuff                      = Spell(),
-  SummonDemonicTyrantBuff               = Spell(),
   PowerSiphon                           = Spell(),
-  UseItems                              = Spell(),
   Berserking                            = Spell(26297),
   BloodFury                             = Spell(20572),
   Fireblood                             = Spell(),
@@ -273,9 +268,6 @@ local function APL()
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- use_items,if=prev_gcd.1.summon_demonic_tyrant
-  if S.UseItems:IsCastableP() and (Player:PrevGCDP(1, S.SummonDemonicTyrant)) then
-    if HR.Cast(S.UseItems) then return ""; end
-  end
   -- berserking,if=prev_gcd.1.summon_demonic_tyrant
   if S.Berserking:IsCastableP() and HR.CDsON() and (Player:PrevGCDP(1, S.SummonDemonicTyrant)) then
     if HR.Cast(S.Berserking, Settings.Demonology.OffGCDasOffGCD.Berserking) then return ""; end

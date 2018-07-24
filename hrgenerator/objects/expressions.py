@@ -22,21 +22,35 @@ class ActionExpression(BuildExpression):
     implicitly referring to the execution of the condition.
     """
 
+    AURA_METHODS = [
+        'ready',
+        'remains',
+        'down',
+        'stack',
+        'react',
+        'duration',
+        'tick_time',
+        'ticking',
+        'refreshable',
+    ]
+
     def __init__(self, condition, to_self=False):
+        for method_name in self.AURA_METHODS:
+            self._generate_aura_method(method_name)
         self.condition = condition
         self.to_self = to_self
         if to_self:
             call = condition.condition_list[0]
         else:
             call = condition.condition_list[2]
-        self.object_ = self.action_object()
+        self.object_ = self._action_object()
         self.method = None
         self.args = []
         self.range_ = None
-        self.aura_model = self.build_aura()
+        self.aura_model = self._build_aura()
         super().__init__(call)
 
-    def action_object(self):
+    def _action_object(self):
         """
         The object of the action expression, depending on whether the action is
         applied to self (i.e. the execution) or not.
@@ -48,28 +62,37 @@ class ActionExpression(BuildExpression):
         return Spell(self.condition.parent_action,
                      self.condition.condition_list[1])
 
-    def build_aura(self):
+    def _build_aura(self):
         """
         The action aura when referring to the action as a buff or debuff.
         """
-        action_object = self.action_object()
+        action_object = self._action_object()
         if self.condition.player_unit.spell_property(action_object, DEBUFF):
             aura_type = DEBUFF
             aura_object = self.condition.target_unit
-        else:
+        elif self.condition.player_unit.spell_property(action_object, BUFF):
             aura_type = BUFF
             aura_object = self.condition.player_unit
-        aura_action = Spell(self.condition.parent_action, action_object.simc,
-                            type_=aura_type)
-        return Aura(self.condition, aura_type, aura_object, spell=aura_action)
+        else:
+            return None
+        aura_action = Spell(self.condition.parent_action,
+                            action_object.simc, type_=aura_type)
+        aura = Aura(self.condition, aura_type, aura_object, spell=aura_action)
+        return aura
 
-    def from_aura(self):
+    def _from_aura(self):
         """
         Get attributes from the aura corresponding to the action object.
         """
         self.object_ = self.aura_model.object_
         self.method = self.aura_model.method
         self.args = self.aura_model.args
+
+    def _generate_aura_method(self, name):
+        def method(self):
+            getattr(self.aura_model, name)()
+            self._from_aura()
+        setattr(self, name, method.__get__(self, self.__class__))
 
     def execute_time(self):
         """
@@ -148,7 +171,7 @@ class ActionExpression(BuildExpression):
         Return the arguments for the expression action.spell.spell_targets.
         """
         self.range_ = self.condition.player_unit.spell_property(
-            self.action_object(), RANGE,
+            self._action_object(), RANGE,
             self.condition.player_unit.spec_range())
         self.model = LuaRange
 
@@ -158,7 +181,7 @@ class ActionExpression(BuildExpression):
         """
         self.object_ = self.condition.player_unit
         self.method = Method('FocusCastRegen')
-        self.args = [LuaExpression(self.action_object(),
+        self.args = [LuaExpression(self._action_object(),
                                    Method('ExecuteTime'),
                                    [])]
 
@@ -182,79 +205,17 @@ class ActionExpression(BuildExpression):
         self.method = self.object_.condition_method
         self.args = self.object_.condition_args
 
-    def ready(self):
-        """
-        Return the arguments for the expression action.spell.ready.
-        """
-        self.aura_model.ready()
-        self.from_aura()
-
-    def remains(self):
-        """
-        Return the arguments for the expression action.spell.remains.
-        """
-        self.aura_model.remains()
-        self.from_aura()
-
-    def down(self):
-        """
-        Return the arguments for the expression action.spell.down.
-        """
-        self.aura_model.down()
-        self.from_aura()
-
-    def stack(self):
-        """
-        Return the arguments for the expression action.spell.stack.
-        """
-        self.aura_model.stack()
-        self.from_aura()
-
-    def react(self):
-        """
-        Return the arguments for the expression action.spell.react.
-        """
-        self.aura_model.react()
-        self.from_aura()
-
-    def duration(self):
-        """
-        Return the arguments for the expression action.spell.duration.
-        """
-        self.aura_model.duration()
-        self.from_aura()
-
-    def tick_time(self):
-        """
-        Return the arguments for the expression action.spell.tick_time.
-        """
-        self.aura_model.tick_time()
-        self.from_aura()
-
-    def ticking(self):
-        """
-        Return the arguments for the expression action.spell.ticking.
-        """
-        self.aura_model.ticking()
-        self.from_aura()
-
-    def refreshable(self):
-        """
-        Return the arguments for the expression action.spell.refreshable.
-        """
-        self.aura_model.refreshable()
-        self.from_aura()
-
 
 class Expression(Decorable):
     """
     Represent a singleton condition (i.e. without any operator).
     """
 
-    actions_to_self = [method for method in dir(ActionExpression)
-                       if callable(getattr(ActionExpression, method))
-                       and not method.startswith('__')
-                       and not method == 'print_lua']
+    actions_to_self = (ActionExpression.AURA_METHODS
+                       + [method for method in dir(ActionExpression)
+                          if callable(getattr(ActionExpression, method))
+                          and not method.startswith('_')
+                          and not method == 'print_lua'])
 
     def __init__(self, condition_expression, simc):
         self.condition_expression = condition_expression
@@ -275,10 +236,10 @@ class Expression(Decorable):
         """
         Return the expression of the condition.
         """
-        if (self.condition_list[0] in self.actions_to_self
-                and len(self.condition_list) == 1):
-            return self.action(to_self=True)
         try:
+            if (self.condition_list[0] in self.actions_to_self
+                    and len(self.condition_list) == 1):
+                return self.action(to_self=True)
             return getattr(self, self.condition_list[0])()
         except AttributeError:
             return Literal(self.simc)

@@ -24,10 +24,9 @@ Spell.Paladin.Protection = {
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
   ArcaneTorrent                         = Spell(50613),
-  LightsJudgment                        = Spell(),
+  LightsJudgment                        = Spell(255647),
   ShieldoftheRighteous                  = Spell(53600),
   Seraphim                              = Spell(152262),
-  ShieldoftheRighteousBuff              = Spell(),
   AegisofLightBuff                      = Spell(204150),
   ArdentDefenderBuff                    = Spell(31850),
   GuardianofAncientKingsBuff            = Spell(86659),
@@ -52,8 +51,7 @@ Spell.Paladin.Protection = {
   BlessedHammer                         = Spell(204019),
   Consecration                          = Spell(26573),
   HammeroftheRighteous                  = Spell(53595),
-  SeraphimBuff                          = Spell(152262),
-  JudgmentBuff                          = Spell()
+  SeraphimBuff                          = Spell(152262)
 };
 local S = Spell.Paladin.Protection;
 
@@ -124,7 +122,7 @@ local function APL()
       if HR.Cast(S.ArcaneTorrent, Settings.Protection.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
     end
     -- lights_judgment
-    if S.LightsJudgment:IsCastableP() and (true) then
+    if S.LightsJudgment:IsCastableP() and HR.CDsON() and (true) then
       if HR.Cast(S.LightsJudgment) then return ""; end
     end
   end
@@ -147,7 +145,7 @@ local function APL()
       if HR.Cast(S.ArcaneTorrent, Settings.Protection.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
     end
     -- lights_judgment
-    if S.LightsJudgment:IsCastableP() and (true) then
+    if S.LightsJudgment:IsCastableP() and HR.CDsON() and (true) then
       if HR.Cast(S.LightsJudgment) then return ""; end
     end
   end
@@ -311,7 +309,7 @@ local function APL()
     if HR.Cast(S.ArcaneTorrent, Settings.Protection.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
   end
   -- lights_judgment
-  if S.LightsJudgment:IsCastableP() and (true) then
+  if S.LightsJudgment:IsCastableP() and HR.CDsON() and (true) then
     if HR.Cast(S.LightsJudgment) then return ""; end
   end
   -- blood_fury
@@ -327,7 +325,7 @@ local function APL()
     if HR.Cast(S.ArcaneTorrent, Settings.Protection.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
   end
   -- lights_judgment
-  if S.LightsJudgment:IsCastableP() and (true) then
+  if S.LightsJudgment:IsCastableP() and HR.CDsON() and (true) then
     if HR.Cast(S.LightsJudgment) then return ""; end
   end
   -- call_action_list,name=prot

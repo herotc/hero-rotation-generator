@@ -27,7 +27,6 @@ Spell.Warlock.Affliction = {
   Haunt                                 = Spell(48181),
   ShadowBolt                            = Spell(),
   SummonDarkglare                       = Spell(),
-  DgSoonBuff                            = Spell(),
   UnstableAffliction                    = Spell(30108),
   UnstableAfflictionDebuff              = Spell(30108),
   Agony                                 = Spell(980),
@@ -36,14 +35,12 @@ Spell.Warlock.Affliction = {
   AgonyDebuff                           = Spell(980),
   Fireblood                             = Spell(),
   BloodFury                             = Spell(20572),
-  UseItems                              = Spell(),
   DrainSoul                             = Spell(198590),
   UnstableAffliction1Debuff             = Spell(),
   UnstableAffliction2Debuff             = Spell(),
   UnstableAffliction3Debuff             = Spell(),
   UnstableAffliction4Debuff             = Spell(),
   UnstableAffliction5Debuff             = Spell(),
-  RegularBuff                           = Spell(),
   CorruptionDebuff                      = Spell(172),
   DarkSoul                              = Spell(),
   SiphonLifeDebuff                      = Spell(63106),
@@ -202,9 +199,6 @@ local function APL()
       if HR.Cast(S.BloodFury, Settings.Affliction.OffGCDasOffGCD.BloodFury) then return ""; end
     end
     -- use_items
-    if S.UseItems:IsCastableP() and (true) then
-      if HR.Cast(S.UseItems) then return ""; end
-    end
     -- deathbolt
     if S.Deathbolt:IsCastableP() and (true) then
       if HR.Cast(S.Deathbolt) then return ""; end

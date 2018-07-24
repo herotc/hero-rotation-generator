@@ -26,13 +26,12 @@ Spell.Hunter.BeastMastery = {
   CounterShot                           = Spell(147362),
   BuffSephuzsSecret                     = Spell(),
   SephuzsSecretBuff                     = Spell(208052),
-  UseItems                              = Spell(),
   Berserking                            = Spell(26297),
   BestialWrath                          = Spell(19574),
   BloodFury                             = Spell(20572),
   AncestralCall                         = Spell(),
   Fireblood                             = Spell(),
-  LightsJudgment                        = Spell(),
+  LightsJudgment                        = Spell(255647),
   BestialWrathBuff                      = Spell(19574),
   AspectoftheWildBuff                   = Spell(193530),
   BarbedShot                            = Spell(),
@@ -41,16 +40,12 @@ Spell.Hunter.BeastMastery = {
   SpittingCobra                         = Spell(),
   Stampede                              = Spell(201430),
   Multishot                             = Spell(2643),
-  MultishotBuff                         = Spell(),
   BeastCleaveBuff                       = Spell(118455, "pet"),
   ChimaeraShot                          = Spell(53209),
   KillCommand                           = Spell(34026),
   DireBeast                             = Spell(120679),
-  BarbedShotBuff                        = Spell(),
   Barrage                               = Spell(120360),
-  CobraShot                             = Spell(193455),
-  CobraShotBuff                         = Spell(),
-  KillCommandBuff                       = Spell()
+  CobraShot                             = Spell(193455)
 };
 local S = Spell.Hunter.BeastMastery;
 
@@ -121,9 +116,6 @@ local function APL()
     if HR.Cast(S.CounterShot) then return ""; end
   end
   -- use_items
-  if S.UseItems:IsCastableP() and (true) then
-    if HR.Cast(S.UseItems) then return ""; end
-  end
   -- berserking,if=cooldown.bestial_wrath.remains>30
   if S.Berserking:IsCastableP() and HR.CDsON() and (S.BestialWrath:CooldownRemainsP() > 30) then
     if HR.Cast(S.Berserking, Settings.BeastMastery.OffGCDasOffGCD.Berserking) then return ""; end
@@ -141,7 +133,7 @@ local function APL()
     if HR.Cast(S.Fireblood) then return ""; end
   end
   -- lights_judgment
-  if S.LightsJudgment:IsCastableP() and (true) then
+  if S.LightsJudgment:IsCastableP() and HR.CDsON() and (true) then
     if HR.Cast(S.LightsJudgment) then return ""; end
   end
   -- potion,if=buff.bestial_wrath.up&buff.aspect_of_the_wild.up

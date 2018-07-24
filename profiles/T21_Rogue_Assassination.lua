@@ -50,12 +50,11 @@ Spell.Rogue.Assassination = {
   VenomRush                             = Spell(152152),
   Mutilate                              = Spell(1329),
   PoolResource                          = Spell(9999000010),
-  CrimsonTempest                        = Spell(),
-  CrimsonTempestBuff                    = Spell(),
-  FanofKnivesBuff                       = Spell(),
+  CrimsonTempest                        = Spell(121411),
+  CrimsonTempestBuff                    = Spell(121411),
   ArcaneTorrent                         = Spell(50613),
   ArcanePulse                           = Spell(),
-  LightsJudgment                        = Spell()
+  LightsJudgment                        = Spell(255647)
 };
 local S = Spell.Rogue.Assassination;
 
@@ -274,7 +273,7 @@ local function APL()
     if HR.Cast(S.ArcanePulse) then return ""; end
   end
   -- lights_judgment
-  if S.LightsJudgment:IsCastableP() and (true) then
+  if S.LightsJudgment:IsCastableP() and HR.CDsON() and (true) then
     if HR.Cast(S.LightsJudgment) then return ""; end
   end
 end

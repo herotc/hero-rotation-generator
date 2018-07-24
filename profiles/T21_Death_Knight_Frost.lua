@@ -39,7 +39,6 @@ Spell.DeathKnight.Frost = {
   ColdHeartTalentBuff                   = Spell(281209),
   PillarofFrostBuff                     = Spell(),
   FrostwyrmsFury                        = Spell(279302),
-  UseItems                              = Spell(),
   BreathofSindragosa                    = Spell(152279),
   EmpowerRuneWeaponBuff                 = Spell(),
   BloodFury                             = Spell(20572),
@@ -53,8 +52,7 @@ Spell.DeathKnight.Frost = {
   FrostFeverDebuff                      = Spell(),
   IcyTalonsBuff                         = Spell(194879),
   BreathofSindragosaDebuff              = Spell(),
-  Obliteration                          = Spell(281238),
-  AoeBuff                               = Spell()
+  Obliteration                          = Spell(281238)
 };
 local S = Spell.DeathKnight.Frost;
 
@@ -254,9 +252,6 @@ local function APL()
   end
   local function Cooldowns()
     -- use_items
-    if S.UseItems:IsCastableP() and (true) then
-      if HR.Cast(S.UseItems) then return ""; end
-    end
     -- use_item,name=horn_of_valor,if=buff.pillar_of_frost.up&(!talent.breath_of_sindragosa.enabled|!cooldown.breath_of_sindragosa.remains)
     if I.HornofValor:IsReady() and (Player:BuffP(S.PillarofFrostBuff) and (not S.BreathofSindragosa:IsAvailable() or not bool(S.BreathofSindragosa:CooldownRemainsP()))) then
       if HR.CastSuggested(I.HornofValor) then return ""; end

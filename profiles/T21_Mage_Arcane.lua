@@ -22,7 +22,7 @@ local HR     = HeroRotation
 if not Spell.Mage then Spell.Mage = {} end
 Spell.Mage.Arcane = {
   ArcaneIntellect                       = Spell(1459),
-  SummonArcaneFamiliar                  = Spell(),
+  SummonArcaneFamiliar                  = Spell(205022),
   MirrorImage                           = Spell(55342),
   ArcaneBlast                           = Spell(30451),
   Evocation                             = Spell(12051),
@@ -30,32 +30,28 @@ Spell.Mage.Arcane = {
   ArcaneChargeBuff                      = Spell(36032),
   PresenceofMind                        = Spell(205025),
   NetherTempest                         = Spell(114923),
-  NetherTempestBuff                     = Spell(),
+  NetherTempestBuff                     = Spell(114923),
   RuneofPowerBuff                       = Spell(116014),
   ArcanePowerBuff                       = Spell(12042),
   TimeWarp                              = Spell(80353),
   ArcanePower                           = Spell(12042),
-  LightsJudgment                        = Spell(),
+  LightsJudgment                        = Spell(255647),
   RuneofPower                           = Spell(116011),
-  UseItems                              = Spell(),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
   ArcaneOrb                             = Spell(153626),
-  ArcaneOrbBuff                         = Spell(),
   Resonance                             = Spell(205028),
   PresenceofMindBuff                    = Spell(205025),
   Overpowered                           = Spell(155147),
   ArcaneBarrage                         = Spell(44425),
-  ArcaneBarrageBuff                     = Spell(),
   ArcaneExplosion                       = Spell(1449),
-  ArcaneExplosionBuff                   = Spell(),
   ArcaneMissiles                        = Spell(5143),
-  ClearcastingBuff                      = Spell(),
-  RuleofThreesBuff                      = Spell(),
+  ClearcastingBuff                      = Spell(263725),
+  RuleofThreesBuff                      = Spell(264774),
   RhoninsAssaultingArmwrapsBuff         = Spell(208081),
   Supernova                             = Spell(157980),
   ArcaneTorrent                         = Spell(50613),
-  Shimmer                               = Spell(),
+  Shimmer                               = Spell(212653),
   Blink                                 = Spell(1953),
   Counterspell                          = Spell(2139)
 };
@@ -65,7 +61,7 @@ local S = Spell.Mage.Arcane;
 if not Item.Mage then Item.Mage = {} end
 Item.Mage.Arcane = {
   DeadlyGrace                      = Item(127843),
-  GravitySpiral                    = Item(),
+  GravitySpiral                    = Item(144274),
   MysticKiltoftheRuneMaster        = Item(209280)
 };
 local I = Item.Mage.Arcane;
@@ -179,7 +175,7 @@ local function APL()
       if HR.Cast(S.TimeWarp) then return ""; end
     end
     -- lights_judgment,if=buff.arcane_power.down
-    if S.LightsJudgment:IsCastableP() and (Player:BuffDownP(S.ArcanePowerBuff)) then
+    if S.LightsJudgment:IsCastableP() and HR.CDsON() and (Player:BuffDownP(S.ArcanePowerBuff)) then
       if HR.Cast(S.LightsJudgment) then return ""; end
     end
     -- rune_of_power,if=!buff.arcane_power.up&(mana.pct>=50|cooldown.arcane_power.remains=0)&(buff.arcane_charge.stack=buff.arcane_charge.max_stack)
@@ -191,9 +187,6 @@ local function APL()
       if HR.Cast(S.ArcanePower) then return ""; end
     end
     -- use_items,if=buff.arcane_power.up|target.time_to_die<cooldown.arcane_power.remains
-    if S.UseItems:IsCastableP() and (Player:BuffP(S.ArcanePowerBuff) or Target:TimeToDie() < S.ArcanePower:CooldownRemainsP()) then
-      if HR.Cast(S.UseItems) then return ""; end
-    end
     -- blood_fury
     if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
       if HR.Cast(S.BloodFury, Settings.Arcane.OffGCDasOffGCD.BloodFury) then return ""; end

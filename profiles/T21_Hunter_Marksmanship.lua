@@ -24,13 +24,10 @@ Spell.Hunter.Marksmanship = {
   HuntersMark                           = Spell(),
   DoubleTap                             = Spell(),
   AimedShot                             = Spell(19434),
-  AimedShotBuff                         = Spell(),
   ExplosiveShot                         = Spell(212431),
-  ExplosiveShotBuff                     = Spell(),
   CounterShot                           = Spell(147362),
   BuffSephuzsSecret                     = Spell(),
   SephuzsSecretBuff                     = Spell(208052),
-  UseItems                              = Spell(),
   HuntersMarkDebuff                     = Spell(185365),
   RapidFire                             = Spell(),
   Berserking                            = Spell(26297),
@@ -38,24 +35,20 @@ Spell.Hunter.Marksmanship = {
   BloodFury                             = Spell(20572),
   AncestralCall                         = Spell(),
   Fireblood                             = Spell(),
-  LightsJudgment                        = Spell(),
+  LightsJudgment                        = Spell(255647),
   TrueshotBuff                          = Spell(193526),
   ProlongedPowerBuff                    = Spell(229206),
   Barrage                               = Spell(120360),
-  BarrageBuff                           = Spell(),
   Multishot                             = Spell(2643),
-  MultishotBuff                         = Spell(),
   PreciseShotsBuff                      = Spell(),
   ArcaneShot                            = Spell(185358),
-  ArcaneShotBuff                        = Spell(),
   DoubleTapBuff                         = Spell(),
   TrickShotsBuff                        = Spell(),
-  RapidFireBuff                         = Spell(),
   PiercingShot                          = Spell(198670),
   AMurderofCrows                        = Spell(131894),
   SteadyFocusBuff                       = Spell(),
-  SerpentSting                          = Spell(),
-  SerpentStingBuff                      = Spell(),
+  SerpentSting                          = Spell(271788),
+  SerpentStingDebuff                    = Spell(271788),
   SteadyShot                            = Spell()
 };
 local S = Spell.Hunter.Marksmanship;
@@ -153,9 +146,6 @@ local function APL()
     if HR.Cast(S.CounterShot) then return ""; end
   end
   -- use_items
-  if S.UseItems:IsCastableP() and (true) then
-    if HR.Cast(S.UseItems) then return ""; end
-  end
   -- hunters_mark,if=debuff.hunters_mark.down
   if S.HuntersMark:IsCastableP() and (Target:DebuffDownP(S.HuntersMarkDebuff)) then
     if HR.Cast(S.HuntersMark) then return ""; end
@@ -181,7 +171,7 @@ local function APL()
     if HR.Cast(S.Fireblood) then return ""; end
   end
   -- lights_judgment
-  if S.LightsJudgment:IsCastableP() and (true) then
+  if S.LightsJudgment:IsCastableP() and HR.CDsON() and (true) then
     if HR.Cast(S.LightsJudgment) then return ""; end
   end
   -- potion,if=(buff.trueshot.react&buff.bloodlust.react)|((consumable.prolonged_power&target.time_to_die<62)|target.time_to_die<31)
@@ -249,7 +239,7 @@ local function APL()
     if HR.Cast(S.ArcaneShot) then return ""; end
   end
   -- serpent_sting,if=refreshable
-  if S.SerpentSting:IsCastableP() and (Player:BuffRefreshableCP(S.SerpentStingBuff)) then
+  if S.SerpentSting:IsCastableP() and (Target:DebuffRefreshableCP(S.SerpentStingDebuff)) then
     if HR.Cast(S.SerpentSting) then return ""; end
   end
   -- steady_shot

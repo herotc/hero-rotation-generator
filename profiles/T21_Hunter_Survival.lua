@@ -27,31 +27,25 @@ Spell.Hunter.Survival = {
   Muzzle                                = Spell(187707),
   BuffSephuzsSecret                     = Spell(),
   SephuzsSecretBuff                     = Spell(208052),
-  UseItems                              = Spell(),
   Berserking                            = Spell(26297),
   CoordinatedAssault                    = Spell(),
   BloodFury                             = Spell(20572),
   AncestralCall                         = Spell(),
   Fireblood                             = Spell(),
-  LightsJudgment                        = Spell(),
+  LightsJudgment                        = Spell(255647),
   CoordinatedAssaultBuff                = Spell(),
   BerserkingBuff                        = Spell(26297),
   BloodFuryBuff                         = Spell(20572),
   MongooseBite                          = Spell(190928),
   MongooseFuryBuff                      = Spell(190931),
-  MongooseBiteBuff                      = Spell(),
   AMurderofCrows                        = Spell(206505),
   Chakrams                              = Spell(),
-  ChakramsBuff                          = Spell(),
   KillCommand                           = Spell(),
-  KillCommandBuff                       = Spell(),
   TipoftheSpearBuff                     = Spell(),
   WildfireBomb                          = Spell(),
-  WildfireBombBuff                      = Spell(),
   WildfireBombDebuff                    = Spell(),
   Butchery                              = Spell(212436),
   WildfireInfusion                      = Spell(),
-  ButcheryBuff                          = Spell(),
   ShrapnelBombDebuff                    = Spell(),
   InternalBleedingDebuff                = Spell(),
   SerpentSting                          = Spell(87935),
@@ -59,7 +53,6 @@ Spell.Hunter.Survival = {
   VipersVenom                           = Spell(),
   VipersVenomBuff                       = Spell(),
   Carve                                 = Spell(187708),
-  CarveBuff                             = Spell(),
   TermsofEngagement                     = Spell(),
   FlankingStrike                        = Spell(202800),
   RaptorStrike                          = Spell(186270)
@@ -138,9 +131,6 @@ local function APL()
     if HR.CastAnnotated(S.Muzzle, false, "Interrupt") then return ""; end
   end
   -- use_items
-  if S.UseItems:IsCastableP() and (true) then
-    if HR.Cast(S.UseItems) then return ""; end
-  end
   -- berserking,if=cooldown.coordinated_assault.remains>30
   if S.Berserking:IsCastableP() and HR.CDsON() and (S.CoordinatedAssault:CooldownRemainsP() > 30) then
     if HR.Cast(S.Berserking, Settings.Survival.OffGCDasOffGCD.Berserking) then return ""; end
@@ -158,7 +148,7 @@ local function APL()
     if HR.Cast(S.Fireblood) then return ""; end
   end
   -- lights_judgment
-  if S.LightsJudgment:IsCastableP() and (true) then
+  if S.LightsJudgment:IsCastableP() and HR.CDsON() and (true) then
     if HR.Cast(S.LightsJudgment) then return ""; end
   end
   -- potion,if=buff.coordinated_assault.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)

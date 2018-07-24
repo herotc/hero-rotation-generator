@@ -53,7 +53,7 @@ Spell.Rogue.Outlaw = {
   SkullandCrossbonesBuff                = Spell(),
   ArcaneTorrent                         = Spell(50613),
   ArcanePulse                           = Spell(),
-  LightsJudgment                        = Spell()
+  LightsJudgment                        = Spell(255647)
 };
 local S = Spell.Rogue.Outlaw;
 
@@ -249,7 +249,7 @@ local function APL()
     if HR.Cast(S.ArcanePulse) then return ""; end
   end
   -- lights_judgment
-  if S.LightsJudgment:IsCastableP() and (true) then
+  if S.LightsJudgment:IsCastableP() and HR.CDsON() and (true) then
     if HR.Cast(S.LightsJudgment) then return ""; end
   end
 end

@@ -32,7 +32,6 @@ Spell.Monk.Windwalker = {
   Serenity                              = Spell(152173),
   WhirlingDragonPunch                   = Spell(152175),
   SpinningCraneKick                     = Spell(107270),
-  SpinningCraneKickBuff                 = Spell(),
   BokProcBuff                           = Spell(),
   BlackoutKick                          = Spell(100784),
   CracklingJadeLightning                = Spell(117952),
@@ -40,17 +39,12 @@ Spell.Monk.Windwalker = {
   InvokeXuentheWhiteTiger               = Spell(123904),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
-  LightsJudgment                        = Spell(),
+  LightsJudgment                        = Spell(255647),
   TouchofDeath                          = Spell(115080),
   StormEarthandFire                     = Spell(137639),
   StormEarthandFireBuff                 = Spell(137639),
-  AoeBuff                               = Spell(),
-  StBuff                                = Spell(),
-  RisingSunKickBuff                     = Spell(),
   SerenityBuff                          = Spell(152173),
   PressurePointBuff                     = Spell(247255),
-  FistsofFuryBuff                       = Spell(),
-  BlackoutKickBuff                      = Spell(),
   RushingJadeWind                       = Spell(116847),
   RushingJadeWindBuff                   = Spell(116847),
   SpearHandStrike                       = Spell(116705),
@@ -226,7 +220,7 @@ local function APL()
       if HR.Cast(S.ArcaneTorrent, Settings.Windwalker.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
     end
     -- lights_judgment
-    if S.LightsJudgment:IsCastableP() and (true) then
+    if S.LightsJudgment:IsCastableP() and HR.CDsON() and (true) then
       if HR.Cast(S.LightsJudgment) then return ""; end
     end
     -- touch_of_death,target_if=min:dot.touch_of_death.remains,if=equipped.hidden_masters_forbidden_touch&!prev_gcd.1.touch_of_death

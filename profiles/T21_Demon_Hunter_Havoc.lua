@@ -32,7 +32,6 @@ Spell.DemonHunter.Havoc = {
   DarkSlashDebuff                       = Spell(),
   ChaosStrike                           = Spell(162794),
   FelBarrage                            = Spell(211053),
-  FelBarrageBuff                        = Spell(),
   DeathSweep                            = Spell(210152),
   EyeBeam                               = Spell(198013),
   ImmolationAura                        = Spell(178740),
@@ -40,7 +39,6 @@ Spell.DemonHunter.Havoc = {
   BlindFury                             = Spell(203550),
   FelRush                               = Spell(195072),
   DemonBlades                           = Spell(203555),
-  FelRushBuff                           = Spell(),
   DemonsBite                            = Spell(162243),
   ThrowGlaive                           = Spell(185123),
   OutofRangeBuff                        = Spell(),
@@ -48,7 +46,6 @@ Spell.DemonHunter.Havoc = {
   Momentum                              = Spell(206476),
   PreparedBuff                          = Spell(203650),
   FelMastery                            = Spell(192939),
-  EyeBeamBuff                           = Spell(),
   FirstBlood                            = Spell(206416),
   TrailofRuin                           = Spell(),
   MomentumBuff                          = Spell(208628),
@@ -156,7 +153,7 @@ local function APL()
       if HR.Cast(S.Metamorphosis) then return ""; end
     end
     -- nemesis,target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)
-    if S.Nemesis:IsCastableP() and (false and Target:DebuffDownP(S.NemesisDebuff) and (Cache.EnemiesCount[40] > desired_targets or 10000000000 > 60)) then
+    if S.Nemesis:IsCastableP() and (false and Target:DebuffDownP(S.NemesisDebuff) and (Cache.EnemiesCount[40] > 1 or 10000000000 > 60)) then
       if HR.Cast(S.Nemesis) then return ""; end
     end
     -- nemesis,if=!raid_event.adds.exists
@@ -184,7 +181,7 @@ local function APL()
   end
   local function Demonic()
     -- fel_barrage,if=active_enemies>desired_targets|raid_event.adds.in>30
-    if S.FelBarrage:IsCastableP() and (Cache.EnemiesCount[30] > desired_targets or 10000000000 > 30) then
+    if S.FelBarrage:IsCastableP() and (Cache.EnemiesCount[30] > 1 or 10000000000 > 30) then
       if HR.Cast(S.FelBarrage) then return ""; end
     end
     -- death_sweep,if=variable.blade_dance
@@ -250,7 +247,7 @@ local function APL()
       if HR.Cast(S.FelRush) then return ""; end
     end
     -- fel_barrage,if=!variable.waiting_for_momentum&(active_enemies>desired_targets|raid_event.adds.in>30)
-    if S.FelBarrage:IsCastableP() and (not bool(VarWaitingForMomentum) and (Cache.EnemiesCount[30] > desired_targets or 10000000000 > 30)) then
+    if S.FelBarrage:IsCastableP() and (not bool(VarWaitingForMomentum) and (Cache.EnemiesCount[30] > 1 or 10000000000 > 30)) then
       if HR.Cast(S.FelBarrage) then return ""; end
     end
     -- immolation_aura

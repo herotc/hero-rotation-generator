@@ -30,7 +30,7 @@ Spell.Monk.Brewmaster = {
   DiffuseMagicBuff                      = Spell(),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
-  LightsJudgment                        = Spell(),
+  LightsJudgment                        = Spell(255647),
   InvokeNiuzaotheBlackOx                = Spell(132578),
   PurifyingBrew                         = Spell(119582),
   Brews                                 = Spell(115308),
@@ -40,7 +40,6 @@ Spell.Monk.Brewmaster = {
   BlackOxBrew                           = Spell(115399),
   KegSmash                              = Spell(121253),
   ArcaneTorrent                         = Spell(50613),
-  KegSmashBuff                          = Spell(),
   TigerPalm                             = Spell(100780),
   BlackoutStrike                        = Spell(205523),
   BreathofFire                          = Spell(115181),
@@ -139,7 +138,7 @@ local function APL()
     if HR.Cast(S.Berserking, Settings.Brewmaster.OffGCDasOffGCD.Berserking) then return ""; end
   end
   -- lights_judgment
-  if S.LightsJudgment:IsCastableP() and (true) then
+  if S.LightsJudgment:IsCastableP() and HR.CDsON() and (true) then
     if HR.Cast(S.LightsJudgment) then return ""; end
   end
   -- invoke_niuzao_the_black_ox,if=target.time_to_die>45

@@ -101,6 +101,8 @@ SPELL_INFO = {
             'bullseye':                     {BUFF:      204090},
             'sentinels_sight':              {BUFF:      208913},
             'critical_aimed':               {BUFF:      242243},
+            'serpent_sting':                {SPELL:     271788,
+                                             DEBUFF:    271788},
             't20_2p_critical_aimed_damage': {BUFF:      242242},
         },
         SURVIVAL: {

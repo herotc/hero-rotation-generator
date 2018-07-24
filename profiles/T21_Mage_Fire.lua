@@ -27,7 +27,6 @@ Spell.Mage.Fire = {
   BlastWave                             = Spell(157981),
   CombustionBuff                        = Spell(190319),
   FireBlast                             = Spell(108853),
-  FireBlastBuff                         = Spell(),
   Meteor                                = Spell(153561),
   Combustion                            = Spell(190319),
   RuneofPowerBuff                       = Spell(116014),
@@ -35,34 +34,25 @@ Spell.Mage.Fire = {
   AlexstraszasFury                      = Spell(235870),
   HotStreakBuff                         = Spell(48108),
   LivingBomb                            = Spell(44457),
-  LivingBombBuff                        = Spell(),
-  LightsJudgment                        = Spell(),
+  LightsJudgment                        = Spell(255647),
   RuneofPower                           = Spell(116011),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
-  UseItems                              = Spell(),
   Flamestrike                           = Spell(2120),
   FlamePatch                            = Spell(205037),
-  FlamestrikeBuff                       = Spell(),
   KaelthasUltimateAbilityBuff           = Spell(209455),
   PyroclasmBuff                         = Spell(),
-  PyroblastBuff                         = Spell(),
   HeatingUpBuff                         = Spell(48107),
   PhoenixFlames                         = Spell(),
   Scorch                                = Spell(2948),
-  ScorchBuff                            = Spell(),
   SearingTouch                          = Spell(),
-  PhoenixFlamesBuff                     = Spell(),
-  DragonsBreathBuff                     = Spell(),
   Fireball                              = Spell(133),
-  FireballBuff                          = Spell(),
   Kindling                              = Spell(155148),
   IncantersFlowBuff                     = Spell(1463),
   Counterspell                          = Spell(2139),
   TimeWarp                              = Spell(80353),
   EruptingInfernalCoreBuff              = Spell(248147),
-  Firestarter                           = Spell(205026),
-  CombustionPhaseBuff                   = Spell()
+  Firestarter                           = Spell(205026)
 };
 local S = Spell.Mage.Fire;
 
@@ -149,7 +139,7 @@ local function APL()
   end
   local function CombustionPhase()
     -- lights_judgment,if=buff.combustion.down
-    if S.LightsJudgment:IsCastableP() and (Player:BuffDownP(S.CombustionBuff)) then
+    if S.LightsJudgment:IsCastableP() and HR.CDsON() and (Player:BuffDownP(S.CombustionBuff)) then
       if HR.Cast(S.LightsJudgment) then return ""; end
     end
     -- rune_of_power,if=buff.combustion.down
@@ -177,9 +167,6 @@ local function APL()
       if HR.Cast(S.Berserking, Settings.Fire.OffGCDasOffGCD.Berserking) then return ""; end
     end
     -- use_items
-    if S.UseItems:IsCastableP() and (true) then
-      if HR.Cast(S.UseItems) then return ""; end
-    end
     -- flamestrike,if=((talent.flame_patch.enabled&active_enemies>2)|active_enemies>6)&buff.hot_streak.react
     if S.Flamestrike:IsCastableP() and (((S.FlamePatch:IsAvailable() and Cache.EnemiesCount[40] > 2) or Cache.EnemiesCount[40] > 6) and bool(Player:BuffStackP(S.HotStreakBuff))) then
       if HR.Cast(S.Flamestrike) then return ""; end

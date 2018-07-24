@@ -34,9 +34,7 @@ Spell.Druid.Guardian = {
   SurvivaloftheFittest                  = Spell(),
   ProcSephuz                            = Spell(),
   ThrashBear                            = Spell(77758),
-  UseItems                              = Spell(),
   Maul                                  = Spell(6807),
-  MaulBuff                              = Spell(),
   Pulverize                             = Spell(80313),
   Moonfire                              = Spell(8921),
   GalacticGuardian                      = Spell(203964),
@@ -45,7 +43,6 @@ Spell.Druid.Guardian = {
   JaggedClaws                           = Spell(),
   SouloftheForest                       = Spell(158477),
   Mangle                                = Spell(33917),
-  MangleBuff                            = Spell(),
   SwipeBear                             = Spell(213771)
 };
 local S = Spell.Druid.Guardian;
@@ -156,9 +153,6 @@ local function APL()
       if HR.Cast(S.ProcSephuz) then return ""; end
     end
     -- use_items,if=cooldown.rage_of_the_sleeper.remains>12|buff.rage_of_the_sleeper.up|target.time_to_die<22
-    if S.UseItems:IsCastableP() and (S.RageoftheSleeper:CooldownRemainsP() > 12 or Player:BuffP(S.RageoftheSleeperBuff) or Target:TimeToDie() < 22) then
-      if HR.Cast(S.UseItems) then return ""; end
-    end
   end
   -- call precombat
   if not Player:AffectingCombat() then

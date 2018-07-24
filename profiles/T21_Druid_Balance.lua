@@ -47,8 +47,7 @@ Spell.Druid.Balance = {
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
   ArcaneTorrent                         = Spell(50613),
-  LightsJudgment                        = Spell(),
-  UseItems                              = Spell(),
+  LightsJudgment                        = Spell(255647),
   WarriorofElune                        = Spell(202425)
 };
 local S = Spell.Druid.Balance;
@@ -281,13 +280,10 @@ local function APL()
     if HR.Cast(S.ArcaneTorrent, Settings.Balance.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
   end
   -- lights_judgment,if=buff.celestial_alignment.up|buff.incarnation.up
-  if S.LightsJudgment:IsCastableP() and (Player:BuffP(S.CelestialAlignmentBuff) or Player:BuffP(S.IncarnationBuff)) then
+  if S.LightsJudgment:IsCastableP() and HR.CDsON() and (Player:BuffP(S.CelestialAlignmentBuff) or Player:BuffP(S.IncarnationBuff)) then
     if HR.Cast(S.LightsJudgment) then return ""; end
   end
   -- use_items
-  if S.UseItems:IsCastableP() and (true) then
-    if HR.Cast(S.UseItems) then return ""; end
-  end
   -- warrior_of_elune
   if S.WarriorofElune:IsCastableP() and (true) then
     if HR.Cast(S.WarriorofElune) then return ""; end

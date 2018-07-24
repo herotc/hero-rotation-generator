@@ -25,8 +25,6 @@ Spell.Druid.Feral = {
   Bloodtalons                           = Spell(155672),
   CatForm                               = Spell(768),
   Prowl                                 = Spell(5215),
-  Dash                                  = Spell(1850),
-  CatFormBuff                           = Spell(768),
   IncarnationBuff                       = Spell(102543),
   JungleStalkerBuff                     = Spell(252071),
   Berserk                               = Spell(106951),
@@ -35,13 +33,12 @@ Spell.Druid.Feral = {
   Berserking                            = Spell(26297),
   FeralFrenzy                           = Spell(274837),
   Incarnation                           = Spell(102543),
-  OldWarBuff                            = Spell(),
   BerserkBuff                           = Spell(106951),
   Shadowmeld                            = Spell(58984),
   Rake                                  = Spell(1822),
   RakeDebuff                            = Spell(155722),
   BloodtalonsBuff                       = Spell(145152),
-  UseItems                              = Spell(),
+  CatFormBuff                           = Spell(768),
   ProwlBuff                             = Spell(5215),
   ShadowmeldBuff                        = Spell(58984),
   FerociousBite                         = Spell(22568),
@@ -56,12 +53,10 @@ Spell.Druid.Feral = {
   BrutalSlash                           = Spell(202028),
   ThrashCat                             = Spell(106830),
   ThrashCatDebuff                       = Spell(106830),
-  BrutalSlashBuff                       = Spell(),
   MoonfireCat                           = Spell(155625),
   ClearcastingBuff                      = Spell(135700),
   SwipeCat                              = Spell(106785),
   Shred                                 = Spell(5221),
-  ShredBuff                             = Spell(),
   LunarInspiration                      = Spell(155580),
   MoonfireCatDebuff                     = Spell(155625),
   Sabertooth                            = Spell(202031)
@@ -149,9 +144,6 @@ local function APL()
   end
   local function Cooldowns()
     -- dash,if=!buff.cat_form.up
-    if S.Dash:IsCastableP() and (not Player:BuffP(S.CatFormBuff)) then
-      if HR.Cast(S.Dash) then return ""; end
-    end
     -- prowl,if=buff.incarnation.remains<0.5&buff.jungle_stalker.up
     if S.Prowl:IsCastableP() and (Player:BuffRemainsP(S.IncarnationBuff) < 0.5 and Player:BuffP(S.JungleStalkerBuff)) then
       if HR.Cast(S.Prowl) then return ""; end
@@ -185,9 +177,6 @@ local function APL()
       if HR.Cast(S.Shadowmeld) then return ""; end
     end
     -- use_items
-    if S.UseItems:IsCastableP() and (true) then
-      if HR.Cast(S.UseItems) then return ""; end
-    end
   end
   local function SingleTarget()
     -- cat_form,if=!buff.cat_form.up
@@ -268,7 +257,7 @@ local function APL()
       if HR.Cast(S.Regrowth) then return ""; end
     end
     -- brutal_slash,if=spell_targets.brutal_slash>desired_targets
-    if S.BrutalSlash:IsCastableP() and (Cache.EnemiesCount[8] > desired_targets) then
+    if S.BrutalSlash:IsCastableP() and (Cache.EnemiesCount[8] > 1) then
       if HR.Cast(S.BrutalSlash) then return ""; end
     end
     -- pool_resource,for_next=1
@@ -349,9 +338,6 @@ local function APL()
     if HR.Cast(S.Rake) then return ""; end
   end
   -- dash,if=!buff.cat_form.up
-  if S.Dash:IsCastableP() and (not Player:BuffP(S.CatFormBuff)) then
-    if HR.Cast(S.Dash) then return ""; end
-  end
   -- auto_attack
   -- moonfire_cat,if=talent.lunar_inspiration.enabled&!ticking
   if S.MoonfireCat:IsCastableP() and (S.LunarInspiration:IsAvailable() and not Target:DebuffP(S.MoonfireCatDebuff)) then

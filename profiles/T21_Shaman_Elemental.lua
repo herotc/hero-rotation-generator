@@ -46,15 +46,11 @@ Spell.Shaman.Elemental = {
   ResonanceTotemBuff                    = Spell(202192),
   IcefuryBuff                           = Spell(210714),
   Icefury                               = Spell(210714),
-  LavaBeamBuff                          = Spell(),
-  ChainLightningBuff                    = Spell(),
   Bloodlust                             = Spell(2825),
   WindShear                             = Spell(57994),
   EarthElemental                        = Spell(),
-  UseItems                              = Spell(),
   BloodFury                             = Spell(20572),
-  Berserking                            = Spell(26297),
-  AoeBuff                               = Spell()
+  Berserking                            = Spell(26297)
 };
 local S = Spell.Shaman.Elemental;
 
@@ -283,9 +279,6 @@ local function APL()
     if HR.Cast(S.EarthElemental) then return ""; end
   end
   -- use_items
-  if S.UseItems:IsCastableP() and (true) then
-    if HR.Cast(S.UseItems) then return ""; end
-  end
   -- blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
   if S.BloodFury:IsCastableP() and HR.CDsON() and (not S.Ascendance:IsAvailable() or Player:BuffP(S.AscendanceBuff) or S.Ascendance:CooldownRemainsP() > 50) then
     if HR.Cast(S.BloodFury, Settings.Elemental.OffGCDasOffGCD.BloodFury) then return ""; end

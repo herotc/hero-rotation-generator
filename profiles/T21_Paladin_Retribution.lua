@@ -23,7 +23,7 @@ if not Spell.Paladin then Spell.Paladin = {} end
 Spell.Paladin.Retribution = {
   AvengingWrathBuff                     = Spell(31884),
   CrusadeBuff                           = Spell(224668),
-  LightsJudgment                        = Spell(),
+  LightsJudgment                        = Spell(255647),
   ShieldofVengeance                     = Spell(184662),
   AvengingWrath                         = Spell(31884),
   InquisitionBuff                       = Spell(),
@@ -104,7 +104,7 @@ local function APL()
       if HR.CastSuggested(I.OldWar) then return ""; end
     end
     -- lights_judgment,if=spell_targets.lights_judgment>=2|(!raid_event.adds.exists|raid_event.adds.in>75)
-    if S.LightsJudgment:IsCastableP() and (Cache.EnemiesCount[5] >= 2 or (not false or 10000000000 > 75)) then
+    if S.LightsJudgment:IsCastableP() and HR.CDsON() and (Cache.EnemiesCount[5] >= 2 or (not false or 10000000000 > 75)) then
       if HR.Cast(S.LightsJudgment) then return ""; end
     end
     -- shield_of_vengeance

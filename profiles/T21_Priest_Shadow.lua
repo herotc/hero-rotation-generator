@@ -33,7 +33,6 @@ Spell.Priest.Shadow = {
   VoidBolt                              = Spell(205448),
   DarkVoid                              = Spell(263346),
   ShadowWordPainDebuff                  = Spell(589),
-  VoidBoltBuff                          = Spell(),
   SurrenderToMadness                    = Spell(193223),
   ShadowCrash                           = Spell(205385),
   MindSear                              = Spell(48045),
@@ -43,9 +42,7 @@ Spell.Priest.Shadow = {
   VampiricTouch                         = Spell(34914),
   VoidTorrent                           = Spell(263165),
   VampiricTouchDebuff                   = Spell(34914),
-  MindFlay                              = Spell(15407),
-  CleaveBuff                            = Spell(),
-  SingleBuff                            = Spell()
+  MindFlay                              = Spell(15407)
 };
 local S = Spell.Priest.Shadow;
 

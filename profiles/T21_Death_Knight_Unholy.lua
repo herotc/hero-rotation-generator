@@ -41,18 +41,16 @@ Spell.DeathKnight.Unholy = {
   DarkTransformation                    = Spell(63560),
   SummonGargoyle                        = Spell(49206),
   UnholyFrenzy                          = Spell(207289),
-  UnholyFrenzyBuff                      = Spell(),
   SoulReaper                            = Spell(130736),
   UnholyBlight                          = Spell(115989),
   Pestilence                            = Spell(277234),
+  UnholyFrenzyBuff                      = Spell(),
   MindFreeze                            = Spell(47528),
   ArcaneTorrent                         = Spell(50613),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
-  UseItems                              = Spell(),
   TemptationBuff                        = Spell(234143),
-  Outbreak                              = Spell(77575),
-  AoeBuff                               = Spell()
+  Outbreak                              = Spell(77575)
 };
 local S = Spell.DeathKnight.Unholy;
 
@@ -271,9 +269,6 @@ local function APL()
     if HR.Cast(S.Berserking, Settings.Unholy.OffGCDasOffGCD.Berserking) then return ""; end
   end
   -- use_items
-  if S.UseItems:IsCastableP() and (true) then
-    if HR.Cast(S.UseItems) then return ""; end
-  end
   -- use_item,name=feloiled_infernal_machine,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled
   if I.FeloiledInfernalMachine:IsReady() and (bool(pet.gargoyle.active) or not S.SummonGargoyle:IsAvailable()) then
     if HR.CastSuggested(I.FeloiledInfernalMachine) then return ""; end

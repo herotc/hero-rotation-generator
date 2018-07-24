@@ -33,7 +33,6 @@ Spell.Warrior.Fury = {
   Execute                               = Spell(5308),
   Bloodthirst                           = Spell(23881),
   RagingBlow                            = Spell(85288),
-  RagingBlowBuff                        = Spell(),
   Bladestorm                            = Spell(46924),
   SiegebreakerDebuff                    = Spell(),
   DragonRoar                            = Spell(118000),
@@ -42,12 +41,11 @@ Spell.Warrior.Fury = {
   Charge                                = Spell(100),
   FuriousSlashBuff                      = Spell(),
   FujiedasFuryBuff                      = Spell(207775),
-  BloodthirstBuff                       = Spell(),
   MeatCleaverBuff                       = Spell(85739),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
   ArcaneTorrent                         = Spell(50613),
-  LightsJudgment                        = Spell()
+  LightsJudgment                        = Spell(255647)
 };
 local S = Spell.Warrior.Fury;
 
@@ -178,7 +176,7 @@ local function APL()
     if HR.Cast(S.FuriousSlash) then return ""; end
   end
   -- bloodthirst,if=equipped.kazzalax_fujiedas_fury&(buff.fujiedas_fury.down|remains<2)
-  if S.Bloodthirst:IsCastableP() and (I.KazzalaxFujiedasFury:IsEquipped() and (Player:BuffDownP(S.FujiedasFuryBuff) or Player:BuffRemainsP(S.BloodthirstBuff) < 2)) then
+  if S.Bloodthirst:IsCastableP() and (I.KazzalaxFujiedasFury:IsEquipped() and (Player:BuffDownP(S.FujiedasFuryBuff) or remains < 2)) then
     if HR.Cast(S.Bloodthirst) then return ""; end
   end
   -- rampage,if=cooldown.recklessness.remains<3
@@ -206,7 +204,7 @@ local function APL()
     if HR.Cast(S.ArcaneTorrent, Settings.Fury.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
   end
   -- lights_judgment,if=cooldown.recklessness.remains<3
-  if S.LightsJudgment:IsCastableP() and (S.Recklessness:CooldownRemainsP() < 3) then
+  if S.LightsJudgment:IsCastableP() and HR.CDsON() and (S.Recklessness:CooldownRemainsP() < 3) then
     if HR.Cast(S.LightsJudgment) then return ""; end
   end
   -- run_action_list,name=single_target

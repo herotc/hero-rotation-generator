@@ -28,7 +28,6 @@ Spell.Shaman.Enhancement = {
   Rockbiter                             = Spell(193786),
   Landslide                             = Spell(197992),
   LandslideBuff                         = Spell(202004),
-  RockbiterBuff                         = Spell(),
   Windstrike                            = Spell(115356),
   FuryofAir                             = Spell(197211),
   FuryofAirBuff                         = Spell(197211),
@@ -57,8 +56,7 @@ Spell.Shaman.Enhancement = {
   LavaLash                              = Spell(60103),
   HotHandBuff                           = Spell(215785),
   EarthenSpikeDebuff                    = Spell(188089),
-  WindShear                             = Spell(57994),
-  UseItems                              = Spell()
+  WindShear                             = Spell(57994)
 };
 local S = Spell.Shaman.Enhancement;
 
@@ -328,9 +326,6 @@ local function APL()
   end
   -- auto_attack
   -- use_items
-  if S.UseItems:IsCastableP() and (true) then
-    if HR.Cast(S.UseItems) then return ""; end
-  end
   -- call_action_list,name=opener
   if (true) then
     local ShouldReturn = Opener(); if ShouldReturn then return ShouldReturn; end

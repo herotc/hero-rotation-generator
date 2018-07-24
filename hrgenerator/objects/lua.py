@@ -258,9 +258,9 @@ class BuildExpression(Decorable):
         call = 'ready' if call == 'up' else call
         if call:
             getattr(self, call)()
-        self.switch_model()
+        self.apply_model()
 
-    def switch_model(self):
+    def apply_model(self):
         """
         Call the right builder depending on the model.
         """
