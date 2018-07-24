@@ -27,6 +27,11 @@ DEFAULT_POTION = {
     }
 }
 
+DEFAULT_RANGE = {
+    PALADIN: {
+    },
+}
+
 SPELL_INFO = {
     PALADIN: {
         COMMON: {

@@ -25,6 +25,11 @@ DEFAULT_POTION = {
     }
 }
 
+DEFAULT_RANGE = {
+    DEMONHUNTER: {
+    },
+}
+
 SPELL_INFO = {
     DEMONHUNTER: {
         COMMON: {

@@ -78,7 +78,7 @@ local Settings = {
 
 -- Variables
 
-local EnemyRanges = {8, 30}
+local EnemyRanges = {8, 10, 30}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do
     HL.GetEnemies(i);
@@ -411,7 +411,7 @@ local function APL()
     return Obliteration();
   end
   -- run_action_list,name=aoe,if=active_enemies>=2
-  if (Cache.EnemiesCount[30] >= 2) then
+  if (Cache.EnemiesCount[10] >= 2) then
     return Aoe();
   end
   -- call_action_list,name=standard

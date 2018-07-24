@@ -30,6 +30,11 @@ DEFAULT_POTION = {
     }
 }
 
+DEFAULT_RANGE = {
+    DRUID: {
+    },
+}
+
 SPELL_INFO = {
     DRUID: {
         COMMON: {

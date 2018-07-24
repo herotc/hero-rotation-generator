@@ -28,6 +28,11 @@ DEFAULT_POTION = {
     }
 }
 
+DEFAULT_RANGE = {
+    MAGE: {
+    },
+}
+
 SPELL_INFO = {
     MAGE: {
         COMMON: {

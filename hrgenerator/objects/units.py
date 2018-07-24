@@ -12,7 +12,7 @@ from .lua import LuaNamed, Literal
 from ..abstract.decoratormanager import decorating_manager
 from ..constants import RANGE
 from ..database import (CLASS_SPECS, RACES, SPELL_INFO, COMMON, DEFAULT_POTION,
-                        CLASS_FUNCTIONS, DECORATORS)
+                        DEFAULT_RANGE, CLASS_FUNCTIONS, DECORATORS)
 
 
 class Unit:
@@ -111,11 +111,16 @@ class Player(Unit, LuaNamed):
         Returns the default range of the spec.
         """
         if not self.range_:
-            self.range_ = reduce(
-                lambda range_, spell: max(spell[RANGE], range_),
-                filter(lambda spell: RANGE in spell,
-                       self.spell_book().values()),
-                5)
+            class_simc = self.class_.simc
+            spec_simc = self.spec.simc
+            if spec_simc in DEFAULT_RANGE.get(class_simc, {}):
+                self.range_ = DEFAULT_RANGE[class_simc][spec_simc]
+            else:
+                self.range_ = reduce(
+                    lambda range_, spell: max(spell[RANGE], range_),
+                    filter(lambda spell: RANGE in spell,
+                        self.spell_book().values()),
+                    5)
         return self.range_
 
     def spell_property(self, spell, key, default=False):

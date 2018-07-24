@@ -29,6 +29,11 @@ DEFAULT_POTION = {
     }
 }
 
+DEFAULT_RANGE = {
+    HUNTER: {
+    },
+}
+
 SPELL_INFO = {
     HUNTER: {
         COMMON: {

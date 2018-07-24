@@ -27,9 +27,16 @@ DEFAULT_POTION = {
         BLOOD:  'prolonged_power',
         FROST:  'prolonged_power',
         UNHOLY: 'prolonged_power',
-    }
+    },
 }
-# TO-DO: Update talents, spellids and buffids for blood
+
+DEFAULT_RANGE = {
+    DEATHKNIGHT: {
+        FROST: 10,
+    },
+}
+
+# TODO: Update talents, spellids and buffids for blood
 SPELL_INFO = {
     DEATHKNIGHT: {
         COMMON: {

@@ -28,6 +28,11 @@ DEFAULT_POTION = {
     }
 }
 
+DEFAULT_RANGE = {
+    ROGUE: {
+    },
+}
+
 SPELL_INFO = {
     ROGUE: {
         COMMON: {

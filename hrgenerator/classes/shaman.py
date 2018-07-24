@@ -27,6 +27,11 @@ DEFAULT_POTION = {
     }
 }
 
+DEFAULT_RANGE = {
+    SHAMAN: {
+    },
+}
+
 SPELL_INFO = {
     SHAMAN: {
         COMMON: {

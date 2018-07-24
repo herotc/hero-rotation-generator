@@ -27,6 +27,11 @@ DEFAULT_POTION = {
     }
 }
 
+DEFAULT_RANGE = {
+    WARRIOR: {
+    },
+}
+
 SPELL_INFO = {
     WARRIOR: {
         COMMON: {

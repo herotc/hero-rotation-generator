@@ -30,6 +30,11 @@ DEFAULT_POTION = {
     }
 }
 
+DEFAULT_RANGE = {
+    WARLOCK: {
+    },
+}
+
 SPELL_INFO = {
     WARLOCK: {
         COMMON: {

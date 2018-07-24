@@ -27,6 +27,11 @@ DEFAULT_POTION = {
     }
 }
 
+DEFAULT_RANGE = {
+    PRIEST: {
+    },
+}
+
 SPELL_INFO = {
     PRIEST: {
         COMMON: {

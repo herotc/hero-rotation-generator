@@ -29,6 +29,11 @@ DEFAULT_POTION = {
     }
 }
 
+DEFAULT_RANGE = {
+    MONK: {
+    },
+}
+
 SPELL_INFO = {
     MONK: {
         COMMON: {

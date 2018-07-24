@@ -46,6 +46,10 @@ DEFAULT_POTION = {}
 for class_ in CLASSES:
     DEFAULT_POTION.update(class_.DEFAULT_POTION)
 
+DEFAULT_RANGE = {}
+for class_ in CLASSES:
+    DEFAULT_RANGE.update(class_.DEFAULT_RANGE)
+
 SPELL_INFO = {
     COMMON: {
         'arcane_torrent':               {SPELL:     50613,
