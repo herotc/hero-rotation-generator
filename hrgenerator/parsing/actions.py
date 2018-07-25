@@ -172,7 +172,7 @@ class Action:
                 exec_link = ' = ' if exec_value != '' else ''
                 exec_pool = Spell(self, 'pool_resource').print_cast()
                 return (
-                    f'if {exec_name}:IsUsablePP({extra_amount}) then\n'
+                    f'if {exec_name}:IsUsablePPool({extra_amount}) then\n'
                     f'  {exec_cast}{exec_link}{exec_value}\n'
                     'else\n'
                     f'  {exec_pool}\n'

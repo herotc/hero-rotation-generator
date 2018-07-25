@@ -197,7 +197,7 @@ local function APL()
     -- pool_resource,for_next=1
     -- garrote,cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&(target.time_to_die-remains>4&spell_targets.fan_of_knives<=1|target.time_to_die-remains>12)
     if S.Garrote:IsCastableP() and ((not S.Subterfuge:IsAvailable() or not (S.Vanish:CooldownUpP() and S.Vendetta:CooldownRemainsP() <= 4)) and Player:ComboPointsDeficit() >= 1 and Target:DebuffRefreshableCP(S.GarroteDebuff) and (pmultiplier <= 1 or Target:DebuffRemainsP(S.GarroteDebuff) <= S.GarroteDebuff:TickTime()) and (not bool(exsanguinated) or Target:DebuffRemainsP(S.GarroteDebuff) <= S.GarroteDebuff:TickTime() * 2) and (Target:TimeToDie() - Target:DebuffRemainsP(S.GarroteDebuff) > 4 and Cache.EnemiesCount[10] <= 1 or Target:TimeToDie() - Target:DebuffRemainsP(S.GarroteDebuff) > 12)) then
-      if S.Garrote:IsUsablePP() then
+      if S.Garrote:IsUsablePPool() then
         if HR.Cast(S.Garrote) then return ""; end
       else
         if HR.Cast(S.PoolResource) then return ""; end

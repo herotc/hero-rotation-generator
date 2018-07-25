@@ -151,11 +151,11 @@ local function APL()
     end
     -- berserk,if=energy>=30&(cooldown.tigers_fury.remains>5|buff.tigers_fury.up)
     if S.Berserk:IsCastableP() and (Player:Energy() >= 30 and (S.TigersFury:CooldownRemainsP() > 5 or Player:BuffP(S.TigersFuryBuff))) then
-      if HR.Cast(S.Berserk) then return ""; end
+      if HR.Cast(S.Berserk, Settings.Feral.OffGCDasOffGCD.Berserk) then return ""; end
     end
     -- tigers_fury,if=energy.deficit>=60
     if S.TigersFury:IsCastableP() and (Player:EnergyDeficit() >= 60) then
-      if HR.Cast(S.TigersFury) then return ""; end
+      if HR.Cast(S.TigersFury, Settings.Feral.OffGCDasOffGCD.TigersFury) then return ""; end
     end
     -- berserking
     if S.Berserking:IsCastableP() and HR.CDsON() and (true) then
@@ -167,7 +167,7 @@ local function APL()
     end
     -- incarnation,if=energy>=30&(cooldown.tigers_fury.remains>15|buff.tigers_fury.up)
     if S.Incarnation:IsCastableP() and (Player:Energy() >= 30 and (S.TigersFury:CooldownRemainsP() > 15 or Player:BuffP(S.TigersFuryBuff))) then
-      if HR.Cast(S.Incarnation) then return ""; end
+      if HR.Cast(S.Incarnation, Settings.Feral.OffGCDasOffGCD.Incarnation) then return ""; end
     end
     -- potion,name=prolonged_power,if=target.time_to_die<65|(time_to_die<180&(buff.berserk.up|buff.incarnation.up))
     if I.OldWar:IsReady() and Settings.Commons.UsePotions and (Target:TimeToDie() < 65 or (Target:TimeToDie() < 180 and (Player:BuffP(S.BerserkBuff) or Player:BuffP(S.IncarnationBuff)))) then
@@ -222,7 +222,7 @@ local function APL()
     -- pool_resource,for_next=1
     -- savage_roar,if=buff.savage_roar.down
     if S.SavageRoar:IsCastableP() and (Player:BuffDownP(S.SavageRoarBuff)) then
-      if S.SavageRoar:IsUsablePP() then
+      if S.SavageRoar:IsUsablePPool() then
         if HR.Cast(S.SavageRoar) then return ""; end
       else
         if HR.Cast(S.PoolResource) then return ""; end
@@ -231,7 +231,7 @@ local function APL()
     -- pool_resource,for_next=1
     -- rip,target_if=!ticking|(remains<=duration*0.3)&(target.health.pct>25&!talent.sabertooth.enabled)|(remains<=duration*0.8&persistent_multiplier>dot.rip.pmultiplier)&target.time_to_die>8
     if S.Rip:IsCastableP() and (true) then
-      if S.Rip:IsUsablePP() then
+      if S.Rip:IsUsablePPool() then
         if HR.Cast(S.Rip) then return ""; end
       else
         if HR.Cast(S.PoolResource) then return ""; end
@@ -240,7 +240,7 @@ local function APL()
     -- pool_resource,for_next=1
     -- savage_roar,if=buff.savage_roar.remains<12
     if S.SavageRoar:IsCastableP() and (Player:BuffRemainsP(S.SavageRoarBuff) < 12) then
-      if S.SavageRoar:IsUsablePP() then
+      if S.SavageRoar:IsUsablePPool() then
         if HR.Cast(S.SavageRoar) then return ""; end
       else
         if HR.Cast(S.PoolResource) then return ""; end
@@ -267,7 +267,7 @@ local function APL()
     -- pool_resource,for_next=1
     -- thrash_cat,if=refreshable&(spell_targets.thrash_cat>2)
     if S.ThrashCat:IsCastableP() and (Target:DebuffRefreshableCP(S.ThrashCatDebuff) and (Cache.EnemiesCount[8] > 2)) then
-      if S.ThrashCat:IsUsablePP() then
+      if S.ThrashCat:IsUsablePPool() then
         if HR.Cast(S.ThrashCat) then return ""; end
       else
         if HR.Cast(S.PoolResource) then return ""; end
@@ -276,7 +276,7 @@ local function APL()
     -- pool_resource,for_next=1
     -- thrash_cat,if=spell_targets.thrash_cat>3&equipped.luffa_wrappings&talent.brutal_slash.enabled
     if S.ThrashCat:IsCastableP() and (Cache.EnemiesCount[8] > 3 and I.LuffaWrappings:IsEquipped() and S.BrutalSlash:IsAvailable()) then
-      if S.ThrashCat:IsUsablePP() then
+      if S.ThrashCat:IsUsablePPool() then
         if HR.Cast(S.ThrashCat) then return ""; end
       else
         if HR.Cast(S.PoolResource) then return ""; end
@@ -285,7 +285,7 @@ local function APL()
     -- pool_resource,for_next=1
     -- rake,target_if=!ticking|(!talent.bloodtalons.enabled&remains<duration*0.3)&target.time_to_die>4
     if S.Rake:IsCastableP() and (true) then
-      if S.Rake:IsUsablePP() then
+      if S.Rake:IsUsablePPool() then
         if HR.Cast(S.Rake) then return ""; end
       else
         if HR.Cast(S.PoolResource) then return ""; end
@@ -294,7 +294,7 @@ local function APL()
     -- pool_resource,for_next=1
     -- rake,target_if=talent.bloodtalons.enabled&buff.bloodtalons.up&((remains<=7)&persistent_multiplier>dot.rake.pmultiplier*0.85)&target.time_to_die>4
     if S.Rake:IsCastableP() and (true) then
-      if S.Rake:IsUsablePP() then
+      if S.Rake:IsUsablePPool() then
         if HR.Cast(S.Rake) then return ""; end
       else
         if HR.Cast(S.PoolResource) then return ""; end
@@ -311,7 +311,7 @@ local function APL()
     -- pool_resource,for_next=1
     -- thrash_cat,if=refreshable&(variable.use_thrash=2|spell_targets.thrash_cat>1)
     if S.ThrashCat:IsCastableP() and (Target:DebuffRefreshableCP(S.ThrashCatDebuff) and (VarUseThrash == 2 or Cache.EnemiesCount[8] > 1)) then
-      if S.ThrashCat:IsUsablePP() then
+      if S.ThrashCat:IsUsablePPool() then
         if HR.Cast(S.ThrashCat) then return ""; end
       else
         if HR.Cast(S.PoolResource) then return ""; end
@@ -324,7 +324,7 @@ local function APL()
     -- pool_resource,for_next=1
     -- swipe_cat,if=spell_targets.swipe_cat>1
     if S.SwipeCat:IsCastableP() and (Cache.EnemiesCount[8] > 1) then
-      if S.SwipeCat:IsUsablePP() then
+      if S.SwipeCat:IsUsablePPool() then
         if HR.Cast(S.SwipeCat) then return ""; end
       else
         if HR.Cast(S.PoolResource) then return ""; end
@@ -359,15 +359,15 @@ local function APL()
   end
   -- berserk
   if S.Berserk:IsCastableP() and (true) then
-    if HR.Cast(S.Berserk) then return ""; end
+    if HR.Cast(S.Berserk, Settings.Feral.OffGCDasOffGCD.Berserk) then return ""; end
   end
   -- incarnation
   if S.Incarnation:IsCastableP() and (true) then
-    if HR.Cast(S.Incarnation) then return ""; end
+    if HR.Cast(S.Incarnation, Settings.Feral.OffGCDasOffGCD.Incarnation) then return ""; end
   end
   -- tigers_fury
   if S.TigersFury:IsCastableP() and (true) then
-    if HR.Cast(S.TigersFury) then return ""; end
+    if HR.Cast(S.TigersFury, Settings.Feral.OffGCDasOffGCD.TigersFury) then return ""; end
   end
   -- regrowth,if=(talent.sabertooth.enabled|buff.predatory_swiftness.up)&talent.bloodtalons.enabled&buff.bloodtalons.down&combo_points=5
   if S.Regrowth:IsCastableP() and ((S.Sabertooth:IsAvailable() or Player:BuffP(S.PredatorySwiftnessBuff)) and S.Bloodtalons:IsAvailable() and Player:BuffDownP(S.BloodtalonsBuff) and Player:ComboPoints() == 5) then
