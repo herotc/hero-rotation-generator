@@ -170,12 +170,12 @@ class Action:
                 exec_cast = self.execution().object_().print_cast()
                 exec_value = convert_type(self.value_tree(), NUM)
                 exec_link = ' = ' if exec_value != '' else ''
-                exec_pool = Spell(self, 'pool_resource').print_lua()
+                exec_pool = Spell(self, 'pool_resource').print_cast()
                 return (
-                    f'if {exec_name}:IsUsableP({extra_amount}) then\n'
+                    f'if {exec_name}:IsUsablePP({extra_amount}) then\n'
                     f'  {exec_cast}{exec_link}{exec_value}\n'
                     'else\n'
-                    '  if HR.Cast(S.PoolResource) then return ""; end\n'
+                    f'  {exec_pool}\n'
                     'end'
                 )
             else:
