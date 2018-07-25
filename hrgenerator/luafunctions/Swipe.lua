@@ -1,5 +1,5 @@
 local function Swipe()
-  if Player:Buff(S.CatForm)
+  if Player:Buff(S.CatForm) then
     return S.SwipeCat;
   else
     return S.SwipeBear;
