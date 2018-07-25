@@ -91,8 +91,9 @@ end
 
 --- ======= ACTION LISTS =======
 local function APL()
+  local Precombat, Aoe, SingleTarget
   UpdateRanges()
-  local function Precombat()
+  Precombat = function()
     -- flask
     -- food
     -- augmentation
@@ -114,7 +115,7 @@ local function APL()
       if HR.Cast(S.ElementalBlast) then return ""; end
     end
   end
-  local function Aoe()
+  Aoe = function()
     -- stormkeeper
     if S.Stormkeeper:IsCastableP() and (true) then
       if HR.Cast(S.Stormkeeper) then return ""; end
@@ -164,7 +165,7 @@ local function APL()
       if HR.Cast(S.FrostShock) then return ""; end
     end
   end
-  local function SingleTarget()
+  SingleTarget = function()
     -- flame_shock,if=!ticking|dot.flame_shock.remains<=gcd
     if S.FlameShock:IsCastableP() and (not Target:DebuffP(S.FlameShockDebuff) or Target:DebuffRemainsP(S.FlameShockDebuff) <= Player:GCD()) then
       if HR.Cast(S.FlameShock) then return ""; end

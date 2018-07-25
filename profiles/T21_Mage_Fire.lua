@@ -96,8 +96,9 @@ end
 
 --- ======= ACTION LISTS =======
 local function APL()
+  local Precombat, ActiveTalents, CombustionPhase, RopPhase, StandardRotation
   UpdateRanges()
-  local function Precombat()
+  Precombat = function()
     -- flask
     -- food
     -- augmentation
@@ -119,7 +120,7 @@ local function APL()
       if HR.Cast(S.Pyroblast) then return ""; end
     end
   end
-  local function ActiveTalents()
+  ActiveTalents = function()
     -- blast_wave,if=(buff.combustion.down)|(buff.combustion.up&action.fire_blast.charges<1)
     if S.BlastWave:IsCastableP() and ((Player:BuffDownP(S.CombustionBuff)) or (Player:BuffP(S.CombustionBuff) and S.FireBlast:ChargesP() < 1)) then
       if HR.Cast(S.BlastWave) then return ""; end
@@ -137,7 +138,7 @@ local function APL()
       if HR.Cast(S.LivingBomb) then return ""; end
     end
   end
-  local function CombustionPhase()
+  CombustionPhase = function()
     -- lights_judgment,if=buff.combustion.down
     if S.LightsJudgment:IsCastableP() and HR.CDsON() and (Player:BuffDownP(S.CombustionBuff)) then
       if HR.Cast(S.LightsJudgment) then return ""; end
@@ -200,7 +201,7 @@ local function APL()
       if HR.Cast(S.Scorch) then return ""; end
     end
   end
-  local function RopPhase()
+  RopPhase = function()
     -- rune_of_power
     if S.RuneofPower:IsCastableP() and (true) then
       if HR.Cast(S.RuneofPower) then return ""; end
@@ -258,7 +259,7 @@ local function APL()
       if HR.Cast(S.Fireball) then return ""; end
     end
   end
-  local function StandardRotation()
+  StandardRotation = function()
     -- flamestrike,if=((talent.flame_patch.enabled&active_enemies>1)|active_enemies>4)&buff.hot_streak.react
     if S.Flamestrike:IsCastableP() and (((S.FlamePatch:IsAvailable() and Cache.EnemiesCount[40] > 1) or Cache.EnemiesCount[40] > 4) and bool(Player:BuffStackP(S.HotStreakBuff))) then
       if HR.Cast(S.Flamestrike) then return ""; end

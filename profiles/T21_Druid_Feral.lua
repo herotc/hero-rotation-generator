@@ -111,8 +111,9 @@ S.Rake:RegisterPMultiplier(
 )
 --- ======= ACTION LISTS =======
 local function APL()
+  local Precombat, Cooldowns, SingleTarget, StFinishers, StGenerators
   UpdateRanges()
-  local function Precombat()
+  Precombat = function()
     -- flask
     -- food
     -- augmentation
@@ -142,7 +143,7 @@ local function APL()
       if HR.CastSuggested(I.OldWar) then return ""; end
     end
   end
-  local function Cooldowns()
+  Cooldowns = function()
     -- dash,if=!buff.cat_form.up
     -- prowl,if=buff.incarnation.remains<0.5&buff.jungle_stalker.up
     if S.Prowl:IsCastableP() and (Player:BuffRemainsP(S.IncarnationBuff) < 0.5 and Player:BuffP(S.JungleStalkerBuff)) then
@@ -178,7 +179,7 @@ local function APL()
     end
     -- use_items
   end
-  local function SingleTarget()
+  SingleTarget = function()
     -- cat_form,if=!buff.cat_form.up
     if S.CatForm:IsCastableP() and (not Player:BuffP(S.CatFormBuff)) then
       if HR.Cast(S.CatForm) then return ""; end
@@ -217,7 +218,7 @@ local function APL()
       return StGenerators();
     end
   end
-  local function StFinishers()
+  StFinishers = function()
     -- pool_resource,for_next=1
     if S.PoolResource:IsCastableP() and (true) then
       if HR.Cast(S.PoolResource) then return ""; end
@@ -247,7 +248,7 @@ local function APL()
       if HR.Cast(S.FerociousBite) then return ""; end
     end
   end
-  local function StGenerators()
+  StGenerators = function()
     -- regrowth,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.bloodtalons.down&combo_points=4&dot.rake.remains<4
     if S.Regrowth:IsCastableP() and (S.Bloodtalons:IsAvailable() and Player:BuffP(S.PredatorySwiftnessBuff) and Player:BuffDownP(S.BloodtalonsBuff) and Player:ComboPoints() == 4 and Target:DebuffRemainsP(S.RakeDebuff) < 4) then
       if HR.Cast(S.Regrowth) then return ""; end

@@ -96,8 +96,9 @@ end
 
 --- ======= ACTION LISTS =======
 local function APL()
+  local Precombat, Aoe, ColdHeart, Cooldowns, Generic
   UpdateRanges()
-  local function Precombat()
+  Precombat = function()
     -- flask
     -- food
     -- augmentation
@@ -115,7 +116,7 @@ local function APL()
       if HR.Cast(S.ArmyoftheDead, Settings.Unholy.GCDasOffGCD.ArmyoftheDead) then return ""; end
     end
   end
-  local function Aoe()
+  Aoe = function()
     -- death_and_decay,if=cooldown.apocalypse.remains
     if S.DeathandDecay:IsCastableP() and (bool(S.Apocalypse:CooldownRemainsP())) then
       if HR.Cast(S.DeathandDecay) then return ""; end
@@ -153,7 +154,7 @@ local function APL()
       if HR.Cast(S.DeathCoil) then return ""; end
     end
   end
-  local function ColdHeart()
+  ColdHeart = function()
     -- chains_of_ice,if=buff.unholy_strength.remains<gcd&buff.unholy_strength.react&buff.cold_heart_item.stack>16
     if S.ChainsofIce:IsCastableP() and (Player:BuffRemainsP(S.UnholyStrengthBuff) < Player:GCD() and bool(Player:BuffStackP(S.UnholyStrengthBuff)) and Player:BuffStackP(S.ColdHeartItemBuff) > 16) then
       if HR.Cast(S.ChainsofIce) then return ""; end
@@ -167,7 +168,7 @@ local function APL()
       if HR.Cast(S.ChainsofIce) then return ""; end
     end
   end
-  local function Cooldowns()
+  Cooldowns = function()
     -- call_action_list,name=cold_heart,if=equipped.cold_heart&buff.cold_heart_item.stack>10
     if (I.ColdHeart:IsEquipped() and Player:BuffStackP(S.ColdHeartItemBuff) > 10) then
       local ShouldReturn = ColdHeart(); if ShouldReturn then return ShouldReturn; end
@@ -205,7 +206,7 @@ local function APL()
       if HR.Cast(S.UnholyBlight) then return ""; end
     end
   end
-  local function Generic()
+  Generic = function()
     -- death_coil,if=buff.sudden_doom.react&!variable.pooling_for_gargoyle|pet.gargoyle.active
     if S.DeathCoil:IsUsableP() and (bool(Player:BuffStackP(S.SuddenDoomBuff)) and not bool(VarPoolingForGargoyle) or bool(pet.gargoyle.active)) then
       if HR.Cast(S.DeathCoil) then return ""; end

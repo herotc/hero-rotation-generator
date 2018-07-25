@@ -126,8 +126,9 @@ end
 
 --- ======= ACTION LISTS =======
 local function APL()
+  local Precombat, Aoe, DgSoon, Fillers, Regular, Single
   UpdateRanges()
-  local function Precombat()
+  Precombat = function()
     -- flask
     -- food
     -- augmentation
@@ -157,7 +158,7 @@ local function APL()
       if HR.Cast(S.ShadowBolt) then return ""; end
     end
   end
-  local function Aoe()
+  Aoe = function()
     -- call_action_list,name=dg_soon,if=(cooldown.summon_darkglare.remains<time_to_shard*(5-soul_shard)|cooldown.summon_darkglare.up)&time_to_die>cooldown.summon_darkglare.remains
     if ((S.SummonDarkglare:CooldownRemainsP() < time_to_shard * (5 - FutureShard()) or S.SummonDarkglare:CooldownUpP()) and Target:TimeToDie() > S.SummonDarkglare:CooldownRemainsP()) then
       local ShouldReturn = DgSoon(); if ShouldReturn then return ShouldReturn; end
@@ -171,7 +172,7 @@ local function APL()
       local ShouldReturn = Fillers(); if ShouldReturn then return ShouldReturn; end
     end
   end
-  local function DgSoon()
+  DgSoon = function()
     -- unstable_affliction,if=(cooldown.summon_darkglare.remains<=soul_shard*cast_time)
     if S.UnstableAffliction:IsCastableP() and ((S.SummonDarkglare:CooldownRemainsP() <= FutureShard() * S.UnstableAffliction:CastTime())) then
       if HR.Cast(S.UnstableAffliction) then return ""; end
@@ -189,7 +190,7 @@ local function APL()
       local ShouldReturn = Fillers(); if ShouldReturn then return ShouldReturn; end
     end
   end
-  local function Fillers()
+  Fillers = function()
     -- fireblood
     if S.Fireblood:IsCastableP() and (true) then
       if HR.Cast(S.Fireblood) then return ""; end
@@ -216,7 +217,7 @@ local function APL()
       if HR.Cast(S.ShadowBolt) then return ""; end
     end
   end
-  local function Regular()
+  Regular = function()
     -- unstable_affliction,cycle_targets=1,if=((dot.unstable_affliction_1.remains+dot.unstable_affliction_2.remains+dot.unstable_affliction_3.remains+dot.unstable_affliction_4.remains+dot.unstable_affliction_5.remains)<=cast_time|soul_shard>=2)&target.time_to_die>4+cast_time
     if S.UnstableAffliction:IsCastableP() and (((Target:DebuffRemainsP(S.UnstableAffliction1Debuff) + Target:DebuffRemainsP(S.UnstableAffliction2Debuff) + Target:DebuffRemainsP(S.UnstableAffliction3Debuff) + Target:DebuffRemainsP(S.UnstableAffliction4Debuff) + Target:DebuffRemainsP(S.UnstableAffliction5Debuff)) <= S.UnstableAffliction:CastTime() or FutureShard() >= 2) and Target:TimeToDie() > 4 + S.UnstableAffliction:CastTime()) then
       if HR.Cast(S.UnstableAffliction) then return ""; end
@@ -230,7 +231,7 @@ local function APL()
       local ShouldReturn = Fillers(); if ShouldReturn then return ShouldReturn; end
     end
   end
-  local function Single()
+  Single = function()
     -- unstable_affliction,if=soul_shard=5
     if S.UnstableAffliction:IsCastableP() and (FutureShard() == 5) then
       if HR.Cast(S.UnstableAffliction) then return ""; end

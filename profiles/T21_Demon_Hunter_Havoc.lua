@@ -128,8 +128,9 @@ end
 
 --- ======= ACTION LISTS =======
 local function APL()
+  local Precombat, Cooldown, DarkSlash, Demonic, Normal
   UpdateRanges()
-  local function Precombat()
+  Precombat = function()
     -- flask
     -- augmentation
     -- food
@@ -143,7 +144,7 @@ local function APL()
       if HR.Cast(S.Metamorphosis) then return ""; end
     end
   end
-  local function Cooldown()
+  Cooldown = function()
     -- metamorphosis,if=!(talent.demonic.enabled|variable.pooling_for_meta|variable.waiting_for_nemesis)|target.time_to_die<25
     if S.Metamorphosis:IsCastableP() and (not (S.Demonic:IsAvailable() or bool(VarPoolingForMeta) or bool(VarWaitingForNemesis)) or Target:TimeToDie() < 25) then
       if HR.Cast(S.Metamorphosis) then return ""; end
@@ -165,7 +166,7 @@ local function APL()
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
   end
-  local function DarkSlash()
+  DarkSlash = function()
     -- dark_slash,if=fury>=80&(!variable.blade_dance|!cooldown.blade_dance.ready)
     if S.DarkSlash:IsCastableP() and (Player:Fury() >= 80 and (not bool(VarBladeDance) or not S.BladeDance:CooldownUpP())) then
       if HR.Cast(S.DarkSlash) then return ""; end
@@ -179,7 +180,7 @@ local function APL()
       if HR.Cast(S.ChaosStrike) then return ""; end
     end
   end
-  local function Demonic()
+  Demonic = function()
     -- fel_barrage,if=active_enemies>desired_targets|raid_event.adds.in>30
     if S.FelBarrage:IsCastableP() and (Cache.EnemiesCount[30] > 1 or 10000000000 > 30) then
       if HR.Cast(S.FelBarrage) then return ""; end
@@ -237,7 +238,7 @@ local function APL()
       if HR.Cast(S.ThrowGlaive) then return ""; end
     end
   end
-  local function Normal()
+  Normal = function()
     -- vengeful_retreat,if=talent.momentum.enabled&buff.prepared.down
     if S.VengefulRetreat:IsCastableP() and (S.Momentum:IsAvailable() and Player:BuffDownP(S.PreparedBuff)) then
       if HR.Cast(S.VengefulRetreat) then return ""; end

@@ -97,8 +97,9 @@ end
 
 --- ======= ACTION LISTS =======
 local function APL()
+  local Precombat, Build, Cds, Finish, Stealth
   UpdateRanges()
-  local function Precombat()
+  Precombat = function()
     -- flask
     -- augmentation
     -- food
@@ -128,7 +129,7 @@ local function APL()
       if HR.Cast(S.AdrenalineRush) then return ""; end
     end
   end
-  local function Build()
+  Build = function()
     -- pistol_shot,if=combo_points.deficit>=1+buff.broadside.up+talent.quick_draw.enabled&buff.opportunity.up
     if S.PistolShot:IsCastableP() and (Player:ComboPointsDeficit() >= 1 + num(Player:BuffP(S.BroadsideBuff)) + num(S.QuickDraw:IsAvailable()) and Player:BuffP(S.OpportunityBuff)) then
       if HR.Cast(S.PistolShot) then return ""; end
@@ -138,7 +139,7 @@ local function APL()
       if HR.Cast(S.SinisterStrike) then return ""; end
     end
   end
-  local function Cds()
+  Cds = function()
     -- potion,if=buff.bloodlust.react|target.time_to_die<=60|buff.adrenaline_rush.up
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:HasHeroism() or Target:TimeToDie() <= 60 or Player:BuffP(S.AdrenalineRushBuff)) then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
@@ -184,7 +185,7 @@ local function APL()
       if HR.Cast(S.Shadowmeld) then return ""; end
     end
   end
-  local function Finish()
+  Finish = function()
     -- slice_and_dice,if=buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8
     if S.SliceandDice:IsCastableP() and (Player:BuffRemainsP(S.SliceandDiceBuff) < Target:TimeToDie() and Player:BuffRemainsP(S.SliceandDiceBuff) < (1 + Player:ComboPoints()) * 1.8) then
       if HR.Cast(S.SliceandDice) then return ""; end
@@ -202,7 +203,7 @@ local function APL()
       if HR.Cast(S.Dispatch) then return ""; end
     end
   end
-  local function Stealth()
+  Stealth = function()
     -- ambush
     if S.Ambush:IsCastableP() and (true) then
       if HR.Cast(S.Ambush) then return ""; end

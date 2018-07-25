@@ -118,8 +118,9 @@ end
 
 --- ======= ACTION LISTS =======
 local function APL()
+  local Precombat, Burn, Conserve, Movement
   UpdateRanges()
-  local function Precombat()
+  Precombat = function()
     -- flask
     -- food
     -- augmentation
@@ -145,7 +146,7 @@ local function APL()
       if HR.Cast(S.ArcaneBlast) then return ""; end
     end
   end
-  local function Burn()
+  Burn = function()
     -- variable,name=total_burns,op=add,value=1,if=!burn_phase
     if (not bool(VarBurnPhase)) then
       VarTotalBurns = VarTotalBurns + 1
@@ -236,7 +237,7 @@ local function APL()
       if HR.Cast(S.ArcaneBarrage) then return ""; end
     end
   end
-  local function Conserve()
+  Conserve = function()
     -- mirror_image
     if S.MirrorImage:IsCastableP() and (true) then
       if HR.Cast(S.MirrorImage) then return ""; end
@@ -294,7 +295,7 @@ local function APL()
       if HR.Cast(S.ArcaneBarrage) then return ""; end
     end
   end
-  local function Movement()
+  Movement = function()
     -- shimmer,if=movement.distance>=10
     if S.Shimmer:IsCastableP() and (movement.distance >= 10) then
       if HR.Cast(S.Shimmer) then return ""; end

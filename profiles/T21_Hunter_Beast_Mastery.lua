@@ -87,8 +87,9 @@ end
 
 --- ======= ACTION LISTS =======
 local function APL()
+  local Precombat
   UpdateRanges()
-  local function Precombat()
+  Precombat = function()
     -- flask
     -- augmentation
     -- food

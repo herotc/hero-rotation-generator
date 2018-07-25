@@ -93,8 +93,9 @@ end
 
 --- ======= ACTION LISTS =======
 local function APL()
+  local Precombat, Aoe, Cd, Sef, SefOpener, Serenity, SerenityOpener, St
   UpdateRanges()
-  local function Precombat()
+  Precombat = function()
     -- flask
     -- food
     -- augmentation
@@ -112,7 +113,7 @@ local function APL()
       if HR.Cast(S.ChiWave) then return ""; end
     end
   end
-  local function Aoe()
+  Aoe = function()
     -- call_action_list,name=cd
     if (true) then
       local ShouldReturn = Cd(); if ShouldReturn then return ShouldReturn; end
@@ -202,7 +203,7 @@ local function APL()
       if HR.Cast(S.ChiWave) then return ""; end
     end
   end
-  local function Cd()
+  Cd = function()
     -- invoke_xuen_the_white_tiger
     if S.InvokeXuentheWhiteTiger:IsCastableP() and HR.CDsON() and (true) then
       if HR.Cast(S.InvokeXuentheWhiteTiger, Settings.Windwalker.OffGCDasOffGCD.InvokeXuentheWhiteTiger) then return ""; end
@@ -236,7 +237,7 @@ local function APL()
       if HR.Cast(S.TouchofDeath) then return ""; end
     end
   end
-  local function Sef()
+  Sef = function()
     -- tiger_palm,target_if=debuff.mark_of_the_crane.down,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&energy=energy.max&chi<1
     if S.TigerPalm:IsCastableP() and (not Player:PrevGCDP(1, S.TigerPalm) and not Player:PrevGCDP(1, S.EnergizingElixir) and Player:Energy() == Player:EnergyMax() and Player:Chi() < 1) then
       if HR.Cast(S.TigerPalm) then return ""; end
@@ -258,7 +259,7 @@ local function APL()
       local ShouldReturn = St(); if ShouldReturn then return ShouldReturn; end
     end
   end
-  local function SefOpener()
+  SefOpener = function()
     -- tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&energy=energy.max&chi<1&cooldown.fists_of_fury.remains<=0
     if S.TigerPalm:IsCastableP() and (not Player:PrevGCDP(1, S.TigerPalm) and not Player:PrevGCDP(1, S.EnergizingElixir) and Player:Energy() == Player:EnergyMax() and Player:Chi() < 1 and S.FistsofFury:CooldownRemainsP() <= 0) then
       if HR.Cast(S.TigerPalm) then return ""; end
@@ -284,7 +285,7 @@ local function APL()
       if HR.Cast(S.TigerPalm) then return ""; end
     end
   end
-  local function Serenity()
+  Serenity = function()
     -- tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&energy=energy.max&chi<1&!buff.serenity.up
     if S.TigerPalm:IsCastableP() and (not Player:PrevGCDP(1, S.TigerPalm) and not Player:PrevGCDP(1, S.EnergizingElixir) and Player:Energy() == Player:EnergyMax() and Player:Chi() < 1 and not Player:BuffP(S.SerenityBuff)) then
       if HR.Cast(S.TigerPalm) then return ""; end
@@ -326,7 +327,7 @@ local function APL()
       if HR.Cast(S.BlackoutKick) then return ""; end
     end
   end
-  local function SerenityOpener()
+  SerenityOpener = function()
     -- tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&energy=energy.max&chi<1&!buff.serenity.up&cooldown.fists_of_fury.remains<=0
     if S.TigerPalm:IsCastableP() and (not Player:PrevGCDP(1, S.TigerPalm) and not Player:PrevGCDP(1, S.EnergizingElixir) and Player:Energy() == Player:EnergyMax() and Player:Chi() < 1 and not Player:BuffP(S.SerenityBuff) and S.FistsofFury:CooldownRemainsP() <= 0) then
       if HR.Cast(S.TigerPalm) then return ""; end
@@ -368,7 +369,7 @@ local function APL()
       if HR.Cast(S.TigerPalm) then return ""; end
     end
   end
-  local function St()
+  St = function()
     -- invoke_xuen_the_white_tiger
     if S.InvokeXuentheWhiteTiger:IsCastableP() and HR.CDsON() and (true) then
       if HR.Cast(S.InvokeXuentheWhiteTiger, Settings.Windwalker.OffGCDasOffGCD.InvokeXuentheWhiteTiger) then return ""; end

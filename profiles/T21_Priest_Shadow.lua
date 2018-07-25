@@ -83,8 +83,9 @@ end
 
 --- ======= ACTION LISTS =======
 local function APL()
+  local Precombat, Aoe, Cleave, Single
   UpdateRanges()
-  local function Precombat()
+  Precombat = function()
     -- flask
     -- food
     -- augmentation
@@ -106,7 +107,7 @@ local function APL()
       if HR.Cast(S.ShadowWordVoid) then return ""; end
     end
   end
-  local function Aoe()
+  Aoe = function()
     -- void_eruption
     if S.VoidEruption:IsCastableP() and (true) then
       if HR.Cast(S.VoidEruption) then return ""; end
@@ -160,7 +161,7 @@ local function APL()
       if HR.Cast(S.ShadowWordPain) then return ""; end
     end
   end
-  local function Cleave()
+  Cleave = function()
     -- void_eruption
     if S.VoidEruption:IsCastableP() and (true) then
       if HR.Cast(S.VoidEruption) then return ""; end
@@ -246,7 +247,7 @@ local function APL()
       if HR.Cast(S.ShadowWordPain) then return ""; end
     end
   end
-  local function Single()
+  Single = function()
     -- void_eruption
     if S.VoidEruption:IsCastableP() and (true) then
       if HR.Cast(S.VoidEruption) then return ""; end

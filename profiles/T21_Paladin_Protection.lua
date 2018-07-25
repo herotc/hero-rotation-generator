@@ -93,8 +93,9 @@ end
 
 --- ======= ACTION LISTS =======
 local function APL()
+  local Precombat, MaxDps, MaxSurvival, Prot
   UpdateRanges()
-  local function Precombat()
+  Precombat = function()
     -- flask
     -- food
     -- snapshot_stats
@@ -103,7 +104,7 @@ local function APL()
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
   end
-  local function MaxDps()
+  MaxDps = function()
     -- auto_attack
     -- use_item,name=diimas_glacial_aegis
     if I.DiimasGlacialAegis:IsReady() and (true) then
@@ -126,7 +127,7 @@ local function APL()
       if HR.Cast(S.LightsJudgment) then return ""; end
     end
   end
-  local function MaxSurvival()
+  MaxSurvival = function()
     -- auto_attack
     -- use_item,name=diimas_glacial_aegis
     if I.DiimasGlacialAegis:IsReady() and (true) then
@@ -149,7 +150,7 @@ local function APL()
       if HR.Cast(S.LightsJudgment) then return ""; end
     end
   end
-  local function Prot()
+  Prot = function()
     -- shield_of_the_righteous,if=!talent.seraphim.enabled&(action.shield_of_the_righteous.charges>2)&!(buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)
     if S.ShieldoftheRighteous:IsCastableP() and (not S.Seraphim:IsAvailable() and (S.ShieldoftheRighteous:ChargesP() > 2) and not (Player:BuffP(S.AegisofLightBuff) and Player:BuffP(S.ArdentDefenderBuff) and Player:BuffP(S.GuardianofAncientKingsBuff) and Player:BuffP(S.DivineShieldBuff) and Player:BuffP(S.ProlongedPowerBuff))) then
       if HR.Cast(S.ShieldoftheRighteous) then return ""; end

@@ -87,8 +87,9 @@ end
 
 --- ======= ACTION LISTS =======
 local function APL()
+  local Precombat, Cooldowns, Finishers, Generators, Opener
   UpdateRanges()
-  local function Precombat()
+  Precombat = function()
     -- flask
     -- food
     -- augmentation
@@ -98,7 +99,7 @@ local function APL()
       if HR.CastSuggested(I.OldWar) then return ""; end
     end
   end
-  local function Cooldowns()
+  Cooldowns = function()
     -- potion,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<25|target.time_to_die<=40)
     if I.OldWar:IsReady() and Settings.Commons.UsePotions and ((Player:HasHeroism() or Player:BuffP(S.AvengingWrathBuff) or Player:BuffP(S.CrusadeBuff) and Player:BuffRemainsP(S.CrusadeBuff) < 25 or Target:TimeToDie() <= 40)) then
       if HR.CastSuggested(I.OldWar) then return ""; end
@@ -120,7 +121,7 @@ local function APL()
       if HR.Cast(S.Crusade) then return ""; end
     end
   end
-  local function Finishers()
+  Finishers = function()
     -- variable,name=ds_castable,value=spell_targets.divine_storm>=3|talent.divine_judgment.enabled&spell_targets.divine_storm>=2|azerite.divine_right.enabled&target.health.pct<=20&buff.divine_right.down
     if (true) then
       VarDsCastable = num(Cache.EnemiesCount[8] >= 3 or S.DivineJudgment:IsAvailable() and Cache.EnemiesCount[8] >= 2 or bool(azerite.divine_right.enabled) and Target:HealthPercentage() <= 20 and Player:BuffDownP(S.DivineRightBuff))
@@ -150,7 +151,7 @@ local function APL()
       if HR.Cast(S.TemplarsVerdict) then return ""; end
     end
   end
-  local function Generators()
+  Generators = function()
     -- variable,name=HoW,value=(!talent.hammer_of_wrath.enabled|target.health.pct>=20&(buff.avenging_wrath.down|buff.crusade.down))
     if (true) then
       VarHow = num((not S.HammerofWrath:IsAvailable() or Target:HealthPercentage() >= 20 and (Player:BuffDownP(S.AvengingWrathBuff) or Player:BuffDownP(S.CrusadeBuff))))
@@ -200,7 +201,7 @@ local function APL()
       if HR.Cast(S.ArcaneTorrent, Settings.Retribution.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
     end
   end
-  local function Opener()
+  Opener = function()
     -- sequence,if=talent.wake_of_ashes.enabled&talent.crusade.enabled&talent.execution_sentence.enabled&!talent.hammer_of_wrath.enabled,name=wake_opener_ES_CS:shield_of_vengeance:blade_of_justice:judgment:crusade:templars_verdict:wake_of_ashes:templars_verdict:crusader_strike:execution_sentence
     if S.Sequence:IsCastableP() and (S.WakeofAshes:IsAvailable() and S.Crusade:IsAvailable() and S.ExecutionSentence:IsAvailable() and not S.HammerofWrath:IsAvailable()) then
       if HR.Cast(S.Sequence) then return ""; end

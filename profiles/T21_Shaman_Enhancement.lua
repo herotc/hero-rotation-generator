@@ -105,8 +105,9 @@ end
 
 --- ======= ACTION LISTS =======
 local function APL()
+  local Precombat, Asc, Buffs, Cds, Core, Filler, Opener
   UpdateRanges()
-  local function Precombat()
+  Precombat = function()
     -- flask
     -- food
     -- augmentation
@@ -120,7 +121,7 @@ local function APL()
       if HR.Cast(S.LightningShield) then return ""; end
     end
   end
-  local function Asc()
+  Asc = function()
     -- earthen_spike
     if S.EarthenSpike:IsCastableP() and (true) then
       if HR.Cast(S.EarthenSpike) then return ""; end
@@ -138,7 +139,7 @@ local function APL()
       if HR.Cast(S.Windstrike) then return ""; end
     end
   end
-  local function Buffs()
+  Buffs = function()
     -- rockbiter,if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7
     if S.Rockbiter:IsCastableP() and (S.Landslide:IsAvailable() and not Player:BuffP(S.LandslideBuff) and S.Rockbiter:ChargesFractional() > 1.7) then
       if HR.Cast(S.Rockbiter) then return ""; end
@@ -168,7 +169,7 @@ local function APL()
       if HR.Cast(S.TotemMastery) then return ""; end
     end
   end
-  local function Cds()
+  Cds = function()
     -- bloodlust,if=target.health.pct<25|time>0.500
     if S.Bloodlust:IsCastableP() and (Target:HealthPercentage() < 25 or HL.CombatTime() > 0.500) then
       if HR.Cast(S.Bloodlust) then return ""; end
@@ -198,7 +199,7 @@ local function APL()
       if HR.Cast(S.EarthElemental) then return ""; end
     end
   end
-  local function Core()
+  Core = function()
     -- earthen_spike,if=variable.furyCheck25
     if S.EarthenSpike:IsCastableP() and (bool(VarFurycheck25)) then
       if HR.Cast(S.EarthenSpike) then return ""; end
@@ -244,7 +245,7 @@ local function APL()
       if HR.Cast(S.CrashLightning) then return ""; end
     end
   end
-  local function Filler()
+  Filler = function()
     -- rockbiter,if=maelstrom<70
     if S.Rockbiter:IsCastableP() and (Player:Maelstrom() < 70) then
       if HR.Cast(S.Rockbiter) then return ""; end
@@ -278,7 +279,7 @@ local function APL()
       if HR.Cast(S.Flametongue) then return ""; end
     end
   end
-  local function Opener()
+  Opener = function()
     -- rockbiter,if=maelstrom<15&time<gcd
     if S.Rockbiter:IsCastableP() and (Player:Maelstrom() < 15 and HL.CombatTime() < Player:GCD()) then
       if HR.Cast(S.Rockbiter) then return ""; end

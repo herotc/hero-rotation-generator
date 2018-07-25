@@ -95,8 +95,9 @@ end
 
 --- ======= ACTION LISTS =======
 local function APL()
+  local Precombat, Execute, FiveTarget, SingleTarget
   UpdateRanges()
-  local function Precombat()
+  Precombat = function()
     -- flask
     -- food
     -- augmentation
@@ -106,7 +107,7 @@ local function APL()
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
   end
-  local function Execute()
+  Execute = function()
     -- rend,if=remains<=duration*0.3&debuff.colossus_smash.down
     if S.Rend:IsCastableP() and (Target:DebuffRemainsP(S.RendDebuff) <= S.RendDebuff:BaseDuration() * 0.3 and Target:DebuffDownP(S.ColossusSmashDebuff)) then
       if HR.Cast(S.Rend) then return ""; end
@@ -152,7 +153,7 @@ local function APL()
       if HR.Cast(S.Execute) then return ""; end
     end
   end
-  local function FiveTarget()
+  FiveTarget = function()
     -- skullsplitter,if=rage<70&(cooldown.deadly_calm.remains>3|!talent.deadly_calm.enabled)
     if S.Skullsplitter:IsCastableP() and (Player:Rage() < 70 and (S.DeadlyCalm:CooldownRemainsP() > 3 or not S.DeadlyCalm:IsAvailable())) then
       if HR.Cast(S.Skullsplitter) then return ""; end
@@ -202,7 +203,7 @@ local function APL()
       if HR.Cast(S.Whirlwind) then return ""; end
     end
   end
-  local function SingleTarget()
+  SingleTarget = function()
     -- rend,if=remains<=duration*0.3&debuff.colossus_smash.down
     if S.Rend:IsCastableP() and (Target:DebuffRemainsP(S.RendDebuff) <= S.RendDebuff:BaseDuration() * 0.3 and Target:DebuffDownP(S.ColossusSmashDebuff)) then
       if HR.Cast(S.Rend) then return ""; end

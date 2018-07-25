@@ -80,8 +80,9 @@ end
 
 --- ======= ACTION LISTS =======
 local function APL()
+  local Precombat, Standard
   UpdateRanges()
-  local function Precombat()
+  Precombat = function()
     -- flask
     -- food
     -- augmentation
@@ -91,7 +92,7 @@ local function APL()
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
   end
-  local function Standard()
+  Standard = function()
     -- death_strike,if=runic_power.deficit<10
     if S.DeathStrike:IsUsableP() and (Player:RunicPowerDeficit() < 10) then
       if HR.Cast(S.DeathStrike) then return ""; end

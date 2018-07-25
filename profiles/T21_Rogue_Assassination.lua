@@ -97,8 +97,9 @@ end
 
 --- ======= ACTION LISTS =======
 local function APL()
+  local Precombat, Cds, Direct, Dot, Stealthed
   UpdateRanges()
-  local function Precombat()
+  Precombat = function()
     -- flask
     -- augmentation
     -- food
@@ -120,7 +121,7 @@ local function APL()
       if HR.Cast(S.MarkedForDeath) then return ""; end
     end
   end
-  local function Cds()
+  Cds = function()
     -- potion,if=buff.bloodlust.react|target.time_to_die<=60|debuff.vendetta.up&cooldown.vanish.remains<5
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:HasHeroism() or Target:TimeToDie() <= 60 or Target:DebuffP(S.VendettaDebuff) and S.Vanish:CooldownRemainsP() < 5) then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
@@ -166,7 +167,7 @@ local function APL()
       if HR.Cast(S.ToxicBlade) then return ""; end
     end
   end
-  local function Direct()
+  Direct = function()
     -- envenom,if=combo_points>=4+talent.deeper_stratagem.enabled&(debuff.vendetta.up|debuff.toxic_blade.up|energy.deficit<=25+variable.energy_regen_combined|spell_targets.fan_of_knives>=2)&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)
     if S.Envenom:IsCastableP() and (Player:ComboPoints() >= 4 + num(S.DeeperStratagem:IsAvailable()) and (Target:DebuffP(S.VendettaDebuff) or Target:DebuffP(S.ToxicBladeDebuff) or Player:EnergyDeficit() <= 25 + VarEnergyRegenCombined or Cache.EnemiesCount[10] >= 2) and (not S.Exsanguinate:IsAvailable() or S.Exsanguinate:CooldownRemainsP() > 2)) then
       if HR.Cast(S.Envenom) then return ""; end
@@ -188,7 +189,7 @@ local function APL()
       if HR.Cast(S.Mutilate) then return ""; end
     end
   end
-  local function Dot()
+  Dot = function()
     -- rupture,if=talent.exsanguinate.enabled&((combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1)|(!ticking&(time>10|combo_points>=2)))
     if S.Rupture:IsCastableP() and (S.Exsanguinate:IsAvailable() and ((Player:ComboPoints() >= cp_max_spend and S.Exsanguinate:CooldownRemainsP() < 1) or (not Target:DebuffP(S.RuptureDebuff) and (HL.CombatTime() > 10 or Player:ComboPoints() >= 2)))) then
       if HR.Cast(S.Rupture) then return ""; end
@@ -210,7 +211,7 @@ local function APL()
       if HR.Cast(S.Rupture) then return ""; end
     end
   end
-  local function Stealthed()
+  Stealthed = function()
     -- garrote,cycle_targets=1,if=talent.subterfuge.enabled&refreshable&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>2
     if S.Garrote:IsCastableP() and (S.Subterfuge:IsAvailable() and Target:DebuffRefreshableCP(S.GarroteDebuff) and (not bool(exsanguinated) or Target:DebuffRemainsP(S.GarroteDebuff) <= S.GarroteDebuff:TickTime() * 2) and Target:TimeToDie() - Target:DebuffRemainsP(S.GarroteDebuff) > 2) then
       if HR.Cast(S.Garrote) then return ""; end

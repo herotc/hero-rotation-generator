@@ -95,8 +95,9 @@ end
 
 --- ======= ACTION LISTS =======
 local function APL()
+  local Precombat, Aoe, BosPooling, BosTicking, ColdHeart, Cooldowns, Obliteration, Standard
   UpdateRanges()
-  local function Precombat()
+  Precombat = function()
     -- flask
     -- food
     -- augmentation
@@ -106,7 +107,7 @@ local function APL()
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
   end
-  local function Aoe()
+  Aoe = function()
     -- remorseless_winter,if=talent.gathering_storm.enabled
     if S.RemorselessWinter:IsCastableP() and (S.GatheringStorm:IsAvailable()) then
       if HR.Cast(S.RemorselessWinter) then return ""; end
@@ -164,7 +165,7 @@ local function APL()
       if HR.Cast(S.ArcaneTorrent, Settings.Frost.GCDasOffGCD.ArcaneTorrent) then return ""; end
     end
   end
-  local function BosPooling()
+  BosPooling = function()
     -- howling_blast,if=buff.rime.up
     if S.HowlingBlast:IsCastableP() and (Player:BuffP(S.RimeBuff)) then
       if HR.Cast(S.HowlingBlast) then return ""; end
@@ -198,7 +199,7 @@ local function APL()
       if HR.Cast(S.FrostStrike) then return ""; end
     end
   end
-  local function BosTicking()
+  BosTicking = function()
     -- obliterate,if=runic_power<=30
     if S.Obliterate:IsCastableP() and (Player:RunicPower() <= 30) then
       if HR.Cast(S.Obliterate) then return ""; end
@@ -240,7 +241,7 @@ local function APL()
       if HR.Cast(S.ArcaneTorrent, Settings.Frost.GCDasOffGCD.ArcaneTorrent) then return ""; end
     end
   end
-  local function ColdHeart()
+  ColdHeart = function()
     -- chains_of_ice,if=(buff.cold_heart_item.stack>5|buff.cold_heart_talent.stack>5)&target.time_to_die<gcd
     if S.ChainsofIce:IsCastableP() and ((Player:BuffStackP(S.ColdHeartItemBuff) > 5 or Player:BuffStackP(S.ColdHeartTalentBuff) > 5) and Target:TimeToDie() < Player:GCD()) then
       if HR.Cast(S.ChainsofIce) then return ""; end
@@ -250,7 +251,7 @@ local function APL()
       if HR.Cast(S.ChainsofIce) then return ""; end
     end
   end
-  local function Cooldowns()
+  Cooldowns = function()
     -- use_items
     -- use_item,name=horn_of_valor,if=buff.pillar_of_frost.up&(!talent.breath_of_sindragosa.enabled|!cooldown.breath_of_sindragosa.remains)
     if I.HornofValor:IsReady() and (Player:BuffP(S.PillarofFrostBuff) and (not S.BreathofSindragosa:IsAvailable() or not bool(S.BreathofSindragosa:CooldownRemainsP()))) then
@@ -289,7 +290,7 @@ local function APL()
       if HR.Cast(S.FrostwyrmsFury) then return ""; end
     end
   end
-  local function Obliteration()
+  Obliteration = function()
     -- remorseless_winter,if=talent.gathering_storm.enabled
     if S.RemorselessWinter:IsCastableP() and (S.GatheringStorm:IsAvailable()) then
       if HR.Cast(S.RemorselessWinter) then return ""; end
@@ -327,7 +328,7 @@ local function APL()
       if HR.Cast(S.Obliterate) then return ""; end
     end
   end
-  local function Standard()
+  Standard = function()
     -- remorseless_winter
     if S.RemorselessWinter:IsCastableP() and (true) then
       if HR.Cast(S.RemorselessWinter) then return ""; end

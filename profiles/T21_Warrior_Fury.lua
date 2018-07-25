@@ -87,8 +87,9 @@ end
 
 --- ======= ACTION LISTS =======
 local function APL()
+  local Precombat, Movement, SingleTarget
   UpdateRanges()
-  local function Precombat()
+  Precombat = function()
     -- flask
     -- food
     -- augmentation
@@ -98,13 +99,13 @@ local function APL()
       if HR.CastSuggested(I.OldWar) then return ""; end
     end
   end
-  local function Movement()
+  Movement = function()
     -- heroic_leap
     if S.HeroicLeap:IsCastableP() and (true) then
       if HR.Cast(S.HeroicLeap) then return ""; end
     end
   end
-  local function SingleTarget()
+  SingleTarget = function()
     -- siegebreaker,if=buff.recklessness.up|cooldown.recklessness.remains>28
     if S.Siegebreaker:IsCastableP() and (Player:BuffP(S.RecklessnessBuff) or S.Recklessness:CooldownRemainsP() > 28) then
       if HR.Cast(S.Siegebreaker) then return ""; end

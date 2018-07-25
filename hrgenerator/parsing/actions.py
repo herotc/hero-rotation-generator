@@ -56,7 +56,7 @@ class ActionList:
         """
         actions = self.print_actions_lua()
         function_name = self.name.print_lua()
-        return (f'local function {function_name}()\n'
+        return (f'{function_name} = function()\n'
                 f'{actions}\n'
                 f'end')
 

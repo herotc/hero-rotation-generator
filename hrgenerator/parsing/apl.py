@@ -24,6 +24,7 @@ class APL:
     DEFAULT_TEMPLATE = ('{context}'
                         '--- ======= ACTION LISTS =======\n'
                         'local function {function_name}()\n'
+                        '{action_list_names}\n'
                         '  UpdateRanges()\n'
                         '{action_lists}\n'
                         '{precombat_call}\n'
@@ -113,12 +114,12 @@ class APL:
         if '.' not in action_call:
             self.apl_simc += action_simc
             return
-        action_name = action_call.split('.')[1]
-        if action_name not in IGNORED_ACTION_LISTS:
-            if action_name in self.action_lists_simc:
-                self.action_lists_simc[action_name] += action_simc
+        action_list_name = action_call.split('.')[1]
+        if action_list_name not in IGNORED_ACTION_LISTS:
+            if action_list_name in self.action_lists_simc:
+                self.action_lists_simc[action_list_name] += action_simc
             else:
-                self.action_lists_simc[action_name] = action_simc
+                self.action_lists_simc[action_list_name] = action_simc
 
     def precombat_action(self):
         """
@@ -176,7 +177,15 @@ class APL:
         """
         Set the target of the main actor of the APL.
         """
-        self.target = Target(simc)
+        self.target = Target(simc) 
+    
+    def print_action_list_names(self):
+        """
+        Print the definition of action list names in local.
+        """
+        action_list_names_lua = [action_list.name.print_lua() 
+                                 for action_list in self.action_lists()]
+        return indent('local ' + ', '.join(action_list_names_lua))
 
     def print_action_lists_lua(self):
         """
@@ -202,6 +211,7 @@ class APL:
         Print the lua string representing the action list.
         """
         function_name = self.main_action_list().name.lua_name()
+        action_list_names = self.print_action_list_names()
         action_lists = self.print_action_lists_lua()
         precombat_call = indent(self.precombat_action().print_lua())
         main_actions = self.main_action_list().print_actions_lua()
@@ -210,6 +220,7 @@ class APL:
         return self.template().format(
             context=context,
             function_name=function_name,
+            action_list_names=action_list_names,
             action_lists=action_lists,
             precombat_call=precombat_call,
             main_actions=main_actions,

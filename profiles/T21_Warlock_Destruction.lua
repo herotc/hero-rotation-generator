@@ -112,8 +112,9 @@ end
 
 --- ======= ACTION LISTS =======
 local function APL()
+  local Precombat, Aoe
   UpdateRanges()
-  local function Precombat()
+  Precombat = function()
     -- flask
     -- food
     -- augmentation
@@ -139,7 +140,7 @@ local function APL()
       if HR.Cast(S.Incinerate) then return ""; end
     end
   end
-  local function Aoe()
+  Aoe = function()
     -- summon_infernal,if=target.time_to_die>=400|!cooldown.dark_soul_instability.remains|target.time_to_die<=45|!talent.dark_soul_instability.enabled
     if S.SummonInfernal:IsCastableP() and (Target:TimeToDie() >= 400 or not bool(S.DarkSoulInstability:CooldownRemainsP()) or Target:TimeToDie() <= 45 or not S.DarkSoulInstability:IsAvailable()) then
       if HR.Cast(S.SummonInfernal) then return ""; end

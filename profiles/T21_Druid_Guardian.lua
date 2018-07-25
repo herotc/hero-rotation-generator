@@ -104,8 +104,9 @@ end
 
 --- ======= ACTION LISTS =======
 local function APL()
+  local Precombat, Cooldowns
   UpdateRanges()
-  local function Precombat()
+  Precombat = function()
     -- flask
     -- food
     -- augmentation
@@ -123,7 +124,7 @@ local function APL()
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
   end
-  local function Cooldowns()
+  Cooldowns = function()
     -- potion,if=buff.rage_of_the_sleeper.up
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.RageoftheSleeperBuff)) then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end

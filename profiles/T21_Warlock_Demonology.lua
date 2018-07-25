@@ -110,8 +110,9 @@ end
 
 --- ======= ACTION LISTS =======
 local function APL()
+  local Precombat, BuildAShard, Implosion, NetherPortal, NetherPortalActive, NetherPortalBuilding
   UpdateRanges()
-  local function Precombat()
+  Precombat = function()
     -- flask
     -- food
     -- augmentation
@@ -133,7 +134,7 @@ local function APL()
       if HR.Cast(S.Demonbolt) then return ""; end
     end
   end
-  local function BuildAShard()
+  BuildAShard = function()
     -- soul_strike
     if S.SoulStrike:IsCastableP() and (true) then
       if HR.Cast(S.SoulStrike) then return ""; end
@@ -143,7 +144,7 @@ local function APL()
       if HR.Cast(S.ShadowBolt) then return ""; end
     end
   end
-  local function Implosion()
+  Implosion = function()
     -- implosion,if=buff.wild_imps.stack>=6&(soul_shard<3|prev_gcd.1.call_dreadstalkers|buff.wild_imps.stack>=9|prev_gcd.1.bilescourge_bombers)&!prev_gcd.1.hand_of_guldan&buff.demonic_power.down&cooldown.summon_demonic_tyrant.remains>4
     if S.Implosion:IsCastableP() and (Player:BuffStackP(S.WildImpsBuff) >= 6 and (FutureShard() < 3 or Player:PrevGCDP(1, S.CallDreadstalkers) or Player:BuffStackP(S.WildImpsBuff) >= 9 or Player:PrevGCDP(1, S.BilescourgeBombers)) and not Player:PrevGCDP(1, S.HandofGuldan) and Player:BuffDownP(S.DemonicPowerBuff) and S.SummonDemonicTyrant:CooldownRemainsP() > 4) then
       if HR.Cast(S.Implosion) then return ""; end
@@ -189,7 +190,7 @@ local function APL()
       local ShouldReturn = BuildAShard(); if ShouldReturn then return ShouldReturn; end
     end
   end
-  local function NetherPortal()
+  NetherPortal = function()
     -- call_action_list,name=nether_portal_building,if=cooldown.nether_portal.remains<20
     if (S.NetherPortal:CooldownRemainsP() < 20) then
       local ShouldReturn = NetherPortalBuilding(); if ShouldReturn then return ShouldReturn; end
@@ -199,7 +200,7 @@ local function APL()
       local ShouldReturn = NetherPortalActive(); if ShouldReturn then return ShouldReturn; end
     end
   end
-  local function NetherPortalActive()
+  NetherPortalActive = function()
     -- grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains<13|!equipped.132369
     if S.GrimoireFelguard:IsCastableP() and (S.SummonDemonicTyrant:CooldownRemainsP() < 13 or not I.Item132369:IsEquipped()) then
       if HR.Cast(S.GrimoireFelguard) then return ""; end
@@ -237,7 +238,7 @@ local function APL()
       local ShouldReturn = BuildAShard(); if ShouldReturn then return ShouldReturn; end
     end
   end
-  local function NetherPortalBuilding()
+  NetherPortalBuilding = function()
     -- nether_portal,if=soul_shard>=5&(!talent.power_siphon.enabled|buff.demonic_core.up)
     if S.NetherPortal:IsCastableP() and (FutureShard() >= 5 and (not S.PowerSiphon:IsAvailable() or Player:BuffP(S.DemonicCoreBuff))) then
       if HR.Cast(S.NetherPortal) then return ""; end

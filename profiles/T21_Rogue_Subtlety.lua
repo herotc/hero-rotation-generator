@@ -101,8 +101,9 @@ end
 
 --- ======= ACTION LISTS =======
 local function APL()
+  local Precombat, Build, Cds, Finish, StealthCds, Stealthed
   UpdateRanges()
-  local function Precombat()
+  Precombat = function()
     -- flask
     -- augmentation
     -- food
@@ -128,7 +129,7 @@ local function APL()
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
   end
-  local function Build()
+  Build = function()
     -- shuriken_storm,if=spell_targets.shuriken_storm>=2|buff.the_dreadlords_deceit.stack>=29
     if S.ShurikenStorm:IsCastableP() and (Cache.EnemiesCount[10] >= 2 or Player:BuffStackP(S.TheDreadlordsDeceitBuff) >= 29) then
       if HR.Cast(S.ShurikenStorm) then return ""; end
@@ -142,7 +143,7 @@ local function APL()
       if HR.Cast(S.Backstab) then return ""; end
     end
   end
-  local function Cds()
+  Cds = function()
     -- potion,if=buff.bloodlust.react|target.time_to_die<=60|(buff.vanish.up&(buff.shadow_blades.up|cooldown.shadow_blades.remains<=30))
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:HasHeroism() or Target:TimeToDie() <= 60 or (Player:BuffP(S.VanishBuff) and (Player:BuffP(S.ShadowBladesBuff) or S.ShadowBlades:CooldownRemainsP() <= 30))) then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
@@ -180,7 +181,7 @@ local function APL()
       if HR.Cast(S.ShadowDance) then return ""; end
     end
   end
-  local function Finish()
+  Finish = function()
     -- nightblade,if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&remains<tick_time*2&(spell_targets.shuriken_storm<4|!buff.symbols_of_death.up)
     if S.Nightblade:IsCastableP() and ((not S.DarkShadow:IsAvailable() or not Player:BuffP(S.ShadowDanceBuff)) and Target:TimeToDie() - Target:DebuffRemainsP(S.NightbladeDebuff) > 6 and Target:DebuffRemainsP(S.NightbladeDebuff) < S.NightbladeDebuff:TickTime() * 2 and (Cache.EnemiesCount[10] < 4 or not Player:BuffP(S.SymbolsofDeathBuff))) then
       if HR.Cast(S.Nightblade) then return ""; end
@@ -206,7 +207,7 @@ local function APL()
       if HR.Cast(S.Eviscerate) then return ""; end
     end
   end
-  local function StealthCds()
+  StealthCds = function()
     -- variable,name=shd_threshold,value=cooldown.shadow_dance.charges_fractional>=1.75
     if (true) then
       VarShdThreshold = num(S.ShadowDance:ChargesFractional() >= 1.75)
@@ -232,7 +233,7 @@ local function APL()
       if HR.Cast(S.ShadowDance) then return ""; end
     end
   end
-  local function Stealthed()
+  Stealthed = function()
     -- shadowstrike,if=buff.stealth.up
     if S.Shadowstrike:IsCastableP() and (Player:BuffP(S.StealthBuff)) then
       if HR.Cast(S.Shadowstrike) then return ""; end

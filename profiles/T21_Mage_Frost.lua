@@ -96,8 +96,9 @@ end
 
 --- ======= ACTION LISTS =======
 local function APL()
+  local Precombat, Aoe, Cooldowns, Movement, Single
   UpdateRanges()
-  local function Precombat()
+  Precombat = function()
     -- flask
     -- food
     -- augmentation
@@ -123,7 +124,7 @@ local function APL()
       if HR.Cast(S.Frostbolt) then return ""; end
     end
   end
-  local function Aoe()
+  Aoe = function()
     -- frozen_orb
     if S.FrozenOrb:IsCastableP() and (true) then
       if HR.Cast(S.FrozenOrb) then return ""; end
@@ -177,7 +178,7 @@ local function APL()
       if HR.Cast(S.IceLance) then return ""; end
     end
   end
-  local function Cooldowns()
+  Cooldowns = function()
     -- icy_veins
     if S.IcyVeins:IsCastableP() and (true) then
       if HR.Cast(S.IcyVeins) then return ""; end
@@ -220,7 +221,7 @@ local function APL()
       if HR.Cast(S.LightsJudgment) then return ""; end
     end
   end
-  local function Movement()
+  Movement = function()
     -- blink,if=movement.distance>10
     if S.Blink:IsCastableP() and (movement.distance > 10) then
       if HR.Cast(S.Blink) then return ""; end
@@ -230,7 +231,7 @@ local function APL()
       if HR.Cast(S.IceFloes) then return ""; end
     end
   end
-  local function Single()
+  Single = function()
     -- ice_nova,if=cooldown.ice_nova.ready&debuff.winters_chill.up
     if S.IceNova:IsCastableP() and (S.IceNova:CooldownUpP() and Target:DebuffP(S.WintersChillDebuff)) then
       if HR.Cast(S.IceNova) then return ""; end
