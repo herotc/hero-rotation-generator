@@ -28,6 +28,8 @@ class ActionList:
         self.context = apl.context
         self.show_comments = apl.show_comments
         self.simc = simc
+        self.pool_for_next = 0
+        self.pool_extra_amount = 0
         self.name = Literal(name, convert=True)
 
     def split_simc(self):
@@ -99,7 +101,7 @@ class Action:
     def execution(self):
         """
         Return the execution of the action (the thing to execute if the
-        condition is fulfulled).
+        condition is fulfilled).
         """
         execution_string = self.split_simc()[0]
         return Execution(self, execution_string)
@@ -159,10 +161,28 @@ class Action:
         Print the execution line of the action.
         """
         if self.operation() == 'set':
-            exec_cast = self.execution().object_().print_cast()
-            exec_value = convert_type(self.value_tree(), NUM)
-            exec_link = ' = ' if exec_value != '' else ''
-            return f'{exec_cast}{exec_link}{exec_value}'
+            if self.action_list.pool_for_next > 0:
+                extra_amount = str(self.action_list.pool_extra_amount or '')
+                self.action_list.pool_for_next -= 1
+                if self.action_list.pool_for_next == 0:
+                    self.action_list.pool_extra_amount = 0
+                exec_name = self.execution().object_().print_lua()
+                exec_cast = self.execution().object_().print_cast()
+                exec_value = convert_type(self.value_tree(), NUM)
+                exec_link = ' = ' if exec_value != '' else ''
+                exec_pool = Spell(self, 'pool_resource').print_lua()
+                return (
+                    f'if {exec_name}:IsUsableP({extra_amount}) then\n'
+                    f'  {exec_cast}{exec_link}{exec_value}\n'
+                    'else\n'
+                    '  if HR.Cast(S.PoolResource) then return ""; end\n'
+                    'end'
+                )
+            else:
+                exec_cast = self.execution().object_().print_cast()
+                exec_value = convert_type(self.value_tree(), NUM)
+                exec_link = ' = ' if exec_value != '' else ''
+                return f'{exec_cast}{exec_link}{exec_value}'
         elif self.operation() == 'reset':
             exec_cast = self.execution().object_().print_cast()
             exec_default = self.execution().object_().default
@@ -203,6 +223,12 @@ class Action:
         lua_string = ''
         if self.show_comments:
             lua_string += f'-- {self.simc}'
+        if self.split_simc()[0] == 'pool_resource':
+            for_next = int(self.properties().get('for_next', 1))
+            extra_amount = int(self.properties().get('extra_amount', 0))
+            self.action_list.pool_for_next = for_next
+            self.action_list.pool_extra_amount = extra_amount
+            return lua_string
         exec_cast = self.print_exec()
         if exec_cast == '':
             return lua_string
@@ -212,7 +238,7 @@ class Action:
         exec_else = self.print_exec_else()
         lua_string += ('\n'
                        f'if {exec_cond}{cond_link}({if_cond}) then\n'
-                       f'  {exec_cast}\n'
+                       f'{indent(exec_cast)}\n'
                        f'{exec_else}'
                        f'end')
         return lua_string

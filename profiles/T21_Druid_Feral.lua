@@ -46,8 +46,8 @@ Spell.Druid.Feral = {
   RipDebuff                             = Spell(1079),
   ApexPredatorBuff                      = Spell(252752),
   MomentofClarity                       = Spell(236068),
-  PoolResource                          = Spell(9999000010),
   SavageRoar                            = Spell(52610),
+  PoolResource                          = Spell(9999000010),
   SavageRoarBuff                        = Spell(52610),
   Rip                                   = Spell(1079),
   BrutalSlash                           = Spell(202028),
@@ -220,28 +220,31 @@ local function APL()
   end
   StFinishers = function()
     -- pool_resource,for_next=1
-    if S.PoolResource:IsCastableP() and (true) then
-      if HR.Cast(S.PoolResource) then return ""; end
-    end
     -- savage_roar,if=buff.savage_roar.down
     if S.SavageRoar:IsCastableP() and (Player:BuffDownP(S.SavageRoarBuff)) then
-      if HR.Cast(S.SavageRoar) then return ""; end
+      if S.SavageRoar:IsUsableP() then
+        if HR.Cast(S.SavageRoar) then return ""; end
+      else
+        if HR.Cast(S.PoolResource) then return ""; end
+      end
     end
     -- pool_resource,for_next=1
-    if S.PoolResource:IsCastableP() and (true) then
-      if HR.Cast(S.PoolResource) then return ""; end
-    end
     -- rip,target_if=!ticking|(remains<=duration*0.3)&(target.health.pct>25&!talent.sabertooth.enabled)|(remains<=duration*0.8&persistent_multiplier>dot.rip.pmultiplier)&target.time_to_die>8
     if S.Rip:IsCastableP() and (true) then
-      if HR.Cast(S.Rip) then return ""; end
+      if S.Rip:IsUsableP() then
+        if HR.Cast(S.Rip) then return ""; end
+      else
+        if HR.Cast(S.PoolResource) then return ""; end
+      end
     end
     -- pool_resource,for_next=1
-    if S.PoolResource:IsCastableP() and (true) then
-      if HR.Cast(S.PoolResource) then return ""; end
-    end
     -- savage_roar,if=buff.savage_roar.remains<12
     if S.SavageRoar:IsCastableP() and (Player:BuffRemainsP(S.SavageRoarBuff) < 12) then
-      if HR.Cast(S.SavageRoar) then return ""; end
+      if S.SavageRoar:IsUsableP() then
+        if HR.Cast(S.SavageRoar) then return ""; end
+      else
+        if HR.Cast(S.PoolResource) then return ""; end
+      end
     end
     -- ferocious_bite,max_energy=1
     if S.FerociousBite:IsCastableP() and (true) then
@@ -262,36 +265,40 @@ local function APL()
       if HR.Cast(S.BrutalSlash) then return ""; end
     end
     -- pool_resource,for_next=1
-    if S.PoolResource:IsCastableP() and (true) then
-      if HR.Cast(S.PoolResource) then return ""; end
-    end
     -- thrash_cat,if=refreshable&(spell_targets.thrash_cat>2)
     if S.ThrashCat:IsCastableP() and (Target:DebuffRefreshableCP(S.ThrashCatDebuff) and (Cache.EnemiesCount[8] > 2)) then
-      if HR.Cast(S.ThrashCat) then return ""; end
+      if S.ThrashCat:IsUsableP() then
+        if HR.Cast(S.ThrashCat) then return ""; end
+      else
+        if HR.Cast(S.PoolResource) then return ""; end
+      end
     end
     -- pool_resource,for_next=1
-    if S.PoolResource:IsCastableP() and (true) then
-      if HR.Cast(S.PoolResource) then return ""; end
-    end
     -- thrash_cat,if=spell_targets.thrash_cat>3&equipped.luffa_wrappings&talent.brutal_slash.enabled
     if S.ThrashCat:IsCastableP() and (Cache.EnemiesCount[8] > 3 and I.LuffaWrappings:IsEquipped() and S.BrutalSlash:IsAvailable()) then
-      if HR.Cast(S.ThrashCat) then return ""; end
+      if S.ThrashCat:IsUsableP() then
+        if HR.Cast(S.ThrashCat) then return ""; end
+      else
+        if HR.Cast(S.PoolResource) then return ""; end
+      end
     end
     -- pool_resource,for_next=1
-    if S.PoolResource:IsCastableP() and (true) then
-      if HR.Cast(S.PoolResource) then return ""; end
-    end
     -- rake,target_if=!ticking|(!talent.bloodtalons.enabled&remains<duration*0.3)&target.time_to_die>4
     if S.Rake:IsCastableP() and (true) then
-      if HR.Cast(S.Rake) then return ""; end
+      if S.Rake:IsUsableP() then
+        if HR.Cast(S.Rake) then return ""; end
+      else
+        if HR.Cast(S.PoolResource) then return ""; end
+      end
     end
     -- pool_resource,for_next=1
-    if S.PoolResource:IsCastableP() and (true) then
-      if HR.Cast(S.PoolResource) then return ""; end
-    end
     -- rake,target_if=talent.bloodtalons.enabled&buff.bloodtalons.up&((remains<=7)&persistent_multiplier>dot.rake.pmultiplier*0.85)&target.time_to_die>4
     if S.Rake:IsCastableP() and (true) then
-      if HR.Cast(S.Rake) then return ""; end
+      if S.Rake:IsUsableP() then
+        if HR.Cast(S.Rake) then return ""; end
+      else
+        if HR.Cast(S.PoolResource) then return ""; end
+      end
     end
     -- brutal_slash,if=(buff.tigers_fury.up&(raid_event.adds.in>(1+max_charges-charges_fractional)*recharge_time))
     if S.BrutalSlash:IsCastableP() and ((Player:BuffP(S.TigersFuryBuff) and (10000000000 > (1 + S.BrutalSlash:MaxCharges() - S.BrutalSlash:ChargesFractional()) * S.BrutalSlash:RechargeP()))) then
@@ -302,24 +309,26 @@ local function APL()
       if HR.Cast(S.MoonfireCat) then return ""; end
     end
     -- pool_resource,for_next=1
-    if S.PoolResource:IsCastableP() and (true) then
-      if HR.Cast(S.PoolResource) then return ""; end
-    end
     -- thrash_cat,if=refreshable&(variable.use_thrash=2|spell_targets.thrash_cat>1)
     if S.ThrashCat:IsCastableP() and (Target:DebuffRefreshableCP(S.ThrashCatDebuff) and (VarUseThrash == 2 or Cache.EnemiesCount[8] > 1)) then
-      if HR.Cast(S.ThrashCat) then return ""; end
+      if S.ThrashCat:IsUsableP() then
+        if HR.Cast(S.ThrashCat) then return ""; end
+      else
+        if HR.Cast(S.PoolResource) then return ""; end
+      end
     end
     -- thrash_cat,if=refreshable&variable.use_thrash=1&buff.clearcasting.react
     if S.ThrashCat:IsCastableP() and (Target:DebuffRefreshableCP(S.ThrashCatDebuff) and VarUseThrash == 1 and bool(Player:BuffStackP(S.ClearcastingBuff))) then
       if HR.Cast(S.ThrashCat) then return ""; end
     end
     -- pool_resource,for_next=1
-    if S.PoolResource:IsCastableP() and (true) then
-      if HR.Cast(S.PoolResource) then return ""; end
-    end
     -- swipe_cat,if=spell_targets.swipe_cat>1
     if S.SwipeCat:IsCastableP() and (Cache.EnemiesCount[8] > 1) then
-      if HR.Cast(S.SwipeCat) then return ""; end
+      if S.SwipeCat:IsUsableP() then
+        if HR.Cast(S.SwipeCat) then return ""; end
+      else
+        if HR.Cast(S.PoolResource) then return ""; end
+      end
     end
     -- shred,if=dot.rake.remains>(action.shred.cost+action.rake.cost-energy)%energy.regen|buff.clearcasting.react
     if S.Shred:IsCastableP() and (Target:DebuffRemainsP(S.RakeDebuff) > (S.Shred:Cost() + S.Rake:Cost() - Player:Energy()) / Player:EnergyRegen() or bool(Player:BuffStackP(S.ClearcastingBuff))) then

@@ -48,8 +48,8 @@ Spell.Rogue.Subtlety = {
   Eviscerate                            = Spell(196819),
   Vanish                                = Spell(1856),
   FindWeaknessDebuff                    = Spell(),
-  PoolResource                          = Spell(9999000010),
   Shadowmeld                            = Spell(58984),
+  PoolResource                          = Spell(9999000010),
   Shadowstrike                          = Spell(185438),
   StealthBuff                           = Spell(1784),
   DeeperStratagem                       = Spell(193531),
@@ -217,12 +217,13 @@ local function APL()
       if HR.Cast(S.Vanish) then return ""; end
     end
     -- pool_resource,for_next=1,extra_amount=40
-    if S.PoolResource:IsCastableP() and (true) then
-      if HR.Cast(S.PoolResource) then return ""; end
-    end
     -- shadowmeld,if=energy>=40&energy.deficit>=10&!variable.shd_threshold&debuff.find_weakness.remains<1
     if S.Shadowmeld:IsCastableP() and (Player:Energy() >= 40 and Player:EnergyDeficit() >= 10 and not bool(VarShdThreshold) and Target:DebuffRemainsP(S.FindWeaknessDebuff) < 1) then
-      if HR.Cast(S.Shadowmeld) then return ""; end
+      if S.Shadowmeld:IsUsableP(40) then
+        if HR.Cast(S.Shadowmeld) then return ""; end
+      else
+        if HR.Cast(S.PoolResource) then return ""; end
+      end
     end
     -- shadow_dance,if=(!talent.dark_shadow.enabled|dot.nightblade.remains>=5+talent.subterfuge.enabled)&(variable.shd_threshold|buff.symbols_of_death.remains>=1.2|spell_targets>=4&cooldown.symbols_of_death.remains>10)
     if S.ShadowDance:IsCastableP() and ((not S.DarkShadow:IsAvailable() or Target:DebuffRemainsP(S.NightbladeDebuff) >= 5 + num(S.Subterfuge:IsAvailable())) and (bool(VarShdThreshold) or Player:BuffRemainsP(S.SymbolsofDeathBuff) >= 1.2 or Cache.EnemiesCount[15] >= 4 and S.SymbolsofDeath:CooldownRemainsP() > 10)) then

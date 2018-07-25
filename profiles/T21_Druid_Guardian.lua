@@ -87,7 +87,7 @@ local function bool(val)
 end
 
 local function Swipe()
-  if Player:Buff(S.CatForm)
+  if Player:Buff(S.CatForm) then
     return S.SwipeCat;
   else
     return S.SwipeBear;
@@ -95,7 +95,7 @@ local function Swipe()
 end
 
 local function Thrash()
-  if Player:Buff(S.CatForm)
+  if Player:Buff(S.CatForm) then
     return S.ThrashCat;
   else
     return S.ThrashBear;
