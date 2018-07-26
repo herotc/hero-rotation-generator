@@ -92,6 +92,7 @@ class ActionExpression(BuildExpression):
         def method(self):
             getattr(self.aura_model, name)()
             self._from_aura()
+
         setattr(self, name, method.__get__(self, self.__class__))
 
     def execute_time(self):
@@ -667,7 +668,7 @@ class Equipped(BuildExpression):
         self.args = []
         super().__init__(call)
 
-    def  value(self):
+    def value(self):
         """
         Return the arguments for the expression equipped.
         """
@@ -721,6 +722,7 @@ class GCD(BuildExpression):
     """
     Represent the expression for a gcd. condition.
     """
+
     # TODO update GCD to take into account current execution.
 
     def __init__(self, condition):
@@ -752,6 +754,7 @@ class GCD(BuildExpression):
         """
         self.method = Method('GCD')
 
+
 class PMultiplier(BuildExpression):
     """
     Represent the expression for a persistent_multiplier condition.
@@ -770,6 +773,7 @@ class PMultiplier(BuildExpression):
         Return the arguments for the expression persistent_multiplier
         """
         self.method = Method('PMultiplier')
+
 
 class Time(BuildExpression):
     """

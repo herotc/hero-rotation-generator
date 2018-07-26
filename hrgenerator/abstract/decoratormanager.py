@@ -32,9 +32,12 @@ class DecoratingManager(object):
                 for decorator in decorator_stack:
                     result = decorator(result)
                 return result.__get__(self)
+
         return Wrapper
 
+
 decorating_manager = DecoratingManager()
+
 
 @decorating_manager.decorator
 class Decorable(object):

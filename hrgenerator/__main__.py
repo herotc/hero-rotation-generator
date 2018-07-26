@@ -9,6 +9,7 @@ import argparse
 
 from .parsing.apl import APL
 
+
 def hrgenerator_args(parser):
     """
     Add arguments to argparse parser

@@ -36,7 +36,7 @@ class BinaryOperator:
             return BOOL, BOOL
         else:
             return NUM, NUM
-    
+
     def lua_type(self):
         """
         Return the returned type of the operator.

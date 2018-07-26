@@ -5,7 +5,6 @@ Define the objects representing simc resources expressions.
 @author: skasch
 """
 
-
 from .lua import Literal, Method, BuildExpression
 
 

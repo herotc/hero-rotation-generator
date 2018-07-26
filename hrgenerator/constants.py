@@ -38,7 +38,7 @@ COMMON = 'common'
 RANGE = 'range'
 AUTOCHECK = 'autocheck'
 
-MAX_INT = 10**10
+MAX_INT = 10 ** 10
 
 # Miscellaneous
 # =============

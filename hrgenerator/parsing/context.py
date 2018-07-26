@@ -9,6 +9,7 @@ from ..abstract.decoratormanager import Decorable
 from ..constants import PET
 from ..database import ITEM_INFO
 
+
 class Context(Decorable):
     """
     Defines the context of an APL, used to print everything outside the Apl
@@ -111,7 +112,7 @@ class Context(Decorable):
             if self.player.spell_property(spell, PET):
                 pet_str = f', "{PET}"'
             lua_spells += f'  {spell.lua_name():38}= Spell({spell_id}{pet_str})'
-            lua_spells += ',\n' if i < len(self.spells)-1 else '\n'
+            lua_spells += ',\n' if i < len(self.spells) - 1 else '\n'
         lua_spells += (
             '};\n'
             f'local S = Spell.{class_}.{spec};\n')
@@ -130,7 +131,7 @@ class Context(Decorable):
         for i, item in enumerate(self.items.values()):
             item_id = str(ITEM_INFO.get(item.simc, item.iid))
             lua_items += f'  {item.lua_name():33}= Item({item_id})'
-            lua_items += ',\n' if i < len(self.items)-1 else '\n'
+            lua_items += ',\n' if i < len(self.items) - 1 else '\n'
         lua_items += (
             '};\n'
             f'local I = Item.{class_}.{spec};\n')

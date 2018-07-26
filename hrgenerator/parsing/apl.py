@@ -177,13 +177,13 @@ class APL:
         """
         Set the target of the main actor of the APL.
         """
-        self.target = Target(simc) 
-    
+        self.target = Target(simc)
+
     def print_action_list_names(self):
         """
         Print the definition of action list names in local.
         """
-        action_list_names_lua = [action_list.name.print_lua() 
+        action_list_names_lua = [action_list.name.print_lua()
                                  for action_list in self.action_lists()]
         return indent('local ' + ', '.join(action_list_names_lua))
 
@@ -202,7 +202,7 @@ class APL:
         spec_simc = self.player.spec.simc
         apl_id = CLASS_SPECS.get(class_simc, {}).get(spec_simc, 0)
         return f'HR.SetAPL({apl_id}, APL)\n'
-    
+
     def template(self):
         return TEMPLATES.get(self.player.class_.simc, self.DEFAULT_TEMPLATE)
 

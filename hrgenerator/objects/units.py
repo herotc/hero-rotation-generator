@@ -55,7 +55,6 @@ class Player(Unit, LuaNamed):
         """
         return self.spec.potion()
 
-
     def set_spec(self, spec):
         """
         Sets the spec of the player.
@@ -63,7 +62,7 @@ class Player(Unit, LuaNamed):
         self.spec = PlayerSpec(self, spec)
         for function_name in self.spec_functions():
             self.add_to_context(function_name)
-    
+
     def spec_functions(self):
         """
         Return the context functions specific to the player spec.
@@ -119,7 +118,7 @@ class Player(Unit, LuaNamed):
                 self.range_ = reduce(
                     lambda range_, spell: max(spell[RANGE], range_),
                     filter(lambda spell: RANGE in spell,
-                        self.spell_book().values()),
+                           self.spell_book().values()),
                     5)
         return self.range_
 
