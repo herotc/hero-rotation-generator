@@ -1,3 +1,6 @@
+# IntelliJ
+.idea/*
+
 # Visual Studio Code
 .vscode/
 *_hdi_settings.json
