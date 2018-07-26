@@ -43,6 +43,7 @@ Spell.Druid.Balance = {
   HalfMoon                              = Spell(202768),
   FullMoon                              = Spell(202771),
   WarriorofEluneBuff                    = Spell(202425),
+  TheEmeraldDreamcatcherBuff            = Spell(208190),
   OnethsOverconfidenceBuff              = Spell(209407),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
@@ -55,7 +56,8 @@ local S = Spell.Druid.Balance;
 -- Items
 if not Item.Druid then Item.Druid = {} end
 Item.Druid.Balance = {
-  ProlongedPower                   = Item(142117)
+  ProlongedPower                   = Item(142117),
+  TheEmeraldDreamcatcher           = Item(137062)
 };
 local I = Item.Druid.Balance;
 
@@ -116,7 +118,7 @@ end
 
 --- ======= ACTION LISTS =======
 local function APL()
-  local Precombat, Aoe, St
+  local Precombat, Aoe, Ed, St
   UpdateRanges()
   Precombat = function()
     -- flask
@@ -196,6 +198,72 @@ local function APL()
     -- moonfire
     if S.Moonfire:IsCastableP() and (true) then
       if HR.Cast(S.Moonfire) then return ""; end
+    end
+  end
+  Ed = function()
+    -- incarnation,if=astral_power>=30
+    if S.Incarnation:IsCastableP() and (FutureAstralPower() >= 30) then
+      if HR.Cast(S.Incarnation) then return ""; end
+    end
+    -- celestial_alignment,if=astral_power>=30
+    if S.CelestialAlignment:IsCastableP() and (FutureAstralPower() >= 30) then
+      if HR.Cast(S.CelestialAlignment) then return ""; end
+    end
+    -- fury_of_elune,if=(buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30)&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)
+    if S.FuryofElune:IsCastableP() and ((Player:BuffP(S.CelestialAlignmentBuff) or Player:BuffP(S.IncarnationBuff)) or (S.CelestialAlignment:CooldownRemainsP() > 30 or S.Incarnation:CooldownRemainsP() > 30) and (Player:BuffRemainsP(S.TheEmeraldDreamcatcherBuff) > Player:GCD() or not Player:BuffP(S.TheEmeraldDreamcatcherBuff))) then
+      if HR.Cast(S.FuryofElune) then return ""; end
+    end
+    -- force_of_nature,if=(buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30)&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)
+    if S.ForceofNature:IsCastableP() and ((Player:BuffP(S.CelestialAlignmentBuff) or Player:BuffP(S.IncarnationBuff)) or (S.CelestialAlignment:CooldownRemainsP() > 30 or S.Incarnation:CooldownRemainsP() > 30) and (Player:BuffRemainsP(S.TheEmeraldDreamcatcherBuff) > Player:GCD() or not Player:BuffP(S.TheEmeraldDreamcatcherBuff))) then
+      if HR.Cast(S.ForceofNature) then return ""; end
+    end
+    -- starsurge,if=(gcd.max*astral_power%30)>target.time_to_die
+    if S.Starsurge:IsCastableP() and ((Player:GCD() * FutureAstralPower() / 30) > Target:TimeToDie()) then
+      if HR.Cast(S.Starsurge) then return ""; end
+    end
+    -- moonfire,target_if=refreshable,if=buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up
+    if S.Moonfire:IsCastableP() and (Player:BuffRemainsP(S.TheEmeraldDreamcatcherBuff) > Player:GCD() or not Player:BuffP(S.TheEmeraldDreamcatcherBuff)) then
+      if HR.Cast(S.Moonfire) then return ""; end
+    end
+    -- sunfire,target_if=refreshable,if=buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up
+    if S.Sunfire:IsCastableP() and (Player:BuffRemainsP(S.TheEmeraldDreamcatcherBuff) > Player:GCD() or not Player:BuffP(S.TheEmeraldDreamcatcherBuff)) then
+      if HR.Cast(S.Sunfire) then return ""; end
+    end
+    -- stellar_flare,target_if=refreshable,if=buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up
+    if S.StellarFlare:IsCastableP() and (Player:BuffRemainsP(S.TheEmeraldDreamcatcherBuff) > Player:GCD() or not Player:BuffP(S.TheEmeraldDreamcatcherBuff)) then
+      if HR.Cast(S.StellarFlare) then return ""; end
+    end
+    -- starfall,if=buff.oneths_overconfidence.up&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)
+    if S.Starfall:IsCastableP() and (Player:BuffP(S.OnethsOverconfidenceBuff) and (Player:BuffRemainsP(S.TheEmeraldDreamcatcherBuff) > Player:GCD() or not Player:BuffP(S.TheEmeraldDreamcatcherBuff))) then
+      if HR.Cast(S.Starfall) then return ""; end
+    end
+    -- new_moon,if=buff.the_emerald_dreamcatcher.remains>execute_time|!buff.the_emerald_dreamcatcher.up
+    if S.NewMoon:IsCastableP() and (Player:BuffRemainsP(S.TheEmeraldDreamcatcherBuff) > S.NewMoon:ExecuteTime() or not Player:BuffP(S.TheEmeraldDreamcatcherBuff)) then
+      if HR.Cast(S.NewMoon) then return ""; end
+    end
+    -- half_moon,if=astral_power.deficit>=20&(buff.the_emerald_dreamcatcher.remains>execute_time|!buff.the_emerald_dreamcatcher.up)
+    if S.HalfMoon:IsCastableP() and (Player:AstralPowerDeficit() >= 20 and (Player:BuffRemainsP(S.TheEmeraldDreamcatcherBuff) > S.HalfMoon:ExecuteTime() or not Player:BuffP(S.TheEmeraldDreamcatcherBuff))) then
+      if HR.Cast(S.HalfMoon) then return ""; end
+    end
+    -- full_moon,if=astral_power.deficit>=40&(buff.the_emerald_dreamcatcher.remains>execute_time|!buff.the_emerald_dreamcatcher.up)
+    if S.FullMoon:IsCastableP() and (Player:AstralPowerDeficit() >= 40 and (Player:BuffRemainsP(S.TheEmeraldDreamcatcherBuff) > S.FullMoon:ExecuteTime() or not Player:BuffP(S.TheEmeraldDreamcatcherBuff))) then
+      if HR.Cast(S.FullMoon) then return ""; end
+    end
+    -- lunar_strike,,if=buff.lunar_empowerment.up&buff.the_emerald_dreamcatcher.remains>execute_time
+    if S.LunarStrike:IsCastableP() and (Player:BuffP(S.LunarEmpowermentBuff) and Player:BuffRemainsP(S.TheEmeraldDreamcatcherBuff) > S.LunarStrike:ExecuteTime()) then
+      if HR.Cast(S.LunarStrike) then return ""; end
+    end
+    -- solar_wrath,if=buff.solar_empowerment.up&buff.the_emerald_dreamcatcher.remains>execute_time
+    if S.SolarWrath:IsCastableP() and (Player:BuffP(S.SolarEmpowermentBuff) and Player:BuffRemainsP(S.TheEmeraldDreamcatcherBuff) > S.SolarWrath:ExecuteTime()) then
+      if HR.Cast(S.SolarWrath) then return ""; end
+    end
+    -- starsurge,if=(buff.the_emerald_dreamcatcher.up&buff.the_emerald_dreamcatcher.remains<gcd.max)|astral_power>=50
+    if S.Starsurge:IsCastableP() and ((Player:BuffP(S.TheEmeraldDreamcatcherBuff) and Player:BuffRemainsP(S.TheEmeraldDreamcatcherBuff) < Player:GCD()) or FutureAstralPower() >= 50) then
+      if HR.Cast(S.Starsurge) then return ""; end
+    end
+    -- solar_wrath
+    if S.SolarWrath:IsCastableP() and (true) then
+      if HR.Cast(S.SolarWrath) then return ""; end
     end
   end
   St = function()
@@ -289,6 +357,10 @@ local function APL()
   if S.WarriorofElune:IsCastableP() and (true) then
     if HR.Cast(S.WarriorofElune) then return ""; end
   end
+  -- run_action_list,name=ed,if=equipped.the_emerald_dreamcatcher&active_enemies<=1
+  if (I.TheEmeraldDreamcatcher:IsEquipped() and Cache.EnemiesCount[40] <= 1) then
+    return Ed();
+  end
   -- incarnation,if=astral_power>=40
   if S.Incarnation:IsCastableP() and (FutureAstralPower() >= 40) then
     if HR.Cast(S.Incarnation) then return ""; end
@@ -297,13 +369,13 @@ local function APL()
   if S.CelestialAlignment:IsCastableP() and (FutureAstralPower() >= 40) then
     if HR.Cast(S.CelestialAlignment) then return ""; end
   end
-  -- call_action_list,name=aoe,if=spell_targets.starfall>=3
+  -- run_action_list,name=aoe,if=spell_targets.starfall>=3
   if (Cache.EnemiesCount[40] >= 3) then
-    local ShouldReturn = Aoe(); if ShouldReturn then return ShouldReturn; end
+    return Aoe();
   end
-  -- call_action_list,name=st
+  -- run_action_list,name=st
   if (true) then
-    local ShouldReturn = St(); if ShouldReturn then return ShouldReturn; end
+    return St();
   end
 end
 

@@ -55,6 +55,9 @@ Spell.Hunter.Survival = {
   Carve                                 = Spell(187708),
   TermsofEngagement                     = Spell(),
   FlankingStrike                        = Spell(202800),
+  AspectoftheEagle                      = Spell(186289),
+  MongooseBiteEagle                     = Spell(),
+  RaptorStrikeEagle                     = Spell(),
   RaptorStrike                          = Spell(186270)
 };
 local S = Spell.Hunter.Survival;
@@ -216,6 +219,14 @@ local function APL()
   if S.SerpentSting:IsCastableP() and (Target:DebuffRefreshableCP(S.SerpentStingDebuff) and Player:BuffDownP(S.MongooseFuryBuff) or Player:BuffP(S.VipersVenomBuff)) then
     if HR.Cast(S.SerpentSting) then return ""; end
   end
+  -- aspect_of_the_eagle,if=target.distance>=6
+  if S.AspectoftheEagle:IsCastableP() and (target.distance >= 6) then
+    if HR.Cast(S.AspectoftheEagle) then return ""; end
+  end
+  -- mongoose_bite_eagle,target_if=min:dot.internal_bleeding.stack,if=buff.mongoose_fury.up|focus>60
+  if S.MongooseBiteEagle:IsCastableP() and (Player:BuffP(S.MongooseFuryBuff) or Player:Focus() > 60) then
+    if HR.Cast(S.MongooseBiteEagle) then return ""; end
+  end
   -- mongoose_bite,target_if=min:dot.internal_bleeding.stack,if=buff.mongoose_fury.up|focus>60
   if S.MongooseBite:IsCastableP() and (Player:BuffP(S.MongooseFuryBuff) or Player:Focus() > 60) then
     if HR.Cast(S.MongooseBite) then return ""; end
@@ -223,6 +234,10 @@ local function APL()
   -- butchery
   if S.Butchery:IsCastableP() and (true) then
     if HR.Cast(S.Butchery) then return ""; end
+  end
+  -- raptor_strike_eagle,target_if=min:dot.internal_bleeding.stack
+  if S.RaptorStrikeEagle:IsCastableP() and (true) then
+    if HR.Cast(S.RaptorStrikeEagle) then return ""; end
   end
   -- raptor_strike,target_if=min:dot.internal_bleeding.stack
   if S.RaptorStrike:IsCastableP() and (true) then

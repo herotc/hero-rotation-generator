@@ -25,30 +25,32 @@ Spell.Warlock.Destruction = {
   GrimoireofSacrifice                   = Spell(),
   SoulFire                              = Spell(),
   Incinerate                            = Spell(29722),
-  SummonInfernal                        = Spell(1122),
-  DarkSoulInstability                   = Spell(),
-  Cataclysm                             = Spell(152108),
   RainofFire                            = Spell(5740),
+  Cataclysm                             = Spell(152108),
   Immolate                              = Spell(348),
   ChannelDemonfire                      = Spell(196447),
   ImmolateDebuff                        = Spell(157736),
   ChaosBolt                             = Spell(116858),
-  FireandBrimstone                      = Spell(196408),
   Havoc                                 = Spell(80240),
-  RoaringBlaze                          = Spell(205184),
-  Eradication                           = Spell(),
   GrimoireofSupremacy                   = Spell(152107),
-  Infernal                              = Spell(),
   HavocDebuff                           = Spell(80240),
+  GrimoireofSupremacyBuff               = Spell(),
+  ActiveHavocBuff                       = Spell(),
   Conflagrate                           = Spell(17962),
-  Flashover                             = Spell(),
-  BackdraftBuff                         = Spell(117828),
   Shadowburn                            = Spell(17877),
   ShadowburnDebuff                      = Spell(17877),
-  InternalCombustion                    = Spell(),
+  BackdraftBuff                         = Spell(117828),
+  SummonInfernal                        = Spell(1122),
+  DarkSoulInstability                   = Spell(),
   Berserking                            = Spell(26297),
   BloodFury                             = Spell(20572),
   Fireblood                             = Spell(),
+  Flashover                             = Spell(),
+  RoaringBlaze                          = Spell(205184),
+  InternalCombustion                    = Spell(),
+  Eradication                           = Spell(),
+  FireandBrimstone                      = Spell(196408),
+  Inferno                               = Spell(),
   EradicationDebuff                     = Spell(),
   DarkSoulInstabilityBuff               = Spell()
 };
@@ -74,7 +76,7 @@ local Settings = {
 
 -- Variables
 
-local EnemyRanges = {5, 40}
+local EnemyRanges = {5, 35, 40}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do
     HL.GetEnemies(i);
@@ -112,7 +114,7 @@ end
 
 --- ======= ACTION LISTS =======
 local function APL()
-  local Precombat, Aoe
+  local Precombat, Cata, Cds, Fnb, Inf
   UpdateRanges()
   Precombat = function()
     -- flask
@@ -140,23 +142,107 @@ local function APL()
       if HR.Cast(S.Incinerate) then return ""; end
     end
   end
-  Aoe = function()
-    -- summon_infernal,if=target.time_to_die>=400|!cooldown.dark_soul_instability.remains|target.time_to_die<=45|!talent.dark_soul_instability.enabled
-    if S.SummonInfernal:IsCastableP() and (Target:TimeToDie() >= 400 or not bool(S.DarkSoulInstability:CooldownRemainsP()) or Target:TimeToDie() <= 45 or not S.DarkSoulInstability:IsAvailable()) then
+  Cata = function()
+    -- call_action_list,name=cds
+    if (true) then
+      local ShouldReturn = Cds(); if ShouldReturn then return ShouldReturn; end
+    end
+    -- rain_of_fire,if=soul_shard>=4.5
+    if S.RainofFire:IsCastableP() and (FutureShard() >= 4.5) then
+      if HR.Cast(S.RainofFire) then return ""; end
+    end
+    -- cataclysm
+    if S.Cataclysm:IsCastableP() and (true) then
+      if HR.Cast(S.Cataclysm) then return ""; end
+    end
+    -- immolate,if=talent.channel_demonfire.enabled&!remains&cooldown.channel_demonfire.remains<=action.chaos_bolt.execute_time
+    if S.Immolate:IsCastableP() and (S.ChannelDemonfire:IsAvailable() and not bool(Target:DebuffRemainsP(S.ImmolateDebuff)) and S.ChannelDemonfire:CooldownRemainsP() <= S.ChaosBolt:ExecuteTime()) then
+      if HR.Cast(S.Immolate) then return ""; end
+    end
+    -- channel_demonfire
+    if S.ChannelDemonfire:IsCastableP() and (true) then
+      if HR.Cast(S.ChannelDemonfire) then return ""; end
+    end
+    -- havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10&spell_targets.rain_of_fire<=8&talent.grimoire_of_supremacy.enabled&pet.infernal.active&pet.infernal.remains<=10
+    if S.Havoc:IsCastableP() and (not (target == sim.target) and Target:TimeToDie() > 10 and Cache.EnemiesCount[35] <= 8 and S.GrimoireofSupremacy:IsAvailable() and bool(pet.infernal.active) and Target:DebuffRemainsP(S.HavocDebuff) <= 10) then
+      if HR.Cast(S.Havoc) then return ""; end
+    end
+    -- havoc,if=spell_targets.rain_of_fire<=8&talent.grimoire_of_supremacy.enabled&pet.infernal.active&pet.infernal.remains<=10
+    if S.Havoc:IsCastableP() and (Cache.EnemiesCount[35] <= 8 and S.GrimoireofSupremacy:IsAvailable() and bool(pet.infernal.active) and Target:DebuffRemainsP(S.HavocDebuff) <= 10) then
+      if HR.Cast(S.Havoc) then return ""; end
+    end
+    -- chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&talent.grimoire_of_supremacy.enabled&pet.infernal.remains>execute_time&active_enemies<=8&((108*spell_targets.rain_of_fire%3)<(240*(1+0.08*buff.grimoire_of_supremacy.stack)%2*(1+buff.active_havoc.remains>execute_time)))
+    if S.ChaosBolt:IsCastableP() and (not bool(Target:DebuffRemainsP(S.HavocDebuff)) and S.GrimoireofSupremacy:IsAvailable() and pet.infernal.remains > S.ChaosBolt:ExecuteTime() and Cache.EnemiesCount[40] <= 8 and ((108 * Cache.EnemiesCount[35] / 3) < (240 * (1 + 0.08 * Player:BuffStackP(S.GrimoireofSupremacyBuff)) / 2 * num((1 + Player:BuffRemainsP(S.ActiveHavocBuff) > S.ChaosBolt:ExecuteTime()))))) then
+      if HR.Cast(S.ChaosBolt) then return ""; end
+    end
+    -- havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10&spell_targets.rain_of_fire<=4
+    if S.Havoc:IsCastableP() and (not (target == sim.target) and Target:TimeToDie() > 10 and Cache.EnemiesCount[35] <= 4) then
+      if HR.Cast(S.Havoc) then return ""; end
+    end
+    -- havoc,if=spell_targets.rain_of_fire<=4
+    if S.Havoc:IsCastableP() and (Cache.EnemiesCount[35] <= 4) then
+      if HR.Cast(S.Havoc) then return ""; end
+    end
+    -- chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&buff.active_havoc.remains>execute_time&spell_targets.rain_of_fire<=4
+    if S.ChaosBolt:IsCastableP() and (not bool(Target:DebuffRemainsP(S.HavocDebuff)) and Player:BuffRemainsP(S.ActiveHavocBuff) > S.ChaosBolt:ExecuteTime() and Cache.EnemiesCount[35] <= 4) then
+      if HR.Cast(S.ChaosBolt) then return ""; end
+    end
+    -- immolate,cycle_targets=1,if=!debuff.havoc.remains&refreshable&remains<=cooldown.cataclysm.remains
+    if S.Immolate:IsCastableP() and (not bool(Target:DebuffRemainsP(S.HavocDebuff)) and Target:DebuffRefreshableCP(S.ImmolateDebuff) and Target:DebuffRemainsP(S.ImmolateDebuff) <= S.Cataclysm:CooldownRemainsP()) then
+      if HR.Cast(S.Immolate) then return ""; end
+    end
+    -- rain_of_fire
+    if S.RainofFire:IsCastableP() and (true) then
+      if HR.Cast(S.RainofFire) then return ""; end
+    end
+    -- soul_fire,cycle_targets=1,if=!debuff.havoc.remains
+    if S.SoulFire:IsCastableP() and (not bool(Target:DebuffRemainsP(S.HavocDebuff))) then
+      if HR.Cast(S.SoulFire) then return ""; end
+    end
+    -- conflagrate,cycle_targets=1,if=!debuff.havoc.remains
+    if S.Conflagrate:IsCastableP() and (not bool(Target:DebuffRemainsP(S.HavocDebuff))) then
+      if HR.Cast(S.Conflagrate) then return ""; end
+    end
+    -- shadowburn,cycle_targets=1,if=!debuff.havoc.remains&((charges=2|!buff.backdraft.remains|buff.backdraft.remains>buff.backdraft.stack*action.incinerate.execute_time))
+    if S.Shadowburn:IsCastableP() and (not bool(Target:DebuffRemainsP(S.HavocDebuff)) and ((S.Shadowburn:ChargesP() == 2 or not bool(Player:BuffRemainsP(S.BackdraftBuff)) or Player:BuffRemainsP(S.BackdraftBuff) > Player:BuffStackP(S.BackdraftBuff) * S.Incinerate:ExecuteTime()))) then
+      if HR.Cast(S.Shadowburn) then return ""; end
+    end
+    -- incinerate,cycle_targets=1,if=!debuff.havoc.remains
+    if S.Incinerate:IsCastableP() and (not bool(Target:DebuffRemainsP(S.HavocDebuff))) then
+      if HR.Cast(S.Incinerate) then return ""; end
+    end
+  end
+  Cds = function()
+    -- summon_infernal,if=target.time_to_die>=210|!cooldown.dark_soul_instability.remains|target.time_to_die<=30+gcd|!talent.dark_soul_instability.enabled
+    if S.SummonInfernal:IsCastableP() and (Target:TimeToDie() >= 210 or not bool(S.DarkSoulInstability:CooldownRemainsP()) or Target:TimeToDie() <= 30 + Player:GCD() or not S.DarkSoulInstability:IsAvailable()) then
       if HR.Cast(S.SummonInfernal) then return ""; end
     end
-    -- dark_soul_instability,if=target.time_to_die>=130|pet.infernal.active|target.time_to_die<=30
-    if S.DarkSoulInstability:IsCastableP() and (Target:TimeToDie() >= 130 or bool(pet.infernal.active) or Target:TimeToDie() <= 30) then
+    -- dark_soul_instability,if=target.time_to_die>=140|pet.infernal.active|target.time_to_die<=20+gcd
+    if S.DarkSoulInstability:IsCastableP() and (Target:TimeToDie() >= 140 or bool(pet.infernal.active) or Target:TimeToDie() <= 20 + Player:GCD()) then
       if HR.Cast(S.DarkSoulInstability) then return ""; end
     end
     -- potion,if=pet.infernal.active|target.time_to_die<65
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (bool(pet.infernal.active) or Target:TimeToDie() < 65) then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
+    -- berserking
+    if S.Berserking:IsCastableP() and HR.CDsON() and (true) then
+      if HR.Cast(S.Berserking, Settings.Destruction.OffGCDasOffGCD.Berserking) then return ""; end
+    end
+    -- blood_fury
+    if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
+      if HR.Cast(S.BloodFury, Settings.Destruction.OffGCDasOffGCD.BloodFury) then return ""; end
+    end
+    -- fireblood
+    if S.Fireblood:IsCastableP() and (true) then
+      if HR.Cast(S.Fireblood) then return ""; end
+    end
     -- use_items
-    -- cataclysm
-    if S.Cataclysm:IsCastableP() and (true) then
-      if HR.Cast(S.Cataclysm) then return ""; end
+  end
+  Fnb = function()
+    -- call_action_list,name=cds
+    if (true) then
+      local ShouldReturn = Cds(); if ShouldReturn then return ShouldReturn; end
     end
     -- rain_of_fire,if=soul_shard>=4.5
     if S.RainofFire:IsCastableP() and (FutureShard() >= 4.5) then
@@ -170,36 +256,102 @@ local function APL()
     if S.ChannelDemonfire:IsCastableP() and (true) then
       if HR.Cast(S.ChannelDemonfire) then return ""; end
     end
-    -- immolate,cycle_targets=1,if=refreshable&((!talent.fire_and_brimstone.enabled|spell_targets.incinerate<=5)|talent.cataclysm.enabled&cooldown.cataclysm.remains>=12)
-    if S.Immolate:IsCastableP() and (Target:DebuffRefreshableCP(S.ImmolateDebuff) and ((not S.FireandBrimstone:IsAvailable() or Cache.EnemiesCount[5] <= 5) or S.Cataclysm:IsAvailable() and S.Cataclysm:CooldownRemainsP() >= 12)) then
-      if HR.Cast(S.Immolate) then return ""; end
-    end
-    -- havoc,cycle_targets=1,if=spell_targets.infernal_awakening<4&!(target=sim.target)&target.time_to_die>10&(talent.roaring_blaze.enabled|talent.eradication.enabled|talent.grimoire_of_supremacy.enabled&cooldown.infernal.remains<165&pet.infernal.active)
-    if S.Havoc:IsCastableP() and (Cache.EnemiesCount[40] < 4 and not (target == sim.target) and Target:TimeToDie() > 10 and (S.RoaringBlaze:IsAvailable() or S.Eradication:IsAvailable() or S.GrimoireofSupremacy:IsAvailable() and S.Infernal:CooldownRemainsP() < 165 and bool(pet.infernal.active))) then
+    -- havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10&spell_targets.rain_of_fire<=4&talent.grimoire_of_supremacy.enabled&pet.infernal.active&pet.infernal.remains<=10
+    if S.Havoc:IsCastableP() and (not (target == sim.target) and Target:TimeToDie() > 10 and Cache.EnemiesCount[35] <= 4 and S.GrimoireofSupremacy:IsAvailable() and bool(pet.infernal.active) and Target:DebuffRemainsP(S.HavocDebuff) <= 10) then
       if HR.Cast(S.Havoc) then return ""; end
     end
-    -- havoc,if=spell_targets.infernal_awakening<4&(talent.roaring_blaze.enabled|talent.eradication.enabled|talent.grimoire_of_supremacy.enabled&cooldown.infernal.remains<165&pet.infernal.active)
-    if S.Havoc:IsCastableP() and (Cache.EnemiesCount[40] < 4 and (S.RoaringBlaze:IsAvailable() or S.Eradication:IsAvailable() or S.GrimoireofSupremacy:IsAvailable() and S.Infernal:CooldownRemainsP() < 165 and bool(pet.infernal.active))) then
+    -- havoc,if=spell_targets.rain_of_fire<=4&talent.grimoire_of_supremacy.enabled&pet.infernal.active&pet.infernal.remains<=10
+    if S.Havoc:IsCastableP() and (Cache.EnemiesCount[35] <= 4 and S.GrimoireofSupremacy:IsAvailable() and bool(pet.infernal.active) and Target:DebuffRemainsP(S.HavocDebuff) <= 10) then
       if HR.Cast(S.Havoc) then return ""; end
     end
-    -- chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&execute_time+travel_time<target.time_to_die&cooldown.havoc.remains>=15+execute_time&(talent.roaring_blaze.enabled|talent.eradication.enabled|talent.grimoire_of_supremacy.enabled&cooldown.infernal.remains<165&pet.infernal.active)&spell_targets.infernal_awakening<4
-    if S.ChaosBolt:IsCastableP() and (not bool(Target:DebuffRemainsP(S.HavocDebuff)) and S.ChaosBolt:ExecuteTime() + S.ChaosBolt:TravelTime() < Target:TimeToDie() and S.Havoc:CooldownRemainsP() >= 15 + S.ChaosBolt:ExecuteTime() and (S.RoaringBlaze:IsAvailable() or S.Eradication:IsAvailable() or S.GrimoireofSupremacy:IsAvailable() and S.Infernal:CooldownRemainsP() < 165 and bool(pet.infernal.active)) and Cache.EnemiesCount[40] < 4) then
+    -- chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&talent.grimoire_of_supremacy.enabled&pet.infernal.remains>execute_time&active_enemies<=4&((108*spell_targets.rain_of_fire%3)<(240*(1+0.08*buff.grimoire_of_supremacy.stack)%2*(1+buff.active_havoc.remains>execute_time)))
+    if S.ChaosBolt:IsCastableP() and (not bool(Target:DebuffRemainsP(S.HavocDebuff)) and S.GrimoireofSupremacy:IsAvailable() and pet.infernal.remains > S.ChaosBolt:ExecuteTime() and Cache.EnemiesCount[40] <= 4 and ((108 * Cache.EnemiesCount[35] / 3) < (240 * (1 + 0.08 * Player:BuffStackP(S.GrimoireofSupremacyBuff)) / 2 * num((1 + Player:BuffRemainsP(S.ActiveHavocBuff) > S.ChaosBolt:ExecuteTime()))))) then
       if HR.Cast(S.ChaosBolt) then return ""; end
+    end
+    -- immolate,cycle_targets=1,if=!debuff.havoc.remains&refreshable&spell_targets.incinerate<=8
+    if S.Immolate:IsCastableP() and (not bool(Target:DebuffRemainsP(S.HavocDebuff)) and Target:DebuffRefreshableCP(S.ImmolateDebuff) and Cache.EnemiesCount[5] <= 8) then
+      if HR.Cast(S.Immolate) then return ""; end
     end
     -- rain_of_fire
     if S.RainofFire:IsCastableP() and (true) then
       if HR.Cast(S.RainofFire) then return ""; end
     end
-    -- soul_fire,cycle_targets=1,if=!debuff.havoc.remains&!talent.fire_and_brimstone.enabled
-    if S.SoulFire:IsCastableP() and (not bool(Target:DebuffRemainsP(S.HavocDebuff)) and not S.FireandBrimstone:IsAvailable()) then
+    -- soul_fire,cycle_targets=1,if=!debuff.havoc.remains&spell_targets.incinerate=3
+    if S.SoulFire:IsCastableP() and (not bool(Target:DebuffRemainsP(S.HavocDebuff)) and Cache.EnemiesCount[5] == 3) then
       if HR.Cast(S.SoulFire) then return ""; end
     end
-    -- conflagrate,cycle_targets=1,if=!debuff.havoc.remains&(!talent.fire_and_brimstone.enabled|(talent.flashover.enabled&buff.backdraft.stack<=2&spell_targets.incinerate<7))
-    if S.Conflagrate:IsCastableP() and (not bool(Target:DebuffRemainsP(S.HavocDebuff)) and (not S.FireandBrimstone:IsAvailable() or (S.Flashover:IsAvailable() and Player:BuffStackP(S.BackdraftBuff) <= 2 and Cache.EnemiesCount[5] < 7))) then
+    -- conflagrate,cycle_targets=1,if=!debuff.havoc.remains&(talent.flashover.enabled&buff.backdraft.stack<=2|spell_targets.incinerate<=7|talent.roaring_blaze.enabled&spell_targets.incinerate<=9)
+    if S.Conflagrate:IsCastableP() and (not bool(Target:DebuffRemainsP(S.HavocDebuff)) and (S.Flashover:IsAvailable() and Player:BuffStackP(S.BackdraftBuff) <= 2 or Cache.EnemiesCount[5] <= 7 or S.RoaringBlaze:IsAvailable() and Cache.EnemiesCount[5] <= 9)) then
       if HR.Cast(S.Conflagrate) then return ""; end
     end
-    -- shadowburn,cycle_targets=1,if=!debuff.havoc.remains&!talent.fire_and_brimstone.enabled&(charges=2|!buff.backdraft.remains|buff.backdraft.remains>buff.backdraft.stack*action.incinerate.execute_time)
-    if S.Shadowburn:IsCastableP() and (not bool(Target:DebuffRemainsP(S.HavocDebuff)) and not S.FireandBrimstone:IsAvailable() and (S.Shadowburn:ChargesP() == 2 or not bool(Player:BuffRemainsP(S.BackdraftBuff)) or Player:BuffRemainsP(S.BackdraftBuff) > Player:BuffStackP(S.BackdraftBuff) * S.Incinerate:ExecuteTime())) then
+    -- incinerate,cycle_targets=1,if=!debuff.havoc.remains
+    if S.Incinerate:IsCastableP() and (not bool(Target:DebuffRemainsP(S.HavocDebuff))) then
+      if HR.Cast(S.Incinerate) then return ""; end
+    end
+  end
+  Inf = function()
+    -- call_action_list,name=cds
+    if (true) then
+      local ShouldReturn = Cds(); if ShouldReturn then return ShouldReturn; end
+    end
+    -- rain_of_fire,if=soul_shard>=4.5
+    if S.RainofFire:IsCastableP() and (FutureShard() >= 4.5) then
+      if HR.Cast(S.RainofFire) then return ""; end
+    end
+    -- cataclysm
+    if S.Cataclysm:IsCastableP() and (true) then
+      if HR.Cast(S.Cataclysm) then return ""; end
+    end
+    -- immolate,if=talent.channel_demonfire.enabled&!remains&cooldown.channel_demonfire.remains<=action.chaos_bolt.execute_time
+    if S.Immolate:IsCastableP() and (S.ChannelDemonfire:IsAvailable() and not bool(Target:DebuffRemainsP(S.ImmolateDebuff)) and S.ChannelDemonfire:CooldownRemainsP() <= S.ChaosBolt:ExecuteTime()) then
+      if HR.Cast(S.Immolate) then return ""; end
+    end
+    -- channel_demonfire
+    if S.ChannelDemonfire:IsCastableP() and (true) then
+      if HR.Cast(S.ChannelDemonfire) then return ""; end
+    end
+    -- havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10&spell_targets.rain_of_fire<=4+talent.internal_combustion.enabled&talent.grimoire_of_supremacy.enabled&pet.infernal.active&pet.infernal.remains<=10
+    if S.Havoc:IsCastableP() and (not (target == sim.target) and Target:TimeToDie() > 10 and Cache.EnemiesCount[35] <= 4 + num(S.InternalCombustion:IsAvailable()) and S.GrimoireofSupremacy:IsAvailable() and bool(pet.infernal.active) and Target:DebuffRemainsP(S.HavocDebuff) <= 10) then
+      if HR.Cast(S.Havoc) then return ""; end
+    end
+    -- havoc,if=spell_targets.rain_of_fire<=4+talent.internal_combustion.enabled&talent.grimoire_of_supremacy.enabled&pet.infernal.active&pet.infernal.remains<=10
+    if S.Havoc:IsCastableP() and (Cache.EnemiesCount[35] <= 4 + num(S.InternalCombustion:IsAvailable()) and S.GrimoireofSupremacy:IsAvailable() and bool(pet.infernal.active) and Target:DebuffRemainsP(S.HavocDebuff) <= 10) then
+      if HR.Cast(S.Havoc) then return ""; end
+    end
+    -- chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&talent.grimoire_of_supremacy.enabled&pet.infernal.remains>execute_time&spell_targets.rain_of_fire<=4+talent.internal_combustion.enabled&((108*spell_targets.rain_of_fire%(3-0.16*spell_targets.rain_of_fire))<(240*(1+0.08*buff.grimoire_of_supremacy.stack)%2*(1+buff.active_havoc.remains>execute_time)))
+    if S.ChaosBolt:IsCastableP() and (not bool(Target:DebuffRemainsP(S.HavocDebuff)) and S.GrimoireofSupremacy:IsAvailable() and pet.infernal.remains > S.ChaosBolt:ExecuteTime() and Cache.EnemiesCount[35] <= 4 + num(S.InternalCombustion:IsAvailable()) and ((108 * Cache.EnemiesCount[35] / (3 - 0.16 * Cache.EnemiesCount[35])) < (240 * (1 + 0.08 * Player:BuffStackP(S.GrimoireofSupremacyBuff)) / 2 * num((1 + Player:BuffRemainsP(S.ActiveHavocBuff) > S.ChaosBolt:ExecuteTime()))))) then
+      if HR.Cast(S.ChaosBolt) then return ""; end
+    end
+    -- havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10&spell_targets.rain_of_fire<=3&(talent.eradication.enabled|talent.internal_combustion.enabled)
+    if S.Havoc:IsCastableP() and (not (target == sim.target) and Target:TimeToDie() > 10 and Cache.EnemiesCount[35] <= 3 and (S.Eradication:IsAvailable() or S.InternalCombustion:IsAvailable())) then
+      if HR.Cast(S.Havoc) then return ""; end
+    end
+    -- havoc,if=spell_targets.rain_of_fire<=3&(talent.eradication.enabled|talent.internal_combustion.enabled)
+    if S.Havoc:IsCastableP() and (Cache.EnemiesCount[35] <= 3 and (S.Eradication:IsAvailable() or S.InternalCombustion:IsAvailable())) then
+      if HR.Cast(S.Havoc) then return ""; end
+    end
+    -- chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&buff.active_havoc.remains>execute_time&spell_targets.rain_of_fire<=3&(talent.eradication.enabled|talent.internal_combustion.enabled)
+    if S.ChaosBolt:IsCastableP() and (not bool(Target:DebuffRemainsP(S.HavocDebuff)) and Player:BuffRemainsP(S.ActiveHavocBuff) > S.ChaosBolt:ExecuteTime() and Cache.EnemiesCount[35] <= 3 and (S.Eradication:IsAvailable() or S.InternalCombustion:IsAvailable())) then
+      if HR.Cast(S.ChaosBolt) then return ""; end
+    end
+    -- immolate,cycle_targets=1,if=!debuff.havoc.remains&refreshable
+    if S.Immolate:IsCastableP() and (not bool(Target:DebuffRemainsP(S.HavocDebuff)) and Target:DebuffRefreshableCP(S.ImmolateDebuff)) then
+      if HR.Cast(S.Immolate) then return ""; end
+    end
+    -- rain_of_fire
+    if S.RainofFire:IsCastableP() and (true) then
+      if HR.Cast(S.RainofFire) then return ""; end
+    end
+    -- soul_fire,cycle_targets=1,if=!debuff.havoc.remains
+    if S.SoulFire:IsCastableP() and (not bool(Target:DebuffRemainsP(S.HavocDebuff))) then
+      if HR.Cast(S.SoulFire) then return ""; end
+    end
+    -- conflagrate,cycle_targets=1,if=!debuff.havoc.remains
+    if S.Conflagrate:IsCastableP() and (not bool(Target:DebuffRemainsP(S.HavocDebuff))) then
+      if HR.Cast(S.Conflagrate) then return ""; end
+    end
+    -- shadowburn,cycle_targets=1,if=!debuff.havoc.remains&((charges=2|!buff.backdraft.remains|buff.backdraft.remains>buff.backdraft.stack*action.incinerate.execute_time))
+    if S.Shadowburn:IsCastableP() and (not bool(Target:DebuffRemainsP(S.HavocDebuff)) and ((S.Shadowburn:ChargesP() == 2 or not bool(Player:BuffRemainsP(S.BackdraftBuff)) or Player:BuffRemainsP(S.BackdraftBuff) > Player:BuffStackP(S.BackdraftBuff) * S.Incinerate:ExecuteTime()))) then
       if HR.Cast(S.Shadowburn) then return ""; end
     end
     -- incinerate,cycle_targets=1,if=!debuff.havoc.remains
@@ -211,39 +363,26 @@ local function APL()
   if not Player:AffectingCombat() then
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
-  -- run_action_list,name=aoe,if=spell_targets.infernal_awakening>=3
-  if (Cache.EnemiesCount[40] >= 3) then
-    return Aoe();
+  -- run_action_list,name=cata,if=spell_targets.infernal_awakening>=3&talent.cataclysm.enabled
+  if (Cache.EnemiesCount[40] >= 3 and S.Cataclysm:IsAvailable()) then
+    return Cata();
   end
-  -- immolate,cycle_targets=1,if=(cooldown.havoc.remains<15|!debuff.havoc.remains)&(refreshable|talent.internal_combustion.enabled&action.chaos_bolt.in_flight&remains-action.chaos_bolt.travel_time-5<duration*0.3)
-  if S.Immolate:IsCastableP() and ((S.Havoc:CooldownRemainsP() < 15 or not bool(Target:DebuffRemainsP(S.HavocDebuff))) and (Target:DebuffRefreshableCP(S.ImmolateDebuff) or S.InternalCombustion:IsAvailable() and S.ChaosBolt:InFlight() and Target:DebuffRemainsP(S.ImmolateDebuff) - S.ChaosBolt:TravelTime() - 5 < S.ImmolateDebuff:BaseDuration() * 0.3)) then
+  -- run_action_list,name=fnb,if=spell_targets.infernal_awakening>=3&talent.fire_and_brimstone.enabled
+  if (Cache.EnemiesCount[40] >= 3 and S.FireandBrimstone:IsAvailable()) then
+    return Fnb();
+  end
+  -- run_action_list,name=inf,if=spell_targets.infernal_awakening>=3&talent.inferno.enabled
+  if (Cache.EnemiesCount[40] >= 3 and S.Inferno:IsAvailable()) then
+    return Inf();
+  end
+  -- immolate,cycle_targets=1,if=!debuff.havoc.remains&(refreshable|talent.internal_combustion.enabled&action.chaos_bolt.in_flight&remains-action.chaos_bolt.travel_time-5<duration*0.3)
+  if S.Immolate:IsCastableP() and (not bool(Target:DebuffRemainsP(S.HavocDebuff)) and (Target:DebuffRefreshableCP(S.ImmolateDebuff) or S.InternalCombustion:IsAvailable() and S.ChaosBolt:InFlight() and Target:DebuffRemainsP(S.ImmolateDebuff) - S.ChaosBolt:TravelTime() - 5 < S.ImmolateDebuff:BaseDuration() * 0.3)) then
     if HR.Cast(S.Immolate) then return ""; end
   end
-  -- summon_infernal,if=target.time_to_die>=210|!cooldown.dark_soul_instability.remains|target.time_to_die<=30+gcd|!talent.dark_soul_instability.enabled
-  if S.SummonInfernal:IsCastableP() and (Target:TimeToDie() >= 210 or not bool(S.DarkSoulInstability:CooldownRemainsP()) or Target:TimeToDie() <= 30 + Player:GCD() or not S.DarkSoulInstability:IsAvailable()) then
-    if HR.Cast(S.SummonInfernal) then return ""; end
+  -- call_action_list,name=cds
+  if (true) then
+    local ShouldReturn = Cds(); if ShouldReturn then return ShouldReturn; end
   end
-  -- dark_soul_instability,if=target.time_to_die>=140|pet.infernal.active|target.time_to_die<=20+gcd
-  if S.DarkSoulInstability:IsCastableP() and (Target:TimeToDie() >= 140 or bool(pet.infernal.active) or Target:TimeToDie() <= 20 + Player:GCD()) then
-    if HR.Cast(S.DarkSoulInstability) then return ""; end
-  end
-  -- potion,if=pet.infernal.active|target.time_to_die<65
-  if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (bool(pet.infernal.active) or Target:TimeToDie() < 65) then
-    if HR.CastSuggested(I.ProlongedPower) then return ""; end
-  end
-  -- berserking
-  if S.Berserking:IsCastableP() and HR.CDsON() and (true) then
-    if HR.Cast(S.Berserking, Settings.Destruction.OffGCDasOffGCD.Berserking) then return ""; end
-  end
-  -- blood_fury
-  if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
-    if HR.Cast(S.BloodFury, Settings.Destruction.OffGCDasOffGCD.BloodFury) then return ""; end
-  end
-  -- fireblood
-  if S.Fireblood:IsCastableP() and (true) then
-    if HR.Cast(S.Fireblood) then return ""; end
-  end
-  -- use_items
   -- havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10
   if S.Havoc:IsCastableP() and (not (target == sim.target) and Target:TimeToDie() > 10) then
     if HR.Cast(S.Havoc) then return ""; end

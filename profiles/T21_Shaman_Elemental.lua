@@ -29,7 +29,9 @@ Spell.Shaman.Elemental = {
   StormElemental                        = Spell(192249),
   LiquidMagmaTotem                      = Spell(192222),
   FlameShock                            = Spell(188389),
+  EarthShock                            = Spell(8042),
   Earthquake                            = Spell(61882),
+  EchoesoftheGreatSunderingBuff         = Spell(208722),
   LavaBurst                             = Spell(51505),
   LavaSurgeBuff                         = Spell(77762),
   AscendanceBuff                        = Spell(114050),
@@ -39,10 +41,8 @@ Spell.Shaman.Elemental = {
   FlameShockDebuff                      = Spell(188389),
   MasteroftheElements                   = Spell(),
   MasteroftheElementsBuff               = Spell(),
-  EchoesoftheGreatSunderingBuff         = Spell(208722),
   LightningBolt                         = Spell(188196),
   ExposedElementsDebuff                 = Spell(),
-  EarthShock                            = Spell(8042),
   ResonanceTotemBuff                    = Spell(202192),
   IcefuryBuff                           = Spell(210714),
   Icefury                               = Spell(210714),
@@ -57,7 +57,8 @@ local S = Spell.Shaman.Elemental;
 -- Items
 if not Item.Shaman then Item.Shaman = {} end
 Item.Shaman.Elemental = {
-  ProlongedPower                   = Item(142117)
+  ProlongedPower                   = Item(142117),
+  EchoesoftheGreatSundering        = Item(137074)
 };
 local I = Item.Shaman.Elemental;
 
@@ -132,8 +133,12 @@ local function APL()
     if S.FlameShock:IsCastableP() and (Cache.EnemiesCount[40] < 4) then
       if HR.Cast(S.FlameShock) then return ""; end
     end
-    -- earthquake
-    if S.Earthquake:IsCastableP() and (true) then
+    -- earth_shock,if=equipped.echoes_of_the_great_sundering
+    if S.EarthShock:IsCastableP() and (I.EchoesoftheGreatSundering:IsEquipped()) then
+      if HR.Cast(S.EarthShock) then return ""; end
+    end
+    -- earthquake,if=equipped.echoes_of_the_great_sundering&buff.echoes_of_the_great_sundering.up|!equipped.echoes_of_the_great_sundering
+    if S.Earthquake:IsCastableP() and (I.EchoesoftheGreatSundering:IsEquipped() and Player:BuffP(S.EchoesoftheGreatSunderingBuff) or not I.EchoesoftheGreatSundering:IsEquipped()) then
       if HR.Cast(S.Earthquake) then return ""; end
     end
     -- lava_burst,if=(buff.lava_surge.up|buff.ascendance.up)&spell_targets.chain_lightning<4
