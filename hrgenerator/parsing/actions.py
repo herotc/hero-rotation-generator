@@ -229,10 +229,10 @@ class Action:
             self.action_list.pool_for_next = for_next
             self.action_list.pool_extra_amount = extra_amount
             return lua_string
+        exec_cond = self.execution().object_().print_conditions()
         exec_cast = self.print_exec()
         if exec_cast == '':
             return lua_string
-        exec_cond = self.execution().object_().print_conditions()
         cond_link = ' and ' if exec_cond != '' else ''
         if_cond = convert_type(self.condition_tree(), BOOL)
         exec_else = self.print_exec_else()
