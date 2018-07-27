@@ -50,6 +50,7 @@ Spell.Druid.Feral = {
   PoolResource                          = Spell(9999000010),
   SavageRoarBuff                        = Spell(52610),
   Rip                                   = Spell(1079),
+  FerociousBiteMaxEnergy                = Spell(22568),
   BrutalSlash                           = Spell(202028),
   ThrashCat                             = Spell(106830),
   ThrashCatDebuff                       = Spell(106830),
@@ -151,11 +152,11 @@ local function APL()
     end
     -- berserk,if=energy>=30&(cooldown.tigers_fury.remains>5|buff.tigers_fury.up)
     if S.Berserk:IsCastableP() and (Player:Energy() >= 30 and (S.TigersFury:CooldownRemainsP() > 5 or Player:BuffP(S.TigersFuryBuff))) then
-      if HR.Cast(S.Berserk) then return ""; end
+      if HR.Cast(S.Berserk, Settings.Feral.OffGCDasOffGCD.Berserk) then return ""; end
     end
     -- tigers_fury,if=energy.deficit>=60
     if S.TigersFury:IsCastableP() and (Player:EnergyDeficit() >= 60) then
-      if HR.Cast(S.TigersFury) then return ""; end
+      if HR.Cast(S.TigersFury, Settings.Feral.OffGCDasOffGCD.TigersFury) then return ""; end
     end
     -- berserking
     if S.Berserking:IsCastableP() and HR.CDsON() and (true) then
@@ -167,7 +168,7 @@ local function APL()
     end
     -- incarnation,if=energy>=30&(cooldown.tigers_fury.remains>15|buff.tigers_fury.up)
     if S.Incarnation:IsCastableP() and (Player:Energy() >= 30 and (S.TigersFury:CooldownRemainsP() > 15 or Player:BuffP(S.TigersFuryBuff))) then
-      if HR.Cast(S.Incarnation) then return ""; end
+      if HR.Cast(S.Incarnation, Settings.Feral.OffGCDasOffGCD.Incarnation) then return ""; end
     end
     -- potion,name=prolonged_power,if=target.time_to_die<65|(time_to_die<180&(buff.berserk.up|buff.incarnation.up))
     if I.OldWar:IsReady() and Settings.Commons.UsePotions and (Target:TimeToDie() < 65 or (Target:TimeToDie() < 180 and (Player:BuffP(S.BerserkBuff) or Player:BuffP(S.IncarnationBuff)))) then
@@ -247,8 +248,8 @@ local function APL()
       end
     end
     -- ferocious_bite,max_energy=1
-    if S.FerociousBite:IsCastableP() and (true) then
-      if HR.Cast(S.FerociousBite) then return ""; end
+    if S.FerociousBiteMaxEnergy:IsCastableP() and S.FerociousBiteMaxEnergy:IsUsableP() and (true) then
+      if HR.Cast(S.FerociousBiteMaxEnergy) then return ""; end
     end
   end
   StGenerators = function()
@@ -359,15 +360,15 @@ local function APL()
   end
   -- berserk
   if S.Berserk:IsCastableP() and (true) then
-    if HR.Cast(S.Berserk) then return ""; end
+    if HR.Cast(S.Berserk, Settings.Feral.OffGCDasOffGCD.Berserk) then return ""; end
   end
   -- incarnation
   if S.Incarnation:IsCastableP() and (true) then
-    if HR.Cast(S.Incarnation) then return ""; end
+    if HR.Cast(S.Incarnation, Settings.Feral.OffGCDasOffGCD.Incarnation) then return ""; end
   end
   -- tigers_fury
   if S.TigersFury:IsCastableP() and (true) then
-    if HR.Cast(S.TigersFury) then return ""; end
+    if HR.Cast(S.TigersFury, Settings.Feral.OffGCDasOffGCD.TigersFury) then return ""; end
   end
   -- regrowth,if=(talent.sabertooth.enabled|buff.predatory_swiftness.up)&talent.bloodtalons.enabled&buff.bloodtalons.down&combo_points=5
   if S.Regrowth:IsCastableP() and ((S.Sabertooth:IsAvailable() or Player:BuffP(S.PredatorySwiftnessBuff)) and S.Bloodtalons:IsAvailable() and Player:BuffDownP(S.BloodtalonsBuff) and Player:ComboPoints() == 5) then

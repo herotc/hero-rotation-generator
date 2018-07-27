@@ -5,7 +5,7 @@ Druid specific constants and functions.
 @author: skasch
 """
 
-from ..constants import SPELL, BUFF, DEBUFF, COMMON, RANGE
+from ..constants import SPELL, BUFF, DEBUFF, COMMON, RANGE, OGCDAOGCD
 
 DRUID = 'druid'
 BALANCE = 'balance'
@@ -55,6 +55,7 @@ SPELL_INFO = {
             'moonfire_cat':                     {SPELL:     155625,
                                                  DEBUFF:    155625},
             'ferocious_bite':                   {SPELL:     22568},
+            'ferocious_bite_max_energy':        {SPELL:     22568},
             'rake':                             {SPELL:     1822,
                                                  DEBUFF:    155722},
             'rip':                              {SPELL:     1079,
@@ -136,7 +137,8 @@ SPELL_INFO = {
         FERAL: {
             'moonkin_form':                     {SPELL:     197625},
             'berserk':                          {SPELL:     106951,
-                                                 BUFF:      106951},
+                                                 BUFF:      106951,
+                                                 OGCDAOGCD: True},
             'maim':                             {SPELL:     22570},
             'predatory_swiftness':              {BUFF:      69369},
             'prowl':                            {SPELL:     5215,
@@ -146,7 +148,8 @@ SPELL_INFO = {
             'thrash':                           {SPELL:     106830,
                                                  RANGE:     8},
             'tigers_fury':                      {SPELL:     5217,
-                                                 BUFF:      5217},
+                                                 BUFF:      5217,
+                                                 OGCDAOGCD: True},
             'dash':                             {SPELL:     1850},
             'wild_charge':                      {SPELL:     49376},
             'bloodtalons':                      {SPELL:     155672,
@@ -155,7 +158,8 @@ SPELL_INFO = {
                                                  RANGE:     8},
             'guardian_affinity':                {SPELL:     217615},
             'incarnation':                      {SPELL:     102543,
-                                                 BUFF:      102543},
+                                                 BUFF:      102543,
+                                                 OGCDAOGCD: True},
             'jungle_stalker':                   {BUFF:      252071},
             'jagged_wounds':                    {SPELL:     202032},
             'lunar_inspiration':                {SPELL:     155580},
@@ -289,6 +293,36 @@ def guardian_print_swipe_thrash(fun):
 
     return add_spell
 
+def feral_max_energy_print_lua(fun):
+
+    from ..objects.executions import Spell
+
+    def print_lua(self):
+        """
+        Print the lua expression for the spell.
+        """
+        if (self.action.player.spec.simc == FERAL and self.action.properties().get('max_energy') and self.simc in 'ferocious_bite'):
+            spell_fbmax = Spell(self.action, 'ferocious_bite_max_energy')
+            return f'{spell_fbmax.print_lua()}'
+        return fun(self)
+
+    return print_lua
+
+def feral_max_energy_custom_init(fun):
+
+    from ..objects.lua import Method, LuaExpression
+    from ..constants import BOOL
+
+    def custom_init(self):
+        fun(self)
+        if (self.action.player.spec.simc == FERAL and self.action.properties().get('max_energy') and self.simc in 'ferocious_bite' and not self.action.action_list.pool_for_next > 0):
+            self.additional_conditions.append(LuaExpression(
+                        self,
+                        Method('IsUsableP', type_=BOOL),
+                        []))
+
+    return custom_init
+    
 DECORATORS = {
     DRUID: [
         {
@@ -305,6 +339,16 @@ DECORATORS = {
             'class_name': 'Context',
             'method': 'add_spell',
             'decorator': guardian_print_swipe_thrash,
+        },
+        {
+            'class_name': 'Spell',
+            'method': 'print_lua',
+            'decorator': feral_max_energy_print_lua,
+        },
+        {
+            'class_name': 'Spell',
+            'method': 'custom_init',
+            'decorator': feral_max_energy_custom_init,
         },
     ],
 }
