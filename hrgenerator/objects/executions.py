@@ -10,6 +10,7 @@ from .lua import (LuaNamed, LuaTyped, LuaCastable,
 from ..constants import (IGNORED_EXECUTIONS, SPELL, BUFF, DEBUFF, USABLE,
                          MELEE, INTERRUPT, CD, GCDAOGCD, OGCDAOGCD, NUM, BOOL,
                          FALSE, AUTOCHECK)
+from ..database import (SPELL_INFO, COMMON)
 
 
 class Item(LuaNamed, LuaCastable):
@@ -200,9 +201,14 @@ class Spell(LuaNamed, LuaCastable):
                 f'Settings.{self.action.player.spec.lua_name()}.'
                 f'GCDasOffGCD.{self.lua_name()}'))
         if self.action.player.spell_property(self, OGCDAOGCD):
-            self.cast_args.append(Literal(
-                f'Settings.{self.action.player.spec.lua_name()}.'
-                f'OffGCDasOffGCD.{self.lua_name()}'))
+            if self.simc in SPELL_INFO[COMMON]:
+                self.cast_args.append(Literal(
+                    f'Settings.Commons.'
+                    f'OffGCDasOffGCD.Racials'))
+            else:
+                self.cast_args.append(Literal(
+                    f'Settings.{self.action.player.spec.lua_name()}.'
+                    f'OffGCDasOffGCD.{self.lua_name()}'))
         if (self.action.player.spell_property(self, AUTOCHECK)
                 or self.action.action_list.name.simc == 'precombat'):
             if self.action.player.spell_property(self, BUFF):

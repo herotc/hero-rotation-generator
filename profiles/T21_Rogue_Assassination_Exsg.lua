@@ -128,11 +128,11 @@ local function APL()
     end
     -- blood_fury,if=debuff.vendetta.up
     if S.BloodFury:IsCastableP() and HR.CDsON() and (Target:DebuffP(S.VendettaDebuff)) then
-      if HR.Cast(S.BloodFury, Settings.Assassination.OffGCDasOffGCD.BloodFury) then return ""; end
+      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- berserking,if=debuff.vendetta.up
     if S.Berserking:IsCastableP() and HR.CDsON() and (Target:DebuffP(S.VendettaDebuff)) then
-      if HR.Cast(S.Berserking, Settings.Assassination.OffGCDasOffGCD.Berserking) then return ""; end
+      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit*1.5|(raid_event.adds.in>40&combo_points.deficit>=cp_max_spend)
     if S.MarkedForDeath:IsCastableP() and (Target:TimeToDie() < Player:ComboPointsDeficit() * 1.5 or (10000000000 > 40 and Player:ComboPointsDeficit() >= cp_max_spend)) then
@@ -268,7 +268,7 @@ local function APL()
   end
   -- arcane_torrent,if=energy.deficit>=15+variable.energy_regen_combined
   if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (Player:EnergyDeficit() >= 15 + VarEnergyRegenCombined) then
-    if HR.Cast(S.ArcaneTorrent, Settings.Assassination.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
+    if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- arcane_pulse
   if S.ArcanePulse:IsCastableP() and (true) then

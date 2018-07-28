@@ -102,9 +102,14 @@ local function bool(val)
   return val ~= 0
 end
 
-function S.FerociousBiteMaxEnergy:CustomCost()
-  return (Player:BuffP(S.IncarnationBuff) or Player:BuffP(S.BerserkBuff)) and 25 or 50
-end
+S.FerociousBiteMaxEnergy.CustomCost = {
+  [3] = function ()
+          if Player:BuffP(S.ApexPredatorBuff) then return 0
+          elseif (Player:BuffP(S.IncarnationBuff) or Player:BuffP(S.BerserkBuff)) then return 25
+          else return 50
+          end
+        end
+}
 
 S.Rip:RegisterPMultiplier({S.BloodtalonsBuff, 1.2}, {S.SavageRoar, 1.15}, {S.TigersFury, 1.15})
 S.Rake:RegisterPMultiplier(
@@ -136,11 +141,11 @@ local function APL()
     end
     -- cat_form
     if S.CatForm:IsCastableP() and Player:BuffDownP(S.CatForm) and (true) then
-      if HR.Cast(S.CatForm) then return ""; end
+      if HR.Cast(S.CatForm, Settings.Feral.GCDasOffGCD.CatForm) then return ""; end
     end
     -- prowl
     if S.Prowl:IsCastableP() and Player:BuffDownP(S.Prowl) and (true) then
-      if HR.Cast(S.Prowl) then return ""; end
+      if HR.Cast(S.Prowl, Settings.Feral.OffGCDasOffGCD.Prowl) then return ""; end
     end
     -- snapshot_stats
     -- potion
@@ -152,10 +157,10 @@ local function APL()
     -- dash,if=!buff.cat_form.up
     -- prowl,if=buff.incarnation.remains<0.5&buff.jungle_stalker.up
     if S.Prowl:IsCastableP() and (Player:BuffRemainsP(S.IncarnationBuff) < 0.5 and Player:BuffP(S.JungleStalkerBuff)) then
-      if HR.Cast(S.Prowl) then return ""; end
+      if HR.Cast(S.Prowl, Settings.Feral.OffGCDasOffGCD.Prowl) then return ""; end
     end
     -- berserk,if=energy>=30&(cooldown.tigers_fury.remains>5|buff.tigers_fury.up)
-    if S.Berserk:IsCastableP() and (Player:Energy() >= 30 and (S.TigersFury:CooldownRemainsP() > 5 or Player:BuffP(S.TigersFuryBuff))) then
+    if S.Berserk:IsCastableP() and HR.CDsON() and (Player:Energy() >= 30 and (S.TigersFury:CooldownRemainsP() > 5 or Player:BuffP(S.TigersFuryBuff))) then
       if HR.Cast(S.Berserk, Settings.Feral.OffGCDasOffGCD.Berserk) then return ""; end
     end
     -- tigers_fury,if=energy.deficit>=60
@@ -164,14 +169,14 @@ local function APL()
     end
     -- berserking
     if S.Berserking:IsCastableP() and HR.CDsON() and (true) then
-      if HR.Cast(S.Berserking, Settings.Feral.OffGCDasOffGCD.Berserking) then return ""; end
+      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- feral_frenzy,if=combo_points=0
     if S.FeralFrenzy:IsCastableP() and (Player:ComboPoints() == 0) then
       if HR.Cast(S.FeralFrenzy) then return ""; end
     end
     -- incarnation,if=energy>=30&(cooldown.tigers_fury.remains>15|buff.tigers_fury.up)
-    if S.Incarnation:IsCastableP() and (Player:Energy() >= 30 and (S.TigersFury:CooldownRemainsP() > 15 or Player:BuffP(S.TigersFuryBuff))) then
+    if S.Incarnation:IsCastableP() and HR.CDsON() and (Player:Energy() >= 30 and (S.TigersFury:CooldownRemainsP() > 15 or Player:BuffP(S.TigersFuryBuff))) then
       if HR.Cast(S.Incarnation, Settings.Feral.OffGCDasOffGCD.Incarnation) then return ""; end
     end
     -- potion,name=prolonged_power,if=target.time_to_die<65|(time_to_die<180&(buff.berserk.up|buff.incarnation.up))
@@ -187,7 +192,7 @@ local function APL()
   SingleTarget = function()
     -- cat_form,if=!buff.cat_form.up
     if S.CatForm:IsCastableP() and (not Player:BuffP(S.CatFormBuff)) then
-      if HR.Cast(S.CatForm) then return ""; end
+      if HR.Cast(S.CatForm, Settings.Feral.GCDasOffGCD.CatForm) then return ""; end
     end
     -- rake,if=buff.prowl.up|buff.shadowmeld.up
     if S.Rake:IsCastableP() and (Player:BuffP(S.ProwlBuff) or Player:BuffP(S.ShadowmeldBuff)) then
@@ -363,11 +368,11 @@ local function APL()
     if HR.Cast(S.SavageRoar) then return ""; end
   end
   -- berserk
-  if S.Berserk:IsCastableP() and (true) then
+  if S.Berserk:IsCastableP() and HR.CDsON() and (true) then
     if HR.Cast(S.Berserk, Settings.Feral.OffGCDasOffGCD.Berserk) then return ""; end
   end
   -- incarnation
-  if S.Incarnation:IsCastableP() and (true) then
+  if S.Incarnation:IsCastableP() and HR.CDsON() and (true) then
     if HR.Cast(S.Incarnation, Settings.Feral.OffGCDasOffGCD.Incarnation) then return ""; end
   end
   -- tigers_fury

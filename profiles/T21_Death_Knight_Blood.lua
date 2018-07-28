@@ -153,11 +153,11 @@ local function APL()
   end
   -- blood_fury
   if S.BloodFury:IsCastableP() and (true) then
-    if HR.Cast(S.BloodFury, Settings.Blood.OffGCDasOffGCD.BloodFury) then return ""; end
+    if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- berserking,if=buff.dancing_rune_weapon.up
   if S.Berserking:IsCastableP() and (Player:BuffP(S.DancingRuneWeaponBuff)) then
-    if HR.Cast(S.Berserking, Settings.Blood.OffGCDasOffGCD.Berserking) then return ""; end
+    if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- use_items
   -- potion,if=buff.dancing_rune_weapon.up

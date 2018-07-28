@@ -146,11 +146,11 @@ local function APL()
     end
     -- blood_fury
     if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
-      if HR.Cast(S.BloodFury, Settings.Outlaw.OffGCDasOffGCD.BloodFury) then return ""; end
+      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- berserking
     if S.Berserking:IsCastableP() and HR.CDsON() and (true) then
-      if HR.Cast(S.Berserking, Settings.Outlaw.OffGCDasOffGCD.Berserking) then return ""; end
+      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- adrenaline_rush,if=!buff.adrenaline_rush.up&energy.time_to_max>1
     if S.AdrenalineRush:IsCastableP() and (not Player:BuffP(S.AdrenalineRushBuff) and Player:EnergyTimeToMaxPredicted() > 1) then
@@ -243,7 +243,7 @@ local function APL()
   end
   -- arcane_torrent,if=energy.deficit>=15+energy.regen
   if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (Player:EnergyDeficit() >= 15 + Player:EnergyRegen()) then
-    if HR.Cast(S.ArcaneTorrent, Settings.Outlaw.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
+    if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- arcane_pulse
   if S.ArcanePulse:IsCastableP() and (true) then

@@ -119,11 +119,11 @@ local function APL()
   -- use_items
   -- berserking,if=cooldown.bestial_wrath.remains>30
   if S.Berserking:IsCastableP() and HR.CDsON() and (S.BestialWrath:CooldownRemainsP() > 30) then
-    if HR.Cast(S.Berserking, Settings.BeastMastery.OffGCDasOffGCD.Berserking) then return ""; end
+    if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- blood_fury,if=cooldown.bestial_wrath.remains>30
   if S.BloodFury:IsCastableP() and HR.CDsON() and (S.BestialWrath:CooldownRemainsP() > 30) then
-    if HR.Cast(S.BloodFury, Settings.BeastMastery.OffGCDasOffGCD.BloodFury) then return ""; end
+    if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- ancestral_call,if=cooldown.bestial_wrath.remains>30
   if S.AncestralCall:IsCastableP() and (S.BestialWrath:CooldownRemainsP() > 30) then

@@ -176,11 +176,11 @@ local function APL()
     end
     -- berserking,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100
     if S.Berserking:IsCastableP() and HR.CDsON() and (Player:BuffP(S.AscendanceBuff) or (feral_spirit.remains > 5) or Player:level() < 100) then
-      if HR.Cast(S.Berserking, Settings.Enhancement.OffGCDasOffGCD.Berserking) then return ""; end
+      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- blood_fury,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100
     if S.BloodFury:IsCastableP() and HR.CDsON() and (Player:BuffP(S.AscendanceBuff) or (feral_spirit.remains > 5) or Player:level() < 100) then
-      if HR.Cast(S.BloodFury, Settings.Enhancement.OffGCDasOffGCD.BloodFury) then return ""; end
+      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- potion,if=buff.ascendance.up|!talent.ascendance.enabled&feral_spirit.remains>5|target.time_to_die<=60
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.AscendanceBuff) or not S.Ascendance:IsAvailable() and feral_spirit.remains > 5 or Target:TimeToDie() <= 60) then

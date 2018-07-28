@@ -112,15 +112,15 @@ local function APL()
     end
     -- blood_fury
     if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
-      if HR.Cast(S.BloodFury, Settings.Protection.OffGCDasOffGCD.BloodFury) then return ""; end
+      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- berserking
     if S.Berserking:IsCastableP() and HR.CDsON() and (true) then
-      if HR.Cast(S.Berserking, Settings.Protection.OffGCDasOffGCD.Berserking) then return ""; end
+      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- arcane_torrent
     if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (true) then
-      if HR.Cast(S.ArcaneTorrent, Settings.Protection.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
+      if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- lights_judgment
     if S.LightsJudgment:IsCastableP() and HR.CDsON() and (true) then
@@ -135,15 +135,15 @@ local function APL()
     end
     -- blood_fury
     if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
-      if HR.Cast(S.BloodFury, Settings.Protection.OffGCDasOffGCD.BloodFury) then return ""; end
+      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- berserking
     if S.Berserking:IsCastableP() and HR.CDsON() and (true) then
-      if HR.Cast(S.Berserking, Settings.Protection.OffGCDasOffGCD.Berserking) then return ""; end
+      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- arcane_torrent
     if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (true) then
-      if HR.Cast(S.ArcaneTorrent, Settings.Protection.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
+      if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- lights_judgment
     if S.LightsJudgment:IsCastableP() and HR.CDsON() and (true) then
@@ -299,15 +299,15 @@ local function APL()
   end
   -- blood_fury
   if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
-    if HR.Cast(S.BloodFury, Settings.Protection.OffGCDasOffGCD.BloodFury) then return ""; end
+    if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- berserking
   if S.Berserking:IsCastableP() and HR.CDsON() and (true) then
-    if HR.Cast(S.Berserking, Settings.Protection.OffGCDasOffGCD.Berserking) then return ""; end
+    if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- arcane_torrent
   if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (true) then
-    if HR.Cast(S.ArcaneTorrent, Settings.Protection.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
+    if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- lights_judgment
   if S.LightsJudgment:IsCastableP() and HR.CDsON() and (true) then
@@ -315,15 +315,15 @@ local function APL()
   end
   -- blood_fury
   if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
-    if HR.Cast(S.BloodFury, Settings.Protection.OffGCDasOffGCD.BloodFury) then return ""; end
+    if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- berserking
   if S.Berserking:IsCastableP() and HR.CDsON() and (true) then
-    if HR.Cast(S.Berserking, Settings.Protection.OffGCDasOffGCD.Berserking) then return ""; end
+    if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- arcane_torrent
   if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (true) then
-    if HR.Cast(S.ArcaneTorrent, Settings.Protection.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
+    if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- lights_judgment
   if S.LightsJudgment:IsCastableP() and HR.CDsON() and (true) then

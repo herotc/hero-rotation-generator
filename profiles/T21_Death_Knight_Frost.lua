@@ -263,11 +263,11 @@ local function APL()
     end
     -- blood_fury,if=buff.pillar_of_frost.up&buff.empower_rune_weapon.up
     if S.BloodFury:IsCastableP() and (Player:BuffP(S.PillarofFrostBuff) and Player:BuffP(S.EmpowerRuneWeaponBuff)) then
-      if HR.Cast(S.BloodFury, Settings.Frost.OffGCDasOffGCD.BloodFury) then return ""; end
+      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- berserking,if=buff.pillar_of_frost.up
     if S.Berserking:IsCastableP() and (Player:BuffP(S.PillarofFrostBuff)) then
-      if HR.Cast(S.Berserking, Settings.Frost.OffGCDasOffGCD.Berserking) then return ""; end
+      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- pillar_of_frost,if=cooldown.empower_rune_weapon.remains
     if S.PillarofFrost:IsCastableP() and (bool(S.EmpowerRuneWeapon:CooldownRemainsP())) then
