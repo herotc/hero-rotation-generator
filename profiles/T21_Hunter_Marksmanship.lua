@@ -111,6 +111,7 @@ end
 local function APL()
   local Precombat
   UpdateRanges()
+  Everyone.AoEToggleEnemiesUpdate()
   Precombat = function()
     -- flask
     -- augmentation

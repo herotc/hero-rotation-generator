@@ -112,6 +112,7 @@ end
 local function APL()
   local Precombat, BuildAShard, Implosion, NetherPortal, NetherPortalActive, NetherPortalBuilding
   UpdateRanges()
+  Everyone.AoEToggleEnemiesUpdate()
   Precombat = function()
     -- flask
     -- food

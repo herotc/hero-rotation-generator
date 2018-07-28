@@ -26,6 +26,7 @@ class APL:
                         'local function {function_name}()\n'
                         '{action_list_names}\n'
                         '  UpdateRanges()\n'
+                        '  Everyone.AoEToggleEnemiesUpdate()\n'
                         '{action_lists}\n'
                         '{precombat_call}\n'
                         '{main_actions}\n'

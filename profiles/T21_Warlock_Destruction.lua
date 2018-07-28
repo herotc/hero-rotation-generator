@@ -116,6 +116,7 @@ end
 local function APL()
   local Precombat, Cata, Cds, Fnb, Inf
   UpdateRanges()
+  Everyone.AoEToggleEnemiesUpdate()
   Precombat = function()
     -- flask
     -- food

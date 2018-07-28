@@ -99,6 +99,7 @@ end
 local function APL()
   local Precombat, Build, Cds, Finish, Stealth
   UpdateRanges()
+  Everyone.AoEToggleEnemiesUpdate()
   Precombat = function()
     -- flask
     -- augmentation

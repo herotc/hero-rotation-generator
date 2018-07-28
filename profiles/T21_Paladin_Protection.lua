@@ -95,6 +95,7 @@ end
 local function APL()
   local Precombat, MaxDps, MaxSurvival, Prot
   UpdateRanges()
+  Everyone.AoEToggleEnemiesUpdate()
   Precombat = function()
     -- flask
     -- food

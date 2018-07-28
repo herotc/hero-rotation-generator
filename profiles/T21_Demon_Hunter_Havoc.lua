@@ -130,6 +130,7 @@ end
 local function APL()
   local Precombat, Cooldown, DarkSlash, Demonic, Normal
   UpdateRanges()
+  Everyone.AoEToggleEnemiesUpdate()
   Precombat = function()
     -- flask
     -- augmentation

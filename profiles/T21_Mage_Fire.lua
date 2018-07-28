@@ -98,6 +98,7 @@ end
 local function APL()
   local Precombat, ActiveTalents, CombustionPhase, RopPhase, StandardRotation
   UpdateRanges()
+  Everyone.AoEToggleEnemiesUpdate()
   Precombat = function()
     -- flask
     -- food

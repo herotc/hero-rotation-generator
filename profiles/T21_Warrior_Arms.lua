@@ -97,6 +97,7 @@ end
 local function APL()
   local Precombat, Execute, FiveTarget, SingleTarget
   UpdateRanges()
+  Everyone.AoEToggleEnemiesUpdate()
   Precombat = function()
     -- flask
     -- food

@@ -89,6 +89,7 @@ end
 local function APL()
   local Precombat, Movement, SingleTarget
   UpdateRanges()
+  Everyone.AoEToggleEnemiesUpdate()
   Precombat = function()
     -- flask
     -- food

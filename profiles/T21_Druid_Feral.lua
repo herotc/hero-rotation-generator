@@ -123,6 +123,7 @@ S.Rake:RegisterPMultiplier(
 local function APL()
   local Precombat, Cooldowns, SingleTarget, StFinishers, StGenerators
   UpdateRanges()
+  Everyone.AoEToggleEnemiesUpdate()
   Precombat = function()
     -- flask
     -- food

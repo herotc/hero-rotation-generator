@@ -98,6 +98,7 @@ end
 local function APL()
   local Precombat, Aoe, ColdHeart, Cooldowns, Generic
   UpdateRanges()
+  Everyone.AoEToggleEnemiesUpdate()
   Precombat = function()
     -- flask
     -- food
