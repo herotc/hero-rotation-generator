@@ -5,7 +5,7 @@ Druid specific constants and functions.
 @author: skasch
 """
 
-from ..constants import SPELL, BUFF, DEBUFF, COMMON, RANGE, OGCDAOGCD
+from ..constants import SPELL, BUFF, DEBUFF, COMMON, RANGE, GCDAOGCD, OGCDAOGCD, CD
 
 DRUID = 'druid'
 BALANCE = 'balance'
@@ -40,7 +40,8 @@ SPELL_INFO = {
         COMMON: {
             'bear_form':                        {SPELL:     5487},
             'cat_form':                         {SPELL:     768,
-                                                 BUFF:      768},
+                                                 BUFF:      768,
+                                                 GCDAOGCD:  True},
             'travel_form':                      {SPELL:     783},
             'swipe_bear':                       {SPELL:     213771,
                                                  RANGE:     8},
@@ -138,11 +139,13 @@ SPELL_INFO = {
             'moonkin_form':                     {SPELL:     197625},
             'berserk':                          {SPELL:     106951,
                                                  BUFF:      106951,
-                                                 OGCDAOGCD: True},
+                                                 OGCDAOGCD: True,
+                                                 CD:        True},
             'maim':                             {SPELL:     22570},
             'predatory_swiftness':              {BUFF:      69369},
             'prowl':                            {SPELL:     5215,
-                                                 BUFF:      5215},
+                                                 BUFF:      5215,
+                                                 OGCDAOGCD: True},
             'swipe':                            {SPELL:     106785,
                                                  RANGE:     8},
             'thrash':                           {SPELL:     106830,
@@ -151,7 +154,8 @@ SPELL_INFO = {
                                                  BUFF:      5217,
                                                  OGCDAOGCD: True},
             'dash':                             {SPELL:     1850},
-            'wild_charge':                      {SPELL:     49376},
+            'wild_charge':                      {SPELL:     49376,
+                                                 OGCDAOGCD: True},
             'bloodtalons':                      {SPELL:     155672,
                                                  BUFF:      145152},
             'brutal_slash':                     {SPELL:     202028,
@@ -159,7 +163,8 @@ SPELL_INFO = {
             'guardian_affinity':                {SPELL:     217615},
             'incarnation':                      {SPELL:     102543,
                                                  BUFF:      102543,
-                                                 OGCDAOGCD: True},
+                                                 OGCDAOGCD: True,
+                                                 CD:        True},
             'jungle_stalker':                   {BUFF:      252071},
             'jagged_wounds':                    {SPELL:     202032},
             'lunar_inspiration':                {SPELL:     155580},
