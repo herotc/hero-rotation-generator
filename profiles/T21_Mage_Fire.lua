@@ -50,7 +50,6 @@ Spell.Mage.Fire = {
   Kindling                              = Spell(155148),
   IncantersFlowBuff                     = Spell(1463),
   Counterspell                          = Spell(2139),
-  TimeWarp                              = Spell(80353),
   EruptingInfernalCoreBuff              = Spell(248147),
   Firestarter                           = Spell(205026)
 };
@@ -61,8 +60,7 @@ if not Item.Mage then Item.Mage = {} end
 Item.Mage.Fire = {
   ProlongedPower                   = Item(142117),
   Item132863                       = Item(132863),
-  Item132454                       = Item(132454),
-  Item132410                       = Item(132410)
+  Item132454                       = Item(132454)
 };
 local I = Item.Mage.Fire;
 
@@ -146,7 +144,7 @@ local function APL()
     end
     -- rune_of_power,if=buff.combustion.down
     if S.RuneofPower:IsCastableP() and (Player:BuffDownP(S.CombustionBuff)) then
-      if HR.Cast(S.RuneofPower) then return ""; end
+      if HR.Cast(S.RuneofPower, Settings.Fire.GCDasOffGCD.RuneofPower) then return ""; end
     end
     -- call_action_list,name=active_talents
     if (true) then
@@ -205,7 +203,7 @@ local function APL()
   RopPhase = function()
     -- rune_of_power
     if S.RuneofPower:IsCastableP() and (true) then
-      if HR.Cast(S.RuneofPower) then return ""; end
+      if HR.Cast(S.RuneofPower, Settings.Fire.GCDasOffGCD.RuneofPower) then return ""; end
     end
     -- flamestrike,if=((talent.flame_patch.enabled&active_enemies>1)|active_enemies>4)&buff.hot_streak.react
     if S.Flamestrike:IsCastableP() and (((S.FlamePatch:IsAvailable() and Cache.EnemiesCount[40] > 1) or Cache.EnemiesCount[40] > 4) and bool(Player:BuffStackP(S.HotStreakBuff))) then
@@ -335,24 +333,21 @@ local function APL()
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- counterspell,if=target.debuff.casting.react
-  if S.Counterspell:IsCastableP() and (Target:IsCasting()) then
-    if HR.Cast(S.Counterspell) then return ""; end
+  if S.Counterspell:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (Target:IsCasting()) then
+    if HR.CastAnnotated(S.Counterspell, false, "Interrupt") then return ""; end
   end
   -- time_warp,if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410&(cooldown.combustion.remains<1|target.time_to_die<50))
-  if S.TimeWarp:IsCastableP() and ((HL.CombatTime() == 0 and Player:HasNotHeroism()) or (Player:HasNotHeroism() and I.Item132410:IsEquipped() and (S.Combustion:CooldownRemainsP() < 1 or Target:TimeToDie() < 50))) then
-    if HR.Cast(S.TimeWarp) then return ""; end
-  end
   -- mirror_image,if=buff.combustion.down
   if S.MirrorImage:IsCastableP() and (Player:BuffDownP(S.CombustionBuff)) then
     if HR.Cast(S.MirrorImage) then return ""; end
   end
   -- rune_of_power,if=firestarter.active&action.rune_of_power.charges=2|cooldown.combustion.remains>40&buff.combustion.down&!talent.kindling.enabled|target.time_to_die<11|talent.kindling.enabled&(charges_fractional>1.8|time<40)&cooldown.combustion.remains>40
   if S.RuneofPower:IsCastableP() and (bool(firestarter.active) and S.RuneofPower:ChargesP() == 2 or S.Combustion:CooldownRemainsP() > 40 and Player:BuffDownP(S.CombustionBuff) and not S.Kindling:IsAvailable() or Target:TimeToDie() < 11 or S.Kindling:IsAvailable() and (S.RuneofPower:ChargesFractional() > 1.8 or HL.CombatTime() < 40) and S.Combustion:CooldownRemainsP() > 40) then
-    if HR.Cast(S.RuneofPower) then return ""; end
+    if HR.Cast(S.RuneofPower, Settings.Fire.GCDasOffGCD.RuneofPower) then return ""; end
   end
   -- rune_of_power,if=((buff.kaelthas_ultimate_ability.react|buff.pyroclasm.react)&(cooldown.combustion.remains>40|action.rune_of_power.charges>1))|(buff.erupting_infernal_core.up&(cooldown.combustion.remains>40|action.rune_of_power.charges>1))
   if S.RuneofPower:IsCastableP() and (((bool(Player:BuffStackP(S.KaelthasUltimateAbilityBuff)) or bool(Player:BuffStackP(S.PyroclasmBuff))) and (S.Combustion:CooldownRemainsP() > 40 or S.RuneofPower:ChargesP() > 1)) or (Player:BuffP(S.EruptingInfernalCoreBuff) and (S.Combustion:CooldownRemainsP() > 40 or S.RuneofPower:ChargesP() > 1))) then
-    if HR.Cast(S.RuneofPower) then return ""; end
+    if HR.Cast(S.RuneofPower, Settings.Fire.GCDasOffGCD.RuneofPower) then return ""; end
   end
   -- call_action_list,name=combustion_phase,if=cooldown.combustion.remains<=action.rune_of_power.cast_time+(!talent.kindling.enabled*gcd)&(!talent.firestarter.enabled|!firestarter.active|active_enemies>=4|active_enemies>=2&talent.flame_patch.enabled)|buff.combustion.up
   if (S.Combustion:CooldownRemainsP() <= S.RuneofPower:CastTime() + (num(not S.Kindling:IsAvailable()) * Player:GCD()) and (not S.Firestarter:IsAvailable() or not bool(firestarter.active) or Cache.EnemiesCount[40] >= 4 or Cache.EnemiesCount[40] >= 2 and S.FlamePatch:IsAvailable()) or Player:BuffP(S.CombustionBuff)) then

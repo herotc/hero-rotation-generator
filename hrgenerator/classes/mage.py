@@ -5,7 +5,7 @@ Mage specific constants and functions.
 @author: skasch
 """
 
-from ..constants import COMMON, SPELL, BUFF, DEBUFF, PET, RANGE, AUTOCHECK
+from ..constants import COMMON, SPELL, BUFF, DEBUFF, PET, RANGE, AUTOCHECK, INTERRUPT, CD, OGCDAOGCD, GCDAOGCD
 
 MAGE = 'mage'
 ARCANE = 'arcane'
@@ -38,12 +38,14 @@ SPELL_INFO = {
         COMMON: {
             'time_warp':                    {SPELL:     80353},
             'rune_of_power':                {SPELL:     116011,
-                                             BUFF:      116014},
+                                             BUFF:      116014,
+                                             GCDAOGCD:  True},
             'incanters_flow':               {BUFF:      1463},
             'ice_barrier':                  {SPELL:     11426},
             'ice_block':                    {SPELL:     45438},
             'invisibility':                 {SPELL:     66},
-            'counterspell':                 {SPELL:     2139},
+            'counterspell':                 {SPELL:     2139,
+                                             INTERRUPT: True},
             'blink':                        {SPELL:     1953},
             'arcane_intellect':             {SPELL:     1459,
                                              BUFF:      1459,
@@ -147,7 +149,9 @@ SPELL_INFO = {
             'frozen_orb':                   {SPELL:     84714},
             'ice_lance':                    {SPELL:     30455},
             'icy_veins':                    {SPELL:     12472,
-                                             BUFF:      12472},
+                                             BUFF:      12472,
+                                             GCDAOGCD:  True,
+                                             CD:        True},
             'summon_water_elemental':       {SPELL:     31687},
             'water_elemental':              {SPELL:     31687},
             'water_jet':                    {SPELL:     135029,
@@ -160,9 +164,12 @@ SPELL_INFO = {
                                              BUFF:      205766},
             'shimmer':                      {SPELL:     212653},
             'ice_floes':                    {SPELL:     108839,
-                                             BUFF:      108839},
+                                             BUFF:      108839,
+                                             OGCDAOGCD: True},
             'glacial_insulation':           {SPELL:     235297},
-            'mirror_image':                 {SPELL:     55342},
+            'mirror_image':                 {SPELL:     55342,
+                                             GCDAOGCD:  True,
+                                             CD:        True},
             'ice_nova':                     {SPELL:     157997},
             'frozen_touch':                 {SPELL:     205030},
             'splitting_ice':                {SPELL:     56377},
@@ -174,7 +181,7 @@ SPELL_INFO = {
             'glacial_spike':                {SPELL:     199786,
                                              BUFF:      199844},
             'comet_storm':                  {SPELL:     153595},
-            'ebonbolt':                     {SPELL:     214634},
+            'ebonbolt':                     {SPELL:     257537},
             'icy_hand':                     {SPELL:     220817},
             'cold_snap':                    {SPELL:     235219},
             'spellsteal':                   {SPELL:     30449},
@@ -309,6 +316,17 @@ def arcane_max_stack(fun):
 
     return max_stack
 
+def frost_cooldown_condition(fun):
+
+    from ..objects.lua import Method
+
+    def conditions(self):
+        if (self.action.player.spec.simc == FROST and self.lua_name() in 'Cooldowns'):
+            return [Method('HR.CDsON()')]
+        return fun(self)
+
+    return conditions
+
 DECORATORS = {
     MAGE: [
         {
@@ -330,6 +348,11 @@ DECORATORS = {
             'class_name': 'Buff',
             'method': 'max_stack',
             'decorator': arcane_max_stack,
+        },
+        {
+            'class_name': 'CallActionList',
+            'method': 'conditions',
+            'decorator': frost_cooldown_condition,
         }
     ]
 }

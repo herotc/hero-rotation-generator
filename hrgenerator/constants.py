@@ -61,6 +61,8 @@ IGNORED_EXECUTIONS = [
     'gift_of_the_ox',
     # Druid Feral
     'dash',
+    # Mage
+    'time_warp',
 ]
 
 # Strings to recognize as items
