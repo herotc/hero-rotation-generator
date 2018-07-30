@@ -258,7 +258,7 @@ local function APL()
       end
     end
     -- ferocious_bite,max_energy=1
-    if S.FerociousBiteMaxEnergy:IsCastableP() and S.FerociousBiteMaxEnergy:IsUsableP() and S.FerociousBiteMaxEnergy:IsUsableP() and (true) then
+    if S.FerociousBiteMaxEnergy:IsCastableP() and S.FerociousBiteMaxEnergy:IsUsableP() and (true) then
       if HR.Cast(S.FerociousBiteMaxEnergy) then return ""; end
     end
   end
