@@ -63,7 +63,7 @@ class ActionList:
                 f'end')
 
 
-class Action:
+class Action(Decorable):
     """
     A single action in an action list. A action is of the form:
     \\actions.action_list_name+=/execution,if=condition_expression
