@@ -41,11 +41,11 @@ Spell.Mage.Fire = {
   Flamestrike                           = Spell(2120),
   FlamePatch                            = Spell(205037),
   KaelthasUltimateAbilityBuff           = Spell(209455),
-  PyroclasmBuff                         = Spell(),
+  PyroclasmBuff                         = Spell(269651),
   HeatingUpBuff                         = Spell(48107),
-  PhoenixFlames                         = Spell(),
+  PhoenixFlames                         = Spell(257541),
   Scorch                                = Spell(2948),
-  SearingTouch                          = Spell(),
+  SearingTouch                          = Spell(269644),
   Fireball                              = Spell(133),
   Kindling                              = Spell(155148),
   IncantersFlowBuff                     = Spell(1463),
@@ -92,6 +92,17 @@ local function bool(val)
   return val ~= 0
 end
 
+S.PhoenixFlames:RegisterInFlight();
+S.Pyroblast:RegisterInFlight(S.CombustionBuff);
+S.Fireball:RegisterInFlight(S.CombustionBuff);
+
+function S.Firestarter:ActiveStatus()
+    return (S.Firestarter:IsAvailable() and (Target:HealthPercentage() > 90)) and 1 or 0
+end
+
+function S.Firestarter:ActiveRemains()
+    return S.Firestarter:IsAvailable() and ((Target:HealthPercentage() > 90) and Target:TimeToX(90, 3) or 0)
+end
 --- ======= ACTION LISTS =======
 local function APL()
   local Precombat, ActiveTalents, CombustionPhase, RopPhase, StandardRotation
@@ -125,7 +136,7 @@ local function APL()
       if HR.Cast(S.BlastWave) then return ""; end
     end
     -- meteor,if=cooldown.combustion.remains>40|(cooldown.combustion.remains>target.time_to_die)|buff.rune_of_power.up|firestarter.active
-    if S.Meteor:IsCastableP() and (S.Combustion:CooldownRemainsP() > 40 or (S.Combustion:CooldownRemainsP() > Target:TimeToDie()) or Player:BuffP(S.RuneofPowerBuff) or bool(firestarter.active)) then
+    if S.Meteor:IsCastableP() and (S.Combustion:CooldownRemainsP() > 40 or (S.Combustion:CooldownRemainsP() > Target:TimeToDie()) or Player:BuffP(S.RuneofPowerBuff) or bool(S.Firestarter:ActiveStatus())) then
       if HR.Cast(S.Meteor) then return ""; end
     end
     -- dragons_breath,if=equipped.132863|(talent.alexstraszas_fury.enabled&!buff.hot_streak.react)
@@ -151,8 +162,8 @@ local function APL()
       local ShouldReturn = ActiveTalents(); if ShouldReturn then return ShouldReturn; end
     end
     -- combustion
-    if S.Combustion:IsCastableP() and (true) then
-      if HR.Cast(S.Combustion) then return ""; end
+    if S.Combustion:IsCastableP() and HR.CDsON() and (true) then
+      if HR.Cast(S.Combustion, Settings.Fire.OffGCDasOffGCD.Combustion) then return ""; end
     end
     -- potion
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
@@ -226,15 +237,15 @@ local function APL()
       if HR.Cast(S.Pyroblast) then return ""; end
     end
     -- fire_blast,if=!prev_off_gcd.fire_blast&buff.heating_up.react&firestarter.active&charges_fractional>1.7
-    if S.FireBlast:IsCastableP() and (not Player:PrevOffGCDP(1, S.FireBlast) and bool(Player:BuffStackP(S.HeatingUpBuff)) and bool(firestarter.active) and S.FireBlast:ChargesFractional() > 1.7) then
+    if S.FireBlast:IsCastableP() and (not Player:PrevOffGCDP(1, S.FireBlast) and bool(Player:BuffStackP(S.HeatingUpBuff)) and bool(S.Firestarter:ActiveStatus()) and S.FireBlast:ChargesFractional() > 1.7) then
       if HR.Cast(S.FireBlast) then return ""; end
     end
     -- phoenix_flames,if=!prev_gcd.1.phoenix_flames&charges_fractional>2.7&firestarter.active
-    if S.PhoenixFlames:IsCastableP() and (not Player:PrevGCDP(1, S.PhoenixFlames) and S.PhoenixFlames:ChargesFractional() > 2.7 and bool(firestarter.active)) then
+    if S.PhoenixFlames:IsCastableP() and (not Player:PrevGCDP(1, S.PhoenixFlames) and S.PhoenixFlames:ChargesFractional() > 2.7 and bool(S.Firestarter:ActiveStatus())) then
       if HR.Cast(S.PhoenixFlames) then return ""; end
     end
     -- fire_blast,if=!prev_off_gcd.fire_blast&!firestarter.active
-    if S.FireBlast:IsCastableP() and (not Player:PrevOffGCDP(1, S.FireBlast) and not bool(firestarter.active)) then
+    if S.FireBlast:IsCastableP() and (not Player:PrevOffGCDP(1, S.FireBlast) and not bool(S.Firestarter:ActiveStatus())) then
       if HR.Cast(S.FireBlast) then return ""; end
     end
     -- phoenix_flames,if=!prev_gcd.1.phoenix_flames
@@ -268,7 +279,7 @@ local function APL()
       if HR.Cast(S.Pyroblast) then return ""; end
     end
     -- pyroblast,if=buff.hot_streak.react&firestarter.active&!talent.rune_of_power.enabled
-    if S.Pyroblast:IsCastableP() and (bool(Player:BuffStackP(S.HotStreakBuff)) and bool(firestarter.active) and not S.RuneofPower:IsAvailable()) then
+    if S.Pyroblast:IsCastableP() and (bool(Player:BuffStackP(S.HotStreakBuff)) and bool(S.Firestarter:ActiveStatus()) and not S.RuneofPower:IsAvailable()) then
       if HR.Cast(S.Pyroblast) then return ""; end
     end
     -- phoenix_flames,if=charges_fractional>2.7&active_enemies>2
@@ -329,7 +340,7 @@ local function APL()
     end
   end
   -- call precombat
-  if not Player:AffectingCombat() then
+  if not Player:AffectingCombat() and not Player:IsCasting() then
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- counterspell,if=target.debuff.casting.react
@@ -342,7 +353,7 @@ local function APL()
     if HR.Cast(S.MirrorImage) then return ""; end
   end
   -- rune_of_power,if=firestarter.active&action.rune_of_power.charges=2|cooldown.combustion.remains>40&buff.combustion.down&!talent.kindling.enabled|target.time_to_die<11|talent.kindling.enabled&(charges_fractional>1.8|time<40)&cooldown.combustion.remains>40
-  if S.RuneofPower:IsCastableP() and (bool(firestarter.active) and S.RuneofPower:ChargesP() == 2 or S.Combustion:CooldownRemainsP() > 40 and Player:BuffDownP(S.CombustionBuff) and not S.Kindling:IsAvailable() or Target:TimeToDie() < 11 or S.Kindling:IsAvailable() and (S.RuneofPower:ChargesFractional() > 1.8 or HL.CombatTime() < 40) and S.Combustion:CooldownRemainsP() > 40) then
+  if S.RuneofPower:IsCastableP() and (bool(S.Firestarter:ActiveStatus()) and S.RuneofPower:ChargesP() == 2 or S.Combustion:CooldownRemainsP() > 40 and Player:BuffDownP(S.CombustionBuff) and not S.Kindling:IsAvailable() or Target:TimeToDie() < 11 or S.Kindling:IsAvailable() and (S.RuneofPower:ChargesFractional() > 1.8 or HL.CombatTime() < 40) and S.Combustion:CooldownRemainsP() > 40) then
     if HR.Cast(S.RuneofPower, Settings.Fire.GCDasOffGCD.RuneofPower) then return ""; end
   end
   -- rune_of_power,if=((buff.kaelthas_ultimate_ability.react|buff.pyroclasm.react)&(cooldown.combustion.remains>40|action.rune_of_power.charges>1))|(buff.erupting_infernal_core.up&(cooldown.combustion.remains>40|action.rune_of_power.charges>1))
@@ -350,7 +361,7 @@ local function APL()
     if HR.Cast(S.RuneofPower, Settings.Fire.GCDasOffGCD.RuneofPower) then return ""; end
   end
   -- call_action_list,name=combustion_phase,if=cooldown.combustion.remains<=action.rune_of_power.cast_time+(!talent.kindling.enabled*gcd)&(!talent.firestarter.enabled|!firestarter.active|active_enemies>=4|active_enemies>=2&talent.flame_patch.enabled)|buff.combustion.up
-  if (S.Combustion:CooldownRemainsP() <= S.RuneofPower:CastTime() + (num(not S.Kindling:IsAvailable()) * Player:GCD()) and (not S.Firestarter:IsAvailable() or not bool(firestarter.active) or Cache.EnemiesCount[40] >= 4 or Cache.EnemiesCount[40] >= 2 and S.FlamePatch:IsAvailable()) or Player:BuffP(S.CombustionBuff)) then
+  if (S.Combustion:CooldownRemainsP() <= S.RuneofPower:CastTime() + (num(not S.Kindling:IsAvailable()) * Player:GCD()) and (not S.Firestarter:IsAvailable() or not bool(S.Firestarter:ActiveStatus()) or Cache.EnemiesCount[40] >= 4 or Cache.EnemiesCount[40] >= 2 and S.FlamePatch:IsAvailable()) or Player:BuffP(S.CombustionBuff)) then
     local ShouldReturn = CombustionPhase(); if ShouldReturn then return ShouldReturn; end
   end
   -- call_action_list,name=rop_phase,if=buff.rune_of_power.up&buff.combustion.down
