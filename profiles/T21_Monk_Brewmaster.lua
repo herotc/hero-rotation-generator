@@ -151,8 +151,8 @@ local function APL()
   if S.PurifyingBrew:IsCastableP() and (bool(stagger.heavy) or (bool(stagger.moderate) and S.Brews:ChargesFractional() >= cooldown.brews.max_charges - 0.5 and Player:BuffRemainsP(S.IronskinBrewBuff) >= S.IronskinBrewBuff:BaseDuration() * 2.5)) then
     if HR.Cast(S.PurifyingBrew, Settings.Brewmaster.OffGCDasOffGCD.PurifyingBrew) then return ""; end
   end
-  -- ironskin_brew,if=buff.blackout_combo.down&cooldown.brews.charges_fractional>=cooldown.brews.max_charges-0.1-(1+buff.ironskin_brew.remains<=buff.ironskin_brew.duration*0.5)&buff.ironskin_brew.remains<=buff.ironskin_brew.duration*2
-  if S.IronskinBrew:IsCastableP() and (Player:BuffDownP(S.BlackoutComboBuff) and S.Brews:ChargesFractional() >= cooldown.brews.max_charges - 0.1 - num((1 + Player:BuffRemainsP(S.IronskinBrewBuff) <= S.IronskinBrewBuff:BaseDuration() * 0.5)) and Player:BuffRemainsP(S.IronskinBrewBuff) <= S.IronskinBrewBuff:BaseDuration() * 2) then
+  -- ironskin_brew,if=buff.blackout_combo.down&cooldown.brews.charges_fractional>=cooldown.brews.max_charges-1.0-(1+buff.ironskin_brew.remains<=buff.ironskin_brew.duration*0.5)&buff.ironskin_brew.remains<=buff.ironskin_brew.duration*2
+  if S.IronskinBrew:IsCastableP() and (Player:BuffDownP(S.BlackoutComboBuff) and S.Brews:ChargesFractional() >= cooldown.brews.max_charges - 1.0 - num((1 + Player:BuffRemainsP(S.IronskinBrewBuff) <= S.IronskinBrewBuff:BaseDuration() * 0.5)) and Player:BuffRemainsP(S.IronskinBrewBuff) <= S.IronskinBrewBuff:BaseDuration() * 2) then
     if HR.Cast(S.IronskinBrew, Settings.Brewmaster.OffGCDasOffGCD.IronskinBrew) then return ""; end
   end
   -- black_ox_brew,if=incoming_damage_1500ms&stagger.heavy&cooldown.brews.charges_fractional<=0.75

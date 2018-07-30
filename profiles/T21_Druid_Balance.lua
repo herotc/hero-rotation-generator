@@ -333,7 +333,7 @@ local function APL()
   if not Player:AffectingCombat() then
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
-  -- potion,name=deadly_grace,if=buff.celestial_alignment.up|buff.incarnation.up
+  -- potion,if=buff.celestial_alignment.up|buff.incarnation.up
   if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.CelestialAlignmentBuff) or Player:BuffP(S.IncarnationBuff)) then
     if HR.CastSuggested(I.ProlongedPower) then return ""; end
   end
