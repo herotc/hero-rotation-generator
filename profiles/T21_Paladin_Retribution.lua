@@ -89,6 +89,7 @@ end
 local function APL()
   local Precombat, Cooldowns, Finishers, Generators, Opener
   UpdateRanges()
+  Everyone.AoEToggleEnemiesUpdate()
   Precombat = function()
     -- flask
     -- food
@@ -198,7 +199,7 @@ local function APL()
     end
     -- arcane_torrent,if=(debuff.execution_sentence.up|(talent.hammer_of_wrath.enabled&(target.health.pct>=20|buff.avenging_wrath.down|buff.crusade.down))|!talent.execution_sentence.enabled|!talent.hammer_of_wrath.enabled)&holy_power<=4
     if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and ((Target:DebuffP(S.ExecutionSentenceDebuff) or (S.HammerofWrath:IsAvailable() and (Target:HealthPercentage() >= 20 or Player:BuffDownP(S.AvengingWrathBuff) or Player:BuffDownP(S.CrusadeBuff))) or not S.ExecutionSentence:IsAvailable() or not S.HammerofWrath:IsAvailable()) and Player:HolyPower() <= 4) then
-      if HR.Cast(S.ArcaneTorrent, Settings.Retribution.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
+      if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
   end
   Opener = function()

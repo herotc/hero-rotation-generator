@@ -5,7 +5,7 @@ Mage specific constants and functions.
 @author: skasch
 """
 
-from ..constants import COMMON, SPELL, BUFF, DEBUFF, PET, RANGE, AUTOCHECK
+from ..constants import COMMON, SPELL, BUFF, DEBUFF, PET, RANGE, AUTOCHECK, INTERRUPT, CD, OGCDAOGCD, GCDAOGCD
 
 MAGE = 'mage'
 ARCANE = 'arcane'
@@ -38,12 +38,14 @@ SPELL_INFO = {
         COMMON: {
             'time_warp':                    {SPELL:     80353},
             'rune_of_power':                {SPELL:     116011,
-                                             BUFF:      116014},
+                                             BUFF:      116014,
+                                             GCDAOGCD:  True},
             'incanters_flow':               {BUFF:      1463},
             'ice_barrier':                  {SPELL:     11426},
             'ice_block':                    {SPELL:     45438},
             'invisibility':                 {SPELL:     66},
-            'counterspell':                 {SPELL:     2139},
+            'counterspell':                 {SPELL:     2139,
+                                             INTERRUPT: True},
             'blink':                        {SPELL:     1953},
             'arcane_intellect':             {SPELL:     1459,
                                              BUFF:      1459,
@@ -110,7 +112,9 @@ SPELL_INFO = {
             'dragons_breath':               {SPELL:     31661,
                                              RANGE:     12},
             'combustion':                   {SPELL:     190319,
-                                             BUFF:      190319},
+                                             BUFF:      190319,
+                                             CD:        True,
+                                             OGCDAOGCD: True},
             'scorch':                       {SPELL:     2948},
             'flamestrike':                  {SPELL:     2120,
                                              RANGE:     40},
@@ -121,16 +125,15 @@ SPELL_INFO = {
             'mirror_image':                 {SPELL:     55342},
             'alexstraszas_fury':            {SPELL:     235870},
             'flame_on':                     {SPELL:     205029},
-            'controlled_burn':              {SPELL:     205033},
             'living_bomb':                  {SPELL:     44457,
                                              RANGE:     40},
             'flame_patch':                  {SPELL:     205037},
             'kindling':                     {SPELL:     155148},
-            'cinderstorm':                  {SPELL:     198929},
             'meteor':                       {SPELL:     153561},
-            'phoenixs_flames':              {SPELL:     194466,
+            'phoenix_flames':               {SPELL:     257541,
                                              RANGE:     40},
-            'big_mouth':                    {SPELL:     215796},
+            'pyroclasm':                    {BUFF:      269651},
+            'searing_touch':                {SPELL:     269644},
         },
         FROST: {
             'blizzard':                     {SPELL:     190356,
@@ -147,7 +150,9 @@ SPELL_INFO = {
             'frozen_orb':                   {SPELL:     84714},
             'ice_lance':                    {SPELL:     30455},
             'icy_veins':                    {SPELL:     12472,
-                                             BUFF:      12472},
+                                             BUFF:      12472,
+                                             GCDAOGCD:  True,
+                                             CD:        True},
             'summon_water_elemental':       {SPELL:     31687},
             'water_elemental':              {SPELL:     31687},
             'water_jet':                    {SPELL:     135029,
@@ -160,9 +165,12 @@ SPELL_INFO = {
                                              BUFF:      205766},
             'shimmer':                      {SPELL:     212653},
             'ice_floes':                    {SPELL:     108839,
-                                             BUFF:      108839},
+                                             BUFF:      108839,
+                                             OGCDAOGCD: True},
             'glacial_insulation':           {SPELL:     235297},
-            'mirror_image':                 {SPELL:     55342},
+            'mirror_image':                 {SPELL:     55342,
+                                             GCDAOGCD:  True,
+                                             CD:        True},
             'ice_nova':                     {SPELL:     157997},
             'frozen_touch':                 {SPELL:     205030},
             'splitting_ice':                {SPELL:     56377},
@@ -174,7 +182,7 @@ SPELL_INFO = {
             'glacial_spike':                {SPELL:     199786,
                                              BUFF:      199844},
             'comet_storm':                  {SPELL:     153595},
-            'ebonbolt':                     {SPELL:     214634},
+            'ebonbolt':                     {SPELL:     257537},
             'icy_hand':                     {SPELL:     220817},
             'cold_snap':                    {SPELL:     235219},
             'spellsteal':                   {SPELL:     30449},
@@ -211,6 +219,7 @@ CLASS_FUNCTIONS = {
             'BurnPhase',
         ],
         FIRE: [
+            'FirePreAplSetup',
         ],
         FROST: [
         ],
@@ -309,6 +318,53 @@ def arcane_max_stack(fun):
 
     return max_stack
 
+def frost_cooldown_condition(fun):
+
+    from ..objects.lua import Method
+
+    def conditions(self):
+        if (self.action.player.spec.simc == FROST and self.lua_name() in 'Cooldowns'):
+            return [Method('HR.CDsON()')]
+        return fun(self)
+
+    return conditions
+
+def fire_precombat_skip(fun):
+
+    def print_lua(self):
+        lua_string = ''
+        if self.show_comments:
+            lua_string += f'-- call precombat'
+        exec_cast = self.execution().object_().print_cast()
+        if (self.player.spec.simc == FIRE):
+            lua_string += (
+                '\n'
+                f'if not Player:AffectingCombat() and not Player:IsCasting() then\n'
+                f'  {exec_cast}\n'
+                f'end')
+        else:
+            lua_string += (
+                '\n'
+                f'if not Player:AffectingCombat() then\n'
+                f'  {exec_cast}\n'
+                f'end')
+        return lua_string
+
+    return print_lua
+
+def fire_firestarter(fun):
+
+    from ..objects.lua import Literal
+
+    def firestarter(self):
+        if (self.condition_list[1] in 'active'):
+            return Literal('S.Firestarter:ActiveStatus()')
+        elif (self.condition_list[1] in 'remains'):
+            return Literal('S.Firestarter:ActiveRemains()')
+        return Literal(self.simc)
+
+    return firestarter
+
 DECORATORS = {
     MAGE: [
         {
@@ -330,6 +386,21 @@ DECORATORS = {
             'class_name': 'Buff',
             'method': 'max_stack',
             'decorator': arcane_max_stack,
+        },
+        {
+            'class_name': 'CallActionList',
+            'method': 'conditions',
+            'decorator': frost_cooldown_condition,
+        },
+        {
+            'class_name': 'PrecombatAction',
+            'method': 'print_lua',
+            'decorator': fire_precombat_skip,
+        },
+        {
+            'class_name': 'Expression',
+            'method': 'firestarter',
+            'decorator': fire_firestarter,
         }
     ]
 }

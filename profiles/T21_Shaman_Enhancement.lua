@@ -46,15 +46,18 @@ Spell.Shaman.Enhancement = {
   FeralSpirit                           = Spell(51533),
   Strike                                = Spell(),
   EarthElemental                        = Spell(),
-  CrashingStorm                         = Spell(192246),
+  Sundering                             = Spell(197214),
+  SunderingDebuff                       = Spell(197214),
   Stormstrike                           = Spell(17364),
   StormbringerBuff                      = Spell(201845),
+  GatheringStormsBuff                   = Spell(),
   LightningBolt                         = Spell(187837),
   Overcharge                            = Spell(210727),
-  Sundering                             = Spell(197214),
+  ForcefulWinds                         = Spell(),
   SearingAssault                        = Spell(),
   LavaLash                              = Spell(60103),
   HotHandBuff                           = Spell(215785),
+  CrashingStorm                         = Spell(192246),
   EarthenSpikeDebuff                    = Spell(188089),
   WindShear                             = Spell(57994)
 };
@@ -85,8 +88,6 @@ local VarFurycheck35 = 0;
 local VarFurycheck80 = 0;
 local VarOcpool60 = 0;
 local VarOcpool70 = 0;
-local VarHailstormcheck = 0;
-local VarFurycheck70 = 0;
 
 local EnemyRanges = {8}
 local function UpdateRanges()
@@ -107,6 +108,7 @@ end
 local function APL()
   local Precombat, Asc, Buffs, Cds, Core, Filler, Opener
   UpdateRanges()
+  Everyone.AoEToggleEnemiesUpdate()
   Precombat = function()
     -- flask
     -- food
@@ -126,8 +128,8 @@ local function APL()
     if S.EarthenSpike:IsCastableP() and (true) then
       if HR.Cast(S.EarthenSpike) then return ""; end
     end
-    -- crash_lightning,if=!buff.crash_lightning.up&active_enemies>=2
-    if S.CrashLightning:IsCastableP() and (not Player:BuffP(S.CrashLightningBuff) and Cache.EnemiesCount[8] >= 2) then
+    -- crash_lightning,if=!buff.crash_lightning.up&active_enemies>1
+    if S.CrashLightning:IsCastableP() and (not Player:BuffP(S.CrashLightningBuff) and Cache.EnemiesCount[8] > 1) then
       if HR.Cast(S.CrashLightning) then return ""; end
     end
     -- rockbiter,if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7
@@ -140,6 +142,10 @@ local function APL()
     end
   end
   Buffs = function()
+    -- crash_lightning,if=!buff.crash_lightning.up&active_enemies>1
+    if S.CrashLightning:IsCastableP() and (not Player:BuffP(S.CrashLightningBuff) and Cache.EnemiesCount[8] > 1) then
+      if HR.Cast(S.CrashLightning) then return ""; end
+    end
     -- rockbiter,if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7
     if S.Rockbiter:IsCastableP() and (S.Landslide:IsAvailable() and not Player:BuffP(S.LandslideBuff) and S.Rockbiter:ChargesFractional() > 1.7) then
       if HR.Cast(S.Rockbiter) then return ""; end
@@ -176,11 +182,11 @@ local function APL()
     end
     -- berserking,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100
     if S.Berserking:IsCastableP() and HR.CDsON() and (Player:BuffP(S.AscendanceBuff) or (feral_spirit.remains > 5) or Player:level() < 100) then
-      if HR.Cast(S.Berserking, Settings.Enhancement.OffGCDasOffGCD.Berserking) then return ""; end
+      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- blood_fury,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100
     if S.BloodFury:IsCastableP() and HR.CDsON() and (Player:BuffP(S.AscendanceBuff) or (feral_spirit.remains > 5) or Player:level() < 100) then
-      if HR.Cast(S.BloodFury, Settings.Enhancement.OffGCDasOffGCD.BloodFury) then return ""; end
+      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- potion,if=buff.ascendance.up|!talent.ascendance.enabled&feral_spirit.remains>5|target.time_to_die<=60
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.AscendanceBuff) or not S.Ascendance:IsAvailable() and feral_spirit.remains > 5 or Target:TimeToDie() <= 60) then
@@ -190,8 +196,8 @@ local function APL()
     if S.FeralSpirit:IsCastableP() and (true) then
       if HR.Cast(S.FeralSpirit) then return ""; end
     end
-    -- ascendance,if=(cooldown.strike.remains>0)&buff.ascendance.down
-    if S.Ascendance:IsCastableP() and ((S.Strike:CooldownRemainsP() > 0) and Player:BuffDownP(S.AscendanceBuff)) then
+    -- ascendance,if=cooldown.strike.remains>0
+    if S.Ascendance:IsCastableP() and (S.Strike:CooldownRemainsP() > 0) then
       if HR.Cast(S.Ascendance) then return ""; end
     end
     -- earth_elemental
@@ -204,20 +210,16 @@ local function APL()
     if S.EarthenSpike:IsCastableP() and (bool(VarFurycheck25)) then
       if HR.Cast(S.EarthenSpike) then return ""; end
     end
-    -- crash_lightning,if=!buff.crash_lightning.up&active_enemies>=2
-    if S.CrashLightning:IsCastableP() and (not Player:BuffP(S.CrashLightningBuff) and Cache.EnemiesCount[8] >= 2) then
-      if HR.Cast(S.CrashLightning) then return ""; end
+    -- sundering,if=active_enemies>=3
+    if S.Sundering:IsCastableP() and (Cache.EnemiesCount[8] >= 3) then
+      if HR.Cast(S.Sundering) then return ""; end
     end
-    -- crash_lightning,if=active_enemies>=8|(active_enemies>=6&talent.crashing_storm.enabled)
-    if S.CrashLightning:IsCastableP() and (Cache.EnemiesCount[8] >= 8 or (Cache.EnemiesCount[8] >= 6 and S.CrashingStorm:IsAvailable())) then
-      if HR.Cast(S.CrashLightning) then return ""; end
-    end
-    -- stormstrike,if=buff.stormbringer.up
-    if S.Stormstrike:IsCastableP() and (Player:BuffP(S.StormbringerBuff)) then
+    -- stormstrike,if=buff.stormbringer.up|buff.gathering_storms.up
+    if S.Stormstrike:IsCastableP() and (Player:BuffP(S.StormbringerBuff) or Player:BuffP(S.GatheringStormsBuff)) then
       if HR.Cast(S.Stormstrike) then return ""; end
     end
-    -- crash_lightning,if=active_enemies>=4|(active_enemies>=2&talent.crashing_storm.enabled)
-    if S.CrashLightning:IsCastableP() and (Cache.EnemiesCount[8] >= 4 or (Cache.EnemiesCount[8] >= 2 and S.CrashingStorm:IsAvailable())) then
+    -- crash_lightning,if=active_enemies>=3
+    if S.CrashLightning:IsCastableP() and (Cache.EnemiesCount[8] >= 3) then
       if HR.Cast(S.CrashLightning) then return ""; end
     end
     -- lightning_bolt,if=talent.overcharge.enabled&variable.furyCheck45&maelstrom>=40
@@ -232,6 +234,10 @@ local function APL()
     if S.Sundering:IsCastableP() and (true) then
       if HR.Cast(S.Sundering) then return ""; end
     end
+    -- crash_lightning,if=talent.forceful_winds.enabled&active_enemies>1
+    if S.CrashLightning:IsCastableP() and (S.ForcefulWinds:IsAvailable() and Cache.EnemiesCount[8] > 1) then
+      if HR.Cast(S.CrashLightning) then return ""; end
+    end
     -- flametongue,if=talent.searing_assault.enabled
     if S.Flametongue:IsCastableP() and (S.SearingAssault:IsAvailable()) then
       if HR.Cast(S.Flametongue) then return ""; end
@@ -240,8 +246,8 @@ local function APL()
     if S.LavaLash:IsCastableP() and (bool(Player:BuffStackP(S.HotHandBuff))) then
       if HR.Cast(S.LavaLash) then return ""; end
     end
-    -- crash_lightning,if=active_enemies>=3
-    if S.CrashLightning:IsCastableP() and (Cache.EnemiesCount[8] >= 3) then
+    -- crash_lightning,if=active_enemies>1
+    if S.CrashLightning:IsCastableP() and (Cache.EnemiesCount[8] > 1) then
       if HR.Cast(S.CrashLightning) then return ""; end
     end
   end
@@ -254,8 +260,8 @@ local function APL()
     if S.Flametongue:IsCastableP() and (S.SearingAssault:IsAvailable() or Player:BuffRemainsP(S.FlametongueBuff) < 4.8) then
       if HR.Cast(S.Flametongue) then return ""; end
     end
-    -- crash_lightning,if=(talent.crashing_storm.enabled|active_enemies>=2)&debuff.earthen_spike.up&maelstrom>=40&variable.OCPool60
-    if S.CrashLightning:IsCastableP() and ((S.CrashingStorm:IsAvailable() or Cache.EnemiesCount[8] >= 2) and Target:DebuffP(S.EarthenSpikeDebuff) and Player:Maelstrom() >= 40 and bool(VarOcpool60)) then
+    -- crash_lightning,if=talent.crashing_storm.enabled&debuff.earthen_spike.up&maelstrom>=40&variable.OCPool60
+    if S.CrashLightning:IsCastableP() and (S.CrashingStorm:IsAvailable() and Target:DebuffP(S.EarthenSpikeDebuff) and Player:Maelstrom() >= 40 and bool(VarOcpool60)) then
       if HR.Cast(S.CrashLightning) then return ""; end
     end
     -- frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8&maelstrom>40
@@ -270,8 +276,8 @@ local function APL()
     if S.Rockbiter:IsCastableP() and (true) then
       if HR.Cast(S.Rockbiter) then return ""; end
     end
-    -- crash_lightning,if=(maelstrom>=65|talent.crashing_storm.enabled|active_enemies>=2)&variable.OCPool60&variable.furyCheck45
-    if S.CrashLightning:IsCastableP() and ((Player:Maelstrom() >= 65 or S.CrashingStorm:IsAvailable() or Cache.EnemiesCount[8] >= 2) and bool(VarOcpool60) and bool(VarFurycheck45)) then
+    -- crash_lightning,if=(maelstrom>=65|talent.crashing_storm.enabled)&variable.OCPool60&variable.furyCheck45
+    if S.CrashLightning:IsCastableP() and ((Player:Maelstrom() >= 65 or S.CrashingStorm:IsAvailable()) and bool(VarOcpool60) and bool(VarFurycheck45)) then
       if HR.Cast(S.CrashLightning) then return ""; end
     end
     -- flametongue
@@ -293,17 +299,9 @@ local function APL()
   if S.WindShear:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (true) then
     if HR.CastAnnotated(S.WindShear, false, "Interrupt") then return ""; end
   end
-  -- variable,name=hailstormCheck,value=((talent.hailstorm.enabled&!buff.frostbrand.up)|!talent.hailstorm.enabled)
-  if (true) then
-    VarHailstormcheck = num(((S.Hailstorm:IsAvailable() and not Player:BuffP(S.FrostbrandBuff)) or not S.Hailstorm:IsAvailable()))
-  end
   -- variable,name=furyCheck80,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&((maelstrom>35&cooldown.lightning_bolt.remains>=3*gcd)|maelstrom>80)))
   if (true) then
     VarFurycheck80 = num((not S.FuryofAir:IsAvailable() or (S.FuryofAir:IsAvailable() and ((Player:Maelstrom() > 35 and S.LightningBolt:CooldownRemainsP() >= 3 * Player:GCD()) or Player:Maelstrom() > 80))))
-  end
-  -- variable,name=furyCheck70,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>70))
-  if (true) then
-    VarFurycheck70 = num((not S.FuryofAir:IsAvailable() or (S.FuryofAir:IsAvailable() and Player:Maelstrom() > 70)))
   end
   -- variable,name=furyCheck45,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>45))
   if (true) then

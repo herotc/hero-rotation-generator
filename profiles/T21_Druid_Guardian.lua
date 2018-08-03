@@ -106,6 +106,7 @@ end
 local function APL()
   local Precombat, Cooldowns
   UpdateRanges()
+  Everyone.AoEToggleEnemiesUpdate()
   Precombat = function()
     -- flask
     -- food
@@ -131,15 +132,15 @@ local function APL()
     end
     -- blood_fury
     if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
-      if HR.Cast(S.BloodFury, Settings.Guardian.OffGCDasOffGCD.BloodFury) then return ""; end
+      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- berserking
     if S.Berserking:IsCastableP() and HR.CDsON() and (true) then
-      if HR.Cast(S.Berserking, Settings.Guardian.OffGCDasOffGCD.Berserking) then return ""; end
+      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- arcane_torrent
     if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (true) then
-      if HR.Cast(S.ArcaneTorrent, Settings.Guardian.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
+      if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- rage_of_the_sleeper,if=(talent.rend_and_tear.enabled&dot.thrash_bear.stack=dot.thrash_bear.max_stacks)|!talent.rend_and_tear.enabled
     if S.RageoftheSleeper:IsCastableP() and ((S.RendandTear:IsAvailable() and Target:DebuffStackP(S.ThrashBearDebuff) == dot.thrash_bear.max_stacks) or not S.RendandTear:IsAvailable()) then

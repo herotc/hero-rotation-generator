@@ -116,6 +116,7 @@ end
 local function APL()
   local Precombat, Cata, Cds, Fnb, Inf
   UpdateRanges()
+  Everyone.AoEToggleEnemiesUpdate()
   Precombat = function()
     -- flask
     -- food
@@ -227,11 +228,11 @@ local function APL()
     end
     -- berserking
     if S.Berserking:IsCastableP() and HR.CDsON() and (true) then
-      if HR.Cast(S.Berserking, Settings.Destruction.OffGCDasOffGCD.Berserking) then return ""; end
+      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- blood_fury
     if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
-      if HR.Cast(S.BloodFury, Settings.Destruction.OffGCDasOffGCD.BloodFury) then return ""; end
+      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- fireblood
     if S.Fireblood:IsCastableP() and (true) then

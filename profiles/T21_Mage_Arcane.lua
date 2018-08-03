@@ -34,10 +34,9 @@ Spell.Mage.Arcane = {
   NetherTempestBuff                     = Spell(114923),
   RuneofPowerBuff                       = Spell(116014),
   ArcanePowerBuff                       = Spell(12042),
-  TimeWarp                              = Spell(80353),
-  ArcanePower                           = Spell(12042),
   LightsJudgment                        = Spell(255647),
   RuneofPower                           = Spell(116011),
+  ArcanePower                           = Spell(12042),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
   ArcaneOrb                             = Spell(153626),
@@ -121,6 +120,7 @@ end
 local function APL()
   local Precombat, Burn, Conserve, Movement
   UpdateRanges()
+  Everyone.AoEToggleEnemiesUpdate()
   Precombat = function()
     -- flask
     -- food
@@ -173,16 +173,13 @@ local function APL()
       if HR.Cast(S.NetherTempest) then return ""; end
     end
     -- time_warp,if=buff.bloodlust.down&((buff.arcane_power.down&cooldown.arcane_power.remains=0)|(target.time_to_die<=buff.bloodlust.duration))
-    if S.TimeWarp:IsCastableP() and (Player:HasNotHeroism() and ((Player:BuffDownP(S.ArcanePowerBuff) and S.ArcanePower:CooldownRemainsP() == 0) or (Target:TimeToDie() <= bloodlust:BaseDuration()))) then
-      if HR.Cast(S.TimeWarp) then return ""; end
-    end
     -- lights_judgment,if=buff.arcane_power.down
     if S.LightsJudgment:IsCastableP() and HR.CDsON() and (Player:BuffDownP(S.ArcanePowerBuff)) then
       if HR.Cast(S.LightsJudgment) then return ""; end
     end
     -- rune_of_power,if=!buff.arcane_power.up&(mana.pct>=50|cooldown.arcane_power.remains=0)&(buff.arcane_charge.stack=buff.arcane_charge.max_stack)
     if S.RuneofPower:IsCastableP() and (not Player:BuffP(S.ArcanePowerBuff) and (Player:ManaPercentage() >= 50 or S.ArcanePower:CooldownRemainsP() == 0) and (Player:BuffStackP(S.ArcaneChargeBuff) == Player:ArcaneChargesMax())) then
-      if HR.Cast(S.RuneofPower) then return ""; end
+      if HR.Cast(S.RuneofPower, Settings.Arcane.GCDasOffGCD.RuneofPower) then return ""; end
     end
     -- arcane_power
     if S.ArcanePower:IsCastableP() and (true) then
@@ -191,11 +188,11 @@ local function APL()
     -- use_items,if=buff.arcane_power.up|target.time_to_die<cooldown.arcane_power.remains
     -- blood_fury
     if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
-      if HR.Cast(S.BloodFury, Settings.Arcane.OffGCDasOffGCD.BloodFury) then return ""; end
+      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- berserking
     if S.Berserking:IsCastableP() and HR.CDsON() and (true) then
-      if HR.Cast(S.Berserking, Settings.Arcane.OffGCDasOffGCD.Berserking) then return ""; end
+      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- presence_of_mind
     if S.PresenceofMind:IsCastableP() and (true) then
@@ -261,7 +258,7 @@ local function APL()
     end
     -- rune_of_power,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&(full_recharge_time<=execute_time|recharge_time<=cooldown.arcane_power.remains|target.time_to_die<=cooldown.arcane_power.remains)
     if S.RuneofPower:IsCastableP() and (Player:BuffStackP(S.ArcaneChargeBuff) == Player:ArcaneChargesMax() and (S.RuneofPower:FullRechargeTimeP() <= S.RuneofPower:ExecuteTime() or S.RuneofPower:RechargeP() <= S.ArcanePower:CooldownRemainsP() or Target:TimeToDie() <= S.ArcanePower:CooldownRemainsP())) then
-      if HR.Cast(S.RuneofPower) then return ""; end
+      if HR.Cast(S.RuneofPower, Settings.Arcane.GCDasOffGCD.RuneofPower) then return ""; end
     end
     -- arcane_missiles,if=mana.pct<=95&buff.clearcasting.react,chain=1
     if S.ArcaneMissiles:IsCastableP() and (Player:ManaPercentage() <= 95 and bool(Player:BuffStackP(S.ClearcastingBuff))) then
@@ -285,7 +282,7 @@ local function APL()
     end
     -- arcane_torrent
     if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (true) then
-      if HR.Cast(S.ArcaneTorrent, Settings.Arcane.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
+      if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- arcane_blast
     if S.ArcaneBlast:IsCastableP() and (true) then
@@ -327,13 +324,10 @@ local function APL()
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- counterspell,if=target.debuff.casting.react
-  if S.Counterspell:IsCastableP() and (Target:IsCasting()) then
-    if HR.Cast(S.Counterspell) then return ""; end
+  if S.Counterspell:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (Target:IsCasting()) then
+    if HR.CastAnnotated(S.Counterspell, false, "Interrupt") then return ""; end
   end
   -- time_warp,if=time=0&buff.bloodlust.down
-  if S.TimeWarp:IsCastableP() and (HL.CombatTime() == 0 and Player:HasNotHeroism()) then
-    if HR.Cast(S.TimeWarp) then return ""; end
-  end
   -- call_action_list,name=burn,if=burn_phase|target.time_to_die<variable.average_burn_length|(cooldown.arcane_power.remains=0&cooldown.evocation.remains<=variable.average_burn_length&(buff.arcane_charge.stack=buff.arcane_charge.max_stack|(talent.charged_up.enabled&cooldown.charged_up.remains=0)))
   if (bool(VarBurnPhase) or Target:TimeToDie() < VarAverageBurnLength or (S.ArcanePower:CooldownRemainsP() == 0 and S.Evocation:CooldownRemainsP() <= VarAverageBurnLength and (Player:BuffStackP(S.ArcaneChargeBuff) == Player:ArcaneChargesMax() or (S.ChargedUp:IsAvailable() and S.ChargedUp:CooldownRemainsP() == 0)))) then
     local ShouldReturn = Burn(); if ShouldReturn then return ShouldReturn; end

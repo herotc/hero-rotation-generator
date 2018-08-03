@@ -104,6 +104,7 @@ end
 local function APL()
   local Precombat
   UpdateRanges()
+  Everyone.AoEToggleEnemiesUpdate()
   Precombat = function()
     -- flask
     -- augmentation
@@ -138,11 +139,11 @@ local function APL()
   -- use_items
   -- berserking,if=cooldown.coordinated_assault.remains>30
   if S.Berserking:IsCastableP() and HR.CDsON() and (S.CoordinatedAssault:CooldownRemainsP() > 30) then
-    if HR.Cast(S.Berserking, Settings.Survival.OffGCDasOffGCD.Berserking) then return ""; end
+    if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- blood_fury,if=cooldown.coordinated_assault.remains>30
   if S.BloodFury:IsCastableP() and HR.CDsON() and (S.CoordinatedAssault:CooldownRemainsP() > 30) then
-    if HR.Cast(S.BloodFury, Settings.Survival.OffGCDasOffGCD.BloodFury) then return ""; end
+    if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- ancestral_call,if=cooldown.coordinated_assault.remains>30
   if S.AncestralCall:IsCastableP() and (S.CoordinatedAssault:CooldownRemainsP() > 30) then

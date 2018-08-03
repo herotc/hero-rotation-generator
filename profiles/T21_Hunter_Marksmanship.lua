@@ -111,6 +111,7 @@ end
 local function APL()
   local Precombat
   UpdateRanges()
+  Everyone.AoEToggleEnemiesUpdate()
   Precombat = function()
     -- flask
     -- augmentation
@@ -157,11 +158,11 @@ local function APL()
   end
   -- berserking,if=cooldown.trueshot.remains>30
   if S.Berserking:IsCastableP() and HR.CDsON() and (S.Trueshot:CooldownRemainsP() > 30) then
-    if HR.Cast(S.Berserking, Settings.Marksmanship.OffGCDasOffGCD.Berserking) then return ""; end
+    if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- blood_fury,if=cooldown.trueshot.remains>30
   if S.BloodFury:IsCastableP() and HR.CDsON() and (S.Trueshot:CooldownRemainsP() > 30) then
-    if HR.Cast(S.BloodFury, Settings.Marksmanship.OffGCDasOffGCD.BloodFury) then return ""; end
+    if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- ancestral_call,if=cooldown.trueshot.remains>30
   if S.AncestralCall:IsCastableP() and (S.Trueshot:CooldownRemainsP() > 30) then

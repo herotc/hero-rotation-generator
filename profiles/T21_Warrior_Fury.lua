@@ -89,6 +89,7 @@ end
 local function APL()
   local Precombat, Movement, SingleTarget
   UpdateRanges()
+  Everyone.AoEToggleEnemiesUpdate()
   Precombat = function()
     -- flask
     -- food
@@ -194,15 +195,15 @@ local function APL()
   end
   -- blood_fury,if=buff.recklessness.up
   if S.BloodFury:IsCastableP() and HR.CDsON() and (Player:BuffP(S.RecklessnessBuff)) then
-    if HR.Cast(S.BloodFury, Settings.Fury.OffGCDasOffGCD.BloodFury) then return ""; end
+    if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- berserking,if=buff.recklessness.up
   if S.Berserking:IsCastableP() and HR.CDsON() and (Player:BuffP(S.RecklessnessBuff)) then
-    if HR.Cast(S.Berserking, Settings.Fury.OffGCDasOffGCD.Berserking) then return ""; end
+    if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- arcane_torrent,if=rage<40&!buff.recklessness.up
   if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (Player:Rage() < 40 and not Player:BuffP(S.RecklessnessBuff)) then
-    if HR.Cast(S.ArcaneTorrent, Settings.Fury.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
+    if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- lights_judgment,if=cooldown.recklessness.remains<3
   if S.LightsJudgment:IsCastableP() and HR.CDsON() and (S.Recklessness:CooldownRemainsP() < 3) then

@@ -97,6 +97,7 @@ end
 local function APL()
   local Precombat, Execute, FiveTarget, SingleTarget
   UpdateRanges()
+  Everyone.AoEToggleEnemiesUpdate()
   Precombat = function()
     -- flask
     -- food
@@ -272,15 +273,15 @@ local function APL()
   end
   -- blood_fury,if=debuff.colossus_smash.up
   if S.BloodFury:IsCastableP() and HR.CDsON() and (Target:DebuffP(S.ColossusSmashDebuff)) then
-    if HR.Cast(S.BloodFury, Settings.Arms.OffGCDasOffGCD.BloodFury) then return ""; end
+    if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- berserking,if=debuff.colossus_smash.up
   if S.Berserking:IsCastableP() and HR.CDsON() and (Target:DebuffP(S.ColossusSmashDebuff)) then
-    if HR.Cast(S.Berserking, Settings.Arms.OffGCDasOffGCD.Berserking) then return ""; end
+    if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- arcane_torrent,if=debuff.colossus_smash.down&cooldown.mortal_strike.remains>1.5&rage<50
   if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (Target:DebuffDownP(S.ColossusSmashDebuff) and S.MortalStrike:CooldownRemainsP() > 1.5 and Player:Rage() < 50) then
-    if HR.Cast(S.ArcaneTorrent, Settings.Arms.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
+    if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- lights_judgment,if=debuff.colossus_smash.down
   if S.LightsJudgment:IsCastableP() and HR.CDsON() and (Target:DebuffDownP(S.ColossusSmashDebuff)) then

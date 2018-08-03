@@ -112,6 +112,7 @@ end
 local function APL()
   local Precombat, BuildAShard, Implosion, NetherPortal, NetherPortalActive, NetherPortalBuilding
   UpdateRanges()
+  Everyone.AoEToggleEnemiesUpdate()
   Precombat = function()
     -- flask
     -- food
@@ -271,11 +272,11 @@ local function APL()
   -- use_items,if=prev_gcd.1.summon_demonic_tyrant
   -- berserking,if=prev_gcd.1.summon_demonic_tyrant
   if S.Berserking:IsCastableP() and HR.CDsON() and (Player:PrevGCDP(1, S.SummonDemonicTyrant)) then
-    if HR.Cast(S.Berserking, Settings.Demonology.OffGCDasOffGCD.Berserking) then return ""; end
+    if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- blood_fury,if=prev_gcd.1.summon_demonic_tyrant
   if S.BloodFury:IsCastableP() and HR.CDsON() and (Player:PrevGCDP(1, S.SummonDemonicTyrant)) then
-    if HR.Cast(S.BloodFury, Settings.Demonology.OffGCDasOffGCD.BloodFury) then return ""; end
+    if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- fireblood,if=prev_gcd.1.summon_demonic_tyrant
   if S.Fireblood:IsCastableP() and (Player:PrevGCDP(1, S.SummonDemonicTyrant)) then

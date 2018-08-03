@@ -98,6 +98,7 @@ end
 local function APL()
   local Precombat, Aoe, ColdHeart, Cooldowns, Generic
   UpdateRanges()
+  Everyone.AoEToggleEnemiesUpdate()
   Precombat = function()
     -- flask
     -- food
@@ -291,11 +292,11 @@ local function APL()
   end
   -- blood_fury,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled
   if S.BloodFury:IsCastableP() and (bool(pet.gargoyle.active) or not S.SummonGargoyle:IsAvailable()) then
-    if HR.Cast(S.BloodFury, Settings.Unholy.OffGCDasOffGCD.BloodFury) then return ""; end
+    if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- berserking,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled
   if S.Berserking:IsCastableP() and (bool(pet.gargoyle.active) or not S.SummonGargoyle:IsAvailable()) then
-    if HR.Cast(S.Berserking, Settings.Unholy.OffGCDasOffGCD.Berserking) then return ""; end
+    if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- use_items
   -- use_item,name=feloiled_infernal_machine,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled

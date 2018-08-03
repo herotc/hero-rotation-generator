@@ -103,6 +103,7 @@ end
 local function APL()
   local Precombat, Build, Cds, Finish, StealthCds, Stealthed
   UpdateRanges()
+  Everyone.AoEToggleEnemiesUpdate()
   Precombat = function()
     -- flask
     -- augmentation
@@ -150,11 +151,11 @@ local function APL()
     end
     -- blood_fury,if=stealthed.rogue
     if S.BloodFury:IsCastableP() and HR.CDsON() and (bool(stealthed.rogue)) then
-      if HR.Cast(S.BloodFury, Settings.Subtlety.OffGCDasOffGCD.BloodFury) then return ""; end
+      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- berserking,if=stealthed.rogue
     if S.Berserking:IsCastableP() and HR.CDsON() and (bool(stealthed.rogue)) then
-      if HR.Cast(S.Berserking, Settings.Subtlety.OffGCDasOffGCD.Berserking) then return ""; end
+      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- symbols_of_death,if=dot.nightblade.ticking
     if S.SymbolsofDeath:IsCastableP() and (Target:DebuffP(S.NightbladeDebuff)) then
@@ -286,7 +287,7 @@ local function APL()
   end
   -- arcane_torrent,if=energy.deficit>=15+energy.regen
   if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (Player:EnergyDeficit() >= 15 + Player:EnergyRegen()) then
-    if HR.Cast(S.ArcaneTorrent, Settings.Subtlety.OffGCDasOffGCD.ArcaneTorrent) then return ""; end
+    if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- arcane_pulse
   if S.ArcanePulse:IsCastableP() and (true) then

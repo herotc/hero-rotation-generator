@@ -129,6 +129,7 @@ end
 local function APL()
   local Precombat, Aoe, DgSoon, Fillers, Regular, Single
   UpdateRanges()
+  Everyone.AoEToggleEnemiesUpdate()
   Precombat = function()
     -- flask
     -- food
@@ -198,7 +199,7 @@ local function APL()
     end
     -- blood_fury
     if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
-      if HR.Cast(S.BloodFury, Settings.Affliction.OffGCDasOffGCD.BloodFury) then return ""; end
+      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- use_items
     -- deathbolt
@@ -308,7 +309,7 @@ local function APL()
   end
   -- berserking
   if S.Berserking:IsCastableP() and HR.CDsON() and (true) then
-    if HR.Cast(S.Berserking, Settings.Affliction.OffGCDasOffGCD.Berserking) then return ""; end
+    if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- call_action_list,name=aoe,if=talent.sow_the_seeds.enabled&spell_targets.seed_of_corruption_aoe>=3
   if (S.SowtheSeeds:IsAvailable() and Cache.EnemiesCount[5] >= 3) then
