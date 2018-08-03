@@ -22,8 +22,11 @@ local HR     = HeroRotation
 if not Spell.Druid then Spell.Druid = {} end
 Spell.Druid.Feral = {
   Regrowth                              = Spell(8936),
+  BloodtalonsBuff                       = Spell(145152),
   Bloodtalons                           = Spell(155672),
+  CatFormBuff                           = Spell(768),
   CatForm                               = Spell(768),
+  ProwlBuff                             = Spell(5215),
   Prowl                                 = Spell(5215),
   IncarnationBuff                       = Spell(102543),
   JungleStalkerBuff                     = Spell(252071),
@@ -37,9 +40,6 @@ Spell.Druid.Feral = {
   Shadowmeld                            = Spell(58984),
   Rake                                  = Spell(1822),
   RakeDebuff                            = Spell(155722),
-  BloodtalonsBuff                       = Spell(145152),
-  CatFormBuff                           = Spell(768),
-  ProwlBuff                             = Spell(5215),
   ShadowmeldBuff                        = Spell(58984),
   FerociousBite                         = Spell(22568),
   PredatorySwiftnessBuff                = Spell(69369),
@@ -130,11 +130,11 @@ local function APL()
       VarUseThrash = 1
     end
     -- cat_form
-    if S.CatForm:IsCastableP() and Player:BuffDownP(S.CatForm) and (true) then
+    if S.CatForm:IsCastableP() and Player:BuffDownP(S.CatFormBuff) and (true) then
       if HR.Cast(S.CatForm) then return ""; end
     end
     -- prowl
-    if S.Prowl:IsCastableP() and Player:BuffDownP(S.Prowl) and (true) then
+    if S.Prowl:IsCastableP() and Player:BuffDownP(S.ProwlBuff) and (true) then
       if HR.Cast(S.Prowl) then return ""; end
     end
     -- snapshot_stats

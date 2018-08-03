@@ -203,19 +203,23 @@ class Spell(LuaNamed, LuaCastable):
             self.cast_args.append(Literal(
                 f'Settings.{self.action.player.spec.lua_name()}.'
                 f'OffGCDasOffGCD.{self.lua_name()}'))
-        if (self.action.player.spell_property(self, AUTOCHECK)
-                or self.action.action_list.name.simc == 'precombat'):
+        if (self.type_ is SPELL
+            and (self.action.player.spell_property(self, AUTOCHECK)
+                 or self.action.action_list.name.simc == 'precombat')):
             if self.action.player.spell_property(self, BUFF):
-                self.additional_conditions.append(
-                    LuaExpression(
-                        self.action.player,
-                        Method('BuffDownP', type_=BOOL),
-                        [self]))
+                self.add_auto_check(BUFF)
             elif self.action.player.spell_property(self, DEBUFF):
-                self.additional_conditions.append(LuaExpression(
-                    self.action.player,
-                    Method('DebuffDownP', type_=BOOL),
-                    [self]))
+                self.add_auto_check(DEBUFF)
+
+    def add_auto_check(self, type_, method=None):
+        if not method:
+            method = f'{type_.title()}DownP'
+        aura_action = Spell(self.action, self.simc, type_=type_)
+        self.additional_conditions.append(
+            LuaExpression(self.action.player,
+                          Method(method, type_=BOOL),
+                          [aura_action])
+        )
 
     def lua_name(self):
         return f'{super().lua_name()}{self.TYPE_SUFFIX[self.type_]}'

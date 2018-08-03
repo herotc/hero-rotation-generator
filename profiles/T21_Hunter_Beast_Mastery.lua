@@ -22,6 +22,7 @@ local HR     = HeroRotation
 if not Spell.Hunter then Spell.Hunter = {} end
 Spell.Hunter.BeastMastery = {
   SummonPet                             = Spell(),
+  AspectoftheWildBuff                   = Spell(193530),
   AspectoftheWild                       = Spell(193530),
   CounterShot                           = Spell(147362),
   BuffSephuzsSecret                     = Spell(),
@@ -33,7 +34,6 @@ Spell.Hunter.BeastMastery = {
   Fireblood                             = Spell(),
   LightsJudgment                        = Spell(255647),
   BestialWrathBuff                      = Spell(19574),
-  AspectoftheWildBuff                   = Spell(193530),
   BarbedShot                            = Spell(),
   FrenzyBuff                            = Spell(),
   AMurderofCrows                        = Spell(131894),
@@ -103,7 +103,7 @@ local function APL()
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- aspect_of_the_wild
-    if S.AspectoftheWild:IsCastableP() and Player:BuffDownP(S.AspectoftheWild) and (true) then
+    if S.AspectoftheWild:IsCastableP() and Player:BuffDownP(S.AspectoftheWildBuff) and (true) then
       if HR.Cast(S.AspectoftheWild) then return ""; end
     end
   end

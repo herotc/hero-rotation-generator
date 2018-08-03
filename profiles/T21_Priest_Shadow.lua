@@ -21,8 +21,8 @@ local HR     = HeroRotation
 -- Spells
 if not Spell.Priest then Spell.Priest = {} end
 Spell.Priest.Shadow = {
-  Shadowform                            = Spell(232698),
   ShadowformBuff                        = Spell(232698),
+  Shadowform                            = Spell(232698),
   MindBlast                             = Spell(8092),
   ShadowWordVoid                        = Spell(205351),
   VoidEruption                          = Spell(228260),
@@ -95,7 +95,7 @@ local function APL()
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- shadowform,if=!buff.shadowform.up
-    if S.Shadowform:IsCastableP() and Player:BuffDownP(S.Shadowform) and (not Player:BuffP(S.ShadowformBuff)) then
+    if S.Shadowform:IsCastableP() and Player:BuffDownP(S.ShadowformBuff) and (not Player:BuffP(S.ShadowformBuff)) then
       if HR.Cast(S.Shadowform) then return ""; end
     end
     -- mind_blast

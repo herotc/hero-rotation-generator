@@ -22,6 +22,7 @@ local HR     = HeroRotation
 if not Spell.Hunter then Spell.Hunter = {} end
 Spell.Hunter.Survival = {
   SummonPet                             = Spell(),
+  SteelTrapDebuff                       = Spell(162487),
   SteelTrap                             = Spell(162488),
   Harpoon                               = Spell(190925),
   Muzzle                                = Spell(187707),
@@ -117,7 +118,7 @@ local function APL()
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- steel_trap
-    if S.SteelTrap:IsCastableP() and Player:DebuffDownP(S.SteelTrap) and (true) then
+    if S.SteelTrap:IsCastableP() and Player:DebuffDownP(S.SteelTrapDebuff) and (true) then
       if HR.Cast(S.SteelTrap) then return ""; end
     end
     -- harpoon

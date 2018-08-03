@@ -24,6 +24,7 @@ Spell.Warlock.Affliction = {
   SummonPet                             = Spell(),
   GrimoireofSacrifice                   = Spell(),
   SeedofCorruption                      = Spell(27243),
+  HauntDebuff                           = Spell(48181),
   Haunt                                 = Spell(48181),
   ShadowBolt                            = Spell(),
   SummonDarkglare                       = Spell(),
@@ -150,7 +151,7 @@ local function APL()
       if HR.Cast(S.SeedofCorruption) then return ""; end
     end
     -- haunt
-    if S.Haunt:IsCastableP() and Player:DebuffDownP(S.Haunt) and (true) then
+    if S.Haunt:IsCastableP() and Player:DebuffDownP(S.HauntDebuff) and (true) then
       if HR.Cast(S.Haunt) then return ""; end
     end
     -- shadow_bolt,if=!talent.haunt.enabled&spell_targets.seed_of_corruption_aoe<3

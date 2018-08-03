@@ -21,6 +21,7 @@ local HR     = HeroRotation
 -- Spells
 if not Spell.Mage then Spell.Mage = {} end
 Spell.Mage.Arcane = {
+  ArcaneIntellectBuff                   = Spell(1459),
   ArcaneIntellect                       = Spell(1459),
   SummonArcaneFamiliar                  = Spell(205022),
   MirrorImage                           = Spell(55342),
@@ -125,7 +126,7 @@ local function APL()
     -- food
     -- augmentation
     -- arcane_intellect
-    if S.ArcaneIntellect:IsCastableP() and Player:BuffDownP(S.ArcaneIntellect) and (true) then
+    if S.ArcaneIntellect:IsCastableP() and Player:BuffDownP(S.ArcaneIntellectBuff) and (true) then
       if HR.Cast(S.ArcaneIntellect) then return ""; end
     end
     -- summon_arcane_familiar

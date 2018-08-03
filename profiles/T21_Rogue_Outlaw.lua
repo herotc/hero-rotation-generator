@@ -24,14 +24,15 @@ Spell.Rogue.Outlaw = {
   Stealth                               = Spell(),
   MarkedForDeath                        = Spell(137619),
   RolltheBones                          = Spell(193316),
+  SliceandDiceBuff                      = Spell(5171),
   SliceandDice                          = Spell(5171),
+  AdrenalineRushBuff                    = Spell(13750),
   AdrenalineRush                        = Spell(13750),
   PistolShot                            = Spell(185763),
   BroadsideBuff                         = Spell(),
   QuickDraw                             = Spell(196938),
   OpportunityBuff                       = Spell(195627),
   SinisterStrike                        = Spell(),
-  AdrenalineRushBuff                    = Spell(13750),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
   TrueBearingBuff                       = Spell(193359),
@@ -42,7 +43,6 @@ Spell.Rogue.Outlaw = {
   BladeRush                             = Spell(),
   Vanish                                = Spell(1856),
   Shadowmeld                            = Spell(58984),
-  SliceandDiceBuff                      = Spell(5171),
   RolltheBonesBuff                      = Spell(),
   BetweentheEyes                        = Spell(199804),
   RuthlessPrecisionBuff                 = Spell(),
@@ -121,11 +121,11 @@ local function APL()
       if HR.Cast(S.RolltheBones) then return ""; end
     end
     -- slice_and_dice,precombat_seconds=2
-    if S.SliceandDice:IsCastableP() and Player:BuffDownP(S.SliceandDice) and (true) then
+    if S.SliceandDice:IsCastableP() and Player:BuffDownP(S.SliceandDiceBuff) and (true) then
       if HR.Cast(S.SliceandDice) then return ""; end
     end
     -- adrenaline_rush,precombat_seconds=1
-    if S.AdrenalineRush:IsCastableP() and Player:BuffDownP(S.AdrenalineRush) and (true) then
+    if S.AdrenalineRush:IsCastableP() and Player:BuffDownP(S.AdrenalineRushBuff) and (true) then
       if HR.Cast(S.AdrenalineRush) then return ""; end
     end
   end

@@ -21,9 +21,9 @@ local HR     = HeroRotation
 -- Spells
 if not Spell.DemonHunter then Spell.DemonHunter = {} end
 Spell.DemonHunter.Havoc = {
+  MetamorphosisBuff                     = Spell(162264),
   Metamorphosis                         = Spell(191427),
   Demonic                               = Spell(213410),
-  MetamorphosisBuff                     = Spell(162264),
   Nemesis                               = Spell(206491),
   NemesisDebuff                         = Spell(206491),
   DarkSlash                             = Spell(),
@@ -140,7 +140,7 @@ local function APL()
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- metamorphosis
-    if S.Metamorphosis:IsCastableP() and Player:BuffDownP(S.Metamorphosis) and (true) then
+    if S.Metamorphosis:IsCastableP() and Player:BuffDownP(S.MetamorphosisBuff) and (true) then
       if HR.Cast(S.Metamorphosis) then return ""; end
     end
   end

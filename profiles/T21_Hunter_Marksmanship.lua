@@ -21,6 +21,7 @@ local HR     = HeroRotation
 -- Spells
 if not Spell.Hunter then Spell.Hunter = {} end
 Spell.Hunter.Marksmanship = {
+  HuntersMarkDebuff                     = Spell(185365),
   HuntersMark                           = Spell(),
   DoubleTap                             = Spell(),
   AimedShot                             = Spell(19434),
@@ -28,7 +29,6 @@ Spell.Hunter.Marksmanship = {
   CounterShot                           = Spell(147362),
   BuffSephuzsSecret                     = Spell(),
   SephuzsSecretBuff                     = Spell(208052),
-  HuntersMarkDebuff                     = Spell(185365),
   RapidFire                             = Spell(),
   Berserking                            = Spell(26297),
   Trueshot                              = Spell(193526),
@@ -121,7 +121,7 @@ local function APL()
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- hunters_mark
-    if S.HuntersMark:IsCastableP() and Player:DebuffDownP(S.HuntersMark) and (true) then
+    if S.HuntersMark:IsCastableP() and Player:DebuffDownP(S.HuntersMarkDebuff) and (true) then
       if HR.Cast(S.HuntersMark) then return ""; end
     end
     -- double_tap,precast_time=5

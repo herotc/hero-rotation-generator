@@ -23,15 +23,16 @@ if not Spell.Rogue then Spell.Rogue = {} end
 Spell.Rogue.Subtlety = {
   Vigor                                 = Spell(14983),
   MasterofShadows                       = Spell(),
+  StealthBuff                           = Spell(1784),
   Stealth                               = Spell(1784),
   MarkedForDeath                        = Spell(137619),
+  ShadowBladesBuff                      = Spell(121471),
   ShadowBlades                          = Spell(121471),
   ShurikenStorm                         = Spell(197835),
   TheDreadlordsDeceitBuff               = Spell(208692),
   Gloomblade                            = Spell(200758),
   Backstab                              = Spell(53),
   VanishBuff                            = Spell(1856),
-  ShadowBladesBuff                      = Spell(121471),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
   SymbolsofDeath                        = Spell(212283),
@@ -51,7 +52,6 @@ Spell.Rogue.Subtlety = {
   Shadowmeld                            = Spell(58984),
   PoolResource                          = Spell(9999000010),
   Shadowstrike                          = Spell(185438),
-  StealthBuff                           = Spell(1784),
   DeeperStratagem                       = Spell(193531),
   FindWeakness                          = Spell(),
   Alacrity                              = Spell(),
@@ -113,7 +113,7 @@ local function APL()
       VarStealthThreshold = 60 + num(S.Vigor:IsAvailable()) * 35 + num(S.MasterofShadows:IsAvailable()) * 10
     end
     -- stealth
-    if S.Stealth:IsCastableP() and Player:BuffDownP(S.Stealth) and (true) then
+    if S.Stealth:IsCastableP() and Player:BuffDownP(S.StealthBuff) and (true) then
       if HR.Cast(S.Stealth) then return ""; end
     end
     -- marked_for_death,precombat_seconds=15
@@ -121,7 +121,7 @@ local function APL()
       if HR.Cast(S.MarkedForDeath) then return ""; end
     end
     -- shadow_blades,precombat_seconds=1
-    if S.ShadowBlades:IsCastableP() and Player:BuffDownP(S.ShadowBlades) and (true) then
+    if S.ShadowBlades:IsCastableP() and Player:BuffDownP(S.ShadowBladesBuff) and (true) then
       if HR.Cast(S.ShadowBlades) then return ""; end
     end
     -- potion
