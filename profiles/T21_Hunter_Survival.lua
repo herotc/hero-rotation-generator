@@ -32,7 +32,7 @@ Spell.Hunter.Survival = {
   CoordinatedAssault                    = Spell(),
   BloodFury                             = Spell(20572),
   AncestralCall                         = Spell(),
-  Fireblood                             = Spell(),
+  Fireblood                             = Spell(265221),
   LightsJudgment                        = Spell(255647),
   CoordinatedAssaultBuff                = Spell(),
   BerserkingBuff                        = Spell(26297),
@@ -150,8 +150,8 @@ local function APL()
     if HR.Cast(S.AncestralCall) then return ""; end
   end
   -- fireblood,if=cooldown.coordinated_assault.remains>30
-  if S.Fireblood:IsCastableP() and (S.CoordinatedAssault:CooldownRemainsP() > 30) then
-    if HR.Cast(S.Fireblood) then return ""; end
+  if S.Fireblood:IsCastableP() and HR.CDsON() and (S.CoordinatedAssault:CooldownRemainsP() > 30) then
+    if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- lights_judgment
   if S.LightsJudgment:IsCastableP() and HR.CDsON() and (true) then

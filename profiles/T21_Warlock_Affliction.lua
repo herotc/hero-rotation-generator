@@ -22,6 +22,7 @@ local HR     = HeroRotation
 if not Spell.Warlock then Spell.Warlock = {} end
 Spell.Warlock.Affliction = {
   SummonPet                             = Spell(691),
+  GrimoireofSacrificeBuff               = Spell(196099),
   GrimoireofSacrifice                   = Spell(108503),
   SeedofCorruption                      = Spell(27243),
   HauntDebuff                           = Spell(48181),
@@ -139,7 +140,7 @@ local function APL()
       if HR.Cast(S.SummonPet) then return ""; end
     end
     -- grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
-    if S.GrimoireofSacrifice:IsCastableP() and Player:BuffDownP(S.GrimoireofSacrifice) and (S.GrimoireofSacrifice:IsAvailable()) then
+    if S.GrimoireofSacrifice:IsCastableP() and Player:BuffDownP(S.GrimoireofSacrificeBuff) and (S.GrimoireofSacrifice:IsAvailable()) then
       if HR.Cast(S.GrimoireofSacrifice) then return ""; end
     end
     -- snapshot_stats

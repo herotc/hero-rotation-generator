@@ -44,7 +44,7 @@ Spell.Warlock.Demonology = {
   PowerSiphon                           = Spell(),
   Berserking                            = Spell(26297),
   BloodFury                             = Spell(20572),
-  Fireblood                             = Spell(),
+  Fireblood                             = Spell(265221),
   Doom                                  = Spell(603),
   DoomDebuff                            = Spell(603),
   DemonicStrength                       = Spell()
@@ -279,8 +279,8 @@ local function APL()
     if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- fireblood,if=prev_gcd.1.summon_demonic_tyrant
-  if S.Fireblood:IsCastableP() and (Player:PrevGCDP(1, S.SummonDemonicTyrant)) then
-    if HR.Cast(S.Fireblood) then return ""; end
+  if S.Fireblood:IsCastableP() and HR.CDsON() and (Player:PrevGCDP(1, S.SummonDemonicTyrant)) then
+    if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- doom,if=!ticking&time_to_die>30&spell_targets.implosion<2
   if S.Doom:IsCastableP() and (not Target:DebuffP(S.DoomDebuff) and Target:TimeToDie() > 30 and Cache.EnemiesCount[40] < 2) then

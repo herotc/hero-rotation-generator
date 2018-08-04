@@ -34,7 +34,7 @@ Spell.Hunter.Marksmanship = {
   Trueshot                              = Spell(193526),
   BloodFury                             = Spell(20572),
   AncestralCall                         = Spell(),
-  Fireblood                             = Spell(),
+  Fireblood                             = Spell(265221),
   LightsJudgment                        = Spell(255647),
   TrueshotBuff                          = Spell(193526),
   ProlongedPowerBuff                    = Spell(229206),
@@ -169,8 +169,8 @@ local function APL()
     if HR.Cast(S.AncestralCall) then return ""; end
   end
   -- fireblood,if=cooldown.trueshot.remains>30
-  if S.Fireblood:IsCastableP() and (S.Trueshot:CooldownRemainsP() > 30) then
-    if HR.Cast(S.Fireblood) then return ""; end
+  if S.Fireblood:IsCastableP() and HR.CDsON() and (S.Trueshot:CooldownRemainsP() > 30) then
+    if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- lights_judgment
   if S.LightsJudgment:IsCastableP() and HR.CDsON() and (true) then

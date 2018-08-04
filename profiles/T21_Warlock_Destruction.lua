@@ -32,7 +32,7 @@ Spell.Warlock.Destruction = {
   ImmolateDebuff                        = Spell(157736),
   ChaosBolt                             = Spell(116858),
   Havoc                                 = Spell(80240),
-  GrimoireofSupremacy                   = Spell(152107),
+  GrimoireofSupremacy                   = Spell(),
   HavocDebuff                           = Spell(80240),
   GrimoireofSupremacyBuff               = Spell(),
   ActiveHavocBuff                       = Spell(),
@@ -44,7 +44,7 @@ Spell.Warlock.Destruction = {
   DarkSoulInstability                   = Spell(),
   Berserking                            = Spell(26297),
   BloodFury                             = Spell(20572),
-  Fireblood                             = Spell(),
+  Fireblood                             = Spell(265221),
   Flashover                             = Spell(),
   RoaringBlaze                          = Spell(205184),
   InternalCombustion                    = Spell(),
@@ -235,8 +235,8 @@ local function APL()
       if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- fireblood
-    if S.Fireblood:IsCastableP() and (true) then
-      if HR.Cast(S.Fireblood) then return ""; end
+    if S.Fireblood:IsCastableP() and HR.CDsON() and (true) then
+      if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- use_items
   end
@@ -365,15 +365,15 @@ local function APL()
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- run_action_list,name=cata,if=spell_targets.infernal_awakening>=3&talent.cataclysm.enabled
-  if (Cache.EnemiesCount[40] >= 3 and S.Cataclysm:IsAvailable()) then
+  if (Cache.EnemiesCount[5] >= 3 and S.Cataclysm:IsAvailable()) then
     return Cata();
   end
   -- run_action_list,name=fnb,if=spell_targets.infernal_awakening>=3&talent.fire_and_brimstone.enabled
-  if (Cache.EnemiesCount[40] >= 3 and S.FireandBrimstone:IsAvailable()) then
+  if (Cache.EnemiesCount[5] >= 3 and S.FireandBrimstone:IsAvailable()) then
     return Fnb();
   end
   -- run_action_list,name=inf,if=spell_targets.infernal_awakening>=3&talent.inferno.enabled
-  if (Cache.EnemiesCount[40] >= 3 and S.Inferno:IsAvailable()) then
+  if (Cache.EnemiesCount[5] >= 3 and S.Inferno:IsAvailable()) then
     return Inf();
   end
   -- immolate,cycle_targets=1,if=!debuff.havoc.remains&(refreshable|talent.internal_combustion.enabled&action.chaos_bolt.in_flight&remains-action.chaos_bolt.travel_time-5<duration*0.3)
