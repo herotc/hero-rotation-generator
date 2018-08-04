@@ -21,33 +21,33 @@ local HR     = HeroRotation
 -- Spells
 if not Spell.Warlock then Spell.Warlock = {} end
 Spell.Warlock.Affliction = {
-  SummonPet                             = Spell(),
-  GrimoireofSacrifice                   = Spell(),
+  SummonPet                             = Spell(691),
+  GrimoireofSacrifice                   = Spell(108503),
   SeedofCorruption                      = Spell(27243),
   HauntDebuff                           = Spell(48181),
   Haunt                                 = Spell(48181),
-  ShadowBolt                            = Spell(),
-  SummonDarkglare                       = Spell(),
+  ShadowBolt                            = Spell(232670),
+  SummonDarkglare                       = Spell(205180),
   UnstableAffliction                    = Spell(30108),
   UnstableAfflictionDebuff              = Spell(30108),
   Agony                                 = Spell(980),
-  Deathbolt                             = Spell(),
+  Deathbolt                             = Spell(264106),
   SiphonLife                            = Spell(63106),
   AgonyDebuff                           = Spell(980),
-  Fireblood                             = Spell(),
+  Fireblood                             = Spell(265221),
   BloodFury                             = Spell(20572),
   DrainSoul                             = Spell(198590),
-  UnstableAffliction1Debuff             = Spell(),
-  UnstableAffliction2Debuff             = Spell(),
-  UnstableAffliction3Debuff             = Spell(),
-  UnstableAffliction4Debuff             = Spell(),
-  UnstableAffliction5Debuff             = Spell(),
+  UnstableAffliction1Debuff             = Spell(233490),
+  UnstableAffliction2Debuff             = Spell(233496),
+  UnstableAffliction3Debuff             = Spell(233497),
+  UnstableAffliction4Debuff             = Spell(233498),
+  UnstableAffliction5Debuff             = Spell(233499),
   CorruptionDebuff                      = Spell(172),
-  DarkSoul                              = Spell(),
+  DarkSoul                              = Spell(113860),
   SiphonLifeDebuff                      = Spell(63106),
   Corruption                            = Spell(172),
   PhantomSingularity                    = Spell(205179),
-  VileTaint                             = Spell(),
+  VileTaint                             = Spell(278350),
   Berserking                            = Spell(26297),
   SowtheSeeds                           = Spell(196226)
 };
@@ -139,7 +139,7 @@ local function APL()
       if HR.Cast(S.SummonPet) then return ""; end
     end
     -- grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
-    if S.GrimoireofSacrifice:IsCastableP() and (S.GrimoireofSacrifice:IsAvailable()) then
+    if S.GrimoireofSacrifice:IsCastableP() and Player:BuffDownP(S.GrimoireofSacrifice) and (S.GrimoireofSacrifice:IsAvailable()) then
       if HR.Cast(S.GrimoireofSacrifice) then return ""; end
     end
     -- snapshot_stats
@@ -194,8 +194,8 @@ local function APL()
   end
   Fillers = function()
     -- fireblood
-    if S.Fireblood:IsCastableP() and (true) then
-      if HR.Cast(S.Fireblood) then return ""; end
+    if S.Fireblood:IsCastableP() and HR.CDsON() and (true) then
+      if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- blood_fury
     if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
