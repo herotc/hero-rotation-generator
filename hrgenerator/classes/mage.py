@@ -68,7 +68,6 @@ SPELL_INFO = {
             'arcane_explosion':             {SPELL:     1449,
                                              RANGE:     10},
             'arcane_missiles':              {SPELL:     5143,
-                                             BUFF:      79683,
                                              RANGE:     40},
             'arcane_power':                 {SPELL:     12042,
                                              BUFF:      12042},
@@ -76,10 +75,9 @@ SPELL_INFO = {
             'presence_of_mind':             {SPELL:     205025,
                                              BUFF:      205025},
             'expanding_mind':               {BUFF:      253262},
-            'spell_steal':                  {SPELL:     30449},
-            'polymorph':                    {SPELL:     118},
+            # 'spell_steal':                  {SPELL:     30449},
+            # 'polymorph':                    {SPELL:     118},
             'amplification':                {SPELL:     236628},
-            'words_of_power':               {SPELL:     205035},
             'mirror_image':                 {SPELL:     55342},
             'incanters_flow':               {SPELL:     1463},
             'supernova':                    {SPELL:     157980},
@@ -87,15 +85,10 @@ SPELL_INFO = {
             'resonance':                    {SPELL:     205028},
             'nether_tempest':               {SPELL:     114923,
                                              DEBUFF:    114923},
-            'unstable_magic':               {SPELL:     157976},
-            'erosion':                      {SPELL:     205039,
-                                             DEBUFF:    210134},
             'overpowered':                  {SPELL:     155147},
-            'temporal_flux':                {SPELL:     234302},
             'arcane_orb':                   {SPELL:     153626},
-            'mark_of_aluneth':              {SPELL:     224968},
-            'prismatic_barrier':            {SPELL:     235450},
-            'greater_invisibility':         {SPELL:     110959},
+            # 'prismatic_barrier':            {SPELL:     235450},
+            # 'greater_invisibility':         {SPELL:     110959},
             'summon_arcane_familiar':       {SPELL:     205022,
                                              BUFF:      210126},
             'clearcasting':                 {BUFF:      263725},
@@ -217,6 +210,7 @@ CLASS_FUNCTIONS = {
         ARCANE: [
             'MaxStack',
             'BurnPhase',
+            'ArcaneChargesP',
         ],
         FIRE: [
             'FirePreAplSetup',
@@ -318,6 +312,25 @@ def arcane_max_stack(fun):
 
     return max_stack
 
+def arcane_stack(fun):
+    """
+    Handle stack expression for ArcaneCharge.
+    """
+    from ..objects.lua import Method
+
+    def stack(self):
+        """
+        Return the arguments for the expression buff.spell.stack.
+        """
+        if self.condition.condition_list[1] == 'arcane_charge':
+            self.object_ = self.condition.player_unit
+            self.method = Method('ArcaneChargesP')
+            self.args = []
+        else:
+            fun(self)
+
+    return stack
+
 def frost_cooldown_condition(fun):
 
     from ..objects.lua import Method
@@ -336,7 +349,7 @@ def fire_precombat_skip(fun):
         if self.show_comments:
             lua_string += f'-- call precombat'
         exec_cast = self.execution().object_().print_cast()
-        if (self.player.spec.simc == FIRE):
+        if (self.player.spec.simc == FIRE or self.player.spec.simc == ARCANE):
             lua_string += (
                 '\n'
                 f'if not Player:AffectingCombat() and not Player:IsCasting() then\n'
@@ -386,6 +399,11 @@ DECORATORS = {
             'class_name': 'Buff',
             'method': 'max_stack',
             'decorator': arcane_max_stack,
+        },
+        {
+            'class_name': 'Buff',
+            'method': 'stack',
+            'decorator': arcane_stack,
         },
         {
             'class_name': 'CallActionList',
