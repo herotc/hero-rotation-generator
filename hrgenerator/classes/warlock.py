@@ -120,8 +120,8 @@ SPELL_INFO = {
             'nether_portal':                    {SPELL:     267217,
                                                  BUFF:      267218},
             'power_siphon':                     {SPELL:     264130},
-            'doom':                             {SPELL:     603,
-                                                 DEBUFF:    603},    
+            'doom':                             {SPELL:     265412,
+                                                 DEBUFF:    265412},    
             'demonic_strength':                 {SPELL:     267171},
         },
         DESTRUCTION: {

@@ -45,8 +45,8 @@ Spell.Warlock.Demonology = {
   Berserking                            = Spell(26297),
   BloodFury                             = Spell(20572),
   Fireblood                             = Spell(265221),
-  Doom                                  = Spell(603),
-  DoomDebuff                            = Spell(603),
+  Doom                                  = Spell(265412),
+  DoomDebuff                            = Spell(265412),
   DemonicStrength                       = Spell(267171)
 };
 local S = Spell.Warlock.Demonology;
