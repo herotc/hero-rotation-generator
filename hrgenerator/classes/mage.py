@@ -216,6 +216,7 @@ CLASS_FUNCTIONS = {
             'FirePreAplSetup',
         ],
         FROST: [
+            'FrostPreAplSetup',
         ],
     },
 }
@@ -349,16 +350,16 @@ def fire_precombat_skip(fun):
         if self.show_comments:
             lua_string += f'-- call precombat'
         exec_cast = self.execution().object_().print_cast()
-        if (self.player.spec.simc == FIRE or self.player.spec.simc == ARCANE):
+        if (self.player.spec.simc == FROST):
             lua_string += (
                 '\n'
-                f'if not Player:AffectingCombat() and not Player:IsCasting() then\n'
+                f'if not Player:AffectingCombat() and (not Player:IsCasting() or Player:IsCasting(S.WaterElemental)) then\n'
                 f'  {exec_cast}\n'
                 f'end')
         else:
             lua_string += (
                 '\n'
-                f'if not Player:AffectingCombat() then\n'
+                f'if not Player:AffectingCombat() and not Player:IsCasting() then\n'
                 f'  {exec_cast}\n'
                 f'end')
         return lua_string
@@ -377,6 +378,17 @@ def fire_firestarter(fun):
         return Literal(self.simc)
 
     return firestarter
+
+def frost_ground_aoe(fun):
+
+    from ..objects.lua import Literal
+
+    def ground_aoe(self):
+        if (self.condition_list[2] in 'remains'):
+            return Literal('Player:FrozenOrbGroundAoeRemains()')
+        return Literal(self.simc)
+
+    return ground_aoe
 
 DECORATORS = {
     MAGE: [
@@ -419,6 +431,11 @@ DECORATORS = {
             'class_name': 'Expression',
             'method': 'firestarter',
             'decorator': fire_firestarter,
+        },
+        {
+            'class_name': 'Expression',
+            'method': 'ground_aoe',
+            'decorator': frost_ground_aoe
         }
     ]
 }
