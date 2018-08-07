@@ -181,6 +181,7 @@ CLASS_FUNCTIONS = {
         AFFLICTION: [
             'UnstableAfflictionDebuffs',
             'ActiveUAs',
+            'AfflictionPreAplSetup',
         ],
         DEMONOLOGY: [
         ],
@@ -242,4 +243,19 @@ DECORATORS = {
             'decorator': affliction_active_uas_stack,
         },
     ],
+}
+
+TEMPLATES = {
+    WARLOCK+AFFLICTION:     ( '{context}'
+                '--- ======= ACTION LISTS =======\n'
+                'local function {function_name}()\n'
+                '{action_list_names}\n'
+                '  UpdateRanges()\n'
+                '  Everyone.AoEToggleEnemiesUpdate()\n'
+                '  time_to_shard = TimeToShard()\n'
+                '{action_lists}\n'
+                '{precombat_call}\n'
+                '{main_actions}\n'
+                'end\n'
+                '\n{set_apl}')
 }
