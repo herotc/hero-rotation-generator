@@ -31,6 +31,7 @@ class ActionExpression(BuildExpression):
         'duration',
         'tick_time',
         'ticking',
+        'ticks_remain',
         'refreshable',
     ]
 
@@ -625,6 +626,12 @@ class Aura(Expires):
         Return the arguments for the expression {aura}.spell.ticking.
         """
         self.ready()
+
+    def ticks_remain(self):
+        """
+        Return the arguments for the expression {aura}.spell.ticks_remain.
+        """
+        self.method = Method(f'{self.simc.lua_name()}TicksRemainP')
 
     def pmultiplier(self):
         """
