@@ -205,7 +205,7 @@ class APL:
         return f'HR.SetAPL({apl_id}, APL)\n'
 
     def template(self):
-        return TEMPLATES.get(self.player.class_.simc, self.DEFAULT_TEMPLATE)
+        return TEMPLATES.get(self.player.class_.simc+self.player.spec.simc, self.DEFAULT_TEMPLATE)
 
     def print_lua(self):
         """
