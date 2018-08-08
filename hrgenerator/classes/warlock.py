@@ -38,15 +38,6 @@ DEFAULT_RANGE = {
 SPELL_INFO = {
     WARLOCK: {
         COMMON: {
-            # 'summon_doomguard':                 {SPELL:     18540},
-            # 'grimoire_of_supremacy':            {SPELL:     152107},
-            # 'life_tap':                         {SPELL:     1454},
-            # 'empowered_life_tap':               {SPELL:     235157,
-            #                                      BUFF:      235156},
-            # 'soul_harvest':                     {SPELL:     196098,
-            #                                      BUFF:      196098},
-            # 'infernal_awakening':               {SPELL:     173491,
-            #                                      RANGE:     40},
             # Legendaries
             'lessons_of_spacetime':             {BUFF:      236174},
         },
@@ -217,6 +208,21 @@ def warlock_soul_shard_value(fun):
 
     return value
 
+def warlock_precombat_skip(fun):
+
+    def print_lua(self):
+        lua_string = ''
+        if self.show_comments:
+            lua_string += f'-- call precombat'
+        exec_cast = self.execution().object_().print_cast()
+        lua_string += (
+            '\n'
+            f'if not Player:AffectingCombat() and not Player:IsCasting() then\n'
+            f'  {exec_cast}\n'
+            f'end')
+        return lua_string
+
+    return print_lua
 
 # def affliction_active_uas_stack(fun):
 #     """
@@ -244,6 +250,11 @@ DECORATORS = {
             'class_name': 'SoulShard',
             'method': 'value',
             'decorator': warlock_soul_shard_value,
+        },
+        {
+            'class_name': 'PrecombatAction',
+            'method': 'print_lua',
+            'decorator': warlock_precombat_skip,
         },
         # {
         #     'class_name': 'Buff',

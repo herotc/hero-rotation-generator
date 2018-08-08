@@ -361,7 +361,7 @@ local function APL()
     end
   end
   -- call precombat
-  if not Player:AffectingCombat() then
+  if not Player:AffectingCombat() and not Player:IsCasting() then
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- run_action_list,name=cata,if=spell_targets.infernal_awakening>=3&talent.cataclysm.enabled

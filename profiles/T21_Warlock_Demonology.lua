@@ -266,7 +266,7 @@ local function APL()
     end
   end
   -- call precombat
-  if not Player:AffectingCombat() then
+  if not Player:AffectingCombat() and not Player:IsCasting() then
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- use_items,if=prev_gcd.1.summon_demonic_tyrant
