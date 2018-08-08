@@ -7,7 +7,7 @@ Warlock specific constants and functions.
 
 import os
 
-from ..constants import COMMON, SPELL, BUFF, DEBUFF, RANGE
+from ..constants import COMMON, SPELL, BUFF, DEBUFF, RANGE, READY, GCDAOGCD, CD, USABLE
 
 WARLOCK = 'warlock'
 AFFLICTION = 'affliction'
@@ -59,27 +59,35 @@ SPELL_INFO = {
             'drain_soul':                       {SPELL:     198590,
                                                  DEBUFF:    198590},
             'corruption':                       {SPELL:     172,
-                                                 DEBUFF:    172,
+                                                 DEBUFF:    146739,
                                                  RANGE:     40},
             'unstable_affliction':              {SPELL:     30108,
                                                  DEBUFF:    30108,
+                                                 READY:     True,
                                                  RANGE:     40},
             'siphon_life':                      {SPELL:     63106,
                                                  DEBUFF:    63106},
             'phantom_singularity':              {SPELL:     205179,
-                                                 BUFF:      205179},
+                                                 BUFF:      205179,
+                                                 GCDAOGCD:  True},
             'seed_of_corruption':               {SPELL:     27243,
                                                  RANGE:     40},
             'writhe_in_agony':                  {SPELL:     196102},
             'vile_taint':                       {SPELL:     278350,
                                                  DEBUFF:    278350},
-            'dark_soul':                        {SPELL:     113860},
+            'dark_soul':                        {SPELL:     113860,
+                                                 GCDAOGCD:  True,
+                                                 CD:        True},
             'deathbolt':                        {SPELL:     264106},
-            'summon_darkglare':                 {SPELL:     205180},
+            'summon_darkglare':                 {SPELL:     205180,
+                                                 GCDAOGCD:  True,
+                                                 CD:        True},
             'shadow_bolt':                      {SPELL:     232670},
             'grimoire_of_sacrifice':            {SPELL:     108503,
-                                                 BUFF:      196099},
-            'summon_pet':                       {SPELL:     691},
+                                                 BUFF:      196099,
+                                                 GCDAOGCD:  True},
+            'summon_pet':                       {SPELL:     691,
+                                                 GCDAOGCD:  True},
             'unstable_affliction_1':            {
                                                  DEBUFF:    233490,
                                                  RANGE:     40},
@@ -176,16 +184,16 @@ ITEM_INFO = {
 CLASS_FUNCTIONS = {
     WARLOCK: {
         COMMON: [
-            'FutureShard',
         ],
         AFFLICTION: [
-            'UnstableAfflictionDebuffs',
-            'ActiveUAs',
+            # 'ActiveUAs',
             'AfflictionPreAplSetup',
         ],
         DEMONOLOGY: [
+            'FutureShard',
         ],
         DESTRUCTION: [
+            'FutureShard',
         ],
     },
 }
@@ -202,33 +210,33 @@ def warlock_soul_shard_value(fun):
         Return the arguments for the expression soul_shard.
         """
         if self.condition.parent_action.player.class_.simc == WARLOCK:
-            self.object_ = None
-            self.method = Method('FutureShard')
+            # self.object_ = None
+            self.method = Method('SoulShardsP')
         else:
             fun(self)
 
     return value
 
 
-def affliction_active_uas_stack(fun):
-    """
-    Replaces the buff.active_uas.stack expression with a call to ActiveUAs.
-    """
-    from ..objects.lua import Method
+# def affliction_active_uas_stack(fun):
+#     """
+#     Replaces the buff.active_uas.stack expression with a call to ActiveUAs.
+#     """
+#     from ..objects.lua import Method
 
-    def stack(self):
-        """
-        Return the arguments for the expression buff.active_uas.stack.
-        """
-        if (self.condition.parent_action.player.spec.simc == AFFLICTION
-                and self.condition.condition_list[1] == 'active_uas'):
-            self.object_ = None
-            self.method = Method('ActiveUAs')
-            self.args = []
-        else:
-            fun(self)
+#     def stack(self):
+#         """
+#         Return the arguments for the expression buff.active_uas.stack.
+#         """
+#         if (self.condition.parent_action.player.spec.simc == AFFLICTION
+#                 and self.condition.condition_list[1] == 'active_uas'):
+#             self.object_ = None
+#             self.method = Method('ActiveUAs')
+#             self.args = []
+#         else:
+#             fun(self)
 
-    return stack
+#     return stack
 
 DECORATORS = {
     WARLOCK: [
@@ -237,11 +245,11 @@ DECORATORS = {
             'method': 'value',
             'decorator': warlock_soul_shard_value,
         },
-        {
-            'class_name': 'Buff',
-            'method': 'stack',
-            'decorator': affliction_active_uas_stack,
-        },
+        # {
+        #     'class_name': 'Buff',
+        #     'method': 'stack',
+        #     'decorator': affliction_active_uas_stack,
+        # },
     ],
 }
 

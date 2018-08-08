@@ -1,6 +1,13 @@
+HL.UnstableAfflictionDebuffsPrev = {
+    [S.UnstableAffliction2Debuff] = S.UnstableAffliction1Debuff,
+    [S.UnstableAffliction3Debuff] = S.UnstableAffliction2Debuff,
+    [S.UnstableAffliction4Debuff] = S.UnstableAffliction3Debuff,
+    [S.UnstableAffliction5Debuff] = S.UnstableAffliction4Debuff
+  };
+
 local function NbAffected (SpellAffected)
     local nbaff = 0
-    for Key, Value in pairs(Cache.Enemies[range]) do
+    for Key, Value in pairs(Cache.Enemies[EnemyRanges[2]]) do
       if Value:DebuffRemainsP(SpellAffected) > 0 then nbaff = nbaff + 1; end
     end
     return nbaff;

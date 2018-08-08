@@ -149,7 +149,7 @@ local function APL()
       local ShouldReturn = Cds(); if ShouldReturn then return ShouldReturn; end
     end
     -- rain_of_fire,if=soul_shard>=4.5
-    if S.RainofFire:IsCastableP() and (FutureShard() >= 4.5) then
+    if S.RainofFire:IsCastableP() and (Player:SoulShardsP() >= 4.5) then
       if HR.Cast(S.RainofFire) then return ""; end
     end
     -- cataclysm
@@ -246,7 +246,7 @@ local function APL()
       local ShouldReturn = Cds(); if ShouldReturn then return ShouldReturn; end
     end
     -- rain_of_fire,if=soul_shard>=4.5
-    if S.RainofFire:IsCastableP() and (FutureShard() >= 4.5) then
+    if S.RainofFire:IsCastableP() and (Player:SoulShardsP() >= 4.5) then
       if HR.Cast(S.RainofFire) then return ""; end
     end
     -- immolate,if=talent.channel_demonfire.enabled&!remains&cooldown.channel_demonfire.remains<=action.chaos_bolt.execute_time
@@ -296,7 +296,7 @@ local function APL()
       local ShouldReturn = Cds(); if ShouldReturn then return ShouldReturn; end
     end
     -- rain_of_fire,if=soul_shard>=4.5
-    if S.RainofFire:IsCastableP() and (FutureShard() >= 4.5) then
+    if S.RainofFire:IsCastableP() and (Player:SoulShardsP() >= 4.5) then
       if HR.Cast(S.RainofFire) then return ""; end
     end
     -- cataclysm
@@ -405,7 +405,7 @@ local function APL()
     if HR.Cast(S.SoulFire) then return ""; end
   end
   -- chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&execute_time+travel_time<target.time_to_die&(talent.internal_combustion.enabled|!talent.internal_combustion.enabled&soul_shard>=4|(talent.eradication.enabled&debuff.eradication.remains<=cast_time)|buff.dark_soul_instability.remains>cast_time|pet.infernal.active&talent.grimoire_of_supremacy.enabled)
-  if S.ChaosBolt:IsCastableP() and (not bool(Target:DebuffRemainsP(S.HavocDebuff)) and S.ChaosBolt:ExecuteTime() + S.ChaosBolt:TravelTime() < Target:TimeToDie() and (S.InternalCombustion:IsAvailable() or not S.InternalCombustion:IsAvailable() and FutureShard() >= 4 or (S.Eradication:IsAvailable() and Target:DebuffRemainsP(S.EradicationDebuff) <= S.ChaosBolt:CastTime()) or Player:BuffRemainsP(S.DarkSoulInstabilityBuff) > S.ChaosBolt:CastTime() or bool(pet.infernal.active) and S.GrimoireofSupremacy:IsAvailable())) then
+  if S.ChaosBolt:IsCastableP() and (not bool(Target:DebuffRemainsP(S.HavocDebuff)) and S.ChaosBolt:ExecuteTime() + S.ChaosBolt:TravelTime() < Target:TimeToDie() and (S.InternalCombustion:IsAvailable() or not S.InternalCombustion:IsAvailable() and Player:SoulShardsP() >= 4 or (S.Eradication:IsAvailable() and Target:DebuffRemainsP(S.EradicationDebuff) <= S.ChaosBolt:CastTime()) or Player:BuffRemainsP(S.DarkSoulInstabilityBuff) > S.ChaosBolt:CastTime() or bool(pet.infernal.active) and S.GrimoireofSupremacy:IsAvailable())) then
     if HR.Cast(S.ChaosBolt) then return ""; end
   end
   -- conflagrate,cycle_targets=1,if=!debuff.havoc.remains&((talent.flashover.enabled&buff.backdraft.stack<=2)|(!talent.flashover.enabled&buff.backdraft.stack<2))
