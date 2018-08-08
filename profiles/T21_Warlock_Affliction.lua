@@ -197,7 +197,7 @@ local function APL()
       if HR.Cast(S.UnstableAffliction) then return ""; end
     end
     -- agony,line_cd=30,if=talent.deathbolt.enabled&(!talent.siphon_life.enabled)&dot.agony.ticks_remain<=10&cooldown.deathbolt.remains<=gcd
-    if S.Agony:IsCastableP() and (S.Deathbolt:IsAvailable() and (not S.SiphonLife:IsAvailable()) and dot.agony.ticks_remain <= 10 and S.Deathbolt:CooldownRemainsP() <= Player:GCD()) then
+    if S.Agony:IsCastableP() and (S.Deathbolt:IsAvailable() and (not S.SiphonLife:IsAvailable()) and Target:DebuffTicksRemainP(S.AgonyDebuff) <= 10 and S.Deathbolt:CooldownRemainsP() <= Player:GCD()) then
       if HR.Cast(S.Agony) then return ""; end
     end
     -- summon_darkglare
@@ -242,7 +242,7 @@ local function APL()
       if HR.Cast(S.UnstableAffliction) then return ""; end
     end
     -- agony,line_cd=30,if=talent.deathbolt.enabled&(!talent.siphon_life.enabled)&dot.agony.ticks_remain<=10&cooldown.deathbolt.remains<=gcd
-    if S.Agony:IsCastableP() and (S.Deathbolt:IsAvailable() and (not S.SiphonLife:IsAvailable()) and dot.agony.ticks_remain <= 10 and S.Deathbolt:CooldownRemainsP() <= Player:GCD()) then
+    if S.Agony:IsCastableP() and (S.Deathbolt:IsAvailable() and (not S.SiphonLife:IsAvailable()) and Target:DebuffTicksRemainP(S.AgonyDebuff) <= 10 and S.Deathbolt:CooldownRemainsP() <= Player:GCD()) then
       if HR.Cast(S.Agony) then return ""; end
     end
     -- call_action_list,name=fillers
@@ -313,7 +313,7 @@ local function APL()
     if HR.Cast(S.Corruption) then return ""; end
   end
   -- seed_of_corruption,line_cd=10,if=dot.corruption.ticks_remain<=2&spell_targets.seed_of_corruption_aoe>=3
-  if S.SeedofCorruption:IsCastableP() and (dot.corruption.ticks_remain <= 2 and Cache.EnemiesCount[5] >= 3) then
+  if S.SeedofCorruption:IsCastableP() and (Target:DebuffTicksRemainP(S.CorruptionDebuff) <= 2 and Cache.EnemiesCount[5] >= 3) then
     if HR.Cast(S.SeedofCorruption) then return ""; end
   end
   -- phantom_singularity
