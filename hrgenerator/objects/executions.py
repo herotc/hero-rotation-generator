@@ -7,7 +7,7 @@ Define the objects representing simc executions.
 
 from .lua import (LuaNamed, LuaTyped, LuaConditions, LuaCastable,
                   LuaExpression, Literal, Method)
-from ..constants import (IGNORED_EXECUTIONS, SPELL, BUFF, DEBUFF, USABLE,
+from ..constants import (IGNORED_EXECUTIONS, SPELL, BUFF, DEBUFF, USABLE, READY,
                          MELEE, INTERRUPT, CD, GCDAOGCD, OGCDAOGCD, NUM, BOOL,
                          FALSE, AUTOCHECK)
 from ..database import (SPELL_INFO, COMMON)
@@ -170,6 +170,8 @@ class Spell(LuaNamed, LuaCastable):
     def custom_init(self):
         if self.action.player.spell_property(self, USABLE):
             self.condition_method = Method('IsUsableP', type_=BOOL)
+        elif self.action.player.spell_property(self, READY):
+            self.condition_method = Method('IsReadyP', type_=BOOL)
         else:
             self.condition_method = Method('IsCastableP', type_=BOOL)
         if self.action.player.spell_property(self, INTERRUPT):
