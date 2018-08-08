@@ -130,7 +130,7 @@ def havoc_melee_condition(fun):
         if (self.action.player.spec.simc == HAVOC
                 and self.action.player.spell_property(self, MELEE)):
             self.additional_conditions = (
-                [LuaExpression(None, Method('IsInMeleeRange'), [])]
+                [LuaExpression(None, Method('IsInMeleeRange'))]
                 + self.additional_conditions)
     return custom_init
 

@@ -276,7 +276,7 @@ class Expression(Decorable):
         """
         Return the condition when the prefix is spell_haste.
         """
-        return LuaExpression(self.player_unit, Method('SpellHaste'), [])
+        return LuaExpression(self.player_unit, Method('SpellHaste'))
 
     def set_bonus(self):
         """
@@ -481,7 +481,7 @@ class Expression(Decorable):
         """
         Return the condition when the prefix is level.
         """
-        return LuaExpression(self.player_unit, Method('level'), [])
+        return LuaExpression(self.player_unit, Method('level'))
 
     def target(self):
         """

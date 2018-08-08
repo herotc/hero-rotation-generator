@@ -347,7 +347,7 @@ def frost_cooldown_condition(fun):
     def conditions(self):
         if (self.action.player.spec.simc == FROST
             and self.lua_name() in 'Cooldowns'):
-            return LuaConditions(LuaExpression(None, Method('HR.CDsON'), []))
+            return LuaConditions(LuaExpression(None, Method('HR.CDsON')))
         return fun(self)
 
     return conditions
