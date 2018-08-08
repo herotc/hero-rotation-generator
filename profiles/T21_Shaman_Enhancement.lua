@@ -296,7 +296,7 @@ local function APL()
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- wind_shear
-  if S.WindShear:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (true) then
+  if S.WindShear:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled and (true) then
     if HR.CastAnnotated(S.WindShear, false, "Interrupt") then return ""; end
   end
   -- variable,name=furyCheck80,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&((maelstrom>35&cooldown.lightning_bolt.remains>=3*gcd)|maelstrom>80)))

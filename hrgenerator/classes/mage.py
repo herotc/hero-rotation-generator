@@ -33,6 +33,14 @@ DEFAULT_RANGE = {
     },
 }
 
+ACTION_LIST_INFO = {
+    MAGE: {
+        FIRE: {
+            'combustion_phase':             {CD:        True},
+        },
+    },
+}
+
 SPELL_INFO = {
     MAGE: {
         COMMON: {
@@ -334,11 +342,12 @@ def arcane_stack(fun):
 
 def frost_cooldown_condition(fun):
 
-    from ..objects.lua import Method
+    from ..objects.lua import LuaExpression, Method, LuaConditions
 
     def conditions(self):
-        if (self.action.player.spec.simc == FROST and self.lua_name() in 'Cooldowns'):
-            return [Method('HR.CDsON()')]
+        if (self.action.player.spec.simc == FROST
+            and self.lua_name() in 'Cooldowns'):
+            return LuaConditions(LuaExpression(None, Method('HR.CDsON'), []))
         return fun(self)
 
     return conditions

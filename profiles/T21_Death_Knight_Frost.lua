@@ -377,7 +377,7 @@ local function APL()
   end
   -- auto_attack
   -- mind_freeze
-  if S.MindFreeze:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (true) then
+  if S.MindFreeze:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled and (true) then
     if HR.CastAnnotated(S.MindFreeze, false, "Interrupt") then return ""; end
   end
   -- howling_blast,if=!dot.frost_fever.ticking&(!talent.breath_of_sindragosa.enabled|cooldown.breath_of_sindragosa.remains>15)

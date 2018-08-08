@@ -299,7 +299,7 @@ local function APL()
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- counterspell
-  if S.Counterspell:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (true) then
+  if S.Counterspell:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled and (true) then
     if HR.CastAnnotated(S.Counterspell, false, "Interrupt") then return ""; end
   end
   -- ice_lance,if=prev_gcd.1.flurry&!buff.fingers_of_frost.react

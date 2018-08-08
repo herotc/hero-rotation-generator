@@ -7,6 +7,7 @@ Define the objects representing simc conditions.
 
 from ..objects.expressions import Expression
 from ..abstract.helpers import convert_type
+from ..objects.lua import Literal
 from ..constants import (BOOL, NUM,
                          BINARY_OPERATORS, UNARY_OPERATORS,
                          LOGIC_OPERATORS, COMPARISON_OPERATORS,

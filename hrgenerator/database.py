@@ -84,6 +84,13 @@ SPELL_INFO = {
 for class_ in CLASSES:
     SPELL_INFO.update(class_.SPELL_INFO)
 
+ACTION_LIST_INFO = {}
+for class_ in CLASSES:
+    try:
+        ACTION_LIST_INFO.update(class_.ACTION_LIST_INFO)
+    except AttributeError:
+        pass
+
 ITEM_INFO = {
     'prolonged_power':          142117,
     'old_war':                  127844,

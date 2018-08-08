@@ -11,8 +11,9 @@ from functools import reduce
 from .lua import LuaNamed, Literal
 from ..abstract.decoratormanager import decorating_manager
 from ..constants import RANGE
-from ..database import (CLASS_SPECS, RACES, SPELL_INFO, COMMON, DEFAULT_POTION,
-                        DEFAULT_RANGE, CLASS_FUNCTIONS, DECORATORS)
+from ..database import (CLASS_SPECS, RACES, SPELL_INFO, ACTION_LIST_INFO,
+                        COMMON, DEFAULT_POTION, DEFAULT_RANGE, CLASS_FUNCTIONS,
+                        DECORATORS)
 
 
 class Unit:
@@ -44,6 +45,7 @@ class Player(Unit, LuaNamed):
         self.race = None
         self.apl = apl
         self.spells = None
+        self.al_tags = None
         self.funs = None
         self.range_ = None
         for decorator in DECORATORS.get(simc, []):
@@ -105,6 +107,23 @@ class Player(Unit, LuaNamed):
             self.spells = spells
         return self.spells
 
+    def action_list_tags(self):
+        """
+        Returns the action lists tags for the player.
+        """
+        if self.al_tags is None:
+            class_simc = self.class_.simc
+            spec_simc = self.spec.simc
+            al_tags = ACTION_LIST_INFO.get(COMMON, {}).copy()
+            al_tags.update(
+                ACTION_LIST_INFO.get(class_simc, {}).get(COMMON, {})
+            )
+            al_tags.update(
+                ACTION_LIST_INFO.get(class_simc, {}).get(spec_simc, {})
+            )
+            self.al_tags = al_tags
+        return self.al_tags
+
     def spec_range(self):
         """
         Returns the default range of the spec.
@@ -129,6 +148,14 @@ class Player(Unit, LuaNamed):
         spell_name = spell.simc if type(spell).__name__ == 'Spell' else spell
         spells = self.spell_book()
         return spells.get(spell_name, {}).get(key, default)
+
+    def action_list_property(self, al, key, default=False):
+        """
+        Return the requested spell property from the spell book of the player.
+        """
+        al_name = al.simc if hasattr(al, 'simc') else al
+        al_tags = self.action_list_tags()
+        return al_tags.get(al_name, {}).get(key, default)
 
     def set_race(self, race):
         """

@@ -266,7 +266,7 @@ local function APL()
     if HR.CastSuggested(I.ProlongedPower) then return ""; end
   end
   -- wind_shear
-  if S.WindShear:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (true) then
+  if S.WindShear:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled and (true) then
     if HR.CastAnnotated(S.WindShear, false, "Interrupt") then return ""; end
   end
   -- totem_mastery,if=buff.resonance_totem.remains<2

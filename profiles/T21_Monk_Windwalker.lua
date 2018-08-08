@@ -409,7 +409,7 @@ local function APL()
   end
   -- auto_attack
   -- spear_hand_strike,if=target.debuff.casting.react
-  if S.SpearHandStrike:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (Target:IsCasting()) then
+  if S.SpearHandStrike:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled and (Target:IsCasting()) then
     if HR.CastAnnotated(S.SpearHandStrike, false, "Interrupt") then return ""; end
   end
   -- touch_of_karma,interval=90,pct_health=0.5,if=!talent.Good_Karma.enabled,interval=90,pct_health=0.5

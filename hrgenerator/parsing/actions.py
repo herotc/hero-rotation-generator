@@ -229,15 +229,15 @@ class Action(Decorable):
             self.action_list.pool_for_next = for_next
             self.action_list.pool_extra_amount = extra_amount
             return lua_string
-        exec_cond = self.execution().object_().print_conditions()
         exec_cast = self.print_exec()
         if exec_cast == '':
             return lua_string
-        cond_link = ' and ' if exec_cond != '' else ''
-        if_cond = convert_type(self.condition_tree(), BOOL)
+        condition = self.execution().object_().conditions()
+        if_condition = convert_type(self.condition_tree(), BOOL)
+        condition.add_condition(Literal(f'({if_condition})'))
         exec_else = self.print_exec_else()
         lua_string += ('\n'
-                       f'if {exec_cond}{cond_link}({if_cond}) then\n'
+                       f'if {condition.print_lua()} then\n'
                        f'{indent(exec_cast)}\n'
                        f'{exec_else}'
                        f'end')

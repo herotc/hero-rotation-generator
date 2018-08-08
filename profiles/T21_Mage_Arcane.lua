@@ -328,7 +328,7 @@ local function APL()
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- counterspell,if=target.debuff.casting.react
-  if S.Counterspell:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (Target:IsCasting()) then
+  if S.Counterspell:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled and (Target:IsCasting()) then
     if HR.CastAnnotated(S.Counterspell, false, "Interrupt") then return ""; end
   end
   -- time_warp,if=time=0&buff.bloodlust.down

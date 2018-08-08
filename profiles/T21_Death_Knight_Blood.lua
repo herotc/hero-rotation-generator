@@ -145,7 +145,7 @@ local function APL()
   end
   -- auto_attack
   -- mind_freeze
-  if S.MindFreeze:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (true) then
+  if S.MindFreeze:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled and (true) then
     if HR.CastAnnotated(S.MindFreeze, false, "Interrupt") then return ""; end
   end
   -- arcane_torrent,if=runic_power.deficit>20

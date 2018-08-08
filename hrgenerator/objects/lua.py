@@ -8,7 +8,7 @@ Define the objects representing lua specific items.
 from inspect import getargspec
 
 from ..abstract.decoratormanager import Decorable
-from ..constants import WORD_REPLACEMENTS, TRUE, FALSE, BOOL, NUM
+from ..constants import WORD_REPLACEMENTS, TRUE, FALSE, BOOL, NUM, CD, INTERRUPT
 
 
 class LuaNamed(Decorable):
@@ -50,6 +50,34 @@ class LuaTyped(Decorable):
         return self.type_
 
 
+class LuaConditions(Decorable):
+    """
+    The class to handle a lua condition list.
+    """
+
+    def __init__(self, *condition_list):
+        self.condition_list = list(cond for cond in condition_list if cond)
+
+    def add_condition(self, condition):
+        if condition:
+            self.condition_list.append(condition)
+    
+    def custom_conditions(self, execution, has_property):
+        """
+        Adds custom condition tests for situational conditions, such as
+        interrupts or CDs. This is the generic method for any execution.
+        """
+        if has_property(execution, CD):
+            self.add_condition(LuaExpression(None, Method('HR.CDsON')))
+        if has_property(execution, INTERRUPT):
+            self.add_condition(Literal('Settings.General.InterruptEnabled'))
+        
+    
+    def print_lua(self):
+        return ' and '.join(condition.print_lua()
+                            for condition in self.condition_list)
+
+
 class LuaCastable(Decorable):
     """
     The class for castable elements: items and spells.
@@ -59,6 +87,7 @@ class LuaCastable(Decorable):
         self.condition_method = None
         self.condition_args = []
         self.additional_conditions = []
+        self.has_property = lambda execution, tag: False
         self.cast_method = cast_method or Method('HR.Cast')
         self.cast_args = [self] if cast_args is None else cast_args
         self.cast_template = cast_template or 'if {} then return ""; end'
@@ -68,21 +97,14 @@ class LuaCastable(Decorable):
         Return the LuaExpression of the default condition.
         """
         if self.condition_method is None:
-            return []
-        return [LuaExpression(self, self.condition_method, self.condition_args)]
+            return None
+        return LuaExpression(self, self.condition_method, self.condition_args)
 
     def conditions(self):
-        """
-        List of conditions to check before executing the action.
-        """
-        return self.main_condition() + self.additional_conditions
-
-    def print_conditions(self):
-        """
-        Print the lua code for the condition of the execution.
-        """
-        return ' and '.join(condition.print_lua()
-                            for condition in self.conditions())
+        conditions = LuaConditions(self.main_condition(),
+                                   *self.additional_conditions)
+        conditions.custom_conditions(self, self.has_property)
+        return conditions
 
     def cast(self):
         """
@@ -145,7 +167,7 @@ class LuaExpression(LuaTemplated):
     object:method(args)
     """
 
-    def __init__(self, object_, method, args, type_=None):
+    def __init__(self, object_, method, args=[], type_=None):
         if type_ is not None:
             self.type_ = type_
         else:

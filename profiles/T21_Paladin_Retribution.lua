@@ -230,7 +230,7 @@ local function APL()
   end
   -- auto_attack
   -- rebuke
-  if S.Rebuke:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (true) then
+  if S.Rebuke:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled and (true) then
     if HR.CastAnnotated(S.Rebuke, false, "Interrupt") then return ""; end
   end
   -- call_action_list,name=opener

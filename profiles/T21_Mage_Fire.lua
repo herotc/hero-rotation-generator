@@ -345,7 +345,7 @@ local function APL()
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- counterspell,if=target.debuff.casting.react
-  if S.Counterspell:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (Target:IsCasting()) then
+  if S.Counterspell:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled and (Target:IsCasting()) then
     if HR.CastAnnotated(S.Counterspell, false, "Interrupt") then return ""; end
   end
   -- time_warp,if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410&(cooldown.combustion.remains<1|target.time_to_die<50))
@@ -362,7 +362,7 @@ local function APL()
     if HR.Cast(S.RuneofPower, Settings.Fire.GCDasOffGCD.RuneofPower) then return ""; end
   end
   -- call_action_list,name=combustion_phase,if=cooldown.combustion.remains<=action.rune_of_power.cast_time+(!talent.kindling.enabled*gcd)&(!talent.firestarter.enabled|!firestarter.active|active_enemies>=4|active_enemies>=2&talent.flame_patch.enabled)|buff.combustion.up
-  if (S.Combustion:CooldownRemainsP() <= S.RuneofPower:CastTime() + (num(not S.Kindling:IsAvailable()) * Player:GCD()) and (not S.Firestarter:IsAvailable() or not bool(S.Firestarter:ActiveStatus()) or Cache.EnemiesCount[40] >= 4 or Cache.EnemiesCount[40] >= 2 and S.FlamePatch:IsAvailable()) or Player:BuffP(S.CombustionBuff)) then
+  if HR.CDsON() and (S.Combustion:CooldownRemainsP() <= S.RuneofPower:CastTime() + (num(not S.Kindling:IsAvailable()) * Player:GCD()) and (not S.Firestarter:IsAvailable() or not bool(S.Firestarter:ActiveStatus()) or Cache.EnemiesCount[40] >= 4 or Cache.EnemiesCount[40] >= 2 and S.FlamePatch:IsAvailable()) or Player:BuffP(S.CombustionBuff)) then
     local ShouldReturn = CombustionPhase(); if ShouldReturn then return ShouldReturn; end
   end
   -- call_action_list,name=rop_phase,if=buff.rune_of_power.up&buff.combustion.down

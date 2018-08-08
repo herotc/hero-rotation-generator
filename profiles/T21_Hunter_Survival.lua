@@ -133,7 +133,7 @@ local function APL()
   end
   -- auto_attack
   -- muzzle,if=equipped.sephuzs_secret&target.debuff.casting.react&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up
-  if S.Muzzle:IsCastableP() and Settings.General.InterruptEnabled and Target:IsInterruptible() and (I.SephuzsSecret:IsEquipped() and Target:IsCasting() and S.BuffSephuzsSecret:CooldownUpP() and not Player:BuffP(S.SephuzsSecretBuff)) then
+  if S.Muzzle:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled and (I.SephuzsSecret:IsEquipped() and Target:IsCasting() and S.BuffSephuzsSecret:CooldownUpP() and not Player:BuffP(S.SephuzsSecretBuff)) then
     if HR.CastAnnotated(S.Muzzle, false, "Interrupt") then return ""; end
   end
   -- use_items

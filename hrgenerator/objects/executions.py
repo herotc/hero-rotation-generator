@@ -5,7 +5,7 @@ Define the objects representing simc executions.
 @author: skasch
 """
 
-from .lua import (LuaNamed, LuaTyped, LuaCastable,
+from .lua import (LuaNamed, LuaTyped, LuaConditions, LuaCastable,
                   LuaExpression, Literal, Method)
 from ..constants import (IGNORED_EXECUTIONS, SPELL, BUFF, DEBUFF, USABLE,
                          MELEE, INTERRUPT, CD, GCDAOGCD, OGCDAOGCD, NUM, BOOL,
@@ -65,10 +65,8 @@ class RunActionList(LuaNamed, LuaCastable):
         super().__init__(simc)
         LuaCastable.__init__(self)
         self.action = action
+        self.has_property = self.action.player.action_list_property
         self.cast_template = 'return {};'
-
-    def conditions(self):
-        return []
 
     def cast(self):
         return Literal(self.lua_name() + '()')
@@ -84,11 +82,9 @@ class CallActionList(LuaNamed, LuaCastable):
         super().__init__(simc)
         LuaCastable.__init__(self)
         self.action = action
+        self.has_property = self.action.player.action_list_property
         self.cast_template = ('local ShouldReturn = {}; '
                               'if ShouldReturn then return ShouldReturn; end')
-
-    def conditions(self):
-        return []
 
     def cast(self):
         return Literal(self.lua_name() + '()')
@@ -110,9 +106,6 @@ class Variable(LuaNamed, LuaTyped, LuaCastable):
             action.context.add_variable(self)
         except AttributeError:
             self.default = '0'
-
-    def print_conditions(self):
-        return ''
 
     def lua_name(self):
         return f'Var{super().lua_name()}'
@@ -143,9 +136,6 @@ class CancelBuff(LuaNamed, LuaCastable):
         self.action = action
         self.buff = Spell(action, simc, type_=BUFF)
 
-    def print_conditions(self):
-        return ''
-
     def print_lua(self):
         """
         Print the lua expression for the buff to cancel.
@@ -170,6 +160,7 @@ class Spell(LuaNamed, LuaCastable):
         # Castable
         LuaCastable.__init__(self)
         self.action = action
+        self.has_property = self.action.player.spell_property
         self.custom_init()
         # Main
         self.ignored = simc in IGNORED_EXECUTIONS
@@ -181,17 +172,10 @@ class Spell(LuaNamed, LuaCastable):
             self.condition_method = Method('IsUsableP', type_=BOOL)
         else:
             self.condition_method = Method('IsCastableP', type_=BOOL)
-
-        if self.action.player.spell_property(self, CD):
-            self.additional_conditions.append(
-                LuaExpression(None, Method('HR.CDsON'), []))
         if self.action.player.spell_property(self, INTERRUPT):
             self.additional_conditions.append(
-                Literal('Settings.General.InterruptEnabled'))
-            self.additional_conditions.append(LuaExpression(
-                self.action.target,
-                Method('IsInterruptible'),
-                []))
+                LuaExpression(self.action.target, Method('IsInterruptible'))
+            )
             self.cast_method = Method('HR.CastAnnotated')
             self.cast_args.append(Literal(FALSE))
             self.cast_args.append(
