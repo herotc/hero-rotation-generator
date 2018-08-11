@@ -5,7 +5,7 @@ Paladin specific constants and functions.
 @author: skasch
 """
 
-from ..constants import COMMON, SPELL, BUFF, DEBUFF, INTERRUPT, RANGE
+from ..constants import COMMON, SPELL, BUFF, DEBUFF, INTERRUPT, RANGE, CD
 
 PALADIN = 'paladin'
 HOLY = 'holy'
@@ -17,6 +17,14 @@ CLASS_SPECS = {
         HOLY:           65,
         PROTECTION:     66,
         RETRIBUTION:    70,
+    },
+}
+
+ACTION_LIST_INFO = {
+    PALADIN: {
+        RETRIBUTION: {
+            'cooldowns':             {CD:        True},
+        },
     },
 }
 
@@ -42,9 +50,6 @@ SPELL_INFO = {
                                                  BUFF:      31884},
             'consecration':                     {SPELL:     26573},
             # Legendaries
-            'scarlet_inquisitors_expurgation':  {BUFF:      248103},
-            'liadrins_fury_unleashed':          {BUFF:      208408},
-            'whisper_of_the_nathrezim':         {BUFF:      207633},
         },
         PROTECTION: {
             'shield_of_the_righteous':          {SPELL:     53600},
@@ -74,39 +79,35 @@ SPELL_INFO = {
             'hammer_of_the_righteous':          {SPELL:     53595},
         },
         RETRIBUTION: {
-            'crusade':                          {SPELL:     224668,
-                                                 BUFF:      224668},
+            'crusade':                          {SPELL:     231895,
+                                                 BUFF:      231895,
+                                                 CD:        True},
             'blade_of_justice':                 {SPELL:     184575},
-            'divine_hammer':                    {SPELL:     198034},
-            'holy_wrath':                       {SPELL:     210220},
             'shield_of_vengeance':              {SPELL:     184662},
-            'execution_sentence':               {SPELL:     213757,
-                                                 DEBUFF:    213757},
+            'execution_sentence':               {SPELL:     267798,
+                                                 DEBUFF:    267799},
             'judgment':                         {SPELL:     20271,
-                                                 DEBUFF:    231663,
+                                                 DEBUFF:    197277,
                                                  RANGE:     30},
             'divine_storm':                     {SPELL:     53385,
                                                  RANGE:     8},
-            'divine_purpose':                   {BUFF:      223819},
-            'justicars_vengeance':              {SPELL:     215661},
+            'divine_purpose':                   {BUFF:      223817},
             'templars_verdict':                 {SPELL:     85256},
-            'wake_of_ashes':                    {SPELL:     205273,
-                                                 DEBUFF:    205273},
-            'zeal':                             {SPELL:     217020},
+            'wake_of_ashes':                    {SPELL:     255937},
+            'zeal':                             {SPELL:     269569},
             'crusader_strike':                  {SPELL:     35395},
-            'greater_judgment':                 {SPELL:     218178},
-            'the_fires_of_justice':             {SPELL:     203316},
-            'hammer_of_justice':                {SPELL:     853},
             'rebuke':                           {SPELL:     96231,
                                                  INTERRUPT: True},
+            'inquisition':                      {SPELL:     84963,
+                                                 BUFF:      84963},
+            'divine_judgment':                  {SPELL:     271580},
+            'divine_right':                     {BUFF:      278523},
+            'hammer_of_wrath':                  {SPELL:     24275},
         },
     },
 }
 
 ITEM_INFO = {
-    'scarlet_inquisitors_expurgation':      151813,
-    'liadrins_fury_unleashed':              137048,
-    'whisper_of_the_nathrezim':             137020,
     'apocalypse_drive':                     151975,
 }
 

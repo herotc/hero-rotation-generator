@@ -22,27 +22,27 @@ local HR     = HeroRotation
 if not Spell.Paladin then Spell.Paladin = {} end
 Spell.Paladin.Retribution = {
   AvengingWrathBuff                     = Spell(31884),
-  CrusadeBuff                           = Spell(224668),
+  CrusadeBuff                           = Spell(231895),
   LightsJudgment                        = Spell(255647),
   ShieldofVengeance                     = Spell(184662),
   AvengingWrath                         = Spell(31884),
-  InquisitionBuff                       = Spell(),
-  Inquisition                           = Spell(),
-  Crusade                               = Spell(224668),
-  DivineJudgment                        = Spell(),
-  DivineRightBuff                       = Spell(),
-  ExecutionSentence                     = Spell(213757),
+  InquisitionBuff                       = Spell(84963),
+  Inquisition                           = Spell(84963),
+  Crusade                               = Spell(231895),
+  DivineJudgment                        = Spell(271580),
+  DivineRightBuff                       = Spell(278523),
+  ExecutionSentence                     = Spell(267798),
   DivineStorm                           = Spell(53385),
-  DivinePurposeBuff                     = Spell(223819),
+  DivinePurposeBuff                     = Spell(223817),
   TemplarsVerdict                       = Spell(85256),
-  HammerofWrath                         = Spell(),
-  WakeofAshes                           = Spell(205273),
+  HammerofWrath                         = Spell(24275),
+  WakeofAshes                           = Spell(255937),
   BladeofJustice                        = Spell(184575),
   Judgment                              = Spell(20271),
   Consecration                          = Spell(26573),
   CrusaderStrike                        = Spell(35395),
   ArcaneTorrent                         = Spell(50613),
-  ExecutionSentenceDebuff               = Spell(213757),
+  ExecutionSentenceDebuff               = Spell(267799),
   Sequence                              = Spell(),
   Rebuke                                = Spell(96231)
 };
@@ -96,7 +96,7 @@ local function APL()
     -- augmentation
     -- snapshot_stats
     -- potion
-    if I.OldWar:IsReady() and Settings.Commons.UsePotions and (true) then
+    if I.OldWar:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.OldWar) then return ""; end
     end
   end
@@ -110,7 +110,7 @@ local function APL()
       if HR.Cast(S.LightsJudgment) then return ""; end
     end
     -- shield_of_vengeance
-    if S.ShieldofVengeance:IsCastableP() and (true) then
+    if S.ShieldofVengeance:IsCastableP() then
       if HR.Cast(S.ShieldofVengeance) then return ""; end
     end
     -- avenging_wrath,if=buff.inquisition.up|!talent.inquisition.enabled
@@ -230,7 +230,7 @@ local function APL()
   end
   -- auto_attack
   -- rebuke
-  if S.Rebuke:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled and (true) then
+  if S.Rebuke:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled then
     if HR.CastAnnotated(S.Rebuke, false, "Interrupt") then return ""; end
   end
   -- call_action_list,name=opener
@@ -238,7 +238,7 @@ local function APL()
     local ShouldReturn = Opener(); if ShouldReturn then return ShouldReturn; end
   end
   -- call_action_list,name=cooldowns
-  if (true) then
+  if HR.CDsON() then
     local ShouldReturn = Cooldowns(); if ShouldReturn then return ShouldReturn; end
   end
   -- call_action_list,name=generators

@@ -101,53 +101,53 @@ local function APL()
     -- food
     -- snapshot_stats
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
   end
   MaxDps = function()
     -- auto_attack
     -- use_item,name=diimas_glacial_aegis
-    if I.DiimasGlacialAegis:IsReady() and (true) then
+    if I.DiimasGlacialAegis:IsReady() then
       if HR.CastSuggested(I.DiimasGlacialAegis) then return ""; end
     end
     -- blood_fury
-    if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
+    if S.BloodFury:IsCastableP() and HR.CDsON() then
       if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- berserking
-    if S.Berserking:IsCastableP() and HR.CDsON() and (true) then
+    if S.Berserking:IsCastableP() and HR.CDsON() then
       if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- arcane_torrent
-    if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (true) then
+    if S.ArcaneTorrent:IsCastableP() and HR.CDsON() then
       if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- lights_judgment
-    if S.LightsJudgment:IsCastableP() and HR.CDsON() and (true) then
+    if S.LightsJudgment:IsCastableP() and HR.CDsON() then
       if HR.Cast(S.LightsJudgment) then return ""; end
     end
   end
   MaxSurvival = function()
     -- auto_attack
     -- use_item,name=diimas_glacial_aegis
-    if I.DiimasGlacialAegis:IsReady() and (true) then
+    if I.DiimasGlacialAegis:IsReady() then
       if HR.CastSuggested(I.DiimasGlacialAegis) then return ""; end
     end
     -- blood_fury
-    if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
+    if S.BloodFury:IsCastableP() and HR.CDsON() then
       if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- berserking
-    if S.Berserking:IsCastableP() and HR.CDsON() and (true) then
+    if S.Berserking:IsCastableP() and HR.CDsON() then
       if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- arcane_torrent
-    if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (true) then
+    if S.ArcaneTorrent:IsCastableP() and HR.CDsON() then
       if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- lights_judgment
-    if S.LightsJudgment:IsCastableP() and HR.CDsON() and (true) then
+    if S.LightsJudgment:IsCastableP() and HR.CDsON() then
       if HR.Cast(S.LightsJudgment) then return ""; end
     end
   end
@@ -295,39 +295,39 @@ local function APL()
   end
   -- auto_attack
   -- use_item,name=diimas_glacial_aegis
-  if I.DiimasGlacialAegis:IsReady() and (true) then
+  if I.DiimasGlacialAegis:IsReady() then
     if HR.CastSuggested(I.DiimasGlacialAegis) then return ""; end
   end
   -- blood_fury
-  if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
+  if S.BloodFury:IsCastableP() and HR.CDsON() then
     if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- berserking
-  if S.Berserking:IsCastableP() and HR.CDsON() and (true) then
+  if S.Berserking:IsCastableP() and HR.CDsON() then
     if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- arcane_torrent
-  if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (true) then
+  if S.ArcaneTorrent:IsCastableP() and HR.CDsON() then
     if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- lights_judgment
-  if S.LightsJudgment:IsCastableP() and HR.CDsON() and (true) then
+  if S.LightsJudgment:IsCastableP() and HR.CDsON() then
     if HR.Cast(S.LightsJudgment) then return ""; end
   end
   -- blood_fury
-  if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
+  if S.BloodFury:IsCastableP() and HR.CDsON() then
     if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- berserking
-  if S.Berserking:IsCastableP() and HR.CDsON() and (true) then
+  if S.Berserking:IsCastableP() and HR.CDsON() then
     if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- arcane_torrent
-  if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (true) then
+  if S.ArcaneTorrent:IsCastableP() and HR.CDsON() then
     if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- lights_judgment
-  if S.LightsJudgment:IsCastableP() and HR.CDsON() and (true) then
+  if S.LightsJudgment:IsCastableP() and HR.CDsON() then
     if HR.Cast(S.LightsJudgment) then return ""; end
   end
   -- call_action_list,name=prot
