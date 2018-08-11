@@ -38,10 +38,10 @@ Spell.Druid.Balance = {
   Starsurge                             = Spell(78674),
   OnethsIntuitionBuff                   = Spell(209406),
   Starfall                              = Spell(191034),
-  StarlordBuff                          = Spell(),
-  NewMoon                               = Spell(202767),
-  HalfMoon                              = Spell(202768),
-  FullMoon                              = Spell(202771),
+  StarlordBuff                          = Spell(279709),
+  NewMoon                               = Spell(274281),
+  HalfMoon                              = Spell(274282),
+  FullMoon                              = Spell(274283),
   WarriorofEluneBuff                    = Spell(202425),
   TheEmeraldDreamcatcherBuff            = Spell(208190),
   OnethsOverconfidenceBuff              = Spell(209407),
@@ -94,22 +94,18 @@ local function FutureAstralPower()
   if not Player:IsCasting() then
     return AstralPower
   else
-    if Player:IsCasting(S.NewMoon) then
+    if Player:IsCasting(S.NewnMoon) then
       return AstralPower + 10
     elseif Player:IsCasting(S.HalfMoon) then
       return AstralPower + 20
     elseif Player:IsCasting(S.FullMoon) then
       return AstralPower + 40
+    elseif Player:IsCasting(S.StellarFlare) then
+      return AstralPower + 8
     elseif Player:IsCasting(S.SolarWrath) then
-      return AstralPower
-        + (Player:Buff(S.BlessingofElune) and 10 or 8)
-          * ((Player:BuffRemainsP(S.CelestialAlignment) > 0
-            or Player:BuffRemainsP(S.IncarnationChosenOfElune) > 0) and 2 or 1)
+      return AstralPower + 8
     elseif Player:IsCasting(S.LunarStrike) then
-      return AstralPower
-        + (Player:Buff(S.BlessingofElune) and 15 or 10)
-          * ((Player:BuffRemainsP(S.CelestialAlignment) > 0
-            or Player:BuffRemainsP(S.IncarnationChosenOfElune) > 0) and 2 or 1)
+      return AstralPower + 12
     else
       return AstralPower
     end
