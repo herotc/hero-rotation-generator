@@ -116,14 +116,15 @@ class Action(Decorable):
             condition_expression = ''
         return ConditionExpression(self, condition_expression, **kwargs)
 
-    def condition_expression(self):
+    def condition_expression(self, ifmode):
         """
         Return the condition expression of the action (the thing to test
         before doing the execution).
         """
         if self.operation() == 'setif':
             return self.get_expression('condition')
-        return self.get_expression('if')
+        ifexpression = self.get_expression(ifmode)
+        return ifexpression
 
     def value_expression(self):
         """
@@ -131,12 +132,12 @@ class Action(Decorable):
         """
         return self.get_expression('value', null_cond='')
 
-    def condition_tree(self):
+    def condition_tree(self, ifmode):
         """
         Return the condition tree of the action (the tree form of the conditon
         expression).
         """
-        return self.condition_expression().grow()
+        return self.condition_expression(ifmode).grow()
 
     def value_tree(self):
         """
@@ -233,14 +234,27 @@ class Action(Decorable):
         if exec_cast == '':
             return lua_string
         condition = self.execution().object_().conditions()
-        if_condition = convert_type(self.condition_tree(), BOOL)
-        condition.add_condition(Literal(f'({if_condition})'))
+        targetif_condition_tree = self.condition_tree('target_if')
+        if targetif_condition_tree.condition_expression.simc != '':
+            targetif_condition = convert_type(targetif_condition_tree, BOOL)
+            condition.add_condition(Literal(f'({targetif_condition})'))
+        if_condition_tree = self.condition_tree('if')
+        if if_condition_tree.condition_expression.simc != '':
+            if_condition = convert_type(if_condition_tree, BOOL)
+            condition.add_condition(Literal(f'({if_condition})'))
         exec_else = self.print_exec_else()
-        lua_string += ('\n'
-                       f'if {condition.print_lua()} then\n'
-                       f'{indent(exec_cast)}\n'
-                       f'{exec_else}'
-                       f'end')
+        if condition.print_lua() == '':
+            lua_string += ('\n'
+                        f'if (true) then\n'
+                        f'{indent(exec_cast)}\n'
+                        f'{exec_else}'
+                        f'end')
+        else:
+            lua_string += ('\n'
+                        f'if {condition.print_lua()} then\n'
+                        f'{indent(exec_cast)}\n'
+                        f'{exec_else}'
+                        f'end')
         return lua_string
 
 
