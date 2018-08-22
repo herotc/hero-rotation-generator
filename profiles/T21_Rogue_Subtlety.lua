@@ -219,9 +219,9 @@ local function APL()
     end
     -- pool_resource,for_next=1,extra_amount=40
     -- shadowmeld,if=energy>=40&energy.deficit>=10&!variable.shd_threshold&debuff.find_weakness.remains<1
-    if S.Shadowmeld:IsCastableP() and (Player:Energy() >= 40 and Player:EnergyDeficit() >= 10 and not bool(VarShdThreshold) and Target:DebuffRemainsP(S.FindWeaknessDebuff) < 1) then
+    if S.Shadowmeld:IsCastableP() and HR.CDsON() and (Player:Energy() >= 40 and Player:EnergyDeficit() >= 10 and not bool(VarShdThreshold) and Target:DebuffRemainsP(S.FindWeaknessDebuff) < 1) then
       if S.Shadowmeld:IsUsablePPool(40) then
-        if HR.Cast(S.Shadowmeld) then return ""; end
+        if HR.Cast(S.Shadowmeld, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
       else
         if HR.Cast(S.PoolResource) then return ""; end
       end

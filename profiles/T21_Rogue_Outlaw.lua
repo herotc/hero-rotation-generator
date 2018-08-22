@@ -184,8 +184,8 @@ local function APL()
       if HR.Cast(S.Vanish) then return ""; end
     end
     -- shadowmeld,if=!stealthed.all&variable.ambush_condition
-    if S.Shadowmeld:IsCastableP() and (not bool(stealthed.all) and bool(VarAmbushCondition)) then
-      if HR.Cast(S.Shadowmeld) then return ""; end
+    if S.Shadowmeld:IsCastableP() and HR.CDsON() and (not bool(stealthed.all) and bool(VarAmbushCondition)) then
+      if HR.Cast(S.Shadowmeld, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
   end
   Finish = function()
