@@ -35,7 +35,7 @@ Spell.Warlock.Destruction = {
   GrimoireofSupremacy                   = Spell(266086),
   HavocDebuff                           = Spell(80240),
   GrimoireofSupremacyBuff               = Spell(266091),
-  ActiveHavocBuff                       = Spell(),
+  ActiveHavocBuff                       = Spell(80240),
   Conflagrate                           = Spell(17962),
   Shadowburn                            = Spell(17877),
   ShadowburnDebuff                      = Spell(17877),
@@ -122,7 +122,7 @@ local function APL()
     -- food
     -- augmentation
     -- summon_pet
-    if S.SummonPet:IsCastableP() and (true) then
+    if S.SummonPet:IsCastableP() then
       if HR.Cast(S.SummonPet) then return ""; end
     end
     -- grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
@@ -131,11 +131,11 @@ local function APL()
     end
     -- snapshot_stats
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- soul_fire
-    if S.SoulFire:IsCastableP() and (true) then
+    if S.SoulFire:IsCastableP() then
       if HR.Cast(S.SoulFire) then return ""; end
     end
     -- incinerate,if=!talent.soul_fire.enabled
@@ -145,7 +145,7 @@ local function APL()
   end
   Cata = function()
     -- call_action_list,name=cds
-    if (true) then
+    if HR.CDsON() then
       local ShouldReturn = Cds(); if ShouldReturn then return ShouldReturn; end
     end
     -- rain_of_fire,if=soul_shard>=4.5
@@ -153,7 +153,7 @@ local function APL()
       if HR.Cast(S.RainofFire) then return ""; end
     end
     -- cataclysm
-    if S.Cataclysm:IsCastableP() and (true) then
+    if S.Cataclysm:IsCastableP() then
       if HR.Cast(S.Cataclysm) then return ""; end
     end
     -- immolate,if=talent.channel_demonfire.enabled&!remains&cooldown.channel_demonfire.remains<=action.chaos_bolt.execute_time
@@ -161,7 +161,7 @@ local function APL()
       if HR.Cast(S.Immolate) then return ""; end
     end
     -- channel_demonfire
-    if S.ChannelDemonfire:IsCastableP() and (true) then
+    if S.ChannelDemonfire:IsCastableP() then
       if HR.Cast(S.ChannelDemonfire) then return ""; end
     end
     -- havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10&spell_targets.rain_of_fire<=8&talent.grimoire_of_supremacy.enabled&pet.infernal.active&pet.infernal.remains<=10
@@ -193,7 +193,7 @@ local function APL()
       if HR.Cast(S.Immolate) then return ""; end
     end
     -- rain_of_fire
-    if S.RainofFire:IsCastableP() and (true) then
+    if S.RainofFire:IsCastableP() then
       if HR.Cast(S.RainofFire) then return ""; end
     end
     -- soul_fire,cycle_targets=1,if=!debuff.havoc.remains
@@ -227,22 +227,22 @@ local function APL()
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- berserking
-    if S.Berserking:IsCastableP() and HR.CDsON() and (true) then
+    if S.Berserking:IsCastableP() and HR.CDsON() then
       if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- blood_fury
-    if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
+    if S.BloodFury:IsCastableP() and HR.CDsON() then
       if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- fireblood
-    if S.Fireblood:IsCastableP() and HR.CDsON() and (true) then
+    if S.Fireblood:IsCastableP() and HR.CDsON() then
       if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- use_items
   end
   Fnb = function()
     -- call_action_list,name=cds
-    if (true) then
+    if HR.CDsON() then
       local ShouldReturn = Cds(); if ShouldReturn then return ShouldReturn; end
     end
     -- rain_of_fire,if=soul_shard>=4.5
@@ -254,7 +254,7 @@ local function APL()
       if HR.Cast(S.Immolate) then return ""; end
     end
     -- channel_demonfire
-    if S.ChannelDemonfire:IsCastableP() and (true) then
+    if S.ChannelDemonfire:IsCastableP() then
       if HR.Cast(S.ChannelDemonfire) then return ""; end
     end
     -- havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10&spell_targets.rain_of_fire<=4&talent.grimoire_of_supremacy.enabled&pet.infernal.active&pet.infernal.remains<=10
@@ -274,7 +274,7 @@ local function APL()
       if HR.Cast(S.Immolate) then return ""; end
     end
     -- rain_of_fire
-    if S.RainofFire:IsCastableP() and (true) then
+    if S.RainofFire:IsCastableP() then
       if HR.Cast(S.RainofFire) then return ""; end
     end
     -- soul_fire,cycle_targets=1,if=!debuff.havoc.remains&spell_targets.incinerate=3
@@ -292,7 +292,7 @@ local function APL()
   end
   Inf = function()
     -- call_action_list,name=cds
-    if (true) then
+    if HR.CDsON() then
       local ShouldReturn = Cds(); if ShouldReturn then return ShouldReturn; end
     end
     -- rain_of_fire,if=soul_shard>=4.5
@@ -300,7 +300,7 @@ local function APL()
       if HR.Cast(S.RainofFire) then return ""; end
     end
     -- cataclysm
-    if S.Cataclysm:IsCastableP() and (true) then
+    if S.Cataclysm:IsCastableP() then
       if HR.Cast(S.Cataclysm) then return ""; end
     end
     -- immolate,if=talent.channel_demonfire.enabled&!remains&cooldown.channel_demonfire.remains<=action.chaos_bolt.execute_time
@@ -308,7 +308,7 @@ local function APL()
       if HR.Cast(S.Immolate) then return ""; end
     end
     -- channel_demonfire
-    if S.ChannelDemonfire:IsCastableP() and (true) then
+    if S.ChannelDemonfire:IsCastableP() then
       if HR.Cast(S.ChannelDemonfire) then return ""; end
     end
     -- havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10&spell_targets.rain_of_fire<=4+talent.internal_combustion.enabled&talent.grimoire_of_supremacy.enabled&pet.infernal.active&pet.infernal.remains<=10
@@ -340,7 +340,7 @@ local function APL()
       if HR.Cast(S.Immolate) then return ""; end
     end
     -- rain_of_fire
-    if S.RainofFire:IsCastableP() and (true) then
+    if S.RainofFire:IsCastableP() then
       if HR.Cast(S.RainofFire) then return ""; end
     end
     -- soul_fire,cycle_targets=1,if=!debuff.havoc.remains
@@ -381,7 +381,7 @@ local function APL()
     if HR.Cast(S.Immolate) then return ""; end
   end
   -- call_action_list,name=cds
-  if (true) then
+  if HR.CDsON() then
     local ShouldReturn = Cds(); if ShouldReturn then return ShouldReturn; end
   end
   -- havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10
@@ -393,11 +393,11 @@ local function APL()
     if HR.Cast(S.Havoc) then return ""; end
   end
   -- channel_demonfire
-  if S.ChannelDemonfire:IsCastableP() and (true) then
+  if S.ChannelDemonfire:IsCastableP() then
     if HR.Cast(S.ChannelDemonfire) then return ""; end
   end
   -- cataclysm
-  if S.Cataclysm:IsCastableP() and (true) then
+  if S.Cataclysm:IsCastableP() then
     if HR.Cast(S.Cataclysm) then return ""; end
   end
   -- soul_fire,cycle_targets=1,if=!debuff.havoc.remains

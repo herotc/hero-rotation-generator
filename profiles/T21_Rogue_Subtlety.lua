@@ -114,19 +114,19 @@ local function APL()
       VarStealthThreshold = 60 + num(S.Vigor:IsAvailable()) * 35 + num(S.MasterofShadows:IsAvailable()) * 10
     end
     -- stealth
-    if S.Stealth:IsCastableP() and Player:BuffDownP(S.StealthBuff) and (true) then
+    if S.Stealth:IsCastableP() and Player:BuffDownP(S.StealthBuff) then
       if HR.Cast(S.Stealth) then return ""; end
     end
     -- marked_for_death,precombat_seconds=15
-    if S.MarkedForDeath:IsCastableP() and (true) then
+    if S.MarkedForDeath:IsCastableP() then
       if HR.Cast(S.MarkedForDeath) then return ""; end
     end
     -- shadow_blades,precombat_seconds=1
-    if S.ShadowBlades:IsCastableP() and Player:BuffDownP(S.ShadowBladesBuff) and (true) then
+    if S.ShadowBlades:IsCastableP() and Player:BuffDownP(S.ShadowBladesBuff) then
       if HR.Cast(S.ShadowBlades) then return ""; end
     end
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
   end
@@ -136,11 +136,11 @@ local function APL()
       if HR.Cast(S.ShurikenStorm) then return ""; end
     end
     -- gloomblade
-    if S.Gloomblade:IsCastableP() and (true) then
+    if S.Gloomblade:IsCastableP() then
       if HR.Cast(S.Gloomblade) then return ""; end
     end
     -- backstab
-    if S.Backstab:IsCastableP() and (true) then
+    if S.Backstab:IsCastableP() then
       if HR.Cast(S.Backstab) then return ""; end
     end
   end
@@ -162,7 +162,7 @@ local function APL()
       if HR.Cast(S.SymbolsofDeath) then return ""; end
     end
     -- marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit
-    if S.MarkedForDeath:IsCastableP() and (Target:TimeToDie() < Player:ComboPointsDeficit()) then
+    if S.MarkedForDeath:IsCastableP() and (bool(min:target.time_to_die)) and (Target:TimeToDie() < Player:ComboPointsDeficit()) then
       if HR.Cast(S.MarkedForDeath) then return ""; end
     end
     -- marked_for_death,if=raid_event.adds.in>30&!stealthed.all&combo_points.deficit>=cp_max_spend
@@ -204,7 +204,7 @@ local function APL()
       if HR.Cast(S.SecretTechnique) then return ""; end
     end
     -- eviscerate
-    if S.Eviscerate:IsCastableP() and (true) then
+    if S.Eviscerate:IsCastableP() then
       if HR.Cast(S.Eviscerate) then return ""; end
     end
   end
@@ -253,7 +253,7 @@ local function APL()
       if HR.Cast(S.ShurikenStorm) then return ""; end
     end
     -- shadowstrike
-    if S.Shadowstrike:IsCastableP() and (true) then
+    if S.Shadowstrike:IsCastableP() then
       if HR.Cast(S.Shadowstrike) then return ""; end
     end
   end
@@ -290,11 +290,11 @@ local function APL()
     if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- arcane_pulse
-  if S.ArcanePulse:IsCastableP() and (true) then
+  if S.ArcanePulse:IsCastableP() then
     if HR.Cast(S.ArcanePulse) then return ""; end
   end
   -- lights_judgment
-  if S.LightsJudgment:IsCastableP() and HR.CDsON() and (true) then
+  if S.LightsJudgment:IsCastableP() and HR.CDsON() then
     if HR.Cast(S.LightsJudgment) then return ""; end
   end
 end

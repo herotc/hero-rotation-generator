@@ -30,6 +30,7 @@ Spell.Paladin.Retribution = {
   Inquisition                           = Spell(84963),
   Crusade                               = Spell(231895),
   DivineJudgment                        = Spell(271580),
+  DivineRight                           = Spell(277678),
   DivineRightBuff                       = Spell(278523),
   ExecutionSentence                     = Spell(267798),
   DivineStorm                           = Spell(53385),
@@ -118,14 +119,14 @@ local function APL()
       if HR.Cast(S.AvengingWrath) then return ""; end
     end
     -- crusade,if=holy_power>=4
-    if S.Crusade:IsCastableP() and (Player:HolyPower() >= 4) then
+    if S.Crusade:IsCastableP() and HR.CDsON() and (Player:HolyPower() >= 4) then
       if HR.Cast(S.Crusade) then return ""; end
     end
   end
   Finishers = function()
     -- variable,name=ds_castable,value=spell_targets.divine_storm>=3|talent.divine_judgment.enabled&spell_targets.divine_storm>=2|azerite.divine_right.enabled&target.health.pct<=20&buff.divine_right.down
     if (true) then
-      VarDsCastable = num(Cache.EnemiesCount[8] >= 3 or S.DivineJudgment:IsAvailable() and Cache.EnemiesCount[8] >= 2 or bool(azerite.divine_right.enabled) and Target:HealthPercentage() <= 20 and Player:BuffDownP(S.DivineRightBuff))
+      VarDsCastable = num(Cache.EnemiesCount[8] >= 3 or S.DivineJudgment:IsAvailable() and Cache.EnemiesCount[8] >= 2 or S.DivineRight:AzeriteEnabled() and Target:HealthPercentage() <= 20 and Player:BuffDownP(S.DivineRightBuff))
     end
     -- inquisition,if=buff.inquisition.down|buff.inquisition.remains<5&holy_power>=3|talent.execution_sentence.enabled&cooldown.execution_sentence.remains<10&buff.inquisition.remains<15|cooldown.avenging_wrath.remains<15&buff.inquisition.remains<20&holy_power>=3
     if S.Inquisition:IsCastableP() and (Player:BuffDownP(S.InquisitionBuff) or Player:BuffRemainsP(S.InquisitionBuff) < 5 and Player:HolyPower() >= 3 or S.ExecutionSentence:IsAvailable() and S.ExecutionSentence:CooldownRemainsP() < 10 and Player:BuffRemainsP(S.InquisitionBuff) < 15 or S.AvengingWrath:CooldownRemainsP() < 15 and Player:BuffRemainsP(S.InquisitionBuff) < 20 and Player:HolyPower() >= 3) then

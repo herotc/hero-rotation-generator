@@ -118,7 +118,7 @@ local function APL()
     -- food
     -- augmentation
     -- summon_pet
-    if S.SummonPet:IsCastableP() and (true) then
+    if S.SummonPet:IsCastableP() then
       if HR.Cast(S.SummonPet) then return ""; end
     end
     -- inner_demons,if=talent.inner_demons.enabled
@@ -127,21 +127,21 @@ local function APL()
     end
     -- snapshot_stats
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- demonbolt
-    if S.Demonbolt:IsCastableP() and (true) then
+    if S.Demonbolt:IsCastableP() then
       if HR.Cast(S.Demonbolt) then return ""; end
     end
   end
   BuildAShard = function()
     -- soul_strike
-    if S.SoulStrike:IsCastableP() and (true) then
+    if S.SoulStrike:IsCastableP() then
       if HR.Cast(S.SoulStrike) then return ""; end
     end
     -- shadow_bolt
-    if S.ShadowBolt:IsCastableP() and (true) then
+    if S.ShadowBolt:IsCastableP() then
       if HR.Cast(S.ShadowBolt) then return ""; end
     end
   end
@@ -245,7 +245,7 @@ local function APL()
       if HR.Cast(S.NetherPortal) then return ""; end
     end
     -- call_dreadstalkers
-    if S.CallDreadstalkers:IsCastableP() and (true) then
+    if S.CallDreadstalkers:IsCastableP() then
       if HR.Cast(S.CallDreadstalkers) then return ""; end
     end
     -- hand_of_guldan,if=cooldown.call_dreadstalkers.remains>18&soul_shard>=3
@@ -287,7 +287,7 @@ local function APL()
     if HR.Cast(S.Doom) then return ""; end
   end
   -- demonic_strength
-  if S.DemonicStrength:IsCastableP() and (true) then
+  if S.DemonicStrength:IsCastableP() then
     if HR.Cast(S.DemonicStrength) then return ""; end
   end
   -- call_action_list,name=nether_portal,if=talent.nether_portal.enabled&spell_targets.implosion<=2

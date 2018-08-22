@@ -97,15 +97,15 @@ local function APL()
     -- augmentation
     -- snapshot_stats
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- chi_burst
-    if S.ChiBurst:IsCastableP() and (true) then
+    if S.ChiBurst:IsCastableP() then
       if HR.Cast(S.ChiBurst) then return ""; end
     end
     -- chi_wave
-    if S.ChiWave:IsCastableP() and (true) then
+    if S.ChiWave:IsCastableP() then
       if HR.Cast(S.ChiWave) then return ""; end
     end
   end
@@ -124,23 +124,23 @@ local function APL()
     if HR.Cast(S.FortifyingBrew) then return ""; end
   end
   -- use_item,name=archimondes_hatred_reborn
-  if I.ArchimondesHatredReborn:IsReady() and (true) then
+  if I.ArchimondesHatredReborn:IsReady() then
     if HR.CastSuggested(I.ArchimondesHatredReborn) then return ""; end
   end
   -- potion
-  if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+  if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
     if HR.CastSuggested(I.ProlongedPower) then return ""; end
   end
   -- blood_fury
-  if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
+  if S.BloodFury:IsCastableP() and HR.CDsON() then
     if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- berserking
-  if S.Berserking:IsCastableP() and HR.CDsON() and (true) then
+  if S.Berserking:IsCastableP() and HR.CDsON() then
     if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- lights_judgment
-  if S.LightsJudgment:IsCastableP() and HR.CDsON() and (true) then
+  if S.LightsJudgment:IsCastableP() and HR.CDsON() then
     if HR.Cast(S.LightsJudgment) then return ""; end
   end
   -- invoke_niuzao_the_black_ox,if=target.time_to_die>45
@@ -176,11 +176,11 @@ local function APL()
     if HR.Cast(S.TigerPalm) then return ""; end
   end
   -- keg_smash
-  if S.KegSmash:IsCastableP() and (true) then
+  if S.KegSmash:IsCastableP() then
     if HR.Cast(S.KegSmash) then return ""; end
   end
   -- blackout_strike
-  if S.BlackoutStrike:IsCastableP() and (true) then
+  if S.BlackoutStrike:IsCastableP() then
     if HR.Cast(S.BlackoutStrike) then return ""; end
   end
   -- breath_of_fire,if=buff.blackout_combo.down&(buff.bloodlust.down|(buff.bloodlust.up&&dot.breath_of_fire_dot.refreshable))
@@ -192,11 +192,11 @@ local function APL()
     if HR.Cast(S.RushingJadeWind) then return ""; end
   end
   -- chi_burst
-  if S.ChiBurst:IsCastableP() and (true) then
+  if S.ChiBurst:IsCastableP() then
     if HR.Cast(S.ChiBurst) then return ""; end
   end
   -- chi_wave
-  if S.ChiWave:IsCastableP() and (true) then
+  if S.ChiWave:IsCastableP() then
     if HR.Cast(S.ChiWave) then return ""; end
   end
   -- tiger_palm,if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+gcd)))>=55

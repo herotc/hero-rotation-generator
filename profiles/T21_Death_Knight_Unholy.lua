@@ -50,7 +50,8 @@ Spell.DeathKnight.Unholy = {
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
   TemptationBuff                        = Spell(234143),
-  Outbreak                              = Spell(77575)
+  Outbreak                              = Spell(77575),
+  VirulentPlagueDebuff                  = Spell(191587)
 };
 local S = Spell.DeathKnight.Unholy;
 
@@ -105,15 +106,15 @@ local function APL()
     -- augmentation
     -- snapshot_stats
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- raise_dead
-    if S.RaiseDead:IsCastableP() and (true) then
+    if S.RaiseDead:IsCastableP() then
       if HR.Cast(S.RaiseDead) then return ""; end
     end
     -- army_of_the_dead
-    if S.ArmyoftheDead:IsCastableP() and (true) then
+    if S.ArmyoftheDead:IsCastableP() then
       if HR.Cast(S.ArmyoftheDead, Settings.Unholy.GCDasOffGCD.ArmyoftheDead) then return ""; end
     end
   end
@@ -123,7 +124,7 @@ local function APL()
       if HR.Cast(S.DeathandDecay) then return ""; end
     end
     -- defile
-    if S.Defile:IsCastableP() and (true) then
+    if S.Defile:IsCastableP() then
       if HR.Cast(S.Defile) then return ""; end
     end
     -- epidemic,if=death_and_decay.ticking&rune<2&!variable.pooling_for_gargoyle
@@ -203,7 +204,7 @@ local function APL()
       local ShouldReturn = ColdHeart(); if ShouldReturn then return ShouldReturn; end
     end
     -- army_of_the_dead
-    if S.ArmyoftheDead:IsCastableP() and (true) then
+    if S.ArmyoftheDead:IsCastableP() then
       if HR.Cast(S.ArmyoftheDead, Settings.Unholy.GCDasOffGCD.ArmyoftheDead) then return ""; end
     end
     -- apocalypse,if=debuff.festering_wound.stack>=4
@@ -227,11 +228,11 @@ local function APL()
       if HR.Cast(S.UnholyFrenzy) then return ""; end
     end
     -- soul_reaper,target_if=(target.time_to_die<8|rune<=2)&!buff.unholy_frenzy.up
-    if S.SoulReaper:IsCastableP() and (true) then
+    if S.SoulReaper:IsCastableP() and ((Target:TimeToDie() < 8 or Player:Rune() <= 2) and not Player:BuffP(S.UnholyFrenzyBuff)) then
       if HR.Cast(S.SoulReaper) then return ""; end
     end
     -- unholy_blight
-    if S.UnholyBlight:IsCastableP() and (true) then
+    if S.UnholyBlight:IsCastableP() then
       if HR.Cast(S.UnholyBlight) then return ""; end
     end
   end
@@ -279,7 +280,7 @@ local function APL()
   end
   -- auto_attack
   -- mind_freeze
-  if S.MindFreeze:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled and (true) then
+  if S.MindFreeze:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled then
     if HR.CastAnnotated(S.MindFreeze, false, "Interrupt") then return ""; end
   end
   -- variable,name=pooling_for_gargoyle,value=(cooldown.summon_gargoyle.remains<5&(cooldown.dark_transformation.remains<5|!equipped.137075))&talent.summon_gargoyle.enabled
@@ -312,7 +313,7 @@ local function APL()
     if HR.CastSuggested(I.ProlongedPower) then return ""; end
   end
   -- outbreak,target_if=(dot.virulent_plague.tick_time_remains+tick_time<=dot.virulent_plague.remains)&dot.virulent_plague.remains<=gcd
-  if S.Outbreak:IsCastableP() and (true) then
+  if S.Outbreak:IsCastableP() and ((dot.virulent_plague.tick_time_remains + tick_time <= Target:DebuffRemainsP(S.VirulentPlagueDebuff)) and Target:DebuffRemainsP(S.VirulentPlagueDebuff) <= Player:GCD()) then
     if HR.Cast(S.Outbreak) then return ""; end
   end
   -- call_action_list,name=cooldowns

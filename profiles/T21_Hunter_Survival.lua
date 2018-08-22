@@ -110,20 +110,20 @@ local function APL()
     -- augmentation
     -- food
     -- summon_pet
-    if S.SummonPet:IsCastableP() and (true) then
+    if S.SummonPet:IsCastableP() then
       if HR.Cast(S.SummonPet) then return ""; end
     end
     -- snapshot_stats
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- steel_trap
-    if S.SteelTrap:IsCastableP() and Player:DebuffDownP(S.SteelTrapDebuff) and (true) then
+    if S.SteelTrap:IsCastableP() and Player:DebuffDownP(S.SteelTrapDebuff) then
       if HR.Cast(S.SteelTrap) then return ""; end
     end
     -- harpoon
-    if S.Harpoon:IsCastableP() and (true) then
+    if S.Harpoon:IsCastableP() then
       if HR.Cast(S.Harpoon) then return ""; end
     end
   end
@@ -154,7 +154,7 @@ local function APL()
     if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- lights_judgment
-  if S.LightsJudgment:IsCastableP() and HR.CDsON() and (true) then
+  if S.LightsJudgment:IsCastableP() and HR.CDsON() then
     if HR.Cast(S.LightsJudgment) then return ""; end
   end
   -- potion,if=buff.coordinated_assault.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)
@@ -166,15 +166,15 @@ local function APL()
     VarCanGcd = num(not S.MongooseBite:IsAvailable() or Player:BuffDownP(S.MongooseFuryBuff) or (Player:BuffRemainsP(S.MongooseFuryBuff) - (((Player:BuffRemainsP(S.MongooseFuryBuff) * Player:FocusRegen() + Player:Focus()) / S.MongooseBite:Cost()) * Player:GCD()) > Player:GCD()))
   end
   -- steel_trap
-  if S.SteelTrap:IsCastableP() and (true) then
+  if S.SteelTrap:IsCastableP() then
     if HR.Cast(S.SteelTrap) then return ""; end
   end
   -- a_murder_of_crows
-  if S.AMurderofCrows:IsCastableP() and (true) then
+  if S.AMurderofCrows:IsCastableP() then
     if HR.Cast(S.AMurderofCrows) then return ""; end
   end
   -- coordinated_assault
-  if S.CoordinatedAssault:IsCastableP() and (true) then
+  if S.CoordinatedAssault:IsCastableP() then
     if HR.Cast(S.CoordinatedAssault) then return ""; end
   end
   -- chakrams,if=active_enemies>1
@@ -182,7 +182,7 @@ local function APL()
     if HR.Cast(S.Chakrams) then return ""; end
   end
   -- kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&buff.tip_of_the_spear.stack<3&active_enemies<2
-  if S.KillCommand:IsCastableP() and (Player:Focus() + Player:FocusCastRegen(S.KillCommand:ExecuteTime()) < Player:FocusMax() and Player:BuffStackP(S.TipoftheSpearBuff) < 3 and Cache.EnemiesCount[40] < 2) then
+  if S.KillCommand:IsCastableP() and (bool(min:bloodseeker.remains)) and (Player:Focus() + Player:FocusCastRegen(S.KillCommand:ExecuteTime()) < Player:FocusMax() and Player:BuffStackP(S.TipoftheSpearBuff) < 3 and Cache.EnemiesCount[40] < 2) then
     if HR.Cast(S.KillCommand) then return ""; end
   end
   -- wildfire_bomb,if=(focus+cast_regen<focus.max|active_enemies>1)&(dot.wildfire_bomb.refreshable&buff.mongoose_fury.down|full_recharge_time<gcd)
@@ -190,7 +190,7 @@ local function APL()
     if HR.Cast(S.WildfireBomb) then return ""; end
   end
   -- kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&buff.tip_of_the_spear.stack<3
-  if S.KillCommand:IsCastableP() and (Player:Focus() + Player:FocusCastRegen(S.KillCommand:ExecuteTime()) < Player:FocusMax() and Player:BuffStackP(S.TipoftheSpearBuff) < 3) then
+  if S.KillCommand:IsCastableP() and (bool(min:bloodseeker.remains)) and (Player:Focus() + Player:FocusCastRegen(S.KillCommand:ExecuteTime()) < Player:FocusMax() and Player:BuffStackP(S.TipoftheSpearBuff) < 3) then
     if HR.Cast(S.KillCommand) then return ""; end
   end
   -- butchery,if=(!talent.wildfire_infusion.enabled|full_recharge_time<gcd)&active_enemies>3|(dot.shrapnel_bomb.ticking&dot.internal_bleeding.stack<3)
@@ -210,15 +210,15 @@ local function APL()
     if HR.Cast(S.Harpoon) then return ""; end
   end
   -- flanking_strike
-  if S.FlankingStrike:IsCastableP() and (true) then
+  if S.FlankingStrike:IsCastableP() then
     if HR.Cast(S.FlankingStrike) then return ""; end
   end
   -- chakrams
-  if S.Chakrams:IsCastableP() and (true) then
+  if S.Chakrams:IsCastableP() then
     if HR.Cast(S.Chakrams) then return ""; end
   end
   -- serpent_sting,target_if=min:remains,if=refreshable&buff.mongoose_fury.down|buff.vipers_venom.up
-  if S.SerpentSting:IsCastableP() and (Target:DebuffRefreshableCP(S.SerpentStingDebuff) and Player:BuffDownP(S.MongooseFuryBuff) or Player:BuffP(S.VipersVenomBuff)) then
+  if S.SerpentSting:IsCastableP() and (bool(min:remains)) and (Target:DebuffRefreshableCP(S.SerpentStingDebuff) and Player:BuffDownP(S.MongooseFuryBuff) or Player:BuffP(S.VipersVenomBuff)) then
     if HR.Cast(S.SerpentSting) then return ""; end
   end
   -- aspect_of_the_eagle,if=target.distance>=6
@@ -226,23 +226,23 @@ local function APL()
     if HR.Cast(S.AspectoftheEagle) then return ""; end
   end
   -- mongoose_bite_eagle,target_if=min:dot.internal_bleeding.stack,if=buff.mongoose_fury.up|focus>60
-  if S.MongooseBiteEagle:IsCastableP() and (Player:BuffP(S.MongooseFuryBuff) or Player:Focus() > 60) then
+  if S.MongooseBiteEagle:IsCastableP() and (bool(min:dot.internal_bleeding.stack)) and (Player:BuffP(S.MongooseFuryBuff) or Player:Focus() > 60) then
     if HR.Cast(S.MongooseBiteEagle) then return ""; end
   end
   -- mongoose_bite,target_if=min:dot.internal_bleeding.stack,if=buff.mongoose_fury.up|focus>60
-  if S.MongooseBite:IsCastableP() and (Player:BuffP(S.MongooseFuryBuff) or Player:Focus() > 60) then
+  if S.MongooseBite:IsCastableP() and (bool(min:dot.internal_bleeding.stack)) and (Player:BuffP(S.MongooseFuryBuff) or Player:Focus() > 60) then
     if HR.Cast(S.MongooseBite) then return ""; end
   end
   -- butchery
-  if S.Butchery:IsCastableP() and (true) then
+  if S.Butchery:IsCastableP() then
     if HR.Cast(S.Butchery) then return ""; end
   end
   -- raptor_strike_eagle,target_if=min:dot.internal_bleeding.stack
-  if S.RaptorStrikeEagle:IsCastableP() and (true) then
+  if S.RaptorStrikeEagle:IsCastableP() and (bool(min:dot.internal_bleeding.stack)) then
     if HR.Cast(S.RaptorStrikeEagle) then return ""; end
   end
   -- raptor_strike,target_if=min:dot.internal_bleeding.stack
-  if S.RaptorStrike:IsCastableP() and (true) then
+  if S.RaptorStrike:IsCastableP() and (bool(min:dot.internal_bleeding.stack)) then
     if HR.Cast(S.RaptorStrike) then return ""; end
   end
 end

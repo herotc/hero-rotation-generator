@@ -118,15 +118,15 @@ local function APL()
     -- food
     -- snapshot_stats
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- hunters_mark
-    if S.HuntersMark:IsCastableP() and Player:DebuffDownP(S.HuntersMarkDebuff) and (true) then
+    if S.HuntersMark:IsCastableP() and Player:DebuffDownP(S.HuntersMarkDebuff) then
       if HR.Cast(S.HuntersMark) then return ""; end
     end
     -- double_tap,precast_time=5
-    if S.DoubleTap:IsCastableP() and (true) then
+    if S.DoubleTap:IsCastableP() then
       if HR.Cast(S.DoubleTap) then return ""; end
     end
     -- aimed_shot,if=active_enemies<3
@@ -173,7 +173,7 @@ local function APL()
     if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- lights_judgment
-  if S.LightsJudgment:IsCastableP() and HR.CDsON() and (true) then
+  if S.LightsJudgment:IsCastableP() and HR.CDsON() then
     if HR.Cast(S.LightsJudgment) then return ""; end
   end
   -- potion,if=(buff.trueshot.react&buff.bloodlust.react)|((consumable.prolonged_power&target.time_to_die<62)|target.time_to_die<31)
@@ -209,19 +209,19 @@ local function APL()
     if HR.Cast(S.RapidFire) then return ""; end
   end
   -- explosive_shot
-  if S.ExplosiveShot:IsCastableP() and (true) then
+  if S.ExplosiveShot:IsCastableP() then
     if HR.Cast(S.ExplosiveShot) then return ""; end
   end
   -- barrage
-  if S.Barrage:IsCastableP() and (true) then
+  if S.Barrage:IsCastableP() then
     if HR.Cast(S.Barrage) then return ""; end
   end
   -- piercing_shot
-  if S.PiercingShot:IsCastableP() and (true) then
+  if S.PiercingShot:IsCastableP() then
     if HR.Cast(S.PiercingShot) then return ""; end
   end
   -- a_murder_of_crows
-  if S.AMurderofCrows:IsCastableP() and (true) then
+  if S.AMurderofCrows:IsCastableP() then
     if HR.Cast(S.AMurderofCrows) then return ""; end
   end
   -- multishot,if=active_enemies>2&buff.trick_shots.down
@@ -245,7 +245,7 @@ local function APL()
     if HR.Cast(S.SerpentSting) then return ""; end
   end
   -- steady_shot
-  if S.SteadyShot:IsCastableP() and (true) then
+  if S.SteadyShot:IsCastableP() then
     if HR.Cast(S.SteadyShot) then return ""; end
   end
 end

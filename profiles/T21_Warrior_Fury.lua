@@ -96,13 +96,13 @@ local function APL()
     -- augmentation
     -- snapshot_stats
     -- potion
-    if I.OldWar:IsReady() and Settings.Commons.UsePotions and (true) then
+    if I.OldWar:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.OldWar) then return ""; end
     end
   end
   Movement = function()
     -- heroic_leap
-    if S.HeroicLeap:IsCastableP() and (true) then
+    if S.HeroicLeap:IsCastableP() then
       if HR.Cast(S.HeroicLeap) then return ""; end
     end
   end
@@ -128,7 +128,7 @@ local function APL()
       if HR.Cast(S.RagingBlow) then return ""; end
     end
     -- bloodthirst
-    if S.Bloodthirst:IsCastableP() and (true) then
+    if S.Bloodthirst:IsCastableP() then
       if HR.Cast(S.Bloodthirst) then return ""; end
     end
     -- bladestorm,if=prev_gcd.1.rampage&(debuff.siegebreaker.up|!talent.siegebreaker.enabled)
@@ -148,7 +148,7 @@ local function APL()
       if HR.Cast(S.FuriousSlash) then return ""; end
     end
     -- whirlwind
-    if S.Whirlwind:IsCastableP() and (true) then
+    if S.Whirlwind:IsCastableP() then
       if HR.Cast(S.Whirlwind) then return ""; end
     end
   end
@@ -158,8 +158,8 @@ local function APL()
   end
   -- auto_attack
   -- charge
-  if S.Charge:IsCastableP() and (true) then
-    if HR.Cast(S.Charge) then return ""; end
+  if S.Charge:IsCastableP() then
+    if HR.Cast(S.Charge, Settings.Fury.GCDasOffGCD.Charge) then return ""; end
   end
   -- run_action_list,name=movement,if=movement.distance>5
   if (movement.distance > 5) then
@@ -170,7 +170,7 @@ local function APL()
     if HR.Cast(S.HeroicLeap) then return ""; end
   end
   -- potion
-  if I.OldWar:IsReady() and Settings.Commons.UsePotions and (true) then
+  if I.OldWar:IsReady() and Settings.Commons.UsePotions then
     if HR.CastSuggested(I.OldWar) then return ""; end
   end
   -- furious_slash,if=talent.furious_slash.enabled&(buff.furious_slash.stack<3|buff.furious_slash.remains<3|(cooldown.recklessness.remains<3&buff.furious_slash.remains<9))
@@ -186,7 +186,7 @@ local function APL()
     if HR.Cast(S.Rampage) then return ""; end
   end
   -- recklessness
-  if S.Recklessness:IsCastableP() and (true) then
+  if S.Recklessness:IsCastableP() then
     if HR.Cast(S.Recklessness) then return ""; end
   end
   -- whirlwind,if=spell_targets.whirlwind>1&!buff.meat_cleaver.up

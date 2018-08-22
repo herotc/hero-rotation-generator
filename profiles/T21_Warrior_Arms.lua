@@ -23,26 +23,26 @@ if not Spell.Warrior then Spell.Warrior = {} end
 Spell.Warrior.Arms = {
   Rend                                  = Spell(772),
   RendDebuff                            = Spell(772),
-  ColossusSmashDebuff                   = Spell(198804),
-  Skullsplitter                         = Spell(),
-  DeadlyCalm                            = Spell(227266),
-  DeadlyCalmBuff                        = Spell(),
+  ColossusSmashDebuff                   = Spell(208086),
+  Skullsplitter                         = Spell(260643),
+  DeadlyCalm                            = Spell(262228),
+  DeadlyCalmBuff                        = Spell(262228),
   Bladestorm                            = Spell(227847),
   ColossusSmash                         = Spell(167105),
-  Warbreaker                            = Spell(209577),
-  HeroicLeap                            = Spell(),
+  Warbreaker                            = Spell(262161),
+  HeroicLeap                            = Spell(6544),
   Ravager                               = Spell(152277),
   MortalStrike                          = Spell(12294),
-  OverpowerBuff                         = Spell(),
-  Dreadnaught                           = Spell(),
+  OverpowerBuff                         = Spell(7384),
+  Dreadnaught                           = Spell(262150),
   Overpower                             = Spell(7384),
   Execute                               = Spell(163201),
-  SuddenDeathBuff                       = Spell(),
+  SuddenDeathBuff                       = Spell(52437),
   StoneHeartBuff                        = Spell(225947),
-  SweepingStrikesBuff                   = Spell(),
+  SweepingStrikesBuff                   = Spell(260708),
   Cleave                                = Spell(845),
-  DeepWoundsDebuff                      = Spell(),
-  SweepingStrikes                       = Spell(),
+  DeepWoundsDebuff                      = Spell(262115),
+  SweepingStrikes                       = Spell(260708),
   Whirlwind                             = Spell(1680),
   FervorofBattle                        = Spell(202316),
   Slam                                  = Spell(1464),
@@ -52,7 +52,7 @@ Spell.Warrior.Arms = {
   ArcaneTorrent                         = Spell(50613),
   LightsJudgment                        = Spell(255647),
   Avatar                                = Spell(107574),
-  Massacre                              = Spell()
+  Massacre                              = Spell(281001)
 };
 local S = Spell.Warrior.Arms;
 
@@ -60,7 +60,7 @@ local S = Spell.Warrior.Arms;
 if not Item.Warrior then Item.Warrior = {} end
 Item.Warrior.Arms = {
   ProlongedPower                   = Item(142117),
-  WeightoftheEarth                 = Item(),
+  WeightoftheEarth                 = Item(137077),
   ArchavonsHeavyHand               = Item(137060)
 };
 local I = Item.Warrior.Arms;
@@ -93,18 +93,26 @@ local function bool(val)
   return val ~= 0
 end
 
+S.ExecuteDefault    = Spell(163201)
+S.ExecuteMassacre   = Spell(281000)
+
+local function UpdateExecuteID()
+    S.Execute = S.Massacre:IsAvailable() and S.ExecuteMassacre or S.ExecuteDefault
+end
+
 --- ======= ACTION LISTS =======
 local function APL()
   local Precombat, Execute, FiveTarget, SingleTarget
   UpdateRanges()
   Everyone.AoEToggleEnemiesUpdate()
+  UpdateExecuteID()
   Precombat = function()
     -- flask
     -- food
     -- augmentation
     -- snapshot_stats
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
   end
@@ -146,7 +154,7 @@ local function APL()
       if HR.Cast(S.MortalStrike) then return ""; end
     end
     -- overpower
-    if S.Overpower:IsCastableP() and (true) then
+    if S.Overpower:IsCastableP() then
       if HR.Cast(S.Overpower) then return ""; end
     end
     -- execute,if=rage>=40|debuff.colossus_smash.up|buff.sudden_death.react|buff.stone_heart.react
@@ -196,11 +204,11 @@ local function APL()
       if HR.Cast(S.Whirlwind) then return ""; end
     end
     -- overpower
-    if S.Overpower:IsCastableP() and (true) then
+    if S.Overpower:IsCastableP() then
       if HR.Cast(S.Overpower) then return ""; end
     end
     -- whirlwind
-    if S.Whirlwind:IsCastableP() and (true) then
+    if S.Whirlwind:IsCastableP() then
       if HR.Cast(S.Whirlwind) then return ""; end
     end
   end
@@ -242,11 +250,11 @@ local function APL()
       if HR.Cast(S.Ravager) then return ""; end
     end
     -- mortal_strike
-    if S.MortalStrike:IsCastableP() and (true) then
+    if S.MortalStrike:IsCastableP() then
       if HR.Cast(S.MortalStrike) then return ""; end
     end
     -- overpower
-    if S.Overpower:IsCastableP() and (true) then
+    if S.Overpower:IsCastableP() then
       if HR.Cast(S.Overpower) then return ""; end
     end
     -- whirlwind,if=talent.fervor_of_battle.enabled&(rage>=50|debuff.colossus_smash.up)
@@ -263,12 +271,12 @@ local function APL()
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- charge
-  if S.Charge:IsCastableP() and (true) then
-    if HR.Cast(S.Charge) then return ""; end
+  if S.Charge:IsCastableP() then
+    if HR.Cast(S.Charge, Settings.Arms.GCDasOffGCD.Charge) then return ""; end
   end
   -- auto_attack
   -- potion
-  if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+  if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
     if HR.CastSuggested(I.ProlongedPower) then return ""; end
   end
   -- blood_fury,if=debuff.colossus_smash.up
@@ -288,8 +296,8 @@ local function APL()
     if HR.Cast(S.LightsJudgment) then return ""; end
   end
   -- avatar,if=cooldown.colossus_smash.remains<8|(talent.warbreaker.enabled&cooldown.warbreaker.remains<8)
-  if S.Avatar:IsCastableP() and (S.ColossusSmash:CooldownRemainsP() < 8 or (S.Warbreaker:IsAvailable() and S.Warbreaker:CooldownRemainsP() < 8)) then
-    if HR.Cast(S.Avatar) then return ""; end
+  if S.Avatar:IsCastableP() and HR.CDsON() and (S.ColossusSmash:CooldownRemainsP() < 8 or (S.Warbreaker:IsAvailable() and S.Warbreaker:CooldownRemainsP() < 8)) then
+    if HR.Cast(S.Avatar, Settings.Arms.GCDasOffGCD.Avatar) then return ""; end
   end
   -- sweeping_strikes,if=spell_targets.whirlwind>1
   if S.SweepingStrikes:IsCastableP() and (Cache.EnemiesCount[8] > 1) then

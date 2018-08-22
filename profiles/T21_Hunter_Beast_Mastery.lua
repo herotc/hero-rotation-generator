@@ -95,16 +95,16 @@ local function APL()
     -- augmentation
     -- food
     -- summon_pet
-    if S.SummonPet:IsCastableP() and (true) then
+    if S.SummonPet:IsCastableP() then
       if HR.Cast(S.SummonPet) then return ""; end
     end
     -- snapshot_stats
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- aspect_of_the_wild
-    if S.AspectoftheWild:IsCastableP() and Player:BuffDownP(S.AspectoftheWildBuff) and (true) then
+    if S.AspectoftheWild:IsCastableP() and Player:BuffDownP(S.AspectoftheWildBuff) then
       if HR.Cast(S.AspectoftheWild) then return ""; end
     end
   end
@@ -135,7 +135,7 @@ local function APL()
     if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- lights_judgment
-  if S.LightsJudgment:IsCastableP() and HR.CDsON() and (true) then
+  if S.LightsJudgment:IsCastableP() and HR.CDsON() then
     if HR.Cast(S.LightsJudgment) then return ""; end
   end
   -- potion,if=buff.bestial_wrath.up&buff.aspect_of_the_wild.up
@@ -147,11 +147,11 @@ local function APL()
     if HR.Cast(S.BarbedShot) then return ""; end
   end
   -- a_murder_of_crows
-  if S.AMurderofCrows:IsCastableP() and (true) then
+  if S.AMurderofCrows:IsCastableP() then
     if HR.Cast(S.AMurderofCrows) then return ""; end
   end
   -- spitting_cobra
-  if S.SpittingCobra:IsCastableP() and (true) then
+  if S.SpittingCobra:IsCastableP() then
     if HR.Cast(S.SpittingCobra) then return ""; end
   end
   -- stampede,if=buff.bestial_wrath.up|cooldown.bestial_wrath.remains<gcd|target.time_to_die<15
@@ -159,7 +159,7 @@ local function APL()
     if HR.Cast(S.Stampede) then return ""; end
   end
   -- aspect_of_the_wild
-  if S.AspectoftheWild:IsCastableP() and (true) then
+  if S.AspectoftheWild:IsCastableP() then
     if HR.Cast(S.AspectoftheWild) then return ""; end
   end
   -- bestial_wrath,if=!buff.bestial_wrath.up
@@ -171,15 +171,15 @@ local function APL()
     if HR.Cast(S.Multishot) then return ""; end
   end
   -- chimaera_shot
-  if S.ChimaeraShot:IsCastableP() and (true) then
+  if S.ChimaeraShot:IsCastableP() then
     if HR.Cast(S.ChimaeraShot) then return ""; end
   end
   -- kill_command
-  if S.KillCommand:IsCastableP() and (true) then
+  if S.KillCommand:IsCastableP() then
     if HR.Cast(S.KillCommand) then return ""; end
   end
   -- dire_beast
-  if S.DireBeast:IsCastableP() and (true) then
+  if S.DireBeast:IsCastableP() then
     if HR.Cast(S.DireBeast) then return ""; end
   end
   -- barbed_shot,if=pet.cat.buff.frenzy.down&charges_fractional>1.4|full_recharge_time<gcd.max|target.time_to_die<9
@@ -187,7 +187,7 @@ local function APL()
     if HR.Cast(S.BarbedShot) then return ""; end
   end
   -- barrage
-  if S.Barrage:IsCastableP() and (true) then
+  if S.Barrage:IsCastableP() then
     if HR.Cast(S.Barrage) then return ""; end
   end
   -- multishot,if=spell_targets>1&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)

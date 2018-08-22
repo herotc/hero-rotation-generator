@@ -106,15 +106,15 @@ local function APL()
     -- food
     -- snapshot_stats
     -- apply_poison
-    if S.ApplyPoison:IsCastableP() and (true) then
+    if S.ApplyPoison:IsCastableP() then
       if HR.Cast(S.ApplyPoison) then return ""; end
     end
     -- stealth
-    if S.Stealth:IsCastableP() and (true) then
+    if S.Stealth:IsCastableP() then
       if HR.Cast(S.Stealth) then return ""; end
     end
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- marked_for_death,precombat_seconds=5,if=raid_event.adds.in>40
@@ -136,7 +136,7 @@ local function APL()
       if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit*1.5|(raid_event.adds.in>40&combo_points.deficit>=cp_max_spend)
-    if S.MarkedForDeath:IsCastableP() and (Target:TimeToDie() < Player:ComboPointsDeficit() * 1.5 or (10000000000 > 40 and Player:ComboPointsDeficit() >= cp_max_spend)) then
+    if S.MarkedForDeath:IsCastableP() and (bool(min:target.time_to_die)) and (Target:TimeToDie() < Player:ComboPointsDeficit() * 1.5 or (10000000000 > 40 and Player:ComboPointsDeficit() >= cp_max_spend)) then
       if HR.Cast(S.MarkedForDeath) then return ""; end
     end
     -- vendetta,if=dot.rupture.ticking
@@ -239,7 +239,7 @@ local function APL()
       if HR.Cast(S.FanofKnives) then return ""; end
     end
     -- mutilate
-    if S.Mutilate:IsCastableP() and (true) then
+    if S.Mutilate:IsCastableP() then
       if HR.Cast(S.Mutilate) then return ""; end
     end
   end
@@ -272,11 +272,11 @@ local function APL()
     if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- arcane_pulse
-  if S.ArcanePulse:IsCastableP() and (true) then
+  if S.ArcanePulse:IsCastableP() then
     if HR.Cast(S.ArcanePulse) then return ""; end
   end
   -- lights_judgment
-  if S.LightsJudgment:IsCastableP() and HR.CDsON() and (true) then
+  if S.LightsJudgment:IsCastableP() and HR.CDsON() then
     if HR.Cast(S.LightsJudgment) then return ""; end
   end
 end

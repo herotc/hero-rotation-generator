@@ -137,11 +137,11 @@ local function APL()
     -- food
     -- snapshot_stats
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- metamorphosis
-    if S.Metamorphosis:IsCastableP() and Player:BuffDownP(S.MetamorphosisBuff) and (true) then
+    if S.Metamorphosis:IsCastableP() and Player:BuffDownP(S.MetamorphosisBuff) then
       if HR.Cast(S.Metamorphosis) then return ""; end
     end
   end
@@ -155,7 +155,7 @@ local function APL()
       if HR.Cast(S.Metamorphosis) then return ""; end
     end
     -- nemesis,target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)
-    if S.Nemesis:IsCastableP() and (false and Target:DebuffDownP(S.NemesisDebuff) and (Cache.EnemiesCount[40] > 1 or 10000000000 > 60)) then
+    if S.Nemesis:IsCastableP() and (bool(min:target.time_to_die)) and (false and Target:DebuffDownP(S.NemesisDebuff) and (Cache.EnemiesCount[40] > 1 or 10000000000 > 60)) then
       if HR.Cast(S.Nemesis) then return ""; end
     end
     -- nemesis,if=!raid_event.adds.exists
@@ -195,7 +195,7 @@ local function APL()
       if HR.Cast(S.BladeDance) then return ""; end
     end
     -- immolation_aura
-    if S.ImmolationAura:IsCastableP() and (true) then
+    if S.ImmolationAura:IsCastableP() then
       if HR.Cast(S.ImmolationAura) then return ""; end
     end
     -- felblade,if=fury<40|(buff.metamorphosis.down&fury.deficit>=40)
@@ -219,7 +219,7 @@ local function APL()
       if HR.Cast(S.FelRush) then return ""; end
     end
     -- demons_bite
-    if S.DemonsBite:IsCastableP() and IsInMeleeRange() and (true) then
+    if S.DemonsBite:IsCastableP() and IsInMeleeRange() then
       if HR.Cast(S.DemonsBite) then return ""; end
     end
     -- throw_glaive,if=buff.out_of_range.up
@@ -253,7 +253,7 @@ local function APL()
       if HR.Cast(S.FelBarrage) then return ""; end
     end
     -- immolation_aura
-    if S.ImmolationAura:IsCastableP() and (true) then
+    if S.ImmolationAura:IsCastableP() then
       if HR.Cast(S.ImmolationAura) then return ""; end
     end
     -- eye_beam,if=active_enemies>1&(!raid_event.adds.exists|raid_event.adds.up)&!variable.waiting_for_momentum
@@ -289,7 +289,7 @@ local function APL()
       if HR.Cast(S.EyeBeam) then return ""; end
     end
     -- demons_bite
-    if S.DemonsBite:IsCastableP() and IsInMeleeRange() and (true) then
+    if S.DemonsBite:IsCastableP() and IsInMeleeRange() then
       if HR.Cast(S.DemonsBite) then return ""; end
     end
     -- fel_rush,if=!talent.momentum.enabled&raid_event.movement.in>charges*10&talent.demon_blades.enabled
@@ -343,7 +343,7 @@ local function APL()
     VarWaitingForMomentum = num(S.Momentum:IsAvailable() and not Player:BuffP(S.MomentumBuff))
   end
   -- disrupt
-  if S.Disrupt:IsCastableP() and (true) then
+  if S.Disrupt:IsCastableP() then
     if HR.Cast(S.Disrupt) then return ""; end
   end
   -- call_action_list,name=cooldown,if=gcd.remains=0

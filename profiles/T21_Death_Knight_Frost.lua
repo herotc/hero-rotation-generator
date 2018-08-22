@@ -104,7 +104,7 @@ local function APL()
     -- augmentation
     -- snapshot_stats
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
   end
@@ -138,11 +138,11 @@ local function APL()
       if HR.Cast(S.FrostStrike) then return ""; end
     end
     -- remorseless_winter
-    if S.RemorselessWinter:IsCastableP() and (true) then
+    if S.RemorselessWinter:IsCastableP() then
       if HR.Cast(S.RemorselessWinter) then return ""; end
     end
     -- frostscythe
-    if S.Frostscythe:IsCastableP() and (true) then
+    if S.Frostscythe:IsCastableP() then
       if HR.Cast(S.Frostscythe) then return ""; end
     end
     -- obliterate,if=runic_power.deficit>(25+talent.runic_attenuation.enabled*3)
@@ -150,19 +150,19 @@ local function APL()
       if HR.Cast(S.Obliterate) then return ""; end
     end
     -- glacial_advance
-    if S.GlacialAdvance:IsCastableP() and (true) then
+    if S.GlacialAdvance:IsCastableP() then
       if HR.Cast(S.GlacialAdvance) then return ""; end
     end
     -- frost_strike
-    if S.FrostStrike:IsUsableP() and (true) then
+    if S.FrostStrike:IsUsableP() then
       if HR.Cast(S.FrostStrike) then return ""; end
     end
     -- horn_of_winter
-    if S.HornofWinter:IsCastableP() and (true) then
+    if S.HornofWinter:IsCastableP() then
       if HR.Cast(S.HornofWinter) then return ""; end
     end
     -- arcane_torrent
-    if S.ArcaneTorrent:IsCastableP() and (true) then
+    if S.ArcaneTorrent:IsCastableP() then
       if HR.Cast(S.ArcaneTorrent, Settings.Frost.GCDasOffGCD.ArcaneTorrent) then return ""; end
     end
   end
@@ -226,7 +226,7 @@ local function APL()
       if HR.Cast(S.HornofWinter) then return ""; end
     end
     -- remorseless_winter
-    if S.RemorselessWinter:IsCastableP() and (true) then
+    if S.RemorselessWinter:IsCastableP() then
       if HR.Cast(S.RemorselessWinter) then return ""; end
     end
     -- frostscythe,if=spell_targets.frostscythe>=2
@@ -325,13 +325,13 @@ local function APL()
       if HR.Cast(S.HowlingBlast) then return ""; end
     end
     -- obliterate
-    if S.Obliterate:IsCastableP() and (true) then
+    if S.Obliterate:IsCastableP() then
       if HR.Cast(S.Obliterate) then return ""; end
     end
   end
   Standard = function()
     -- remorseless_winter
-    if S.RemorselessWinter:IsCastableP() and (true) then
+    if S.RemorselessWinter:IsCastableP() then
       if HR.Cast(S.RemorselessWinter) then return ""; end
     end
     -- frost_strike,if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm.enabled
@@ -359,15 +359,15 @@ local function APL()
       if HR.Cast(S.Obliterate) then return ""; end
     end
     -- frost_strike
-    if S.FrostStrike:IsUsableP() and (true) then
+    if S.FrostStrike:IsUsableP() then
       if HR.Cast(S.FrostStrike) then return ""; end
     end
     -- horn_of_winter
-    if S.HornofWinter:IsCastableP() and (true) then
+    if S.HornofWinter:IsCastableP() then
       if HR.Cast(S.HornofWinter) then return ""; end
     end
     -- arcane_torrent
-    if S.ArcaneTorrent:IsCastableP() and (true) then
+    if S.ArcaneTorrent:IsCastableP() then
       if HR.Cast(S.ArcaneTorrent, Settings.Frost.GCDasOffGCD.ArcaneTorrent) then return ""; end
     end
   end
@@ -377,7 +377,7 @@ local function APL()
   end
   -- auto_attack
   -- mind_freeze
-  if S.MindFreeze:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled and (true) then
+  if S.MindFreeze:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled then
     if HR.CastAnnotated(S.MindFreeze, false, "Interrupt") then return ""; end
   end
   -- howling_blast,if=!dot.frost_fever.ticking&(!talent.breath_of_sindragosa.enabled|cooldown.breath_of_sindragosa.remains>15)

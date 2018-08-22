@@ -130,24 +130,24 @@ local function APL()
     -- food
     -- augmentation
     -- arcane_intellect
-    if S.ArcaneIntellect:IsCastableP() and Player:BuffDownP(S.ArcaneIntellectBuff) and (true) then
+    if S.ArcaneIntellect:IsCastableP() and Player:BuffDownP(S.ArcaneIntellectBuff) then
       if HR.Cast(S.ArcaneIntellect) then return ""; end
     end
     -- summon_arcane_familiar
-    if S.SummonArcaneFamiliar:IsCastableP() and Player:BuffDownP(S.SummonArcaneFamiliarBuff) and (true) then
+    if S.SummonArcaneFamiliar:IsCastableP() and Player:BuffDownP(S.SummonArcaneFamiliarBuff) then
       if HR.Cast(S.SummonArcaneFamiliar) then return ""; end
     end
     -- snapshot_stats
     -- mirror_image
-    if S.MirrorImage:IsCastableP() and (true) then
+    if S.MirrorImage:IsCastableP() then
       if HR.Cast(S.MirrorImage) then return ""; end
     end
     -- potion
-    if I.DeadlyGrace:IsReady() and Settings.Commons.UsePotions and (true) then
+    if I.DeadlyGrace:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.DeadlyGrace) then return ""; end
     end
     -- arcane_blast
-    if S.ArcaneBlast:IsCastableP() and (true) then
+    if S.ArcaneBlast:IsCastableP() then
       if HR.Cast(S.ArcaneBlast) then return ""; end
     end
   end
@@ -165,7 +165,7 @@ local function APL()
       StopBurnPhase()
     end
     -- mirror_image
-    if S.MirrorImage:IsCastableP() and (true) then
+    if S.MirrorImage:IsCastableP() then
       if HR.Cast(S.MirrorImage) then return ""; end
     end
     -- charged_up,if=buff.arcane_charge.stack<=1&(!set_bonus.tier20_2pc|cooldown.presence_of_mind.remains>5)
@@ -186,20 +186,20 @@ local function APL()
       if HR.Cast(S.RuneofPower, Settings.Arcane.GCDasOffGCD.RuneofPower) then return ""; end
     end
     -- arcane_power
-    if S.ArcanePower:IsCastableP() and (true) then
+    if S.ArcanePower:IsCastableP() then
       if HR.Cast(S.ArcanePower) then return ""; end
     end
     -- use_items,if=buff.arcane_power.up|target.time_to_die<cooldown.arcane_power.remains
     -- blood_fury
-    if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
+    if S.BloodFury:IsCastableP() and HR.CDsON() then
       if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- berserking
-    if S.Berserking:IsCastableP() and HR.CDsON() and (true) then
+    if S.Berserking:IsCastableP() and HR.CDsON() then
       if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- presence_of_mind
-    if S.PresenceofMind:IsCastableP() and (true) then
+    if S.PresenceofMind:IsCastableP() then
       if HR.Cast(S.PresenceofMind) then return ""; end
     end
     -- arcane_orb,if=buff.arcane_charge.stack=0|(active_enemies<3|(active_enemies<2&talent.resonance.enabled))
@@ -223,7 +223,7 @@ local function APL()
       if HR.Cast(S.ArcaneMissiles) then return ""; end
     end
     -- arcane_blast
-    if S.ArcaneBlast:IsCastableP() and (true) then
+    if S.ArcaneBlast:IsCastableP() then
       if HR.Cast(S.ArcaneBlast) then return ""; end
     end
     -- variable,name=average_burn_length,op=set,value=(variable.average_burn_length*variable.total_burns-variable.average_burn_length+(burn_phase_duration))%variable.total_burns
@@ -231,17 +231,17 @@ local function APL()
       VarAverageBurnLength = (VarAverageBurnLength * VarTotalBurns - VarAverageBurnLength + (VarBurnPhaseDuration)) / VarTotalBurns
     end
     -- evocation,interrupt_if=mana.pct>=97|(buff.clearcasting.react&mana.pct>=92)
-    if S.Evocation:IsCastableP() and (true) then
+    if S.Evocation:IsCastableP() then
       if HR.Cast(S.Evocation) then return ""; end
     end
     -- arcane_barrage
-    if S.ArcaneBarrage:IsCastableP() and (true) then
+    if S.ArcaneBarrage:IsCastableP() then
       if HR.Cast(S.ArcaneBarrage) then return ""; end
     end
   end
   Conserve = function()
     -- mirror_image
-    if S.MirrorImage:IsCastableP() and (true) then
+    if S.MirrorImage:IsCastableP() then
       if HR.Cast(S.MirrorImage) then return ""; end
     end
     -- charged_up,if=buff.arcane_charge.stack=0
@@ -285,15 +285,15 @@ local function APL()
       if HR.Cast(S.ArcaneExplosion) then return ""; end
     end
     -- arcane_torrent
-    if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (true) then
+    if S.ArcaneTorrent:IsCastableP() and HR.CDsON() then
       if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- arcane_blast
-    if S.ArcaneBlast:IsCastableP() and (true) then
+    if S.ArcaneBlast:IsCastableP() then
       if HR.Cast(S.ArcaneBlast) then return ""; end
     end
     -- arcane_barrage
-    if S.ArcaneBarrage:IsCastableP() and (true) then
+    if S.ArcaneBarrage:IsCastableP() then
       if HR.Cast(S.ArcaneBarrage) then return ""; end
     end
   end
@@ -307,19 +307,19 @@ local function APL()
       if HR.Cast(S.Blink) then return ""; end
     end
     -- presence_of_mind
-    if S.PresenceofMind:IsCastableP() and (true) then
+    if S.PresenceofMind:IsCastableP() then
       if HR.Cast(S.PresenceofMind) then return ""; end
     end
     -- arcane_missiles
-    if S.ArcaneMissiles:IsCastableP() and (true) then
+    if S.ArcaneMissiles:IsCastableP() then
       if HR.Cast(S.ArcaneMissiles) then return ""; end
     end
     -- arcane_orb
-    if S.ArcaneOrb:IsCastableP() and (true) then
+    if S.ArcaneOrb:IsCastableP() then
       if HR.Cast(S.ArcaneOrb) then return ""; end
     end
     -- supernova
-    if S.Supernova:IsCastableP() and (true) then
+    if S.Supernova:IsCastableP() then
       if HR.Cast(S.Supernova) then return ""; end
     end
   end

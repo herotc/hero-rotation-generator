@@ -28,6 +28,7 @@ Spell.Priest.Shadow = {
   VoidEruption                          = Spell(228260),
   DarkAscension                         = Spell(280711),
   VoidformBuff                          = Spell(194249),
+  WhispersoftheDamned                   = Spell(),
   Mindbender                            = Spell(200174),
   Shadowfiend                           = Spell(34433),
   VoidBolt                              = Spell(205448),
@@ -40,8 +41,8 @@ Spell.Priest.Shadow = {
   ShadowWordDeath                       = Spell(32379),
   Misery                                = Spell(238558),
   VampiricTouch                         = Spell(34914),
-  VoidTorrent                           = Spell(263165),
   VampiricTouchDebuff                   = Spell(34914),
+  VoidTorrent                           = Spell(263165),
   MindFlay                              = Spell(15407)
 };
 local S = Spell.Priest.Shadow;
@@ -92,7 +93,7 @@ local function APL()
     -- augmentation
     -- snapshot_stats
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- shadowform,if=!buff.shadowform.up
@@ -100,25 +101,25 @@ local function APL()
       if HR.Cast(S.Shadowform) then return ""; end
     end
     -- mind_blast
-    if S.MindBlast:IsCastableP() and (true) then
+    if S.MindBlast:IsCastableP() then
       if HR.Cast(S.MindBlast) then return ""; end
     end
     -- shadow_word_void
-    if S.ShadowWordVoid:IsCastableP() and (true) then
+    if S.ShadowWordVoid:IsCastableP() then
       if HR.Cast(S.ShadowWordVoid) then return ""; end
     end
   end
   Aoe = function()
     -- void_eruption
-    if S.VoidEruption:IsCastableP() and (true) then
+    if S.VoidEruption:IsCastableP() then
       if HR.Cast(S.VoidEruption) then return ""; end
     end
     -- dark_ascension,if=buff.voidform.down&azerite.whispers_of_the_damned.rank=0
-    if S.DarkAscension:IsCastableP() and (Player:BuffDownP(S.VoidformBuff) and azerite.whispers_of_the_damned.rank == 0) then
+    if S.DarkAscension:IsCastableP() and (Player:BuffDownP(S.VoidformBuff) and S.WhispersoftheDamned:AzeriteRank() == 0) then
       if HR.Cast(S.DarkAscension) then return ""; end
     end
     -- dark_ascension,if=buff.voidform.down&(cooldown.mindbender.remains>0|cooldown.shadowfiend.remains>0)&azerite.whispers_of_the_damned.rank>0
-    if S.DarkAscension:IsCastableP() and (Player:BuffDownP(S.VoidformBuff) and (S.Mindbender:CooldownRemainsP() > 0 or S.Shadowfiend:CooldownRemainsP() > 0) and azerite.whispers_of_the_damned.rank > 0) then
+    if S.DarkAscension:IsCastableP() and (Player:BuffDownP(S.VoidformBuff) and (S.Mindbender:CooldownRemainsP() > 0 or S.Shadowfiend:CooldownRemainsP() > 0) and S.WhispersoftheDamned:AzeriteRank() > 0) then
       if HR.Cast(S.DarkAscension) then return ""; end
     end
     -- void_bolt,if=talent.dark_void.enabled&dot.shadow_word_pain.remains>travel_time
@@ -130,23 +131,23 @@ local function APL()
       if HR.Cast(S.SurrenderToMadness) then return ""; end
     end
     -- dark_void
-    if S.DarkVoid:IsCastableP() and (true) then
+    if S.DarkVoid:IsCastableP() then
       if HR.Cast(S.DarkVoid) then return ""; end
     end
     -- shadowfiend,if=!talent.mindbender.enabled&buff.voidform.up&talent.dark_ascension.enabled&azerite.whispers_of_the_damned.rank>0
-    if S.Shadowfiend:IsCastableP() and (not S.Mindbender:IsAvailable() and Player:BuffP(S.VoidformBuff) and S.DarkAscension:IsAvailable() and azerite.whispers_of_the_damned.rank > 0) then
+    if S.Shadowfiend:IsCastableP() and (not S.Mindbender:IsAvailable() and Player:BuffP(S.VoidformBuff) and S.DarkAscension:IsAvailable() and S.WhispersoftheDamned:AzeriteRank() > 0) then
       if HR.Cast(S.Shadowfiend) then return ""; end
     end
     -- shadowfiend,if=!talent.mindbender.enabled&(!talent.dark_ascension.enabled|azerite.whispers_of_the_damned.rank=0)
-    if S.Shadowfiend:IsCastableP() and (not S.Mindbender:IsAvailable() and (not S.DarkAscension:IsAvailable() or azerite.whispers_of_the_damned.rank == 0)) then
+    if S.Shadowfiend:IsCastableP() and (not S.Mindbender:IsAvailable() and (not S.DarkAscension:IsAvailable() or S.WhispersoftheDamned:AzeriteRank() == 0)) then
       if HR.Cast(S.Shadowfiend) then return ""; end
     end
     -- mindbender,if=talent.mindbender.enabled&buff.voidform.up&talent.dark_ascension.enabled&azerite.whispers_of_the_damned.rank>0
-    if S.Mindbender:IsCastableP() and (S.Mindbender:IsAvailable() and Player:BuffP(S.VoidformBuff) and S.DarkAscension:IsAvailable() and azerite.whispers_of_the_damned.rank > 0) then
+    if S.Mindbender:IsCastableP() and (S.Mindbender:IsAvailable() and Player:BuffP(S.VoidformBuff) and S.DarkAscension:IsAvailable() and S.WhispersoftheDamned:AzeriteRank() > 0) then
       if HR.Cast(S.Mindbender) then return ""; end
     end
     -- mindbender,if=talent.mindbender.enabled&(!talent.dark_ascension.enabled|azerite.whispers_of_the_damned.rank=0)
-    if S.Mindbender:IsCastableP() and (S.Mindbender:IsAvailable() and (not S.DarkAscension:IsAvailable() or azerite.whispers_of_the_damned.rank == 0)) then
+    if S.Mindbender:IsCastableP() and (S.Mindbender:IsAvailable() and (not S.DarkAscension:IsAvailable() or S.WhispersoftheDamned:AzeriteRank() == 0)) then
       if HR.Cast(S.Mindbender) then return ""; end
     end
     -- shadow_crash,if=raid_event.adds.in>5&raid_event.adds.duration<20
@@ -154,33 +155,33 @@ local function APL()
       if HR.Cast(S.ShadowCrash) then return ""; end
     end
     -- mind_sear,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(cooldown.void_bolt.up|cooldown.mind_blast.up)
-    if S.MindSear:IsCastableP() and (true) then
+    if S.MindSear:IsCastableP() then
       if HR.Cast(S.MindSear) then return ""; end
     end
     -- shadow_word_pain
-    if S.ShadowWordPain:IsCastableP() and (true) then
+    if S.ShadowWordPain:IsCastableP() then
       if HR.Cast(S.ShadowWordPain) then return ""; end
     end
   end
   Cleave = function()
     -- void_eruption
-    if S.VoidEruption:IsCastableP() and (true) then
+    if S.VoidEruption:IsCastableP() then
       if HR.Cast(S.VoidEruption) then return ""; end
     end
     -- dark_ascension,if=buff.voidform.down&azerite.whispers_of_the_damned.rank=0
-    if S.DarkAscension:IsCastableP() and (Player:BuffDownP(S.VoidformBuff) and azerite.whispers_of_the_damned.rank == 0) then
+    if S.DarkAscension:IsCastableP() and (Player:BuffDownP(S.VoidformBuff) and S.WhispersoftheDamned:AzeriteRank() == 0) then
       if HR.Cast(S.DarkAscension) then return ""; end
     end
     -- dark_ascension,if=buff.voidform.down&(cooldown.mindbender.remains>0|cooldown.shadowfiend.remains>0)&azerite.whispers_of_the_damned.rank>0
-    if S.DarkAscension:IsCastableP() and (Player:BuffDownP(S.VoidformBuff) and (S.Mindbender:CooldownRemainsP() > 0 or S.Shadowfiend:CooldownRemainsP() > 0) and azerite.whispers_of_the_damned.rank > 0) then
+    if S.DarkAscension:IsCastableP() and (Player:BuffDownP(S.VoidformBuff) and (S.Mindbender:CooldownRemainsP() > 0 or S.Shadowfiend:CooldownRemainsP() > 0) and S.WhispersoftheDamned:AzeriteRank() > 0) then
       if HR.Cast(S.DarkAscension) then return ""; end
     end
     -- void_bolt
-    if S.VoidBolt:IsCastableP() and (true) then
+    if S.VoidBolt:IsCastableP() then
       if HR.Cast(S.VoidBolt) then return ""; end
     end
     -- shadow_word_death,target_if=target.time_to_die<3|buff.voidform.down
-    if S.ShadowWordDeath:IsCastableP() and (true) then
+    if S.ShadowWordDeath:IsCastableP() and (Target:TimeToDie() < 3 or Player:BuffDownP(S.VoidformBuff)) then
       if HR.Cast(S.ShadowWordDeath) then return ""; end
     end
     -- surrender_to_madness,if=buff.voidform.stack>=(15+buff.bloodlust.up)
@@ -188,23 +189,23 @@ local function APL()
       if HR.Cast(S.SurrenderToMadness) then return ""; end
     end
     -- dark_void
-    if S.DarkVoid:IsCastableP() and (true) then
+    if S.DarkVoid:IsCastableP() then
       if HR.Cast(S.DarkVoid) then return ""; end
     end
     -- shadowfiend,if=!talent.mindbender.enabled&buff.voidform.up&talent.dark_ascension.enabled&azerite.whispers_of_the_damned.rank>0
-    if S.Shadowfiend:IsCastableP() and (not S.Mindbender:IsAvailable() and Player:BuffP(S.VoidformBuff) and S.DarkAscension:IsAvailable() and azerite.whispers_of_the_damned.rank > 0) then
+    if S.Shadowfiend:IsCastableP() and (not S.Mindbender:IsAvailable() and Player:BuffP(S.VoidformBuff) and S.DarkAscension:IsAvailable() and S.WhispersoftheDamned:AzeriteRank() > 0) then
       if HR.Cast(S.Shadowfiend) then return ""; end
     end
     -- shadowfiend,if=!talent.mindbender.enabled&(!talent.dark_ascension.enabled|azerite.whispers_of_the_damned.rank=0)
-    if S.Shadowfiend:IsCastableP() and (not S.Mindbender:IsAvailable() and (not S.DarkAscension:IsAvailable() or azerite.whispers_of_the_damned.rank == 0)) then
+    if S.Shadowfiend:IsCastableP() and (not S.Mindbender:IsAvailable() and (not S.DarkAscension:IsAvailable() or S.WhispersoftheDamned:AzeriteRank() == 0)) then
       if HR.Cast(S.Shadowfiend) then return ""; end
     end
     -- mindbender,if=talent.mindbender.enabled&buff.voidform.up&talent.dark_ascension.enabled&azerite.whispers_of_the_damned.rank>0
-    if S.Mindbender:IsCastableP() and (S.Mindbender:IsAvailable() and Player:BuffP(S.VoidformBuff) and S.DarkAscension:IsAvailable() and azerite.whispers_of_the_damned.rank > 0) then
+    if S.Mindbender:IsCastableP() and (S.Mindbender:IsAvailable() and Player:BuffP(S.VoidformBuff) and S.DarkAscension:IsAvailable() and S.WhispersoftheDamned:AzeriteRank() > 0) then
       if HR.Cast(S.Mindbender) then return ""; end
     end
     -- mindbender,if=talent.mindbender.enabled&(!talent.dark_ascension.enabled|azerite.whispers_of_the_damned.rank=0)
-    if S.Mindbender:IsCastableP() and (S.Mindbender:IsAvailable() and (not S.DarkAscension:IsAvailable() or azerite.whispers_of_the_damned.rank == 0)) then
+    if S.Mindbender:IsCastableP() and (S.Mindbender:IsAvailable() and (not S.DarkAscension:IsAvailable() or S.WhispersoftheDamned:AzeriteRank() == 0)) then
       if HR.Cast(S.Mindbender) then return ""; end
     end
     -- mind_blast,if=buff.voidform.down&talent.misery.enabled
@@ -216,53 +217,53 @@ local function APL()
       if HR.Cast(S.ShadowCrash) then return ""; end
     end
     -- shadow_word_pain,target_if=refreshable&target.time_to_die>4,if=!talent.misery.enabled&!talent.dark_void.enabled
-    if S.ShadowWordPain:IsCastableP() and (not S.Misery:IsAvailable() and not S.DarkVoid:IsAvailable()) then
+    if S.ShadowWordPain:IsCastableP() and (Target:DebuffRefreshableCP(S.ShadowWordPainDebuff) and Target:TimeToDie() > 4) and (not S.Misery:IsAvailable() and not S.DarkVoid:IsAvailable()) then
       if HR.Cast(S.ShadowWordPain) then return ""; end
     end
     -- vampiric_touch,target_if=refreshable,if=(target.time_to_die>6)
-    if S.VampiricTouch:IsCastableP() and ((Target:TimeToDie() > 6)) then
+    if S.VampiricTouch:IsCastableP() and (Target:DebuffRefreshableCP(S.VampiricTouchDebuff)) and ((Target:TimeToDie() > 6)) then
       if HR.Cast(S.VampiricTouch) then return ""; end
     end
     -- vampiric_touch,target_if=dot.shadow_word_pain.refreshable,if=(talent.misery.enabled&target.time_to_die>4)
-    if S.VampiricTouch:IsCastableP() and ((S.Misery:IsAvailable() and Target:TimeToDie() > 4)) then
+    if S.VampiricTouch:IsCastableP() and (Target:DebuffRefreshableCP(S.ShadowWordPainDebuff)) and ((S.Misery:IsAvailable() and Target:TimeToDie() > 4)) then
       if HR.Cast(S.VampiricTouch) then return ""; end
     end
     -- void_torrent
-    if S.VoidTorrent:IsCastableP() and (true) then
+    if S.VoidTorrent:IsCastableP() then
       if HR.Cast(S.VoidTorrent) then return ""; end
     end
     -- mind_blast,if=dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking&azerite.whispers_of_the_damned.rank>0&talent.dark_ascension.enabled
-    if S.MindBlast:IsCastableP() and (Target:DebuffP(S.ShadowWordPainDebuff) and Target:DebuffP(S.VampiricTouchDebuff) and azerite.whispers_of_the_damned.rank > 0 and S.DarkAscension:IsAvailable()) then
+    if S.MindBlast:IsCastableP() and (Target:DebuffP(S.ShadowWordPainDebuff) and Target:DebuffP(S.VampiricTouchDebuff) and S.WhispersoftheDamned:AzeriteRank() > 0 and S.DarkAscension:IsAvailable()) then
       if HR.Cast(S.MindBlast) then return ""; end
     end
     -- mind_sear,target_if=spell_targets.mind_sear>2,chain=1,interrupt=1
-    if S.MindSear:IsCastableP() and (true) then
+    if S.MindSear:IsCastableP() and (Cache.EnemiesCount[40] > 2) then
       if HR.Cast(S.MindSear) then return ""; end
     end
     -- mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(cooldown.void_bolt.up|cooldown.mind_blast.up)
-    if S.MindFlay:IsCastableP() and (true) then
+    if S.MindFlay:IsCastableP() then
       if HR.Cast(S.MindFlay) then return ""; end
     end
     -- shadow_word_pain
-    if S.ShadowWordPain:IsCastableP() and (true) then
+    if S.ShadowWordPain:IsCastableP() then
       if HR.Cast(S.ShadowWordPain) then return ""; end
     end
   end
   Single = function()
     -- void_eruption
-    if S.VoidEruption:IsCastableP() and (true) then
+    if S.VoidEruption:IsCastableP() then
       if HR.Cast(S.VoidEruption) then return ""; end
     end
     -- dark_ascension,if=buff.voidform.down&azerite.whispers_of_the_damned.rank=0
-    if S.DarkAscension:IsCastableP() and (Player:BuffDownP(S.VoidformBuff) and azerite.whispers_of_the_damned.rank == 0) then
+    if S.DarkAscension:IsCastableP() and (Player:BuffDownP(S.VoidformBuff) and S.WhispersoftheDamned:AzeriteRank() == 0) then
       if HR.Cast(S.DarkAscension) then return ""; end
     end
     -- dark_ascension,if=buff.voidform.down&(cooldown.mindbender.remains>0|cooldown.shadowfiend.remains>0)&azerite.whispers_of_the_damned.rank>0
-    if S.DarkAscension:IsCastableP() and (Player:BuffDownP(S.VoidformBuff) and (S.Mindbender:CooldownRemainsP() > 0 or S.Shadowfiend:CooldownRemainsP() > 0) and azerite.whispers_of_the_damned.rank > 0) then
+    if S.DarkAscension:IsCastableP() and (Player:BuffDownP(S.VoidformBuff) and (S.Mindbender:CooldownRemainsP() > 0 or S.Shadowfiend:CooldownRemainsP() > 0) and S.WhispersoftheDamned:AzeriteRank() > 0) then
       if HR.Cast(S.DarkAscension) then return ""; end
     end
     -- void_bolt
-    if S.VoidBolt:IsCastableP() and (true) then
+    if S.VoidBolt:IsCastableP() then
       if HR.Cast(S.VoidBolt) then return ""; end
     end
     -- shadow_word_death,if=target.time_to_die<3|cooldown.shadow_word_death.charges=2
@@ -274,23 +275,23 @@ local function APL()
       if HR.Cast(S.SurrenderToMadness) then return ""; end
     end
     -- dark_void
-    if S.DarkVoid:IsCastableP() and (true) then
+    if S.DarkVoid:IsCastableP() then
       if HR.Cast(S.DarkVoid) then return ""; end
     end
     -- shadowfiend,if=!talent.mindbender.enabled&buff.voidform.up&talent.dark_ascension.enabled&azerite.whispers_of_the_damned.rank>0
-    if S.Shadowfiend:IsCastableP() and (not S.Mindbender:IsAvailable() and Player:BuffP(S.VoidformBuff) and S.DarkAscension:IsAvailable() and azerite.whispers_of_the_damned.rank > 0) then
+    if S.Shadowfiend:IsCastableP() and (not S.Mindbender:IsAvailable() and Player:BuffP(S.VoidformBuff) and S.DarkAscension:IsAvailable() and S.WhispersoftheDamned:AzeriteRank() > 0) then
       if HR.Cast(S.Shadowfiend) then return ""; end
     end
     -- shadowfiend,if=!talent.mindbender.enabled&(!talent.dark_ascension.enabled|azerite.whispers_of_the_damned.rank=0)
-    if S.Shadowfiend:IsCastableP() and (not S.Mindbender:IsAvailable() and (not S.DarkAscension:IsAvailable() or azerite.whispers_of_the_damned.rank == 0)) then
+    if S.Shadowfiend:IsCastableP() and (not S.Mindbender:IsAvailable() and (not S.DarkAscension:IsAvailable() or S.WhispersoftheDamned:AzeriteRank() == 0)) then
       if HR.Cast(S.Shadowfiend) then return ""; end
     end
     -- mindbender,if=talent.mindbender.enabled&buff.voidform.up&talent.dark_ascension.enabled&azerite.whispers_of_the_damned.rank>0
-    if S.Mindbender:IsCastableP() and (S.Mindbender:IsAvailable() and Player:BuffP(S.VoidformBuff) and S.DarkAscension:IsAvailable() and azerite.whispers_of_the_damned.rank > 0) then
+    if S.Mindbender:IsCastableP() and (S.Mindbender:IsAvailable() and Player:BuffP(S.VoidformBuff) and S.DarkAscension:IsAvailable() and S.WhispersoftheDamned:AzeriteRank() > 0) then
       if HR.Cast(S.Mindbender) then return ""; end
     end
     -- mindbender,if=talent.mindbender.enabled&(!talent.dark_ascension.enabled|azerite.whispers_of_the_damned.rank=0)
-    if S.Mindbender:IsCastableP() and (S.Mindbender:IsAvailable() and (not S.DarkAscension:IsAvailable() or azerite.whispers_of_the_damned.rank == 0)) then
+    if S.Mindbender:IsCastableP() and (S.Mindbender:IsAvailable() and (not S.DarkAscension:IsAvailable() or S.WhispersoftheDamned:AzeriteRank() == 0)) then
       if HR.Cast(S.Mindbender) then return ""; end
     end
     -- mind_blast,if=(dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking)|(talent.shadow_word_void.enabled&cooldown.shadow_word_void.charges=2)
@@ -322,11 +323,11 @@ local function APL()
       if HR.Cast(S.VampiricTouch) then return ""; end
     end
     -- mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(cooldown.void_bolt.up|cooldown.mind_blast.up)
-    if S.MindFlay:IsCastableP() and (true) then
+    if S.MindFlay:IsCastableP() then
       if HR.Cast(S.MindFlay) then return ""; end
     end
     -- shadow_word_pain
-    if S.ShadowWordPain:IsCastableP() and (true) then
+    if S.ShadowWordPain:IsCastableP() then
       if HR.Cast(S.ShadowWordPain) then return ""; end
     end
   end

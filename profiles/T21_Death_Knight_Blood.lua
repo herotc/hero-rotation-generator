@@ -89,7 +89,7 @@ local function APL()
     -- augmentation
     -- snapshot_stats
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
   end
@@ -131,7 +131,7 @@ local function APL()
       if HR.Cast(S.DeathandDecay) then return ""; end
     end
     -- death_and_decay
-    if S.DeathandDecay:IsCastableP() and (true) then
+    if S.DeathandDecay:IsCastableP() then
       if HR.Cast(S.DeathandDecay) then return ""; end
     end
     -- heart_strike,if=rune.time_to_3<gcd|buff.bone_shield.stack>6
@@ -145,7 +145,7 @@ local function APL()
   end
   -- auto_attack
   -- mind_freeze
-  if S.MindFreeze:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled and (true) then
+  if S.MindFreeze:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled then
     if HR.CastAnnotated(S.MindFreeze, false, "Interrupt") then return ""; end
   end
   -- arcane_torrent,if=runic_power.deficit>20
@@ -153,7 +153,7 @@ local function APL()
     if HR.Cast(S.ArcaneTorrent, Settings.Blood.GCDasOffGCD.ArcaneTorrent) then return ""; end
   end
   -- blood_fury
-  if S.BloodFury:IsCastableP() and (true) then
+  if S.BloodFury:IsCastableP() then
     if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- berserking,if=buff.dancing_rune_weapon.up

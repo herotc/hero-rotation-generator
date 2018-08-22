@@ -29,6 +29,7 @@ Spell.Shaman.Elemental = {
   StormElemental                        = Spell(192249),
   LiquidMagmaTotem                      = Spell(192222),
   FlameShock                            = Spell(188389),
+  FlameShockDebuff                      = Spell(188389),
   EarthShock                            = Spell(8042),
   Earthquake                            = Spell(61882),
   EchoesoftheGreatSunderingBuff         = Spell(208722),
@@ -38,7 +39,6 @@ Spell.Shaman.Elemental = {
   LavaBeam                              = Spell(114074),
   ChainLightning                        = Spell(188443),
   FrostShock                            = Spell(196840),
-  FlameShockDebuff                      = Spell(188389),
   MasteroftheElements                   = Spell(),
   MasteroftheElementsBuff               = Spell(),
   LightningBolt                         = Spell(188196),
@@ -101,25 +101,25 @@ local function APL()
     -- augmentation
     -- snapshot_stats
     -- totem_mastery
-    if S.TotemMastery:IsCastableP() and (true) then
+    if S.TotemMastery:IsCastableP() then
       if HR.Cast(S.TotemMastery) then return ""; end
     end
     -- fire_elemental
-    if S.FireElemental:IsCastableP() and (true) then
+    if S.FireElemental:IsCastableP() then
       if HR.Cast(S.FireElemental) then return ""; end
     end
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- elemental_blast
-    if S.ElementalBlast:IsCastableP() and (true) then
+    if S.ElementalBlast:IsCastableP() then
       if HR.Cast(S.ElementalBlast) then return ""; end
     end
   end
   Aoe = function()
     -- stormkeeper
-    if S.Stormkeeper:IsCastableP() and (true) then
+    if S.Stormkeeper:IsCastableP() then
       if HR.Cast(S.Stormkeeper) then return ""; end
     end
     -- ascendance,if=talent.storm_elemental.enabled&cooldown.storm_elemental.remains<120&cooldown.storm_elemental.remains>15|!talent.storm_elemental.enabled
@@ -127,11 +127,11 @@ local function APL()
       if HR.Cast(S.Ascendance) then return ""; end
     end
     -- liquid_magma_totem
-    if S.LiquidMagmaTotem:IsCastableP() and (true) then
+    if S.LiquidMagmaTotem:IsCastableP() then
       if HR.Cast(S.LiquidMagmaTotem) then return ""; end
     end
     -- flame_shock,if=spell_targets.chain_lightning<4,target_if=refreshable
-    if S.FlameShock:IsCastableP() and (Cache.EnemiesCount[40] < 4) then
+    if S.FlameShock:IsCastableP() and (Target:DebuffRefreshableCP(S.FlameShockDebuff)) and (Cache.EnemiesCount[40] < 4) then
       if HR.Cast(S.FlameShock) then return ""; end
     end
     -- earth_shock,if=equipped.echoes_of_the_great_sundering
@@ -151,23 +151,23 @@ local function APL()
       if HR.Cast(S.ElementalBlast) then return ""; end
     end
     -- lava_beam
-    if S.LavaBeam:IsCastableP() and (true) then
+    if S.LavaBeam:IsCastableP() then
       if HR.Cast(S.LavaBeam) then return ""; end
     end
     -- chain_lightning
-    if S.ChainLightning:IsCastableP() and (true) then
+    if S.ChainLightning:IsCastableP() then
       if HR.Cast(S.ChainLightning) then return ""; end
     end
     -- lava_burst,moving=1
-    if S.LavaBurst:IsCastableP() and (true) then
+    if S.LavaBurst:IsCastableP() then
       if HR.Cast(S.LavaBurst) then return ""; end
     end
     -- flame_shock,moving=1,target_if=refreshable
-    if S.FlameShock:IsCastableP() and (true) then
+    if S.FlameShock:IsCastableP() and (Target:DebuffRefreshableCP(S.FlameShockDebuff)) then
       if HR.Cast(S.FlameShock) then return ""; end
     end
     -- frost_shock,moving=1
-    if S.FrostShock:IsCastableP() and (true) then
+    if S.FrostShock:IsCastableP() then
       if HR.Cast(S.FrostShock) then return ""; end
     end
   end
@@ -213,7 +213,7 @@ local function APL()
       if HR.Cast(S.LavaBurst) then return ""; end
     end
     -- flame_shock,target_if=refreshable
-    if S.FlameShock:IsCastableP() and (true) then
+    if S.FlameShock:IsCastableP() and (Target:DebuffRefreshableCP(S.FlameShockDebuff)) then
       if HR.Cast(S.FlameShock) then return ""; end
     end
     -- totem_mastery,if=buff.resonance_totem.remains<6|(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&cooldown.ascendance.remains<15)
@@ -225,7 +225,7 @@ local function APL()
       if HR.Cast(S.FrostShock) then return ""; end
     end
     -- icefury
-    if S.Icefury:IsCastableP() and (true) then
+    if S.Icefury:IsCastableP() then
       if HR.Cast(S.Icefury) then return ""; end
     end
     -- lava_beam,if=active_enemies>1&spell_targets.lava_beam>1
@@ -237,11 +237,11 @@ local function APL()
       if HR.Cast(S.ChainLightning) then return ""; end
     end
     -- lightning_bolt
-    if S.LightningBolt:IsCastableP() and (true) then
+    if S.LightningBolt:IsCastableP() then
       if HR.Cast(S.LightningBolt) then return ""; end
     end
     -- flame_shock,moving=1,target_if=refreshable
-    if S.FlameShock:IsCastableP() and (true) then
+    if S.FlameShock:IsCastableP() and (Target:DebuffRefreshableCP(S.FlameShockDebuff)) then
       if HR.Cast(S.FlameShock) then return ""; end
     end
     -- flame_shock,moving=1,if=movement.distance>6
@@ -249,7 +249,7 @@ local function APL()
       if HR.Cast(S.FlameShock) then return ""; end
     end
     -- frost_shock,moving=1
-    if S.FrostShock:IsCastableP() and (true) then
+    if S.FrostShock:IsCastableP() then
       if HR.Cast(S.FrostShock) then return ""; end
     end
   end
@@ -262,11 +262,11 @@ local function APL()
     if HR.Cast(S.Bloodlust) then return ""; end
   end
   -- potion
-  if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+  if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
     if HR.CastSuggested(I.ProlongedPower) then return ""; end
   end
   -- wind_shear
-  if S.WindShear:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled and (true) then
+  if S.WindShear:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled then
     if HR.CastAnnotated(S.WindShear, false, "Interrupt") then return ""; end
   end
   -- totem_mastery,if=buff.resonance_totem.remains<2
@@ -274,11 +274,11 @@ local function APL()
     if HR.Cast(S.TotemMastery) then return ""; end
   end
   -- fire_elemental
-  if S.FireElemental:IsCastableP() and (true) then
+  if S.FireElemental:IsCastableP() then
     if HR.Cast(S.FireElemental) then return ""; end
   end
   -- storm_elemental
-  if S.StormElemental:IsCastableP() and (true) then
+  if S.StormElemental:IsCastableP() then
     if HR.Cast(S.StormElemental) then return ""; end
   end
   -- earth_elemental,if=cooldown.fire_elemental.remains<120&!talent.storm_elemental.enabled|cooldown.storm_elemental.remains<120&talent.storm_elemental.enabled

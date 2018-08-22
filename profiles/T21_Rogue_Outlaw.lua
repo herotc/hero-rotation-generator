@@ -46,6 +46,8 @@ Spell.Rogue.Outlaw = {
   RolltheBonesBuff                      = Spell(),
   BetweentheEyes                        = Spell(199804),
   RuthlessPrecisionBuff                 = Spell(),
+  AceUpYourSleeve                       = Spell(),
+  Deadshot                              = Spell(),
   Dispatch                              = Spell(),
   Ambush                                = Spell(8676),
   LoadedDiceBuff                        = Spell(240837),
@@ -106,11 +108,11 @@ local function APL()
     -- food
     -- snapshot_stats
     -- stealth
-    if S.Stealth:IsCastableP() and (true) then
+    if S.Stealth:IsCastableP() then
       if HR.Cast(S.Stealth) then return ""; end
     end
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- marked_for_death,precombat_seconds=5,if=raid_event.adds.in>40
@@ -118,15 +120,15 @@ local function APL()
       if HR.Cast(S.MarkedForDeath) then return ""; end
     end
     -- roll_the_bones,precombat_seconds=2
-    if S.RolltheBones:IsCastableP() and (true) then
+    if S.RolltheBones:IsCastableP() then
       if HR.Cast(S.RolltheBones) then return ""; end
     end
     -- slice_and_dice,precombat_seconds=2
-    if S.SliceandDice:IsCastableP() and Player:BuffDownP(S.SliceandDiceBuff) and (true) then
+    if S.SliceandDice:IsCastableP() and Player:BuffDownP(S.SliceandDiceBuff) then
       if HR.Cast(S.SliceandDice) then return ""; end
     end
     -- adrenaline_rush,precombat_seconds=1
-    if S.AdrenalineRush:IsCastableP() and Player:BuffDownP(S.AdrenalineRushBuff) and (true) then
+    if S.AdrenalineRush:IsCastableP() and Player:BuffDownP(S.AdrenalineRushBuff) then
       if HR.Cast(S.AdrenalineRush) then return ""; end
     end
   end
@@ -136,7 +138,7 @@ local function APL()
       if HR.Cast(S.PistolShot) then return ""; end
     end
     -- sinister_strike
-    if S.SinisterStrike:IsCastableP() and (true) then
+    if S.SinisterStrike:IsCastableP() then
       if HR.Cast(S.SinisterStrike) then return ""; end
     end
   end
@@ -146,11 +148,11 @@ local function APL()
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- blood_fury
-    if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
+    if S.BloodFury:IsCastableP() and HR.CDsON() then
       if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- berserking
-    if S.Berserking:IsCastableP() and HR.CDsON() and (true) then
+    if S.Berserking:IsCastableP() and HR.CDsON() then
       if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- adrenaline_rush,if=!buff.adrenaline_rush.up&energy.time_to_max>1
@@ -158,7 +160,7 @@ local function APL()
       if HR.Cast(S.AdrenalineRush) then return ""; end
     end
     -- marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|((raid_event.adds.in>40|buff.true_bearing.remains>15-buff.adrenaline_rush.up*5)&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)
-    if S.MarkedForDeath:IsCastableP() and (Target:TimeToDie() < Player:ComboPointsDeficit() or ((10000000000 > 40 or Player:BuffRemainsP(S.TrueBearingBuff) > 15 - num(Player:BuffP(S.AdrenalineRushBuff)) * 5) and not bool(stealthed.rogue) and Player:ComboPointsDeficit() >= cp_max_spend - 1)) then
+    if S.MarkedForDeath:IsCastableP() and (bool(min:target.time_to_die)) and (Target:TimeToDie() < Player:ComboPointsDeficit() or ((10000000000 > 40 or Player:BuffRemainsP(S.TrueBearingBuff) > 15 - num(Player:BuffP(S.AdrenalineRushBuff)) * 5) and not bool(stealthed.rogue) and Player:ComboPointsDeficit() >= cp_max_spend - 1)) then
       if HR.Cast(S.MarkedForDeath) then return ""; end
     end
     -- blade_flurry,if=spell_targets>=2&!buff.blade_flurry.up&(!raid_event.adds.exists|raid_event.adds.remains>8|cooldown.blade_flurry.charges=1&raid_event.adds.in>(2-cooldown.blade_flurry.charges_fractional)*25)
@@ -196,17 +198,17 @@ local function APL()
       if HR.Cast(S.RolltheBones) then return ""; end
     end
     -- between_the_eyes,if=buff.ruthless_precision.up|azerite.ace_up_your_sleeve.enabled|azerite.deadshot.enabled
-    if S.BetweentheEyes:IsCastableP() and (Player:BuffP(S.RuthlessPrecisionBuff) or bool(azerite.ace_up_your_sleeve.enabled) or bool(azerite.deadshot.enabled)) then
+    if S.BetweentheEyes:IsCastableP() and (Player:BuffP(S.RuthlessPrecisionBuff) or S.AceUpYourSleeve:AzeriteEnabled() or S.Deadshot:AzeriteEnabled()) then
       if HR.Cast(S.BetweentheEyes) then return ""; end
     end
     -- dispatch
-    if S.Dispatch:IsCastableP() and (true) then
+    if S.Dispatch:IsCastableP() then
       if HR.Cast(S.Dispatch) then return ""; end
     end
   end
   Stealth = function()
     -- ambush
-    if S.Ambush:IsCastableP() and (true) then
+    if S.Ambush:IsCastableP() then
       if HR.Cast(S.Ambush) then return ""; end
     end
   end
@@ -247,11 +249,11 @@ local function APL()
     if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- arcane_pulse
-  if S.ArcanePulse:IsCastableP() and (true) then
+  if S.ArcanePulse:IsCastableP() then
     if HR.Cast(S.ArcanePulse) then return ""; end
   end
   -- lights_judgment
-  if S.LightsJudgment:IsCastableP() and HR.CDsON() and (true) then
+  if S.LightsJudgment:IsCastableP() and HR.CDsON() then
     if HR.Cast(S.LightsJudgment) then return ""; end
   end
 end

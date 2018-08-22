@@ -115,17 +115,17 @@ local function APL()
     -- augmentation
     -- snapshot_stats
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- lightning_shield
-    if S.LightningShield:IsCastableP() and (true) then
+    if S.LightningShield:IsCastableP() then
       if HR.Cast(S.LightningShield) then return ""; end
     end
   end
   Asc = function()
     -- earthen_spike
-    if S.EarthenSpike:IsCastableP() and (true) then
+    if S.EarthenSpike:IsCastableP() then
       if HR.Cast(S.EarthenSpike) then return ""; end
     end
     -- crash_lightning,if=!buff.crash_lightning.up&active_enemies>1
@@ -137,7 +137,7 @@ local function APL()
       if HR.Cast(S.Rockbiter) then return ""; end
     end
     -- windstrike
-    if S.Windstrike:IsCastableP() and (true) then
+    if S.Windstrike:IsCastableP() then
       if HR.Cast(S.Windstrike) then return ""; end
     end
   end
@@ -193,7 +193,7 @@ local function APL()
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- feral_spirit
-    if S.FeralSpirit:IsCastableP() and (true) then
+    if S.FeralSpirit:IsCastableP() then
       if HR.Cast(S.FeralSpirit) then return ""; end
     end
     -- ascendance,if=cooldown.strike.remains>0
@@ -201,7 +201,7 @@ local function APL()
       if HR.Cast(S.Ascendance) then return ""; end
     end
     -- earth_elemental
-    if S.EarthElemental:IsCastableP() and (true) then
+    if S.EarthElemental:IsCastableP() then
       if HR.Cast(S.EarthElemental) then return ""; end
     end
   end
@@ -231,7 +231,7 @@ local function APL()
       if HR.Cast(S.Stormstrike) then return ""; end
     end
     -- sundering
-    if S.Sundering:IsCastableP() and (true) then
+    if S.Sundering:IsCastableP() then
       if HR.Cast(S.Sundering) then return ""; end
     end
     -- crash_lightning,if=talent.forceful_winds.enabled&active_enemies>1
@@ -273,7 +273,7 @@ local function APL()
       if HR.Cast(S.LavaLash) then return ""; end
     end
     -- rockbiter
-    if S.Rockbiter:IsCastableP() and (true) then
+    if S.Rockbiter:IsCastableP() then
       if HR.Cast(S.Rockbiter) then return ""; end
     end
     -- crash_lightning,if=(maelstrom>=65|talent.crashing_storm.enabled)&variable.OCPool60&variable.furyCheck45
@@ -281,7 +281,7 @@ local function APL()
       if HR.Cast(S.CrashLightning) then return ""; end
     end
     -- flametongue
-    if S.Flametongue:IsCastableP() and (true) then
+    if S.Flametongue:IsCastableP() then
       if HR.Cast(S.Flametongue) then return ""; end
     end
   end
@@ -296,7 +296,7 @@ local function APL()
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- wind_shear
-  if S.WindShear:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled and (true) then
+  if S.WindShear:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled then
     if HR.CastAnnotated(S.WindShear, false, "Interrupt") then return ""; end
   end
   -- variable,name=furyCheck80,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&((maelstrom>35&cooldown.lightning_bolt.remains>=3*gcd)|maelstrom>80)))

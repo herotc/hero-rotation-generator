@@ -122,7 +122,7 @@ local function APL()
     -- food
     -- augmentation
     -- summon_pet
-    if S.SummonPet:IsCastableP() and (true) then
+    if S.SummonPet:IsCastableP() then
       if HR.Cast(S.SummonPet, Settings.Affliction.GCDasOffGCD.SummonPet) then return ""; end
     end
     -- grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
@@ -131,7 +131,7 @@ local function APL()
     end
     -- snapshot_stats
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- seed_of_corruption,if=spell_targets.seed_of_corruption_aoe>=3
@@ -139,7 +139,7 @@ local function APL()
       if HR.Cast(S.SeedofCorruption) then return ""; end
     end
     -- haunt
-    if S.Haunt:IsCastableP() and Player:DebuffDownP(S.HauntDebuff) and (true) then
+    if S.Haunt:IsCastableP() and Player:DebuffDownP(S.HauntDebuff) then
       if HR.Cast(S.Haunt) then return ""; end
     end
     -- shadow_bolt,if=!talent.haunt.enabled&spell_targets.seed_of_corruption_aoe<3
@@ -153,7 +153,7 @@ local function APL()
       local ShouldReturn = DgSoon(); if ShouldReturn then return ShouldReturn; end
     end
     -- seed_of_corruption
-    if S.SeedofCorruption:IsCastableP() and (true) then
+    if S.SeedofCorruption:IsCastableP() then
       if HR.Cast(S.SeedofCorruption) then return ""; end
     end
     -- call_action_list,name=fillers
@@ -171,7 +171,7 @@ local function APL()
       if HR.Cast(S.Agony) then return ""; end
     end
     -- summon_darkglare
-    if S.SummonDarkglare:IsCastableP() and HR.CDsON() and (true) then
+    if S.SummonDarkglare:IsCastableP() and HR.CDsON() then
       if HR.Cast(S.SummonDarkglare, Settings.Affliction.GCDasOffGCD.SummonDarkglare) then return ""; end
     end
     -- call_action_list,name=fillers
@@ -181,16 +181,16 @@ local function APL()
   end
   Fillers = function()
     -- fireblood
-    if S.Fireblood:IsCastableP() and HR.CDsON() and (true) then
+    if S.Fireblood:IsCastableP() and HR.CDsON() then
       if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- blood_fury
-    if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
+    if S.BloodFury:IsCastableP() and HR.CDsON() then
       if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- use_items
     -- deathbolt
-    if S.Deathbolt:IsCastableP() and (true) then
+    if S.Deathbolt:IsCastableP() then
       if HR.Cast(S.Deathbolt) then return ""; end
     end
     -- drain_soul,interrupt_global=1,chain=1,cycle_targets=1,if=target.time_to_die<=gcd
@@ -198,11 +198,11 @@ local function APL()
       if HR.Cast(S.DrainSoul) then return ""; end
     end
     -- drain_soul,interrupt_global=1,chain=1
-    if S.DrainSoul:IsCastableP() and (true) then
+    if S.DrainSoul:IsCastableP() then
       if HR.Cast(S.DrainSoul) then return ""; end
     end
     -- shadow_bolt
-    if S.ShadowBolt:IsCastableP() and (true) then
+    if S.ShadowBolt:IsCastableP() then
       if HR.Cast(S.ShadowBolt) then return ""; end
     end
   end
@@ -239,7 +239,7 @@ local function APL()
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   -- haunt
-  if S.Haunt:IsCastableP() and (true) then
+  if S.Haunt:IsCastableP() then
     if HR.Cast(S.Haunt) then return ""; end
   end
   -- summon_darkglare,if=dot.agony.ticking&dot.corruption.ticking&dot.unstable_affliction_1.ticking&dot.unstable_affliction_2.ticking&dot.unstable_affliction_3.ticking&((dot.unstable_affliction_4.ticking&dot.unstable_affliction_5.ticking)|soul_shard=0)
@@ -263,7 +263,7 @@ local function APL()
     if HR.Cast(S.Agony) then return ""; end
   end
   -- dark_soul
-  if S.DarkSoul:IsCastableP() and HR.CDsON() and (true) then
+  if S.DarkSoul:IsCastableP() and HR.CDsON() then
     if HR.Cast(S.DarkSoul, Settings.Affliction.GCDasOffGCD.DarkSoul) then return ""; end
   end
   -- siphon_life,cycle_targets=1,max_cycle_targets=1,if=refreshable&target.time_to_die>10&((!(cooldown.summon_darkglare.remains<=soul_shard*cast_time)&active_enemies>4)|active_enemies<2)
@@ -287,15 +287,15 @@ local function APL()
     if HR.Cast(S.SeedofCorruption) then return ""; end
   end
   -- phantom_singularity
-  if S.PhantomSingularity:IsCastableP() and (true) then
+  if S.PhantomSingularity:IsCastableP() then
     if HR.Cast(S.PhantomSingularity, Settings.Affliction.GCDasOffGCD.PhantomSingularity) then return ""; end
   end
   -- vile_taint
-  if S.VileTaint:IsCastableP() and (true) then
+  if S.VileTaint:IsCastableP() then
     if HR.Cast(S.VileTaint) then return ""; end
   end
   -- berserking
-  if S.Berserking:IsCastableP() and HR.CDsON() and (true) then
+  if S.Berserking:IsCastableP() and HR.CDsON() then
     if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- call_action_list,name=aoe,if=talent.sow_the_seeds.enabled&spell_targets.seed_of_corruption_aoe>=3

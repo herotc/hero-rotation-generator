@@ -114,20 +114,20 @@ local function APL()
     -- food
     -- augmentation
     -- arcane_intellect
-    if S.ArcaneIntellect:IsCastableP() and Player:BuffDownP(S.ArcaneIntellectBuff) and (true) then
+    if S.ArcaneIntellect:IsCastableP() and Player:BuffDownP(S.ArcaneIntellectBuff) then
       if HR.Cast(S.ArcaneIntellect) then return ""; end
     end
     -- snapshot_stats
     -- mirror_image
-    if S.MirrorImage:IsCastableP() and (true) then
+    if S.MirrorImage:IsCastableP() then
       if HR.Cast(S.MirrorImage) then return ""; end
     end
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- pyroblast
-    if S.Pyroblast:IsCastableP() and (true) then
+    if S.Pyroblast:IsCastableP() then
       if HR.Cast(S.Pyroblast) then return ""; end
     end
   end
@@ -163,19 +163,19 @@ local function APL()
       local ShouldReturn = ActiveTalents(); if ShouldReturn then return ShouldReturn; end
     end
     -- combustion
-    if S.Combustion:IsCastableP() and HR.CDsON() and (true) then
+    if S.Combustion:IsCastableP() and HR.CDsON() then
       if HR.Cast(S.Combustion, Settings.Fire.OffGCDasOffGCD.Combustion) then return ""; end
     end
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- blood_fury
-    if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
+    if S.BloodFury:IsCastableP() and HR.CDsON() then
       if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- berserking
-    if S.Berserking:IsCastableP() and HR.CDsON() and (true) then
+    if S.Berserking:IsCastableP() and HR.CDsON() then
       if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- use_items
@@ -196,7 +196,7 @@ local function APL()
       if HR.Cast(S.FireBlast) then return ""; end
     end
     -- phoenix_flames
-    if S.PhoenixFlames:IsCastableP() and (true) then
+    if S.PhoenixFlames:IsCastableP() then
       if HR.Cast(S.PhoenixFlames) then return ""; end
     end
     -- scorch,if=buff.combustion.remains>cast_time
@@ -214,7 +214,7 @@ local function APL()
   end
   RopPhase = function()
     -- rune_of_power
-    if S.RuneofPower:IsCastableP() and (true) then
+    if S.RuneofPower:IsCastableP() then
       if HR.Cast(S.RuneofPower, Settings.Fire.GCDasOffGCD.RuneofPower) then return ""; end
     end
     -- flamestrike,if=((talent.flame_patch.enabled&active_enemies>1)|active_enemies>4)&buff.hot_streak.react
@@ -266,7 +266,7 @@ local function APL()
       if HR.Cast(S.Flamestrike) then return ""; end
     end
     -- fireball
-    if S.Fireball:IsCastableP() and (true) then
+    if S.Fireball:IsCastableP() then
       if HR.Cast(S.Fireball) then return ""; end
     end
   end
@@ -332,11 +332,11 @@ local function APL()
       if HR.Cast(S.Scorch) then return ""; end
     end
     -- fireball
-    if S.Fireball:IsCastableP() and (true) then
+    if S.Fireball:IsCastableP() then
       if HR.Cast(S.Fireball) then return ""; end
     end
     -- scorch
-    if S.Scorch:IsCastableP() and (true) then
+    if S.Scorch:IsCastableP() then
       if HR.Cast(S.Scorch) then return ""; end
     end
   end

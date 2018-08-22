@@ -43,6 +43,7 @@ Spell.Druid.Guardian = {
   JaggedClaws                           = Spell(),
   SouloftheForest                       = Spell(158477),
   Mangle                                = Spell(33917),
+  GalacticGuardianBuff                  = Spell(213708),
   SwipeBear                             = Spell(213771)
 };
 local S = Spell.Druid.Guardian;
@@ -116,12 +117,12 @@ local function APL()
       VarLatcOrFonEquipped = num(I.LadyandtheChild:IsEquipped() or I.FuryofNature:IsEquipped())
     end
     -- bear_form
-    if S.BearForm:IsCastableP() and (true) then
+    if S.BearForm:IsCastableP() then
       if HR.Cast(S.BearForm) then return ""; end
     end
     -- snapshot_stats
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
   end
@@ -131,15 +132,15 @@ local function APL()
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- blood_fury
-    if S.BloodFury:IsCastableP() and HR.CDsON() and (true) then
+    if S.BloodFury:IsCastableP() and HR.CDsON() then
       if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- berserking
-    if S.Berserking:IsCastableP() and HR.CDsON() and (true) then
+    if S.Berserking:IsCastableP() and HR.CDsON() then
       if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- arcane_torrent
-    if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (true) then
+    if S.ArcaneTorrent:IsCastableP() and HR.CDsON() then
       if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- rage_of_the_sleeper,if=(talent.rend_and_tear.enabled&dot.thrash_bear.stack=dot.thrash_bear.max_stacks)|!talent.rend_and_tear.enabled
@@ -186,15 +187,15 @@ local function APL()
     if HR.Cast(S.Mangle) then return ""; end
   end
   -- thrash_bear
-  if S.ThrashBear:IsCastableP() and (true) then
+  if S.ThrashBear:IsCastableP() then
     if HR.Cast(S.ThrashBear) then return ""; end
   end
   -- moonfire,target_if=buff.galactic_guardian.up&(((!variable.latc_or_fon_equipped&active_enemies<4)|(variable.latc_or_fon_equipped&active_enemies<5))|dot.moonfire.refreshable&(!variable.latc_or_fon_equipped&active_enemies<5)|(variable.latc_or_fon_equipped&active_enemies<6))
-  if S.Moonfire:IsCastableP() and (true) then
+  if S.Moonfire:IsCastableP() and (Player:BuffP(S.GalacticGuardianBuff) and (((not bool(VarLatcOrFonEquipped) and Cache.EnemiesCount[40] < 4) or (bool(VarLatcOrFonEquipped) and Cache.EnemiesCount[40] < 5)) or Target:DebuffRefreshableCP(S.MoonfireDebuff) and (not bool(VarLatcOrFonEquipped) and Cache.EnemiesCount[40] < 5) or (bool(VarLatcOrFonEquipped) and Cache.EnemiesCount[40] < 6))) then
     if HR.Cast(S.Moonfire) then return ""; end
   end
   -- moonfire,target_if=dot.moonfire.refreshable&!talent.galactic_guardian.enabled
-  if S.Moonfire:IsCastableP() and (true) then
+  if S.Moonfire:IsCastableP() and (Target:DebuffRefreshableCP(S.MoonfireDebuff) and not S.GalacticGuardian:IsAvailable()) then
     if HR.Cast(S.Moonfire) then return ""; end
   end
   -- maul,if=active_enemies<6&(cooldown.rage_of_the_sleeper.remains>10|buff.rage_of_the_sleeper.up)
@@ -202,11 +203,11 @@ local function APL()
     if HR.Cast(S.Maul) then return ""; end
   end
   -- moonfire,target_if=dot.moonfire.refreshable&active_enemies<3
-  if S.Moonfire:IsCastableP() and (true) then
+  if S.Moonfire:IsCastableP() and (Target:DebuffRefreshableCP(S.MoonfireDebuff) and Cache.EnemiesCount[40] < 3) then
     if HR.Cast(S.Moonfire) then return ""; end
   end
   -- swipe_bear
-  if S.SwipeBear:IsCastableP() and (true) then
+  if S.SwipeBear:IsCastableP() then
     if HR.Cast(S.SwipeBear) then return ""; end
   end
 end

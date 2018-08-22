@@ -30,8 +30,11 @@ Spell.Druid.Balance = {
   Incarnation                           = Spell(102560),
   ForceofNature                         = Spell(205636),
   Sunfire                               = Spell(93402),
+  SunfireDebuff                         = Spell(164815),
   Moonfire                              = Spell(8921),
+  MoonfireDebuff                        = Spell(164812),
   StellarFlare                          = Spell(202347),
+  StellarFlareDebuff                    = Spell(202347),
   LunarStrike                           = Spell(194153),
   LunarEmpowermentBuff                  = Spell(164547),
   SolarEmpowermentBuff                  = Spell(164545),
@@ -122,16 +125,16 @@ local function APL()
     -- food
     -- augmentation
     -- moonkin_form
-    if S.MoonkinForm:IsCastableP() and (true) then
+    if S.MoonkinForm:IsCastableP() then
       if HR.Cast(S.MoonkinForm) then return ""; end
     end
     -- snapshot_stats
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (true) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- solar_wrath
-    if S.SolarWrath:IsCastableP() and (true) then
+    if S.SolarWrath:IsCastableP() then
       if HR.Cast(S.SolarWrath) then return ""; end
     end
   end
@@ -145,15 +148,15 @@ local function APL()
       if HR.Cast(S.ForceofNature) then return ""; end
     end
     -- sunfire,target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4
-    if S.Sunfire:IsCastableP() and (Player:AstralPowerDeficit() > 7 and Target:TimeToDie() > 4) then
+    if S.Sunfire:IsCastableP() and (Target:DebuffRefreshableCP(S.SunfireDebuff)) and (Player:AstralPowerDeficit() > 7 and Target:TimeToDie() > 4) then
       if HR.Cast(S.Sunfire) then return ""; end
     end
     -- moonfire,target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4
-    if S.Moonfire:IsCastableP() and (Player:AstralPowerDeficit() > 7 and Target:TimeToDie() > 4) then
+    if S.Moonfire:IsCastableP() and (Target:DebuffRefreshableCP(S.MoonfireDebuff)) and (Player:AstralPowerDeficit() > 7 and Target:TimeToDie() > 4) then
       if HR.Cast(S.Moonfire) then return ""; end
     end
     -- stellar_flare,target_if=refreshable,if=target.time_to_die>10
-    if S.StellarFlare:IsCastableP() and (Target:TimeToDie() > 10) then
+    if S.StellarFlare:IsCastableP() and (Target:DebuffRefreshableCP(S.StellarFlareDebuff)) and (Target:TimeToDie() > 10) then
       if HR.Cast(S.StellarFlare) then return ""; end
     end
     -- lunar_strike,if=(buff.lunar_empowerment.stack=3|buff.solar_empowerment.stack=2&buff.lunar_empowerment.stack=2&astral_power>=40)&astral_power.deficit>14
@@ -189,11 +192,11 @@ local function APL()
       if HR.Cast(S.SolarWrath) then return ""; end
     end
     -- lunar_strike
-    if S.LunarStrike:IsCastableP() and (true) then
+    if S.LunarStrike:IsCastableP() then
       if HR.Cast(S.LunarStrike) then return ""; end
     end
     -- moonfire
-    if S.Moonfire:IsCastableP() and (true) then
+    if S.Moonfire:IsCastableP() then
       if HR.Cast(S.Moonfire) then return ""; end
     end
   end
@@ -219,15 +222,15 @@ local function APL()
       if HR.Cast(S.Starsurge) then return ""; end
     end
     -- moonfire,target_if=refreshable,if=buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up
-    if S.Moonfire:IsCastableP() and (Player:BuffRemainsP(S.TheEmeraldDreamcatcherBuff) > Player:GCD() or not Player:BuffP(S.TheEmeraldDreamcatcherBuff)) then
+    if S.Moonfire:IsCastableP() and (Target:DebuffRefreshableCP(S.MoonfireDebuff)) and (Player:BuffRemainsP(S.TheEmeraldDreamcatcherBuff) > Player:GCD() or not Player:BuffP(S.TheEmeraldDreamcatcherBuff)) then
       if HR.Cast(S.Moonfire) then return ""; end
     end
     -- sunfire,target_if=refreshable,if=buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up
-    if S.Sunfire:IsCastableP() and (Player:BuffRemainsP(S.TheEmeraldDreamcatcherBuff) > Player:GCD() or not Player:BuffP(S.TheEmeraldDreamcatcherBuff)) then
+    if S.Sunfire:IsCastableP() and (Target:DebuffRefreshableCP(S.SunfireDebuff)) and (Player:BuffRemainsP(S.TheEmeraldDreamcatcherBuff) > Player:GCD() or not Player:BuffP(S.TheEmeraldDreamcatcherBuff)) then
       if HR.Cast(S.Sunfire) then return ""; end
     end
     -- stellar_flare,target_if=refreshable,if=buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up
-    if S.StellarFlare:IsCastableP() and (Player:BuffRemainsP(S.TheEmeraldDreamcatcherBuff) > Player:GCD() or not Player:BuffP(S.TheEmeraldDreamcatcherBuff)) then
+    if S.StellarFlare:IsCastableP() and (Target:DebuffRefreshableCP(S.StellarFlareDebuff)) and (Player:BuffRemainsP(S.TheEmeraldDreamcatcherBuff) > Player:GCD() or not Player:BuffP(S.TheEmeraldDreamcatcherBuff)) then
       if HR.Cast(S.StellarFlare) then return ""; end
     end
     -- starfall,if=buff.oneths_overconfidence.up&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)
@@ -259,7 +262,7 @@ local function APL()
       if HR.Cast(S.Starsurge) then return ""; end
     end
     -- solar_wrath
-    if S.SolarWrath:IsCastableP() and (true) then
+    if S.SolarWrath:IsCastableP() then
       if HR.Cast(S.SolarWrath) then return ""; end
     end
   end
@@ -273,15 +276,15 @@ local function APL()
       if HR.Cast(S.ForceofNature) then return ""; end
     end
     -- moonfire,target_if=refreshable,if=target.time_to_die>8
-    if S.Moonfire:IsCastableP() and (Target:TimeToDie() > 8) then
+    if S.Moonfire:IsCastableP() and (Target:DebuffRefreshableCP(S.MoonfireDebuff)) and (Target:TimeToDie() > 8) then
       if HR.Cast(S.Moonfire) then return ""; end
     end
     -- sunfire,target_if=refreshable,if=target.time_to_die>8
-    if S.Sunfire:IsCastableP() and (Target:TimeToDie() > 8) then
+    if S.Sunfire:IsCastableP() and (Target:DebuffRefreshableCP(S.SunfireDebuff)) and (Target:TimeToDie() > 8) then
       if HR.Cast(S.Sunfire) then return ""; end
     end
     -- stellar_flare,target_if=refreshable,if=target.time_to_die>10
-    if S.StellarFlare:IsCastableP() and (Target:TimeToDie() > 10) then
+    if S.StellarFlare:IsCastableP() and (Target:DebuffRefreshableCP(S.StellarFlareDebuff)) and (Target:TimeToDie() > 10) then
       if HR.Cast(S.StellarFlare) then return ""; end
     end
     -- solar_wrath,if=(buff.solar_empowerment.stack=3|buff.solar_empowerment.stack=2&buff.lunar_empowerment.stack=2&astral_power>=40)&astral_power.deficit>10
@@ -317,11 +320,11 @@ local function APL()
       if HR.Cast(S.FullMoon) then return ""; end
     end
     -- solar_wrath
-    if S.SolarWrath:IsCastableP() and (true) then
+    if S.SolarWrath:IsCastableP() then
       if HR.Cast(S.SolarWrath) then return ""; end
     end
     -- moonfire
-    if S.Moonfire:IsCastableP() and (true) then
+    if S.Moonfire:IsCastableP() then
       if HR.Cast(S.Moonfire) then return ""; end
     end
   end
@@ -351,7 +354,7 @@ local function APL()
   end
   -- use_items
   -- warrior_of_elune
-  if S.WarriorofElune:IsCastableP() and (true) then
+  if S.WarriorofElune:IsCastableP() then
     if HR.Cast(S.WarriorofElune) then return ""; end
   end
   -- run_action_list,name=ed,if=equipped.the_emerald_dreamcatcher&active_enemies<=1
