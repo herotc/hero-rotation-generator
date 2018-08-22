@@ -5,7 +5,7 @@ Warrior specific constants and functions.
 @author: skasch
 """
 
-from ..constants import COMMON, SPELL, BUFF, DEBUFF, RANGE
+from ..constants import COMMON, SPELL, BUFF, DEBUFF, RANGE, CD, GCDAOGCD
 
 WARRIOR = 'warrior'
 ARMS = 'arms'
@@ -38,22 +38,24 @@ SPELL_INFO = {
             'battle_cry':                           {SPELL:     1719,
                                                      BUFF:      1719},
             'stone_heart':                          {BUFF:      225947},
-            'charge':                               {SPELL:     100},
+            'charge':                               {SPELL:     100,
+                                                     GCDAOGCD:  True},
             'avatar':                               {SPELL:     107574,
-                                                     BUFF:      107574},
+                                                     BUFF:      107574,
+                                                     CD:        True,
+                                                     GCDAOGCD:  True},
             # Trinkets
             'umbral_moonglaives':                   {SPELL:     242553},
             # Legendaries
             'fujiedas_fury':                        {BUFF:      207775},
         },
         ARMS: {
-            'warbreaker':                           {SPELL:     209577},
+            'warbreaker':                           {SPELL:     262161},
             'bladestorm':                           {SPELL:     227847,
                                                      RANGE:     8},
-            'ravager':                              {SPELL:     152277,
-                                                     BUFF:      152277},
+            'ravager':                              {SPELL:     152277},
             'colossus_smash':                       {SPELL:     167105,
-                                                     DEBUFF:    198804},
+                                                     DEBUFF:    208086},
             'in_for_the_kill':                      {SPELL:     248621,
                                                      BUFF:      248622},
             'cleave':                               {SPELL:     845,
@@ -71,11 +73,22 @@ SPELL_INFO = {
                                                      BUFF:      207982},
             'fervor_of_battle':                     {SPELL:     202316},
             'weighted_blade':                       {BUFF:      253383},
-            'overpower':                            {SPELL:     7384},
+            'overpower':                            {SPELL:     7384,
+                                                     BUFF:      7384},
             'dauntless':                            {SPELL:     202297},
-            'deadly_calm':                          {SPELL:     227266},
+            'deadly_calm':                          {SPELL:     262228,
+                                                     BUFF:      262228},
             'anger_management':                     {SPELL:     152278},
             'slam':                                 {SPELL:     1464},
+            'skullsplitter':                        {SPELL:     260643},
+            'heroic_leap':                          {SPELL:     6544},
+            'sudden_death':                         {BUFF:      52437},
+            'sweeping_strikes':                     {SPELL:     260708,
+                                                     BUFF:      260708},
+            'deep_wounds':                          {DEBUFF:    262115},
+            'fervor_of_battle':                     {SPELL:     202316},
+            'massacre':                             {SPELL:     281001},
+            'dreadnaught':                          {SPELL:     262150},
         },
         FURY: {
             'bloodthirst':                          {SPELL:     23881},
@@ -123,6 +136,7 @@ ITEM_INFO = {
     'archavons_heavy_hand':             137060,
     'kazzalax_fujiedas_fury':           137053,
     'umbral_moonglaives':               147012,
+    'weight_of_the_earth':              137077,
 }
 
 CLASS_FUNCTIONS = {
@@ -130,8 +144,24 @@ CLASS_FUNCTIONS = {
         COMMON: [
         ],
         ARMS: [
+            'ArmsPreAplSetup',
         ],
         FURY: [
         ],
     },
+}
+
+TEMPLATES = {
+    WARRIOR+ARMS:     ( '{context}'
+                '--- ======= ACTION LISTS =======\n'
+                'local function {function_name}()\n'
+                '{action_list_names}\n'
+                '  UpdateRanges()\n'
+                '  Everyone.AoEToggleEnemiesUpdate()\n'
+                '  UpdateExecuteID()\n'
+                '{action_lists}\n'
+                '{precombat_call}\n'
+                '{main_actions}\n'
+                'end\n'
+                '\n{set_apl}')
 }
