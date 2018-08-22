@@ -459,6 +459,12 @@ class Expression(Decorable):
         """
         return Artifact.build(self)
 
+    def azerite(self):
+        """
+        Return the condition when the prefix is azerite.
+        """
+        return Azerite.build(self)
+
     def talent(self):
         """
         Return the condition when the prefix is talent.
@@ -830,6 +836,32 @@ class Artifact(BuildExpression):
         Return the arguments for the expression artifact.spell.enabled.
         """
         self.method = Method('ArtifactEnabled', type_=BOOL)
+
+class Azerite(BuildExpression):
+    """
+    Represent the expression for an Azerite. condition.
+    """
+
+    def __init__(self, condition):
+        self.condition = condition
+        call = condition.condition_list[2]
+        self.object_ = Spell(condition.parent_action,
+                             condition.condition_list[1])
+        self.method = None
+        self.args = []
+        super().__init__(call)
+
+    def rank(self):
+        """
+        Return the arguments for the expression azerite.spell.rank.
+        """
+        self.method = Method('AzeriteRank')
+
+    def enabled(self):
+        """
+        Return the arguments for the expression azerite.spell.enabled.
+        """
+        self.method = Method('AzeriteEnabled', type_=BOOL)
 
 
 class Talent(BuildExpression):
