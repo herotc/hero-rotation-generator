@@ -103,6 +103,9 @@ SPELL_INFO = {
             'divine_judgment':                  {SPELL:     271580},
             'divine_right':                     {BUFF:      278523},
             'hammer_of_wrath':                  {SPELL:     24275},
+            'divine_right':                     {SPELL:     277678,
+                                                # doublecheck this ID
+                                                 BUFF:      278523},
         },
     },
 }
