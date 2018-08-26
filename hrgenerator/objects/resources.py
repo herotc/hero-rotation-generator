@@ -144,6 +144,18 @@ class Energy(Resource):
     def __init__(self, condition):
         super().__init__(condition, 'energy')
 
+    def value(self):
+        """
+        Return the arguments for the expression {resource}.
+        """
+        self.method = Method(f'{self.simc.print_lua()}Predicted')
+
+    def deficit(self):
+        """
+        Return the arguments for the expression {resource}.deficit.
+        """
+        self.method = Method(f'{self.simc.print_lua()}DeficitPredicted')
+
 
 class ComboPoints(Resource):
     """

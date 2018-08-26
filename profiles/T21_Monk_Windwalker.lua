@@ -120,7 +120,7 @@ local function APL()
       local ShouldReturn = Cd(); if ShouldReturn then return ShouldReturn; end
     end
     -- energizing_elixir,if=!prev_gcd.1.tiger_palm&chi<=1&(cooldown.rising_sun_kick.remains=0|(talent.fist_of_the_white_tiger.enabled&cooldown.fist_of_the_white_tiger.remains=0)|energy<50)
-    if S.EnergizingElixir:IsCastableP() and HR.CDsON() and (not Player:PrevGCDP(1, S.TigerPalm) and Player:Chi() <= 1 and (S.RisingSunKick:CooldownRemainsP() == 0 or (S.FistoftheWhiteTiger:IsAvailable() and S.FistoftheWhiteTiger:CooldownRemainsP() == 0) or Player:Energy() < 50)) then
+    if S.EnergizingElixir:IsCastableP() and HR.CDsON() and (not Player:PrevGCDP(1, S.TigerPalm) and Player:Chi() <= 1 and (S.RisingSunKick:CooldownRemainsP() == 0 or (S.FistoftheWhiteTiger:IsAvailable() and S.FistoftheWhiteTiger:CooldownRemainsP() == 0) or Player:EnergyPredicted() < 50)) then
       if HR.Cast(S.EnergizingElixir, Settings.Windwalker.OffGCDasOffGCD.EnergizingElixir) then return ""; end
     end
     -- arcane_torrent,if=chi.max-chi>=1&energy.time_to_max>=0.5
@@ -240,7 +240,7 @@ local function APL()
   end
   Sef = function()
     -- tiger_palm,target_if=debuff.mark_of_the_crane.down,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&energy=energy.max&chi<1
-    if S.TigerPalm:IsCastableP() and (Target:DebuffDownP(S.MarkoftheCraneDebuff)) and (not Player:PrevGCDP(1, S.TigerPalm) and not Player:PrevGCDP(1, S.EnergizingElixir) and Player:Energy() == Player:EnergyMax() and Player:Chi() < 1) then
+    if S.TigerPalm:IsCastableP() and (Target:DebuffDownP(S.MarkoftheCraneDebuff)) and (not Player:PrevGCDP(1, S.TigerPalm) and not Player:PrevGCDP(1, S.EnergizingElixir) and Player:EnergyPredicted() == Player:EnergyMax() and Player:Chi() < 1) then
       if HR.Cast(S.TigerPalm) then return ""; end
     end
     -- call_action_list,name=cd
@@ -266,7 +266,7 @@ local function APL()
       if HR.Cast(S.FistoftheWhiteTiger) then return ""; end
     end
     -- tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&energy=energy.max&chi<1&!buff.serenity.up
-    if S.TigerPalm:IsCastableP() and (bool(min:debuff.mark_of_the_crane.remains)) and (not Player:PrevGCDP(1, S.TigerPalm) and not Player:PrevGCDP(1, S.EnergizingElixir) and Player:Energy() == Player:EnergyMax() and Player:Chi() < 1 and not Player:BuffP(S.SerenityBuff)) then
+    if S.TigerPalm:IsCastableP() and (bool(min:debuff.mark_of_the_crane.remains)) and (not Player:PrevGCDP(1, S.TigerPalm) and not Player:PrevGCDP(1, S.EnergizingElixir) and Player:EnergyPredicted() == Player:EnergyMax() and Player:Chi() < 1 and not Player:BuffP(S.SerenityBuff)) then
       if HR.Cast(S.TigerPalm) then return ""; end
     end
     -- call_action_list,name=cd
@@ -352,7 +352,7 @@ local function APL()
       if HR.Cast(S.WhirlingDragonPunch) then return ""; end
     end
     -- rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=((chi>=3&energy>=40)|chi>=5)&(talent.serenity.enabled|cooldown.serenity.remains>=6)
-    if S.RisingSunKick:IsCastableP() and (bool(min:debuff.mark_of_the_crane.remains)) and (((Player:Chi() >= 3 and Player:Energy() >= 40) or Player:Chi() >= 5) and (S.Serenity:IsAvailable() or S.Serenity:CooldownRemainsP() >= 6)) then
+    if S.RisingSunKick:IsCastableP() and (bool(min:debuff.mark_of_the_crane.remains)) and (((Player:Chi() >= 3 and Player:EnergyPredicted() >= 40) or Player:Chi() >= 5) and (S.Serenity:IsAvailable() or S.Serenity:CooldownRemainsP() >= 6)) then
       if HR.Cast(S.RisingSunKick) then return ""; end
     end
     -- fists_of_fury,if=talent.serenity.enabled&!equipped.drinking_horn_cover&cooldown.serenity.remains>=5&energy.time_to_max>2

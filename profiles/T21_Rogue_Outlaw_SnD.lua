@@ -172,7 +172,7 @@ local function APL()
       if HR.Cast(S.GhostlyStrike) then return ""; end
     end
     -- killing_spree,if=variable.blade_flurry_sync&(energy.time_to_max>5|energy<15)
-    if S.KillingSpree:IsCastableP() and (bool(VarBladeFlurrySync) and (Player:EnergyTimeToMaxPredicted() > 5 or Player:Energy() < 15)) then
+    if S.KillingSpree:IsCastableP() and (bool(VarBladeFlurrySync) and (Player:EnergyTimeToMaxPredicted() > 5 or Player:EnergyPredicted() < 15)) then
       if HR.Cast(S.KillingSpree) then return ""; end
     end
     -- blade_rush,if=variable.blade_flurry_sync&energy.time_to_max>1
@@ -222,7 +222,7 @@ local function APL()
   end
   -- variable,name=ambush_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&cooldown.ghostly_strike.remains<1)+buff.broadside.up&energy>60&!buff.skull_and_crossbones.up
   if (true) then
-    VarAmbushCondition = num(Player:ComboPointsDeficit() >= 2 + 2 * num((S.GhostlyStrike:IsAvailable() and S.GhostlyStrike:CooldownRemainsP() < 1)) + num(Player:BuffP(S.BroadsideBuff)) and Player:Energy() > 60 and not Player:BuffP(S.SkullandCrossbonesBuff))
+    VarAmbushCondition = num(Player:ComboPointsDeficit() >= 2 + 2 * num((S.GhostlyStrike:IsAvailable() and S.GhostlyStrike:CooldownRemainsP() < 1)) + num(Player:BuffP(S.BroadsideBuff)) and Player:EnergyPredicted() > 60 and not Player:BuffP(S.SkullandCrossbonesBuff))
   end
   -- variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&raid_event.adds.in>20|buff.blade_flurry.up
   if (true) then
@@ -245,7 +245,7 @@ local function APL()
     local ShouldReturn = Build(); if ShouldReturn then return ShouldReturn; end
   end
   -- arcane_torrent,if=energy.deficit>=15+energy.regen
-  if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (Player:EnergyDeficit() >= 15 + Player:EnergyRegen()) then
+  if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (Player:EnergyDeficitPredicted() >= 15 + Player:EnergyRegen()) then
     if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- arcane_pulse

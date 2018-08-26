@@ -219,7 +219,7 @@ local function APL()
     end
     -- pool_resource,for_next=1,extra_amount=40
     -- shadowmeld,if=energy>=40&energy.deficit>=10&!variable.shd_threshold&debuff.find_weakness.remains<1
-    if S.Shadowmeld:IsCastableP() and HR.CDsON() and (Player:Energy() >= 40 and Player:EnergyDeficit() >= 10 and not bool(VarShdThreshold) and Target:DebuffRemainsP(S.FindWeaknessDebuff) < 1) then
+    if S.Shadowmeld:IsCastableP() and HR.CDsON() and (Player:EnergyPredicted() >= 40 and Player:EnergyDeficitPredicted() >= 10 and not bool(VarShdThreshold) and Target:DebuffRemainsP(S.FindWeaknessDebuff) < 1) then
       if S.Shadowmeld:IsUsablePPool(40) then
         if HR.Cast(S.Shadowmeld, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
       else
@@ -274,7 +274,7 @@ local function APL()
     if HR.Cast(S.Nightblade) then return ""; end
   end
   -- call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&combo_points.deficit>=4
-  if (Player:EnergyDeficit() <= VarStealthThreshold and Player:ComboPointsDeficit() >= 4) then
+  if (Player:EnergyDeficitPredicted() <= VarStealthThreshold and Player:ComboPointsDeficit() >= 4) then
     local ShouldReturn = StealthCds(); if ShouldReturn then return ShouldReturn; end
   end
   -- call_action_list,name=finish,if=combo_points>=4+talent.deeper_stratagem.enabled|target.time_to_die<=1&combo_points>=3
@@ -282,11 +282,11 @@ local function APL()
     local ShouldReturn = Finish(); if ShouldReturn then return ShouldReturn; end
   end
   -- call_action_list,name=build,if=energy.deficit<=variable.stealth_threshold-40*!(talent.alacrity.enabled|talent.shadow_focus.enabled|talent.master_of_shadows.enabled)
-  if (Player:EnergyDeficit() <= VarStealthThreshold - 40 * num(not (S.Alacrity:IsAvailable() or S.ShadowFocus:IsAvailable() or S.MasterofShadows:IsAvailable()))) then
+  if (Player:EnergyDeficitPredicted() <= VarStealthThreshold - 40 * num(not (S.Alacrity:IsAvailable() or S.ShadowFocus:IsAvailable() or S.MasterofShadows:IsAvailable()))) then
     local ShouldReturn = Build(); if ShouldReturn then return ShouldReturn; end
   end
   -- arcane_torrent,if=energy.deficit>=15+energy.regen
-  if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (Player:EnergyDeficit() >= 15 + Player:EnergyRegen()) then
+  if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (Player:EnergyDeficitPredicted() >= 15 + Player:EnergyRegen()) then
     if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
   end
   -- arcane_pulse
