@@ -5,7 +5,7 @@ Mage specific constants and functions.
 @author: skasch
 """
 
-from ..constants import COMMON, SPELL, BUFF, DEBUFF, PET, RANGE, AUTOCHECK, INTERRUPT, CD, OGCDAOGCD, GCDAOGCD
+from ..constants import COMMON, SPELL, BUFF, DEBUFF, PET, RANGE, AUTOCHECK, INTERRUPT, CD, OGCDAOGCD, GCDAOGCD, READY, OPENER
 
 MAGE = 'mage'
 ARCANE = 'arcane'
@@ -38,6 +38,9 @@ ACTION_LIST_INFO = {
         FIRE: {
             'combustion_phase':             {CD:        True},
         },
+        ARCANE: {
+            'burn':                         {CD:        True},
+        },
     },
 }
 
@@ -67,10 +70,17 @@ SPELL_INFO = {
             'contained_infernal_core':      {BUFF:      248146},
             'erupting_infernal_core':       {BUFF:      248147},
             'zannesu_journey':              {BUFF:      206397},
+            # Azerite -- Double Check these if possible
+            'winters_reach':                {SPELL:     273346,
+                                             BUFF:      273347},
+            'preheat':                      {SPELL:     273331,
+                                             DEBUFF:    273333}, 
+            'arcane_pummeling':             {SPELL:     270669},                                                                 
         },
         ARCANE: {
             'arcane_charge':                {BUFF:      36032},
-            'arcane_blast':                 {SPELL:     30451},
+            'arcane_blast':                 {SPELL:     30451,
+                                             READY:     True},
             'arcane_barrage':               {SPELL:     44425,
                                              RANGE:     40},
             'arcane_explosion':             {SPELL:     1449,
@@ -78,7 +88,8 @@ SPELL_INFO = {
             'arcane_missiles':              {SPELL:     5143,
                                              RANGE:     40},
             'arcane_power':                 {SPELL:     12042,
-                                             BUFF:      12042},
+                                             BUFF:      12042,
+                                             CD:        True},
             'evocation':                    {SPELL:     12051},
             'presence_of_mind':             {SPELL:     205025,
                                              BUFF:      205025},
@@ -86,7 +97,8 @@ SPELL_INFO = {
             # 'spell_steal':                  {SPELL:     30449},
             # 'polymorph':                    {SPELL:     118},
             'amplification':                {SPELL:     236628},
-            'mirror_image':                 {SPELL:     55342},
+            'mirror_image':                 {SPELL:     55342,
+                                             CD:        True},
             'incanters_flow':               {SPELL:     1463},
             'supernova':                    {SPELL:     157980},
             'charged_up':                   {SPELL:     205032},
@@ -104,14 +116,14 @@ SPELL_INFO = {
         },
         FIRE: {
             'fireball':                     {SPELL:     133},
-            'pyroblast':                    {SPELL:     11366},
+            'pyroblast':                    {SPELL:     11366,
+                                             OPENER:    True},
             'critical_mass':                {SPELL:     117216},
             'fire_blast':                   {SPELL:     108853},
             'hot_streak':                   {BUFF:      48108},
             'heating_up':                   {BUFF:      48107},
             'enhanced_pyrotechnics':        {SPELL:     157642},
-            'dragons_breath':               {SPELL:     31661,
-                                             RANGE:     12},
+            'dragons_breath':               {SPELL:     31661},
             'combustion':                   {SPELL:     190319,
                                              BUFF:      190319,
                                              CD:        True,
@@ -147,7 +159,8 @@ SPELL_INFO = {
             'freeze':                       {SPELL:     33395,
                                              PET:       True},
             'frost_nova':                   {SPELL:     122},
-            'frostbolt':                    {SPELL:     116},
+            'frostbolt':                    {SPELL:     116,
+                                             OPENER:    True},
             'frozen_orb':                   {SPELL:     84714},
             'ice_lance':                    {SPELL:     30455},
             'icy_veins':                    {SPELL:     12472,

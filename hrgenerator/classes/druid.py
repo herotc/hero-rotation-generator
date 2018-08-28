@@ -25,7 +25,7 @@ CLASS_SPECS = {
 DEFAULT_POTION = {
     DRUID: {
         BALANCE:    'prolonged_power',
-        FERAL:      'old_war',
+        FERAL:      'battle_potion_of_agility',
         GUARDIAN:   'prolonged_power',
     }
 }
@@ -127,7 +127,8 @@ SPELL_INFO = {
                                                  BUFF:      102560},
             'stellar_drift':                    {SPELL:     202354},
             'twin_moons':                       {SPELL:     279620},
-            'stellar_flare':                    {SPELL:     202347},
+            'stellar_flare':                    {SPELL:     202347,
+                                                 DEBUFF:    202347},
             'shooting_stars':                   {SPELL:     202342},
             'fury_of_elune':                    {SPELL:     202770},
             'new_moon':                         {SPELL:     274281},

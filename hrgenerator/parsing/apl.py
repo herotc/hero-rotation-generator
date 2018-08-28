@@ -29,7 +29,9 @@ class APL:
                         '  Everyone.AoEToggleEnemiesUpdate()\n'
                         '{action_lists}\n'
                         '{precombat_call}\n'
+                        '  if Everyone.TargetIsValid() then\n'
                         '{main_actions}\n'
+                        '  end\n'
                         'end\n'
                         '\n{set_apl}')
 
@@ -224,6 +226,6 @@ class APL:
             action_list_names=action_list_names,
             action_lists=action_lists,
             precombat_call=precombat_call,
-            main_actions=main_actions,
+            main_actions=indent(main_actions),
             set_apl=set_apl
         )

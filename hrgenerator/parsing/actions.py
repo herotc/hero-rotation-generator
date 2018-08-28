@@ -230,6 +230,8 @@ class Action(Decorable):
             self.action_list.pool_for_next = for_next
             self.action_list.pool_extra_amount = extra_amount
             return lua_string
+        if self.split_simc()[0] == 'use_item' and 'slot' in self.simc:
+            return lua_string
         exec_cast = self.print_exec()
         if exec_cast == '':
             return lua_string

@@ -32,6 +32,15 @@ DEFAULT_POTION = {
 
 DEFAULT_RANGE = {
     WARLOCK: {
+        AFFLICTION: 40,
+    },
+}
+
+ACTION_LIST_INFO = {
+    WARLOCK: {
+        DESTRUCTION: {
+            'cds':              {CD:            True},
+        },
     },
 }
 
@@ -143,7 +152,9 @@ SPELL_INFO = {
             'havoc':                            {SPELL:     80240,
                                                  DEBUFF:    80240,
                                                  RANGE:     40},
+            'active_havoc':                     {BUFF:      80240},
                                                                 #   ??? buff.active_havoc.remains -> Player:BuffRemainsP(S.ActiveHavocBuff)
+                                                                # pet.infernal.active&pet.infernal.remains<=10 -> bool(pet.infernal.active) and Target:DebuffRemainsP(S.HavocDebuff) <= 10)
             'grimoire_of_supremacy':            {SPELL:     266086,
                                                  BUFF:      266091},
             'conflagrate':                      {SPELL:     17962},

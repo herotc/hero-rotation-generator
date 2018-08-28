@@ -24,6 +24,7 @@ CLASS_SPECS = {
 DEFAULT_POTION = {
     PRIEST: {
         SHADOW: 'prolonged_power',
+        HOLY: 'prolonged_power',
     }
 }
 

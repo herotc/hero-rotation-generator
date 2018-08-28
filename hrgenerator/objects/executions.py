@@ -9,7 +9,7 @@ from .lua import (LuaNamed, LuaTyped, LuaConditions, LuaCastable,
                   LuaExpression, Literal, Method)
 from ..constants import (IGNORED_EXECUTIONS, SPELL, BUFF, DEBUFF, USABLE, READY,
                          MELEE, INTERRUPT, CD, GCDAOGCD, OGCDAOGCD, NUM, BOOL,
-                         FALSE, AUTOCHECK)
+                         FALSE, AUTOCHECK, OPENER)
 from ..database import (SPELL_INFO, COMMON)
 
 
@@ -202,6 +202,10 @@ class Spell(LuaNamed, LuaCastable):
                 self.add_auto_check(BUFF)
             elif self.action.player.spell_property(self, DEBUFF):
                 self.add_auto_check(DEBUFF)
+            if self.action.player.spell_property(self, OPENER):
+                self.additional_conditions.append(
+                    Literal('Everyone.TargetIsValid()')
+                )
 
     def add_auto_check(self, type_, method=None):
         if not method:

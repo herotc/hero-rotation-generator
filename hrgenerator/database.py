@@ -76,6 +76,9 @@ SPELL_INFO = {
         'fireblood':                    {SPELL:     265221,
                                          OGCDAOGCD: True,
                                          CD:        True},
+        'ancestral_call':               {SPELL:     274738,
+                                         OGCDAOGCD: True,
+                                         CD:        True},
         # TODO: Fix; hack to make it work from consumable
         'prolonged_power':              {BUFF:      229206},
         'potion_of_prolonged_power':    {BUFF:      229206},

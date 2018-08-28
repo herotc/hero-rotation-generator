@@ -1,8 +1,13 @@
+local VarBurnPhaseEnd = 0
+
 local function StartBurnPhase ()
-  varBurnPhase = 1
-  varBurnPhaseStart = HL.GetTime()
+  VarBurnPhase = 1
+  VarBurnPhaseStart = HL.GetTime()
 end
 
 local function StopBurnPhase ()
-  varBurnPhase = 0
+  VarBurnPhase = 0
+  VarBurnPhaseEnd = HL.GetTime()
+  VarBurnPhaseDuration = VarBurnPhaseEnd - VarBurnPhaseStart
+  VarAverageBurnLength = (VarAverageBurnLength * VarTotalBurns - VarAverageBurnLength + (VarBurnPhaseDuration)) / VarTotalBurns
 end

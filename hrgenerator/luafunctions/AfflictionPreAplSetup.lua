@@ -7,7 +7,7 @@ HL.UnstableAfflictionDebuffsPrev = {
 
 local function NbAffected (SpellAffected)
     local nbaff = 0
-    for Key, Value in pairs(Cache.Enemies[EnemyRanges[2]]) do
+    for Key, Value in pairs(Cache.Enemies[40]) do
       if Value:DebuffRemainsP(SpellAffected) > 0 then nbaff = nbaff + 1; end
     end
     return nbaff;

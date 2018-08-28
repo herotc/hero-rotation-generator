@@ -37,6 +37,7 @@ CD = 'cd'
 PET = 'pet'
 COMMON = 'common'
 RANGE = 'range'
+OPENER = 'opener'
 AUTOCHECK = 'autocheck'
 
 MAX_INT = 10 ** 10
@@ -64,6 +65,7 @@ IGNORED_EXECUTIONS = [
     'dash',
     # Mage
     'time_warp',
+    'counterspell',
 ]
 
 # Strings to recognize as items
