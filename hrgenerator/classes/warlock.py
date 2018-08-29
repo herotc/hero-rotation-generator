@@ -188,7 +188,7 @@ CLASS_FUNCTIONS = {
         COMMON: [
         ],
         AFFLICTION: [
-            # 'ActiveUAs',
+            'ActiveUAs',
             'AfflictionPreAplSetup',
         ],
         DEMONOLOGY: [
@@ -235,25 +235,25 @@ def warlock_precombat_skip(fun):
 
     return print_lua
 
-# def affliction_active_uas_stack(fun):
-#     """
-#     Replaces the buff.active_uas.stack expression with a call to ActiveUAs.
-#     """
-#     from ..objects.lua import Method
+def affliction_active_uas_stack(fun):
+    """
+    Replaces the buff.active_uas.stack expression with a call to ActiveUAs.
+    """
+    from ..objects.lua import Method
 
-#     def stack(self):
-#         """
-#         Return the arguments for the expression buff.active_uas.stack.
-#         """
-#         if (self.condition.parent_action.player.spec.simc == AFFLICTION
-#                 and self.condition.condition_list[1] == 'active_uas'):
-#             self.object_ = None
-#             self.method = Method('ActiveUAs')
-#             self.args = []
-#         else:
-#             fun(self)
+    def stack(self):
+        """
+        Return the arguments for the expression buff.active_uas.stack.
+        """
+        if (self.condition.parent_action.player.spec.simc == AFFLICTION
+                and self.condition.condition_list[1] == 'active_uas'):
+            self.object_ = None
+            self.method = Method('ActiveUAs')
+            self.args = []
+        else:
+            fun(self)
 
-#     return stack
+    return stack
 
 DECORATORS = {
     WARLOCK: [
@@ -267,11 +267,11 @@ DECORATORS = {
             'method': 'print_lua',
             'decorator': warlock_precombat_skip,
         },
-        # {
-        #     'class_name': 'Buff',
-        #     'method': 'stack',
-        #     'decorator': affliction_active_uas_stack,
-        # },
+        {
+            'class_name': 'Buff',
+            'method': 'stack',
+            'decorator': affliction_active_uas_stack,
+        },
     ],
 }
 
