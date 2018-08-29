@@ -48,6 +48,12 @@ SPELL_INFO = {
             'umbral_moonglaives':                   {SPELL:     242553},
             # Legendaries
             'fujiedas_fury':                        {BUFF:      207775},
+            # Azerite
+            'crushing_assault':                     {SPELL:     278751,
+                                                     BUFF:      278826},
+            'test_of_might':                        {SPELL:     275529,
+                                                     BUFF:      275532},
+            'seismic_wave':                         {SPELL:     277639},                                         
         },
         ARMS: {
             'warbreaker':                           {SPELL:     262161},
