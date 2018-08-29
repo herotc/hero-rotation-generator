@@ -41,6 +41,9 @@ ACTION_LIST_INFO = {
         ARCANE: {
             'burn':                         {CD:        True},
         },
+        FROST:{
+            'cooldowns':                    {CD:        True},
+        }
     },
 }
 
@@ -353,18 +356,6 @@ def arcane_stack(fun):
 
     return stack
 
-def frost_cooldown_condition(fun):
-
-    from ..objects.lua import LuaExpression, Method, LuaConditions
-
-    def conditions(self):
-        if (self.action.player.spec.simc == FROST
-            and self.lua_name() in 'Cooldowns'):
-            return LuaConditions(LuaExpression(None, Method('HR.CDsON')))
-        return fun(self)
-
-    return conditions
-
 def fire_precombat_skip(fun):
 
     def print_lua(self):
@@ -412,6 +403,35 @@ def frost_ground_aoe(fun):
 
     return ground_aoe
 
+# TODO: defer below calls to actual aura expressions
+
+def frost_brain_freeze_active(fun):
+
+    from ..objects.lua import Literal
+
+    def brain_freeze_active(self):
+        return Literal('Player:BuffStackP(S.BrainFreezeBuff)')
+
+    return brain_freeze_active
+
+def frost_winters_reach_active(fun):
+
+    from ..objects.lua import Literal
+
+    def winters_reach_active(self):
+        return Literal('Player:BuffStackP(S.WintersReachBuff)')
+
+    return winters_reach_active
+
+def frost_fingers_of_frost_active(fun):
+
+    from ..objects.lua import Literal
+
+    def fingers_of_frost_active(self):
+        return Literal('Player:BuffStackP(S.FingersofFrostBuff)')
+
+    return fingers_of_frost_active
+
 DECORATORS = {
     MAGE: [
         {
@@ -440,11 +460,6 @@ DECORATORS = {
             'decorator': arcane_stack,
         },
         {
-            'class_name': 'CallActionList',
-            'method': 'conditions',
-            'decorator': frost_cooldown_condition,
-        },
-        {
             'class_name': 'PrecombatAction',
             'method': 'print_lua',
             'decorator': fire_precombat_skip,
@@ -458,6 +473,21 @@ DECORATORS = {
             'class_name': 'Expression',
             'method': 'ground_aoe',
             'decorator': frost_ground_aoe
+        },
+        {
+            'class_name': 'Expression',
+            'method': 'brain_freeze_active',
+            'decorator': frost_brain_freeze_active
+        },
+        {
+            'class_name': 'Expression',
+            'method': 'winters_reach_active',
+            'decorator': frost_winters_reach_active
+        },
+        {
+            'class_name': 'Expression',
+            'method': 'fingers_of_frost_active',
+            'decorator': frost_fingers_of_frost_active
         }
     ]
 }
