@@ -100,6 +100,7 @@ ITEM_INFO = {
     'prolonged_power':          142117,
     'old_war':                  127844,
     'deadly_grace':             127843,
+    'battle_potion_of_agility': 163223,
 }
 for class_ in CLASSES:
     ITEM_INFO.update(class_.ITEM_INFO)
