@@ -84,7 +84,7 @@ local Settings = {
 local VarSpammableSeed = 0;
 local VarPadding = 0;
 
-local EnemyRanges = {5, 40}
+local EnemyRanges = {40, 5}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do
     HL.GetEnemies(i);
@@ -97,6 +97,14 @@ end
 
 local function bool(val)
   return val ~= 0
+end
+
+local function ActiveUAs ()
+  local UAcount = 0
+  for _, v in pairs(UnstableAfflictionDebuffs) do
+    if Target:DebuffRemainsP(v) > 0 then UAcount = UAcount + 1 end
+  end
+  return UAcount
 end
 
 HL.UnstableAfflictionDebuffsPrev = {
@@ -242,7 +250,7 @@ local function APL()
       if HR.Cast(S.Haunt) then return ""; end
     end
     -- summon_darkglare,if=dot.agony.ticking&dot.corruption.ticking&(buff.active_uas.stack=5|soul_shard=0)&(!talent.phantom_singularity.enabled|cooldown.phantom_singularity.remains)
-    if S.SummonDarkglare:IsCastableP() and HR.CDsON() and (Target:DebuffP(S.AgonyDebuff) and Target:DebuffP(S.CorruptionDebuff) and (Player:BuffStackP(S.ActiveUasBuff) == 5 or Player:SoulShardsP() == 0) and (not S.PhantomSingularity:IsAvailable() or bool(S.PhantomSingularity:CooldownRemainsP()))) then
+    if S.SummonDarkglare:IsCastableP() and HR.CDsON() and (Target:DebuffP(S.AgonyDebuff) and Target:DebuffP(S.CorruptionDebuff) and (ActiveUAs() == 5 or Player:SoulShardsP() == 0) and (not S.PhantomSingularity:IsAvailable() or bool(S.PhantomSingularity:CooldownRemainsP()))) then
       if HR.Cast(S.SummonDarkglare, Settings.Affliction.GCDasOffGCD.SummonDarkglare) then return ""; end
     end
     -- agony,cycle_targets=1,if=remains<=gcd

@@ -37,7 +37,6 @@ Spell.Shaman.Enhancement = {
   FrostbrandBuff                        = Spell(196834),
   TotemMastery                          = Spell(),
   ResonanceTotemBuff                    = Spell(),
-  Bloodlust                             = Spell(2825),
   Berserking                            = Spell(26297),
   Ascendance                            = Spell(114051),
   AscendanceBuff                        = Spell(114051),
@@ -47,7 +46,6 @@ Spell.Shaman.Enhancement = {
   Fireblood                             = Spell(265221),
   AncestralCall                         = Spell(274738),
   Strike                                = Spell(),
-  EarthElemental                        = Spell(),
   EarthenSpike                          = Spell(188089),
   Sundering                             = Spell(197214),
   SunderingDebuff                       = Spell(197214),
@@ -178,9 +176,6 @@ local function APL()
   end
   Cds = function()
     -- bloodlust,if=target.health.pct<25|time>0.500
-    if S.Bloodlust:IsCastableP() and (Target:HealthPercentage() < 25 or HL.CombatTime() > 0.500) then
-      if HR.Cast(S.Bloodlust) then return ""; end
-    end
     -- berserking,if=(talent.ascendance.enabled&buff.ascendance.up)|(talent.elemental_spirits.enabled&feral_spirit.remains>5)|(!talent.ascendance.enabled&!talent.elemental_spirits.enabled)
     if S.Berserking:IsCastableP() and HR.CDsON() and ((S.Ascendance:IsAvailable() and Player:BuffP(S.AscendanceBuff)) or (S.ElementalSpirits:IsAvailable() and feral_spirit.remains > 5) or (not S.Ascendance:IsAvailable() and not S.ElementalSpirits:IsAvailable())) then
       if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
@@ -210,9 +205,6 @@ local function APL()
       if HR.Cast(S.Ascendance) then return ""; end
     end
     -- earth_elemental
-    if S.EarthElemental:IsCastableP() then
-      if HR.Cast(S.EarthElemental) then return ""; end
-    end
   end
   Core = function()
     -- earthen_spike,if=variable.furyCheck25

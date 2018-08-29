@@ -84,7 +84,7 @@ local Settings = {
 local VarEnergyRegenCombined = 0;
 local VarUseFiller = 0;
 
-local EnemyRanges = {10, 15}
+local EnemyRanges = {15, 10}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do
     HL.GetEnemies(i);

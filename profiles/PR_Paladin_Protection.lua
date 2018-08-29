@@ -133,15 +133,15 @@ local function APL()
       if HR.Cast(S.LightsJudgment) then return ""; end
     end
     -- avengers_shield,if=((cooldown.shield_of_the_righteous.charges_fractional>2.5&!buff.avengers_valor.up)|active_enemies>=2)&cooldown_react
-    if S.AvengersShield:IsCastableP() and (((S.ShieldoftheRighteous:ChargesFractional() > 2.5 and not Player:BuffP(S.AvengersValorBuff)) or Cache.EnemiesCount[30] >= 2) and bool(cooldown_react)) then
+    if S.AvengersShield:IsCastableP() and (((S.ShieldoftheRighteous:ChargesFractional() > 2.5 and not Player:BuffP(S.AvengersValorBuff)) or Cache.EnemiesCount[30] >= 2) and S.AvengersShield:CooldownUpP()) then
       if HR.Cast(S.AvengersShield) then return ""; end
     end
     -- judgment,if=(cooldown.judgment.remains<gcd&cooldown.judgment.charges_fractional>1&cooldown_react)|!talent.crusaders_judgment.enabled
-    if S.Judgment:IsCastableP() and ((S.Judgment:CooldownRemainsP() < Player:GCD() and S.Judgment:ChargesFractional() > 1 and bool(cooldown_react)) or not S.CrusadersJudgment:IsAvailable()) then
+    if S.Judgment:IsCastableP() and ((S.Judgment:CooldownRemainsP() < Player:GCD() and S.Judgment:ChargesFractional() > 1 and S.Judgment:CooldownUpP()) or not S.CrusadersJudgment:IsAvailable()) then
       if HR.Cast(S.Judgment) then return ""; end
     end
     -- avengers_shield,,if=cooldown_react
-    if S.AvengersShield:IsCastableP() and (bool(cooldown_react)) then
+    if S.AvengersShield:IsCastableP() and (S.AvengersShield:CooldownUpP()) then
       if HR.Cast(S.AvengersShield) then return ""; end
     end
     -- consecration,if=(cooldown.judgment.remains<=gcd&!talent.crusaders_judgment.enabled)|cooldown.avenger_shield.remains<=gcd&consecration.remains<gcd
@@ -153,7 +153,7 @@ local function APL()
       if HR.Cast(S.Consecration) then return ""; end
     end
     -- judgment,if=cooldown_react|!talent.crusaders_judgment.enabled
-    if S.Judgment:IsCastableP() and (bool(cooldown_react) or not S.CrusadersJudgment:IsAvailable()) then
+    if S.Judgment:IsCastableP() and (S.Judgment:CooldownUpP() or not S.CrusadersJudgment:IsAvailable()) then
       if HR.Cast(S.Judgment) then return ""; end
     end
     -- lights_judgment,if=!talent.seraphim.enabled|buff.seraphim.up

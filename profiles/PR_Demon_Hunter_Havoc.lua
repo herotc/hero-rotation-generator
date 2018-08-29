@@ -83,7 +83,7 @@ local VarPoolingForBladeDance = 0;
 local VarWaitingForMomentum = 0;
 local VarWaitingForDarkSlash = 0;
 
-local EnemyRanges = {8, 20, 30, 40}
+local EnemyRanges = {40, 30, 20, 8}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do
     HL.GetEnemies(i);

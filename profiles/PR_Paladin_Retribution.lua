@@ -74,7 +74,7 @@ local Settings = {
 local VarDsCastable = 0;
 local VarHow = 0;
 
-local EnemyRanges = {5, 8, 30}
+local EnemyRanges = {30, 8, 5}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do
     HL.GetEnemies(i);

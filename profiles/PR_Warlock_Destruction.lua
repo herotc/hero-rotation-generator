@@ -76,7 +76,7 @@ local Settings = {
 
 -- Variables
 
-local EnemyRanges = {5, 35, 40}
+local EnemyRanges = {40, 35, 5}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do
     HL.GetEnemies(i);

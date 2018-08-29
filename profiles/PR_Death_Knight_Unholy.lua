@@ -75,7 +75,7 @@ local Settings = {
 -- Variables
 local VarPoolingForGargoyle = 0;
 
-local EnemyRanges = {5, 30}
+local EnemyRanges = {30, 5}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do
     HL.GetEnemies(i);
