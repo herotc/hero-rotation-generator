@@ -285,7 +285,9 @@ TEMPLATES = {
                 '  time_to_shard = TimeToShard()\n'
                 '{action_lists}\n'
                 '{precombat_call}\n'
+                '  if Everyone.TargetIsValid() then\n'
                 '{main_actions}\n'
+                '  end\n'
                 'end\n'
                 '\n{set_apl}')
 }
