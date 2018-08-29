@@ -66,6 +66,9 @@ IGNORED_EXECUTIONS = [
     # Mage
     'time_warp',
     'counterspell',
+    # Shaman
+    'bloodlust',
+    'earth_elemental',
 ]
 
 # Strings to recognize as items
