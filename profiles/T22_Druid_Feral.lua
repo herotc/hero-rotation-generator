@@ -68,7 +68,7 @@ local S = Spell.Druid.Feral;
 if not Item.Druid then Item.Druid = {} end
 Item.Druid.Feral = {
   LuffaWrappings                   = Item(137056),
-  OldWar                           = Item(127844),
+  BattlePotionofAgility            = Item(),
   AiluroPouncers                   = Item(137024)
 };
 local I = Item.Druid.Feral;
@@ -150,8 +150,8 @@ local function APL()
     end
     -- snapshot_stats
     -- potion
-    if I.OldWar:IsReady() and Settings.Commons.UsePotions then
-      if HR.CastSuggested(I.OldWar) then return ""; end
+    if I.BattlePotionofAgility:IsReady() and Settings.Commons.UsePotions then
+      if HR.CastSuggested(I.BattlePotionofAgility) then return ""; end
     end
   end
   Cooldowns = function()
@@ -181,8 +181,8 @@ local function APL()
       if HR.Cast(S.Incarnation, Settings.Feral.OffGCDasOffGCD.Incarnation) then return ""; end
     end
     -- potion,name=battle_potion_of_agility,if=target.time_to_die<65|(time_to_die<180&(buff.berserk.up|buff.incarnation.up))
-    if I.OldWar:IsReady() and Settings.Commons.UsePotions and (Target:TimeToDie() < 65 or (Target:TimeToDie() < 180 and (Player:BuffP(S.BerserkBuff) or Player:BuffP(S.IncarnationBuff)))) then
-      if HR.CastSuggested(I.OldWar) then return ""; end
+    if I.BattlePotionofAgility:IsReady() and Settings.Commons.UsePotions and (Target:TimeToDie() < 65 or (Target:TimeToDie() < 180 and (Player:BuffP(S.BerserkBuff) or Player:BuffP(S.IncarnationBuff)))) then
+      if HR.CastSuggested(I.BattlePotionofAgility) then return ""; end
     end
     -- shadowmeld,if=combo_points<5&energy>=action.rake.cost&dot.rake.pmultiplier<2.1&buff.tigers_fury.up&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>18)&!buff.incarnation.up
     if S.Shadowmeld:IsCastableP() and HR.CDsON() and (Player:ComboPoints() < 5 and Player:EnergyPredicted() >= S.Rake:Cost() and Target:PMultiplier(S.Rake) < 2.1 and Player:BuffP(S.TigersFuryBuff) and (Player:BuffP(S.BloodtalonsBuff) or not S.Bloodtalons:IsAvailable()) and (not S.Incarnation:IsAvailable() or S.Incarnation:CooldownRemainsP() > 18) and not Player:BuffP(S.IncarnationBuff)) then

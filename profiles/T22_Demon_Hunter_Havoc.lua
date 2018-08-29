@@ -156,11 +156,11 @@ local function APL()
       if HR.Cast(S.Metamorphosis) then return ""; end
     end
     -- nemesis,target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)
-    if S.Nemesis:IsCastableP() and (bool(min:target.time_to_die)) and (false and Target:DebuffDownP(S.NemesisDebuff) and (Cache.EnemiesCount[40] > 1 or 10000000000 > 60)) then
+    if S.Nemesis:IsCastableP() and (bool(min:target.time_to_die)) and ((Cache.EnemiesCount[40] > 1) and Target:DebuffDownP(S.NemesisDebuff) and (Cache.EnemiesCount[40] > 1 or 10000000000 > 60)) then
       if HR.Cast(S.Nemesis) then return ""; end
     end
     -- nemesis,if=!raid_event.adds.exists
-    if S.Nemesis:IsCastableP() and (not false) then
+    if S.Nemesis:IsCastableP() and (not (Cache.EnemiesCount[40] > 1)) then
       if HR.Cast(S.Nemesis) then return ""; end
     end
     -- potion,if=buff.metamorphosis.remains>25|target.time_to_die<60
@@ -262,7 +262,7 @@ local function APL()
       if HR.Cast(S.ImmolationAura) then return ""; end
     end
     -- eye_beam,if=active_enemies>1&(!raid_event.adds.exists|raid_event.adds.up)&!variable.waiting_for_momentum
-    if S.EyeBeam:IsCastableP() and (Cache.EnemiesCount[20] > 1 and (not false or false) and not bool(VarWaitingForMomentum)) then
+    if S.EyeBeam:IsCastableP() and (Cache.EnemiesCount[20] > 1 and (not (Cache.EnemiesCount[20] > 1) or (Cache.EnemiesCount[20] > 1)) and not bool(VarWaitingForMomentum)) then
       if HR.Cast(S.EyeBeam) then return ""; end
     end
     -- death_sweep,if=variable.blade_dance

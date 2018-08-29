@@ -51,8 +51,8 @@ Spell.Mage.Fire = {
   Fireball                              = Spell(133),
   Kindling                              = Spell(155148),
   IncantersFlowBuff                     = Spell(1463),
-  Preheat                               = Spell(),
-  PreheatDebuff                         = Spell(),
+  Preheat                               = Spell(273331),
+  PreheatDebuff                         = Spell(273333),
   Firestarter                           = Spell(205026)
 };
 local S = Spell.Mage.Fire;

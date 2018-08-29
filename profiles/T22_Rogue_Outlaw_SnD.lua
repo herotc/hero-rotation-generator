@@ -176,7 +176,7 @@ local function APL()
       if HR.Cast(S.MarkedForDeath) then return ""; end
     end
     -- blade_flurry,if=spell_targets>=2&!buff.blade_flurry.up&(!raid_event.adds.exists|raid_event.adds.remains>8|cooldown.blade_flurry.charges=1&raid_event.adds.in>(2-cooldown.blade_flurry.charges_fractional)*25)
-    if S.BladeFlurry:IsCastableP() and (Cache.EnemiesCount[8] >= 2 and not Player:BuffP(S.BladeFlurryBuff) and (not false or 0 > 8 or S.BladeFlurry:ChargesP() == 1 and 10000000000 > (2 - S.BladeFlurry:ChargesFractional()) * 25)) then
+    if S.BladeFlurry:IsCastableP() and (Cache.EnemiesCount[8] >= 2 and not Player:BuffP(S.BladeFlurryBuff) and (not (Cache.EnemiesCount[8] > 1) or 0 > 8 or S.BladeFlurry:ChargesP() == 1 and 10000000000 > (2 - S.BladeFlurry:ChargesFractional()) * 25)) then
       if HR.Cast(S.BladeFlurry) then return ""; end
     end
     -- ghostly_strike,if=variable.blade_flurry_sync&combo_points.deficit>=1+buff.broadside.up

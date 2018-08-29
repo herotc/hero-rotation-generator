@@ -73,7 +73,7 @@ local Settings = {
 local VarDsCastable = 0;
 local VarHow = 0;
 
-local EnemyRanges = {5, 8}
+local EnemyRanges = {5, 8, 30}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do
     HL.GetEnemies(i);
@@ -109,7 +109,7 @@ local function APL()
       if HR.CastSuggested(I.OldWar) then return ""; end
     end
     -- lights_judgment,if=spell_targets.lights_judgment>=2|(!raid_event.adds.exists|raid_event.adds.in>75)
-    if S.LightsJudgment:IsCastableP() and HR.CDsON() and (Cache.EnemiesCount[5] >= 2 or (not false or 10000000000 > 75)) then
+    if S.LightsJudgment:IsCastableP() and HR.CDsON() and (Cache.EnemiesCount[5] >= 2 or (not (Cache.EnemiesCount[30] > 1) or 10000000000 > 75)) then
       if HR.Cast(S.LightsJudgment) then return ""; end
     end
     -- fireblood,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10
@@ -169,7 +169,7 @@ local function APL()
       local ShouldReturn = Finishers(); if ShouldReturn then return ShouldReturn; end
     end
     -- wake_of_ashes,if=(!raid_event.adds.exists|raid_event.adds.in>20)&(holy_power<=0|holy_power=1&cooldown.blade_of_justice.remains>gcd)
-    if S.WakeofAshes:IsCastableP() and ((not false or 10000000000 > 20) and (Player:HolyPower() <= 0 or Player:HolyPower() == 1 and S.BladeofJustice:CooldownRemainsP() > Player:GCD())) then
+    if S.WakeofAshes:IsCastableP() and ((not (Cache.EnemiesCount[30] > 1) or 10000000000 > 20) and (Player:HolyPower() <= 0 or Player:HolyPower() == 1 and S.BladeofJustice:CooldownRemainsP() > Player:GCD())) then
       if HR.Cast(S.WakeofAshes) then return ""; end
     end
     -- blade_of_justice,if=holy_power<=2|(holy_power=3&(cooldown.hammer_of_wrath.remains>gcd*2|variable.HoW))

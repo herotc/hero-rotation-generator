@@ -207,6 +207,7 @@ local function APL()
   if not Player:AffectingCombat() and not Player:IsCasting() then
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
+  if Everyone.TargetIsValid() then
     -- variable,name=spammable_seed,value=talent.sow_the_seeds.enabled&spell_targets.seed_of_corruption_aoe>=3|talent.siphon_life.enabled&spell_targets.seed_of_corruption>=5|spell_targets.seed_of_corruption>=8
     if (true) then
       VarSpammableSeed = num(S.SowtheSeeds:IsAvailable() and Cache.EnemiesCount[5] >= 3 or S.SiphonLife:IsAvailable() and Cache.EnemiesCount[40] >= 5 or Cache.EnemiesCount[40] >= 8)
@@ -340,6 +341,7 @@ local function APL()
     if (true) then
       local ShouldReturn = Fillers(); if ShouldReturn then return ShouldReturn; end
     end
+  end
 end
 
 HR.SetAPL(265, APL)

@@ -205,19 +205,19 @@ local function APL()
       if HR.Cast(S.WarriorofElune) then return ""; end
     end
     -- innervate,if=azerite.lively_spirit.enabled&(cooldown.incarnation.up|cooldown.celestial_alignment.remains<12)&(((raid_event.adds.duration%15)*(4)<(raid_event.adds.in%180))|(raid_event.adds.up))
-    if S.Innervate:IsCastableP() and (S.LivelySpirit:AzeriteEnabled() and (S.Incarnation:CooldownUpP() or S.CelestialAlignment:CooldownRemainsP() < 12) and (((raid_event.adds.duration / 15) * (4) < (10000000000 / 180)) or (false))) then
+    if S.Innervate:IsCastableP() and (S.LivelySpirit:AzeriteEnabled() and (S.Incarnation:CooldownUpP() or S.CelestialAlignment:CooldownRemainsP() < 12) and (((raid_event.adds.duration / 15) * (4) < (10000000000 / 180)) or ((Cache.EnemiesCount[40] > 1)))) then
       if HR.Cast(S.Innervate) then return ""; end
     end
     -- incarnation,if=astral_power>=40&(((raid_event.adds.duration%30)*(4)<(raid_event.adds.in%180))|(raid_event.adds.up))
-    if S.Incarnation:IsCastableP() and (FutureAstralPower() >= 40 and (((raid_event.adds.duration / 30) * (4) < (10000000000 / 180)) or (false))) then
+    if S.Incarnation:IsCastableP() and (FutureAstralPower() >= 40 and (((raid_event.adds.duration / 30) * (4) < (10000000000 / 180)) or ((Cache.EnemiesCount[40] > 1)))) then
       if HR.Cast(S.Incarnation) then return ""; end
     end
     -- celestial_alignment,if=astral_power>=40&(!azerite.lively_spirit.enabled|buff.lively_spirit.up)&(((raid_event.adds.duration%15)*(4)<(raid_event.adds.in%180))|(raid_event.adds.up))
-    if S.CelestialAlignment:IsCastableP() and (FutureAstralPower() >= 40 and (not S.LivelySpirit:AzeriteEnabled() or Player:BuffP(S.LivelySpiritBuff)) and (((raid_event.adds.duration / 15) * (4) < (10000000000 / 180)) or (false))) then
+    if S.CelestialAlignment:IsCastableP() and (FutureAstralPower() >= 40 and (not S.LivelySpirit:AzeriteEnabled() or Player:BuffP(S.LivelySpiritBuff)) and (((raid_event.adds.duration / 15) * (4) < (10000000000 / 180)) or ((Cache.EnemiesCount[40] > 1)))) then
       if HR.Cast(S.CelestialAlignment) then return ""; end
     end
     -- fury_of_elune,if=(((raid_event.adds.duration%8)*(4)<(raid_event.adds.in%60))|(raid_event.adds.up))&((buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30))
-    if S.FuryofElune:IsCastableP() and ((((raid_event.adds.duration / 8) * (4) < (10000000000 / 60)) or (false)) and ((Player:BuffP(S.CelestialAlignmentBuff) or Player:BuffP(S.IncarnationBuff)) or (S.CelestialAlignment:CooldownRemainsP() > 30 or S.Incarnation:CooldownRemainsP() > 30))) then
+    if S.FuryofElune:IsCastableP() and ((((raid_event.adds.duration / 8) * (4) < (10000000000 / 60)) or ((Cache.EnemiesCount[40] > 1))) and ((Player:BuffP(S.CelestialAlignmentBuff) or Player:BuffP(S.IncarnationBuff)) or (S.CelestialAlignment:CooldownRemainsP() > 30 or S.Incarnation:CooldownRemainsP() > 30))) then
       if HR.Cast(S.FuryofElune) then return ""; end
     end
     -- force_of_nature,if=(buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30)

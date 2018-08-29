@@ -53,8 +53,8 @@ Spell.Mage.Frost = {
   WintersChillDebuff                    = Spell(228358),
   GlacialSpikeBuff                      = Spell(199844),
   SplittingIce                          = Spell(56377),
-  WintersReach                          = Spell(),
-  WintersReachBuff                      = Spell(),
+  WintersReach                          = Spell(273346),
+  WintersReachBuff                      = Spell(273347),
   FreezingRain                          = Spell(240555)
 };
 local S = Spell.Mage.Frost;
@@ -318,7 +318,7 @@ local function APL()
   if Everyone.TargetIsValid() then
     -- counterspell
     -- ice_lance,if=prev_gcd.1.flurry&brain_freeze_active&!buff.fingers_of_frost.react
-    if S.IceLance:IsCastableP() and (Player:PrevGCDP(1, S.Flurry) and bool(brain_freeze_active) and not bool(Player:BuffStackP(S.FingersofFrostBuff))) then
+    if S.IceLance:IsCastableP() and (Player:PrevGCDP(1, S.Flurry) and bool(Player:BuffStackP(S.BrainFreezeBuff)) and not bool(Player:BuffStackP(S.FingersofFrostBuff))) then
       if HR.Cast(S.IceLance) then return ""; end
     end
     -- call_action_list,name=cooldowns
