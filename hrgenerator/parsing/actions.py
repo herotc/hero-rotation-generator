@@ -236,6 +236,8 @@ class Action(Decorable):
         if exec_cast == '':
             return lua_string
         condition = self.execution().object_().conditions()
+        if int(self.properties().get('moving', 0)) > 0:
+            condition.add_condition(Literal('Player:IsMoving()'))
         targetif_condition_tree = self.condition_tree('target_if')
         if targetif_condition_tree.condition_expression.simc != '':
             targetif_condition = convert_type(targetif_condition_tree, BOOL)
