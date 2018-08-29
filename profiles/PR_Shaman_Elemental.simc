@@ -1,0 +1,120 @@
+shaman="PR_Shaman_Elemental"
+source=default
+spec=elemental
+level=120
+race=troll
+role=spell
+position=back
+talents=2303023
+
+# Default consumables
+potion=battle_potion_of_intellect
+flask=flask_of_endless_fathoms
+food=bountiful_captains_feast
+augmentation=battle_scarred
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/totem_mastery
+actions.precombat+=/fire_elemental
+actions.precombat+=/potion
+actions.precombat+=/elemental_blast
+
+# Executed every time the actor is available.
+# Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
+actions=bloodlust,if=target.health.pct<25|time>0.500
+# In-combat potion is preferentially linked to your Elemental, unless combat will end shortly
+actions+=/potion
+# Interrupt of casts and is reliable trigger of Sephuz Secret.
+actions+=/wind_shear
+actions+=/totem_mastery,if=talent.totem_mastery.enabled&buff.resonance_totem.remains<2
+actions+=/fire_elemental,if=!talent.storm_elemental.enabled
+actions+=/storm_elemental,if=talent.storm_elemental.enabled
+actions+=/earth_elemental,if=cooldown.fire_elemental.remains<120&!talent.storm_elemental.enabled|cooldown.storm_elemental.remains<120&talent.storm_elemental.enabled
+actions+=/use_items
+actions+=/blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
+actions+=/berserking,if=!talent.ascendance.enabled|buff.ascendance.up
+actions+=/fireblood,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
+actions+=/ancestral_call,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
+actions+=/run_action_list,name=aoe,if=active_enemies>2&(spell_targets.chain_lightning>2|spell_targets.lava_beam>2)
+actions+=/run_action_list,name=single_target
+
+# Multi target action priority list
+actions.aoe=stormkeeper,if=talent.stormkeeper.enabled
+actions.aoe+=/ascendance,if=talent.ascendance.enabled&(talent.storm_elemental.enabled&cooldown.storm_elemental.remains<120&cooldown.storm_elemental.remains>15|!talent.storm_elemental.enabled)
+actions.aoe+=/liquid_magma_totem,if=talent.liquid_magma_totem.enabled
+actions.aoe+=/flame_shock,if=spell_targets.chain_lightning<4,target_if=refreshable
+actions.aoe+=/earthquake
+# Only cast Lava Burst on three targets if it is an instant.
+actions.aoe+=/lava_burst,if=(buff.lava_surge.up|buff.ascendance.up)&spell_targets.chain_lightning<4
+actions.aoe+=/elemental_blast,if=talent.elemental_blast.enabled&spell_targets.chain_lightning<4
+actions.aoe+=/lava_beam,if=talent.ascendance.enabled
+actions.aoe+=/chain_lightning
+actions.aoe+=/lava_burst,moving=1,if=talent.ascendance.enabled
+actions.aoe+=/flame_shock,moving=1,target_if=refreshable
+actions.aoe+=/frost_shock,moving=1
+
+# Single Target Action Priority List
+actions.single_target=flame_shock,if=!ticking|dot.flame_shock.remains<=gcd
+actions.single_target+=/ascendance,if=talent.ascendance.enabled&(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&!talent.storm_elemental.enabled
+actions.single_target+=/ascendance,if=talent.ascendance.enabled&(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&cooldown.storm_elemental.remains<=120
+# Don't use Elemental Blast if you could cast a Master of the Elements empowered Earth Shock instead.
+actions.single_target+=/elemental_blast,if=talent.elemental_blast.enabled&(talent.master_of_the_elements.enabled&buff.master_of_the_elements.up&maelstrom<60|!talent.master_of_the_elements.enabled)
+# Keep SK for large or soon add waves.
+actions.single_target+=/stormkeeper,if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)
+actions.single_target+=/liquid_magma_totem,if=talent.liquid_magma_totem.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)
+actions.single_target+=/earthquake,if=active_enemies>1&spell_targets.chain_lightning>1&!talent.exposed_elements.enabled
+# Use the debuff before casting Earth Shock again.
+actions.single_target+=/lightning_bolt,if=talent.exposed_elements.enabled&debuff.exposed_elements.up&maelstrom>=60&!buff.ascendance.up
+# If possible, use Earth Shock with Master of the Elements.
+actions.single_target+=/earth_shock,if=talent.master_of_the_elements.enabled&(buff.master_of_the_elements.up|maelstrom>=92)|!talent.master_of_the_elements.enabled
+actions.single_target+=/lava_burst,if=cooldown_react|buff.ascendance.up
+actions.single_target+=/flame_shock,target_if=refreshable
+actions.single_target+=/totem_mastery,if=talent.totem_mastery.enabled&(buff.resonance_totem.remains<6|(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&cooldown.ascendance.remains<15))
+actions.single_target+=/frost_shock,if=talent.icefury.enabled&buff.icefury.up
+actions.single_target+=/icefury,if=talent.icefury.enabled
+actions.single_target+=/lava_beam,if=talent.ascendance.enabled&active_enemies>1&spell_targets.lava_beam>1
+actions.single_target+=/chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1
+actions.single_target+=/lightning_bolt
+actions.single_target+=/flame_shock,moving=1,target_if=refreshable
+actions.single_target+=/flame_shock,moving=1,if=movement.distance>6
+# Frost Shock is our movement filler.
+actions.single_target+=/frost_shock,moving=1
+
+head=visage_of_bloody_horrors,id=159381,bonus_id=4779/1512/4786/4775,azerite_powers=457/21/14/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=
+shoulders=hookbarbed_spaulders,id=159376,bonus_id=4819/1512/4786/4775,azerite_powers=479/21/474/13
+back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
+chest=corrupted_hexxers_vestments,id=159370,bonus_id=4819/1512/4786/4775,azerite_powers=457/21/474/13
+wrists=raouls_barrelhook_bracers,id=159356,bonus_id=4779/1512/4786
+hands=water_shapers,id=159366,bonus_id=4779/1512/4786
+waist=waistguard_of_sanguine_fervor,id=159402,bonus_id=4779/1512/4786
+legs=chemical_blasters_legguards,id=158341,bonus_id=4779/1512/4786
+feet=souldrifting_sabatons,id=158308,bonus_id=4779/1512/4786
+finger1=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_haste
+finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
+trinket1=lady_waycrests_music_box,id=159631,bonus_id=4779/1512/4786
+trinket2=rotcrusted_voodoo_doll,id=159624,bonus_id=4779/1512/4786
+main_hand=galvanized_stormcrusher,id=158369,bonus_id=4779/1512/4786,enchant=quick_navigation
+off_hand=g04w4y_crowd_repeller,id=159663,bonus_id=4779/1512/4786
+
+# Gear Summary
+# gear_ilvl=341.38
+# gear_strength=108
+# gear_stamina=4465
+# gear_intellect=3626
+# gear_crit_rating=556
+# gear_haste_rating=1370
+# gear_mastery_rating=287
+# gear_versatility_rating=262
+# gear_armor=3594

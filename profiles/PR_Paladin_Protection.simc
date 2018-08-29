@@ -1,0 +1,80 @@
+paladin="PR_Paladin_Protection"
+source=default
+spec=protection
+level=120
+race=lightforged_draenei
+role=tank
+position=front
+talents=1200003
+
+# Default consumables
+potion=battle_potion_of_strength
+flask=flask_of_the_undertow
+food=bountiful_captains_feast
+augmentation=battle_scarred
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/fireblood,if=buff.avenging_wrath.up
+# Cooldowns
+actions+=/seraphim,if=cooldown.shield_of_the_righteous.charges_fractional>=2
+actions+=/avenging_wrath,if=buff.seraphim.up|cooldown.seraphim.remains<2|!talent.seraphim.enabled
+actions+=/potion,if=buff.avenging_wrath.up
+# Dumping SotR charges
+actions+=/shield_of_the_righteous,if=(buff.avengers_valor.up&cooldown.shield_of_the_righteous.charges_fractional>=2.5)&(cooldown.seraphim.remains>gcd|!talent.seraphim.enabled)
+actions+=/shield_of_the_righteous,if=(cooldown.shield_of_the_righteous.charges_fractional=3&cooldown.avenger_shield.remains>(2*gcd))
+actions+=/shield_of_the_righteous,if=(buff.avenging_wrath.up&!talent.seraphim.enabled)|buff.seraphim.up&buff.avengers_valor.up
+actions+=/shield_of_the_righteous,if=(buff.avenging_wrath.up&buff.avenging_wrath.remains<4&!talent.seraphim.enabled)|(buff.seraphim.remains<4&buff.seraphim.up)
+actions+=/use_items,if=buff.seraphim.up|!talent.seraphim.enabled
+actions+=/lights_judgment,if=buff.seraphim.up&buff.seraphim.remains<3
+actions+=/avengers_shield,if=((cooldown.shield_of_the_righteous.charges_fractional>2.5&!buff.avengers_valor.up)|active_enemies>=2)&cooldown_react
+actions+=/judgment,if=(cooldown.judgment.remains<gcd&cooldown.judgment.charges_fractional>1&cooldown_react)|!talent.crusaders_judgment.enabled
+actions+=/avengers_shield,,if=cooldown_react
+actions+=/consecration,if=(cooldown.judgment.remains<=gcd&!talent.crusaders_judgment.enabled)|cooldown.avenger_shield.remains<=gcd&consecration.remains<gcd
+actions+=/consecration,if=!talent.crusaders_judgment.enabled&consecration.remains<(cooldown.judgment.remains+cooldown.avengers_shield.remains)&consecration.remains<3*gcd
+actions+=/judgment,if=cooldown_react|!talent.crusaders_judgment.enabled
+actions+=/lights_judgment,if=!talent.seraphim.enabled|buff.seraphim.up
+actions+=/blessed_hammer
+actions+=/hammer_of_the_righteous
+actions+=/consecration
+
+head=helm_of_the_raptor_king,id=159422,bonus_id=4779/1512/4775/4786,azerite_powers=395/461/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/1524
+shoulders=kraken_shell_pauldrons,id=159431,bonus_id=4779/1512/4775/4786,azerite_powers=395/461/13
+back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
+chest=desert_guardians_breastplate,id=159424,bonus_id=4779/1512/4775/4786,azerite_powers=482/18/13
+wrists=embalmers_steadying_bracers,id=159409,bonus_id=4779/1512/4786
+hands=gauntlets_of_total_subservience,id=159421,bonus_id=4779/1512/4786
+waist=belt_of_the_unrelenting_gale,id=159426,bonus_id=4779/1512/4786
+legs=legplates_of_profane_sacrifice,id=159443,bonus_id=4779/1512/4786
+feet=ballast_sinkers,id=159428,bonus_id=4779/1512/4786
+finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
+finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
+trinket1=darkmoon_deck_fathoms,id=159125
+trinket2=briny_barnacle,id=159619,bonus_id=4779/1512/4786
+main_hand=adulation_enforcer,id=159632,bonus_id=4779/1512/4786,enchant=quick_navigation
+off_hand=disc_of_indomitable_will,id=158713,bonus_id=4779/1512/4786
+
+# Gear Summary
+# gear_ilvl=342.31
+# gear_strength=2914
+# gear_stamina=4465
+# gear_crit_rating=833
+# gear_haste_rating=1275
+# gear_mastery_rating=267
+# gear_versatility_rating=102
+# gear_armor=4585
