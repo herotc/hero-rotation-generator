@@ -150,6 +150,12 @@ class ActionExpression(BuildExpression):
         """
         self.method = Method('TravelTime')
 
+    def cooldown_react(self):
+        """
+        Return the arguments for the expression action.spell.cooldown_react.
+        """
+        self.method = Method('CooldownUpP', type_=BOOL)
+
     def in_flight(self):
         """
         Return the arguments for the expression action.spell.in_flight.
@@ -1049,7 +1055,10 @@ class RaidEvent(BuildExpression):
         """
         Return the argument for the expressions raid_event.adds.count.
         """
-        self.simc = 0
+        self.range_ = self.condition.player_unit.spell_property(
+            self.condition.parent_action.execution().object_(), RANGE,
+            self.condition.player_unit.spec_range())
+        self.simc = '(' + LuaRange(self.condition, self.range_).print_lua() + ' - 1)'
 
     def movement_in(self):
         """
