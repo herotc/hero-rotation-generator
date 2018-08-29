@@ -156,7 +156,7 @@ class Context(Decorable):
         """
         Print the custom code.
         """
-        lua_ranges = ", ".join(str(r) for r in sorted(self.ranges))
+        lua_ranges = ", ".join(str(r) for r in sorted(self.ranges, reverse=True))
         return (f'local EnemyRanges = {{{lua_ranges}}}\n'
                 f'local function UpdateRanges()\n'
                 f'  for _, i in ipairs(EnemyRanges) do\n'
