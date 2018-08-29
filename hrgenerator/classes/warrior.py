@@ -5,7 +5,7 @@ Warrior specific constants and functions.
 @author: skasch
 """
 
-from ..constants import COMMON, SPELL, BUFF, DEBUFF, RANGE, CD, GCDAOGCD
+from ..constants import COMMON, SPELL, BUFF, DEBUFF, RANGE, CD, GCDAOGCD, READY
 
 WARRIOR = 'warrior'
 ARMS = 'arms'
@@ -29,6 +29,8 @@ DEFAULT_POTION = {
 
 DEFAULT_RANGE = {
     WARRIOR: {
+        # TODO: Fix context.py #L155/L159 to accept "Melee" range
+        ARMS:   8
     },
 }
 
@@ -65,16 +67,20 @@ SPELL_INFO = {
             'in_for_the_kill':                      {SPELL:     248621,
                                                      BUFF:      248622},
             'cleave':                               {SPELL:     845,
-                                                     BUFF:      231833},
+                                                     BUFF:      231833,
+                                                     READY:     True},
             'whirlwind':                            {SPELL:     1680,
-                                                     RANGE:     8},
+                                                     RANGE:     8,
+                                                     READY:     True},
             'shattered_defenses':                   {BUFF:      248625},
             'execute':                              {SPELL:     163201},
-            'mortal_strike':                        {SPELL:     12294},
+            'mortal_strike':                        {SPELL:     12294,
+                                                     READY:     True},
             'executioners_precision':               {SPELL:     238147,
                                                      BUFF:      242188},
             'rend':                                 {SPELL:     772,
-                                                     DEBUFF:    772},
+                                                     DEBUFF:    772,
+                                                     READY:     True},
             'focused_rage':                         {SPELL:     207982,
                                                      BUFF:      207982},
             'fervor_of_battle':                     {SPELL:     202316},
@@ -85,7 +91,8 @@ SPELL_INFO = {
             'deadly_calm':                          {SPELL:     262228,
                                                      BUFF:      262228},
             'anger_management':                     {SPELL:     152278},
-            'slam':                                 {SPELL:     1464},
+            'slam':                                 {SPELL:     1464,
+                                                     READY:     True},
             'skullsplitter':                        {SPELL:     260643},
             'heroic_leap':                          {SPELL:     6544},
             'sudden_death':                         {BUFF:      52437},
@@ -167,7 +174,9 @@ TEMPLATES = {
                 '  UpdateExecuteID()\n'
                 '{action_lists}\n'
                 '{precombat_call}\n'
+                '  if Everyone.TargetIsValid() then\n'                
                 '{main_actions}\n'
+                '  end\n'
                 'end\n'
                 '\n{set_apl}')
 }
