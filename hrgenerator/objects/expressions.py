@@ -5,7 +5,7 @@ Define the objects representing simc expressions.
 @author: skasch
 """
 
-from .lua import LuaExpression, LuaRange, Method, Literal, BuildExpression
+from .lua import LuaExpression, LuaRange, Method, Literal, BuildExpression, LuaComparison
 from .executions import Spell, Item, Potion, Variable
 from .resources import (Rune, AstralPower, HolyPower, Insanity, Pain, Focus,
                         Maelstrom, Energy, ComboPoints, SoulShard,
@@ -1023,13 +1023,21 @@ class RaidEvent(BuildExpression):
         """
         Return the argument for the expressions raid_event.adds.exists.
         """
-        self.simc = FALSE
+        self.range_ = self.condition.player_unit.spell_property(
+            self.condition.parent_action.execution().object_(), RANGE,
+            self.condition.player_unit.spec_range())
+        self.type_ = BOOL
+        self.simc = LuaComparison(LuaRange(self.condition, self.range_), Literal(1), '>').print_lua()
 
     def adds_up(self):
         """
         Return the argument for the expressions raid_event.adds.up.
         """
-        self.simc = FALSE
+        self.range_ = self.condition.player_unit.spell_property(
+            self.condition.parent_action.execution().object_(), RANGE,
+            self.condition.player_unit.spec_range())
+        self.type_ = BOOL
+        self.simc = LuaComparison(LuaRange(self.condition, self.range_), Literal(1), '>').print_lua()
 
     def adds_remains(self):
         """
