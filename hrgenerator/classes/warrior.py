@@ -54,7 +54,7 @@ SPELL_INFO = {
             'crushing_assault':                     {SPELL:     278751,
                                                      BUFF:      278826},
             'test_of_might':                        {SPELL:     275529,
-                                                     BUFF:      275532},
+                                                     BUFF:      275540},
             'seismic_wave':                         {SPELL:     277639},                                         
         },
         ARMS: {
