@@ -55,6 +55,7 @@ Spell.Rogue.Assassination = {
   PoolResource                          = Spell(9999000010),
   CrimsonTempest                        = Spell(121411),
   CrimsonTempestBuff                    = Spell(121411),
+  ShroudedSuffocation                   = Spell(),
   ArcaneTorrent                         = Spell(50613),
   ArcanePulse                           = Spell(),
   LightsJudgment                        = Spell(255647)
@@ -248,6 +249,10 @@ local function APL()
     end
     -- garrote,cycle_targets=1,if=talent.subterfuge.enabled&remains<=10&pmultiplier<=1&!exsanguinated&target.time_to_die-remains>2
     if S.Garrote:IsCastableP() and (S.Subterfuge:IsAvailable() and Target:DebuffRemainsP(S.GarroteDebuff) <= 10 and pmultiplier <= 1 and not bool(exsanguinated) and Target:TimeToDie() - Target:DebuffRemainsP(S.GarroteDebuff) > 2) then
+      if HR.Cast(S.Garrote) then return ""; end
+    end
+    -- garrote,cycle_targets=1,if=talent.subterfuge.enabled&azerite.shrouded_suffocation.enabled&target.time_to_die>remains
+    if S.Garrote:IsCastableP() and (S.Subterfuge:IsAvailable() and S.ShroudedSuffocation:AzeriteEnabled() and Target:TimeToDie() > Target:DebuffRemainsP(S.GarroteDebuff)) then
       if HR.Cast(S.Garrote) then return ""; end
     end
     -- pool_resource,for_next=1

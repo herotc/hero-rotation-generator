@@ -29,6 +29,9 @@ Spell.Rogue.Subtlety = {
   ShadowBladesBuff                      = Spell(121471),
   ShadowBlades                          = Spell(121471),
   ShurikenToss                          = Spell(),
+  Nightstalker                          = Spell(14062),
+  DarkShadow                            = Spell(245687),
+  SymbolsofDeath                        = Spell(212283),
   SharpenedBladesBuff                   = Spell(),
   SharpenedBlades                       = Spell(),
   ShurikenStorm                         = Spell(197835),
@@ -40,7 +43,6 @@ Spell.Rogue.Subtlety = {
   Berserking                            = Spell(26297),
   Fireblood                             = Spell(265221),
   AncestralCall                         = Spell(274738),
-  SymbolsofDeath                        = Spell(212283),
   NightbladeDebuff                      = Spell(195452),
   ShurikenTornado                       = Spell(),
   SymbolsofDeathBuff                    = Spell(212283),
@@ -48,9 +50,7 @@ Spell.Rogue.Subtlety = {
   ShadowDance                           = Spell(185313),
   Subterfuge                            = Spell(108208),
   Nightblade                            = Spell(195452),
-  DarkShadow                            = Spell(245687),
   SecretTechnique                       = Spell(),
-  Nightstalker                          = Spell(14062),
   Eviscerate                            = Spell(196819),
   Vanish                                = Spell(1856),
   FindWeaknessDebuff                    = Spell(),
@@ -136,8 +136,8 @@ local function APL()
     end
   end
   Build = function()
-    -- shuriken_toss,if=buff.sharpened_blades.stack>=29&spell_targets.shuriken_storm<=(3*azerite.sharpened_blades.rank)
-    if S.ShurikenToss:IsCastableP() and (Player:BuffStackP(S.SharpenedBladesBuff) >= 29 and Cache.EnemiesCount[10] <= (3 * S.SharpenedBlades:AzeriteRank())) then
+    -- shuriken_toss,if=!talent.nightstalker.enabled&(!talent.dark_shadow.enabled|cooldown.symbols_of_death.remains>10)&buff.sharpened_blades.stack>=29&spell_targets.shuriken_storm<=(3*azerite.sharpened_blades.rank)
+    if S.ShurikenToss:IsCastableP() and (not S.Nightstalker:IsAvailable() and (not S.DarkShadow:IsAvailable() or S.SymbolsofDeath:CooldownRemainsP() > 10) and Player:BuffStackP(S.SharpenedBladesBuff) >= 29 and Cache.EnemiesCount[10] <= (3 * S.SharpenedBlades:AzeriteRank())) then
       if HR.Cast(S.ShurikenToss) then return ""; end
     end
     -- shuriken_storm,if=spell_targets>=2|buff.the_dreadlords_deceit.stack>=29
@@ -260,6 +260,10 @@ local function APL()
     -- call_action_list,name=finish,if=combo_points.deficit<=1-(talent.deeper_stratagem.enabled&buff.vanish.up)
     if (Player:ComboPointsDeficit() <= 1 - num((S.DeeperStratagem:IsAvailable() and Player:BuffP(S.VanishBuff)))) then
       local ShouldReturn = Finish(); if ShouldReturn then return ShouldReturn; end
+    end
+    -- shuriken_toss,if=buff.sharpened_blades.stack>=29
+    if S.ShurikenToss:IsCastableP() and (Player:BuffStackP(S.SharpenedBladesBuff) >= 29) then
+      if HR.Cast(S.ShurikenToss) then return ""; end
     end
     -- shadowstrike,cycle_targets=1,if=talent.secret_technique.enabled&talent.find_weakness.enabled&debuff.find_weakness.remains<1&spell_targets.shuriken_storm=2&target.time_to_die-remains>6
     if S.Shadowstrike:IsCastableP() and (S.SecretTechnique:IsAvailable() and S.FindWeakness:IsAvailable() and Target:DebuffRemainsP(S.FindWeaknessDebuff) < 1 and Cache.EnemiesCount[10] == 2 and Target:TimeToDie() - remains > 6) then
