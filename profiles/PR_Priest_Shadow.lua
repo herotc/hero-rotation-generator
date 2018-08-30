@@ -82,6 +82,12 @@ local function bool(val)
   return val ~= 0
 end
 
+local function InsanityThreshold ()
+	return S.LegacyOfTheVoid:IsAvailable() and 60 or 90;
+end
+local function ExecuteRange ()
+	return 20;
+end
 --- ======= ACTION LISTS =======
 local function APL()
   local Precombat, Aoe, Cleave, Single
@@ -101,11 +107,11 @@ local function APL()
       if HR.Cast(S.Shadowform) then return ""; end
     end
     -- mind_blast
-    if S.MindBlast:IsCastableP() then
+    if S.MindBlast:IsReadyP() then
       if HR.Cast(S.MindBlast) then return ""; end
     end
     -- shadow_word_void
-    if S.ShadowWordVoid:IsCastableP() then
+    if S.ShadowWordVoid:IsReadyP() then
       if HR.Cast(S.ShadowWordVoid) then return ""; end
     end
   end
@@ -115,27 +121,27 @@ local function APL()
       if HR.Cast(S.VoidEruption) then return ""; end
     end
     -- dark_ascension,if=buff.voidform.down
-    if S.DarkAscension:IsCastableP() and (Player:BuffDownP(S.VoidformBuff)) then
+    if S.DarkAscension:IsReadyP() and (Player:BuffDownP(S.VoidformBuff)) then
       if HR.Cast(S.DarkAscension) then return ""; end
     end
     -- void_bolt,if=talent.dark_void.enabled&dot.shadow_word_pain.remains>travel_time
-    if S.VoidBolt:IsCastableP() and (S.DarkVoid:IsAvailable() and Target:DebuffRemainsP(S.ShadowWordPainDebuff) > S.VoidBolt:TravelTime()) then
+    if S.VoidBolt:IsReadyP() and (S.DarkVoid:IsAvailable() and Target:DebuffRemainsP(S.ShadowWordPainDebuff) > S.VoidBolt:TravelTime()) then
       if HR.Cast(S.VoidBolt) then return ""; end
     end
     -- surrender_to_madness,if=buff.voidform.stack>=(15+buff.bloodlust.up)
-    if S.SurrenderToMadness:IsCastableP() and (Player:BuffStackP(S.VoidformBuff) >= (15 + num(Player:HasHeroism()))) then
+    if S.SurrenderToMadness:IsReadyP() and (Player:BuffStackP(S.VoidformBuff) >= (15 + num(Player:HasHeroism()))) then
       if HR.Cast(S.SurrenderToMadness) then return ""; end
     end
     -- dark_void,if=raid_event.adds.in>10
-    if S.DarkVoid:IsCastableP() and (10000000000 > 10) then
+    if S.DarkVoid:IsReadyP() and (10000000000 > 10) then
       if HR.Cast(S.DarkVoid) then return ""; end
     end
     -- mindbender
-    if S.Mindbender:IsCastableP() then
+    if S.Mindbender:IsReadyP() then
       if HR.Cast(S.Mindbender) then return ""; end
     end
     -- shadow_crash,if=raid_event.adds.in>5&raid_event.adds.duration<20
-    if S.ShadowCrash:IsCastableP() and (10000000000 > 5 and raid_event.adds.duration < 20) then
+    if S.ShadowCrash:IsReadyP() and (10000000000 > 5 and raid_event.adds.duration < 20) then
       if HR.Cast(S.ShadowCrash) then return ""; end
     end
     -- mind_sear,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(cooldown.void_bolt.up|cooldown.mind_blast.up)
@@ -153,35 +159,35 @@ local function APL()
       if HR.Cast(S.VoidEruption) then return ""; end
     end
     -- dark_ascension,if=buff.voidform.down
-    if S.DarkAscension:IsCastableP() and (Player:BuffDownP(S.VoidformBuff)) then
+    if S.DarkAscension:IsReadyP() and (Player:BuffDownP(S.VoidformBuff)) then
       if HR.Cast(S.DarkAscension) then return ""; end
     end
     -- void_bolt
-    if S.VoidBolt:IsCastableP() then
+    if S.VoidBolt:IsReadyP() then
       if HR.Cast(S.VoidBolt) then return ""; end
     end
     -- shadow_word_death,target_if=target.time_to_die<3|buff.voidform.down
-    if S.ShadowWordDeath:IsCastableP() and (Target:TimeToDie() < 3 or Player:BuffDownP(S.VoidformBuff)) then
+    if S.ShadowWordDeath:IsReadyP() and (Target:TimeToDie() < 3 or Player:BuffDownP(S.VoidformBuff)) then
       if HR.Cast(S.ShadowWordDeath) then return ""; end
     end
     -- surrender_to_madness,if=buff.voidform.stack>=(15+buff.bloodlust.up)
-    if S.SurrenderToMadness:IsCastableP() and (Player:BuffStackP(S.VoidformBuff) >= (15 + num(Player:HasHeroism()))) then
+    if S.SurrenderToMadness:IsReadyP() and (Player:BuffStackP(S.VoidformBuff) >= (15 + num(Player:HasHeroism()))) then
       if HR.Cast(S.SurrenderToMadness) then return ""; end
     end
     -- dark_void,if=raid_event.adds.in>10
-    if S.DarkVoid:IsCastableP() and (10000000000 > 10) then
+    if S.DarkVoid:IsReadyP() and (10000000000 > 10) then
       if HR.Cast(S.DarkVoid) then return ""; end
     end
     -- mindbender
-    if S.Mindbender:IsCastableP() then
+    if S.Mindbender:IsReadyP() then
       if HR.Cast(S.Mindbender) then return ""; end
     end
     -- mind_blast
-    if S.MindBlast:IsCastableP() then
+    if S.MindBlast:IsReadyP() then
       if HR.Cast(S.MindBlast) then return ""; end
     end
     -- shadow_crash,if=(raid_event.adds.in>5&raid_event.adds.duration<2)|raid_event.adds.duration>2
-    if S.ShadowCrash:IsCastableP() and ((10000000000 > 5 and raid_event.adds.duration < 2) or raid_event.adds.duration > 2) then
+    if S.ShadowCrash:IsReadyP() and ((10000000000 > 5 and raid_event.adds.duration < 2) or raid_event.adds.duration > 2) then
       if HR.Cast(S.ShadowCrash) then return ""; end
     end
     -- shadow_word_pain,target_if=refreshable&target.time_to_die>4,if=!talent.misery.enabled&!talent.dark_void.enabled
@@ -197,7 +203,7 @@ local function APL()
       if HR.Cast(S.VampiricTouch) then return ""; end
     end
     -- void_torrent
-    if S.VoidTorrent:IsCastableP() then
+    if S.VoidTorrent:IsReadyP() then
       if HR.Cast(S.VoidTorrent) then return ""; end
     end
     -- mind_sear,target_if=spell_targets.mind_sear>2,chain=1,interrupt=1
@@ -219,43 +225,43 @@ local function APL()
       if HR.Cast(S.VoidEruption) then return ""; end
     end
     -- dark_ascension,if=buff.voidform.down
-    if S.DarkAscension:IsCastableP() and (Player:BuffDownP(S.VoidformBuff)) then
+    if S.DarkAscension:IsReadyP() and (Player:BuffDownP(S.VoidformBuff)) then
       if HR.Cast(S.DarkAscension) then return ""; end
     end
     -- void_bolt
-    if S.VoidBolt:IsCastableP() then
+    if S.VoidBolt:IsReadyP() then
       if HR.Cast(S.VoidBolt) then return ""; end
     end
     -- shadow_word_death,if=target.time_to_die<3|cooldown.shadow_word_death.charges=2|(cooldown.shadow_word_death.charges=1&cooldown.shadow_word_death.remains<gcd.max)
-    if S.ShadowWordDeath:IsCastableP() and (Target:TimeToDie() < 3 or S.ShadowWordDeath:ChargesP() == 2 or (S.ShadowWordDeath:ChargesP() == 1 and S.ShadowWordDeath:CooldownRemainsP() < Player:GCD())) then
+    if S.ShadowWordDeath:IsReadyP() and (Target:TimeToDie() < 3 or S.ShadowWordDeath:ChargesP() == 2 or (S.ShadowWordDeath:ChargesP() == 1 and S.ShadowWordDeath:CooldownRemainsP() < Player:GCD())) then
       if HR.Cast(S.ShadowWordDeath) then return ""; end
     end
     -- surrender_to_madness,if=buff.voidform.stack>=(15+buff.bloodlust.up)&target.time_to_die>200|target.time_to_die<75
-    if S.SurrenderToMadness:IsCastableP() and (Player:BuffStackP(S.VoidformBuff) >= (15 + num(Player:HasHeroism())) and Target:TimeToDie() > 200 or Target:TimeToDie() < 75) then
+    if S.SurrenderToMadness:IsReadyP() and (Player:BuffStackP(S.VoidformBuff) >= (15 + num(Player:HasHeroism())) and Target:TimeToDie() > 200 or Target:TimeToDie() < 75) then
       if HR.Cast(S.SurrenderToMadness) then return ""; end
     end
     -- dark_void,if=raid_event.adds.in>10
-    if S.DarkVoid:IsCastableP() and (10000000000 > 10) then
+    if S.DarkVoid:IsReadyP() and (10000000000 > 10) then
       if HR.Cast(S.DarkVoid) then return ""; end
     end
     -- mindbender
-    if S.Mindbender:IsCastableP() then
+    if S.Mindbender:IsReadyP() then
       if HR.Cast(S.Mindbender) then return ""; end
     end
     -- shadow_word_death,if=!buff.voidform.up|(cooldown.shadow_word_death.charges=2&buff.voidform.stack<15)
-    if S.ShadowWordDeath:IsCastableP() and (not Player:BuffP(S.VoidformBuff) or (S.ShadowWordDeath:ChargesP() == 2 and Player:BuffStackP(S.VoidformBuff) < 15)) then
+    if S.ShadowWordDeath:IsReadyP() and (not Player:BuffP(S.VoidformBuff) or (S.ShadowWordDeath:ChargesP() == 2 and Player:BuffStackP(S.VoidformBuff) < 15)) then
       if HR.Cast(S.ShadowWordDeath) then return ""; end
     end
     -- shadow_crash,if=raid_event.adds.in>5&raid_event.adds.duration<20
-    if S.ShadowCrash:IsCastableP() and (10000000000 > 5 and raid_event.adds.duration < 20) then
+    if S.ShadowCrash:IsReadyP() and (10000000000 > 5 and raid_event.adds.duration < 20) then
       if HR.Cast(S.ShadowCrash) then return ""; end
     end
     -- mind_blast,if=variable.dots_up
-    if S.MindBlast:IsCastableP() and (bool(VarDotsUp)) then
+    if S.MindBlast:IsReadyP() and (bool(VarDotsUp)) then
       if HR.Cast(S.MindBlast) then return ""; end
     end
     -- void_torrent,if=dot.shadow_word_pain.remains>4&dot.vampiric_touch.remains>4
-    if S.VoidTorrent:IsCastableP() and (Target:DebuffRemainsP(S.ShadowWordPainDebuff) > 4 and Target:DebuffRemainsP(S.VampiricTouchDebuff) > 4) then
+    if S.VoidTorrent:IsReadyP() and (Target:DebuffRemainsP(S.ShadowWordPainDebuff) > 4 and Target:DebuffRemainsP(S.VampiricTouchDebuff) > 4) then
       if HR.Cast(S.VoidTorrent) then return ""; end
     end
     -- shadow_word_pain,if=refreshable&target.time_to_die>4&!talent.misery.enabled&!talent.dark_void.enabled

@@ -5,7 +5,7 @@ Priest specific constants and functions.
 @author: skasch
 """
 
-from ..constants import COMMON, SPELL, BUFF, DEBUFF, INTERRUPT, RANGE
+from ..constants import COMMON, SPELL, BUFF, DEBUFF, INTERRUPT, RANGE, READY
 
 PRIEST = 'priest'
 DISCIPLINE = 'discipline'
@@ -39,13 +39,10 @@ SPELL_INFO = {
             'shadow_word_pain':                 {SPELL:     589,
                                                  DEBUFF:    589,
                                                  RANGE:     40},
-            # Legendaries
-            'zeks_exterminatus':                {BUFF:      236546},
-            'buff_sephuzs_secret':              {SPELL:     208051},
-            'sephuzs_secret':                   {BUFF:      208051},
         },
         SHADOW: {
             'mind_blast':                       {SPELL:     8092,
+                                                 READY:     True,
                                                  RANGE:     40},
             'mind_flay':                        {SPELL:     15407,
                                                  RANGE:     40},
@@ -56,6 +53,7 @@ SPELL_INFO = {
             'voidform':                         {SPELL:     194249,
                                                  BUFF:      194249},
             'silence':                          {SPELL:     15487,
+                                                 READY:     True,
                                                  RANGE:     40,
                                                  INTERRUPT: True},
             'vampiric_touch':                   {SPELL:     34914,
@@ -63,10 +61,13 @@ SPELL_INFO = {
                                                  RANGE:     40},                             
             'void_eruption':                    {SPELL:     228260},
             'void_bolt':                        {SPELL:     205448,
+                                                 READY:     True,
                                                  RANGE:     40},
             'dispersion':                       {SPELL:     47585,
+                                                 READY:     True,
                                                  BUFF:      47585},
             'shadowfiend':                      {SPELL:     34433,
+                                                 READY:     True,
                                                  RANGE:     40},
             
             
@@ -75,6 +76,7 @@ SPELL_INFO = {
             'shadowy_insight':                  {SPELL:     162452,
                                                  BUFF:      124430},    
             'shadow_word_void':                 {SPELL:     205351,
+                                                 READY:     True,
                                                  RANGE:     40},
 
             'body_and_sould':                   {SPELL:     64129},
@@ -84,6 +86,7 @@ SPELL_INFO = {
             'twist_of_fate':                    {SPELL:     109142},
             'misery':                           {SPELL:     238558},
             'dark_void':                        {SPELL:     263346,
+                                                 READY:     True,
                                                  RANGE:     40},
             
             'last_word':                        {SPELL:     263716},
@@ -93,20 +96,26 @@ SPELL_INFO = {
             
             'auspicious_spirits':               {SPELL:     155271},
             'shadow_word_death':                {SPELL:     32379,
+                                                 READY:     True,
                                                  RANGE:     40},
             'shadow_crash':                     {SPELL:     205385,
+                                                 READY:     True,
                                                  RANGE:     40},
             
             'lingering_insanity':               {SPELL:     199849},
             'mindbender':                       {SPELL:     200174,
+                                                 READY:     True,
                                                  RANGE:     40},
             'void_torrent':                     {SPELL:     263165,
+                                                 READY:     True,
                                                  RANGE:     40},
                                      
             'legacy_of_the_void':               {SPELL:     193225},
             'dark_ascension':                   {SPELL:     280711,
+                                                 READY:     True,
                                                  RANGE:     40},
             'surrender_to_madness':             {SPELL:     193223,
+                                                 READY:     True,
                                                  BUFF:      193223},
         },
     },
@@ -124,6 +133,8 @@ CLASS_FUNCTIONS = {
         COMMON: [
         ],
         SHADOW: [
+            'InsanityThreshold',
+            'ExecuteRange'
         ],
     },
 }
