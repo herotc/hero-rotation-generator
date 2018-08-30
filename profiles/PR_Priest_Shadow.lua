@@ -117,7 +117,7 @@ local function APL()
   end
   Aoe = function()
     -- void_eruption
-    if S.VoidEruption:IsCastableP() then
+    if S.VoidEruption:IsReadyP() then
       if HR.Cast(S.VoidEruption) then return ""; end
     end
     -- dark_ascension,if=buff.voidform.down
@@ -155,7 +155,7 @@ local function APL()
   end
   Cleave = function()
     -- void_eruption
-    if S.VoidEruption:IsCastableP() then
+    if S.VoidEruption:IsReadyP() then
       if HR.Cast(S.VoidEruption) then return ""; end
     end
     -- dark_ascension,if=buff.voidform.down
@@ -221,7 +221,7 @@ local function APL()
   end
   Single = function()
     -- void_eruption
-    if S.VoidEruption:IsCastableP() then
+    if S.VoidEruption:IsReadyP() then
       if HR.Cast(S.VoidEruption) then return ""; end
     end
     -- dark_ascension,if=buff.voidform.down
