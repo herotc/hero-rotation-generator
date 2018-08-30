@@ -5,7 +5,7 @@ Mage specific constants and functions.
 @author: skasch
 """
 
-from ..constants import COMMON, SPELL, BUFF, DEBUFF, PET, RANGE, AUTOCHECK, INTERRUPT, CD, OGCDAOGCD, GCDAOGCD, READY, OPENER
+from ..constants import COMMON, SPELL, BUFF, DEBUFF, PET, RANGE, AUTOCHECK, INTERRUPT, CD, OGCDAOGCD, GCDAOGCD, READY, OPENER,BOOL
 
 MAGE = 'mage'
 ARCANE = 'arcane'
@@ -403,16 +403,16 @@ def frost_ground_aoe(fun):
 
     return ground_aoe
 
-# TODO: defer below calls to actual aura expressions
-
 def frost_brain_freeze_active(fun):
 
     from ..objects.lua import Literal
 
     def brain_freeze_active(self):
-        return Literal('Player:BuffStackP(S.BrainFreezeBuff)')
+        return Literal('Player:BrainFreezeActive()', type_=BOOL)
 
     return brain_freeze_active
+
+# TODO: defer below calls to dedicated methods
 
 def frost_winters_reach_active(fun):
 
