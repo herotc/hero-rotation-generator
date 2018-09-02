@@ -130,7 +130,7 @@ class ActionExpression(BuildExpression):
         """
         Return the arguments for the expression action.spell.charges.
         """
-        self.method = Method('ChargesFractional')
+        self.method = Method('ChargesFractionalP')
 
     def cooldown(self):
         """
@@ -1005,7 +1005,7 @@ class Cooldown(BuildExpression, Expires):
         Return the arguments for the expression
         cooldown.spell.charges_fractional.
         """
-        self.method = Method('ChargesFractional')
+        self.method = Method('ChargesFractionalP')
 
 
 class RaidEvent(BuildExpression):

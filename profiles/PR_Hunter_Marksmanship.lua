@@ -178,7 +178,7 @@ local function APL()
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- trueshot,if=cooldown.aimed_shot.charges<1|talent.barrage.enabled&cooldown.aimed_shot.charges_fractional<1.3
-    if S.Trueshot:IsCastableP() and (S.AimedShot:ChargesP() < 1 or S.Barrage:IsAvailable() and S.AimedShot:ChargesFractional() < 1.3) then
+    if S.Trueshot:IsCastableP() and (S.AimedShot:ChargesP() < 1 or S.Barrage:IsAvailable() and S.AimedShot:ChargesFractionalP() < 1.3) then
       if HR.Cast(S.Trueshot) then return ""; end
     end
   end

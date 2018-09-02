@@ -177,7 +177,7 @@ local function APL()
       if HR.Cast(S.DireBeast) then return ""; end
     end
     -- barbed_shot,if=pet.cat.buff.frenzy.down&charges_fractional>1.8|target.time_to_die<9
-    if S.BarbedShot:IsCastableP() and (Pet:BuffDownP(S.FrenzyBuff) and S.BarbedShot:ChargesFractional() > 1.8 or Target:TimeToDie() < 9) then
+    if S.BarbedShot:IsCastableP() and (Pet:BuffDownP(S.FrenzyBuff) and S.BarbedShot:ChargesFractionalP() > 1.8 or Target:TimeToDie() < 9) then
       if HR.Cast(S.BarbedShot) then return ""; end
     end
     -- barrage,if=active_enemies>1

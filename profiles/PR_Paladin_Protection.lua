@@ -100,7 +100,7 @@ local function APL()
       if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- seraphim,if=cooldown.shield_of_the_righteous.charges_fractional>=2
-    if S.Seraphim:IsCastableP() and (S.ShieldoftheRighteous:ChargesFractional() >= 2) then
+    if S.Seraphim:IsCastableP() and (S.ShieldoftheRighteous:ChargesFractionalP() >= 2) then
       if HR.Cast(S.Seraphim) then return ""; end
     end
     -- avenging_wrath,if=buff.seraphim.up|cooldown.seraphim.remains<2|!talent.seraphim.enabled
@@ -112,11 +112,11 @@ local function APL()
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- shield_of_the_righteous,if=(buff.avengers_valor.up&cooldown.shield_of_the_righteous.charges_fractional>=2.5)&(cooldown.seraphim.remains>gcd|!talent.seraphim.enabled)
-    if S.ShieldoftheRighteous:IsCastableP() and ((Player:BuffP(S.AvengersValorBuff) and S.ShieldoftheRighteous:ChargesFractional() >= 2.5) and (S.Seraphim:CooldownRemainsP() > Player:GCD() or not S.Seraphim:IsAvailable())) then
+    if S.ShieldoftheRighteous:IsCastableP() and ((Player:BuffP(S.AvengersValorBuff) and S.ShieldoftheRighteous:ChargesFractionalP() >= 2.5) and (S.Seraphim:CooldownRemainsP() > Player:GCD() or not S.Seraphim:IsAvailable())) then
       if HR.Cast(S.ShieldoftheRighteous) then return ""; end
     end
     -- shield_of_the_righteous,if=(cooldown.shield_of_the_righteous.charges_fractional=3&cooldown.avenger_shield.remains>(2*gcd))
-    if S.ShieldoftheRighteous:IsCastableP() and ((S.ShieldoftheRighteous:ChargesFractional() == 3 and S.AvengerShield:CooldownRemainsP() > (2 * Player:GCD()))) then
+    if S.ShieldoftheRighteous:IsCastableP() and ((S.ShieldoftheRighteous:ChargesFractionalP() == 3 and S.AvengerShield:CooldownRemainsP() > (2 * Player:GCD()))) then
       if HR.Cast(S.ShieldoftheRighteous) then return ""; end
     end
     -- shield_of_the_righteous,if=(buff.avenging_wrath.up&!talent.seraphim.enabled)|buff.seraphim.up&buff.avengers_valor.up
@@ -133,11 +133,11 @@ local function APL()
       if HR.Cast(S.LightsJudgment) then return ""; end
     end
     -- avengers_shield,if=((cooldown.shield_of_the_righteous.charges_fractional>2.5&!buff.avengers_valor.up)|active_enemies>=2)&cooldown_react
-    if S.AvengersShield:IsCastableP() and (((S.ShieldoftheRighteous:ChargesFractional() > 2.5 and not Player:BuffP(S.AvengersValorBuff)) or Cache.EnemiesCount[30] >= 2) and S.AvengersShield:CooldownUpP()) then
+    if S.AvengersShield:IsCastableP() and (((S.ShieldoftheRighteous:ChargesFractionalP() > 2.5 and not Player:BuffP(S.AvengersValorBuff)) or Cache.EnemiesCount[30] >= 2) and S.AvengersShield:CooldownUpP()) then
       if HR.Cast(S.AvengersShield) then return ""; end
     end
     -- judgment,if=(cooldown.judgment.remains<gcd&cooldown.judgment.charges_fractional>1&cooldown_react)|!talent.crusaders_judgment.enabled
-    if S.Judgment:IsCastableP() and ((S.Judgment:CooldownRemainsP() < Player:GCD() and S.Judgment:ChargesFractional() > 1 and S.Judgment:CooldownUpP()) or not S.CrusadersJudgment:IsAvailable()) then
+    if S.Judgment:IsCastableP() and ((S.Judgment:CooldownRemainsP() < Player:GCD() and S.Judgment:ChargesFractionalP() > 1 and S.Judgment:CooldownUpP()) or not S.CrusadersJudgment:IsAvailable()) then
       if HR.Cast(S.Judgment) then return ""; end
     end
     -- avengers_shield,,if=cooldown_react

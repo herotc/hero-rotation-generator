@@ -112,7 +112,7 @@ local function APL()
       if HR.Cast(S.Marrowrend) then return ""; end
     end
     -- blood_boil,if=charges_fractional>=1.8&(buff.hemostasis.stack<=(5-spell_targets.blood_boil)|spell_targets.blood_boil>2)
-    if S.BloodBoil:IsCastableP() and (S.BloodBoil:ChargesFractional() >= 1.8 and (Player:BuffStackP(S.HemostasisBuff) <= (5 - Cache.EnemiesCount[5]) or Cache.EnemiesCount[5] > 2)) then
+    if S.BloodBoil:IsCastableP() and (S.BloodBoil:ChargesFractionalP() >= 1.8 and (Player:BuffStackP(S.HemostasisBuff) <= (5 - Cache.EnemiesCount[5]) or Cache.EnemiesCount[5] > 2)) then
       if HR.Cast(S.BloodBoil) then return ""; end
     end
     -- marrowrend,if=buff.bone_shield.stack<5&talent.ossuary.enabled&runic_power.deficit>=15
@@ -132,7 +132,7 @@ local function APL()
       if HR.Cast(S.DeathandDecay) then return ""; end
     end
     -- rune_strike,if=(charges_fractional>=1.8|buff.dancing_rune_weapon.up)&rune.time_to_3>=gcd
-    if S.RuneStrike:IsCastableP() and ((S.RuneStrike:ChargesFractional() >= 1.8 or Player:BuffP(S.DancingRuneWeaponBuff)) and Player:RuneTimeToX(3) >= Player:GCD()) then
+    if S.RuneStrike:IsCastableP() and ((S.RuneStrike:ChargesFractionalP() >= 1.8 or Player:BuffP(S.DancingRuneWeaponBuff)) and Player:RuneTimeToX(3) >= Player:GCD()) then
       if HR.Cast(S.RuneStrike) then return ""; end
     end
     -- heart_strike,if=buff.dancing_rune_weapon.up|rune.time_to_4<gcd

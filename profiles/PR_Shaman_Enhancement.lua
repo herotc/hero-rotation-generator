@@ -132,7 +132,7 @@ local function APL()
       if HR.Cast(S.CrashLightning) then return ""; end
     end
     -- rockbiter,if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7
-    if S.Rockbiter:IsCastableP() and (S.Landslide:IsAvailable() and not Player:BuffP(S.LandslideBuff) and S.Rockbiter:ChargesFractional() > 1.7) then
+    if S.Rockbiter:IsCastableP() and (S.Landslide:IsAvailable() and not Player:BuffP(S.LandslideBuff) and S.Rockbiter:ChargesFractionalP() > 1.7) then
       if HR.Cast(S.Rockbiter) then return ""; end
     end
     -- windstrike
@@ -146,7 +146,7 @@ local function APL()
       if HR.Cast(S.CrashLightning) then return ""; end
     end
     -- rockbiter,if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7
-    if S.Rockbiter:IsCastableP() and (S.Landslide:IsAvailable() and not Player:BuffP(S.LandslideBuff) and S.Rockbiter:ChargesFractional() > 1.7) then
+    if S.Rockbiter:IsCastableP() and (S.Landslide:IsAvailable() and not Player:BuffP(S.LandslideBuff) and S.Rockbiter:ChargesFractionalP() > 1.7) then
       if HR.Cast(S.Rockbiter) then return ""; end
     end
     -- fury_of_air,if=!ticking&maelstrom>=20

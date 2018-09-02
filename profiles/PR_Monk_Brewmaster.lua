@@ -165,15 +165,15 @@ local function APL()
       if HR.Cast(S.IronskinBrew, Settings.Brewmaster.OffGCDasOffGCD.IronskinBrew) then return ""; end
     end
     -- ironskin_brew,if=cooldown.brews.charges_fractional>1&cooldown.black_ox_brew.remains<3
-    if S.IronskinBrew:IsCastableP() and (S.Brews:ChargesFractional() > 1 and S.BlackOxBrew:CooldownRemainsP() < 3) then
+    if S.IronskinBrew:IsCastableP() and (S.Brews:ChargesFractionalP() > 1 and S.BlackOxBrew:CooldownRemainsP() < 3) then
       if HR.Cast(S.IronskinBrew, Settings.Brewmaster.OffGCDasOffGCD.IronskinBrew) then return ""; end
     end
     -- purifying_brew,if=stagger.pct>(6*(3-(cooldown.brews.charges_fractional)))&(stagger.last_tick_damage_1>((0.02+0.001*(3-cooldown.brews.charges_fractional))*stagger.last_tick_damage_30))
-    if S.PurifyingBrew:IsCastableP() and (stagger.pct > (6 * (3 - (S.Brews:ChargesFractional()))) and (stagger.last_tick_damage_1 > ((0.02 + 0.001 * (3 - S.Brews:ChargesFractional())) * stagger.last_tick_damage_30))) then
+    if S.PurifyingBrew:IsCastableP() and (stagger.pct > (6 * (3 - (S.Brews:ChargesFractionalP()))) and (stagger.last_tick_damage_1 > ((0.02 + 0.001 * (3 - S.Brews:ChargesFractionalP())) * stagger.last_tick_damage_30))) then
       if HR.Cast(S.PurifyingBrew, Settings.Brewmaster.OffGCDasOffGCD.PurifyingBrew) then return ""; end
     end
     -- black_ox_brew,if=cooldown.brews.charges_fractional<0.5
-    if S.BlackOxBrew:IsCastableP() and (S.Brews:ChargesFractional() < 0.5) then
+    if S.BlackOxBrew:IsCastableP() and (S.Brews:ChargesFractionalP() < 0.5) then
       if HR.Cast(S.BlackOxBrew, Settings.Brewmaster.OffGCDasOffGCD.BlackOxBrew) then return ""; end
     end
     -- black_ox_brew,if=(energy+(energy.regen*cooldown.keg_smash.remains))<40&buff.blackout_combo.down&cooldown.keg_smash.up

@@ -228,7 +228,7 @@ local function APL()
   StealthCds = function()
     -- variable,name=shd_threshold,value=cooldown.shadow_dance.charges_fractional>=1.75
     if (true) then
-      VarShdThreshold = num(S.ShadowDance:ChargesFractional() >= 1.75)
+      VarShdThreshold = num(S.ShadowDance:ChargesFractionalP() >= 1.75)
     end
     -- vanish,if=!variable.shd_threshold&debuff.find_weakness.remains<1
     if S.Vanish:IsCastableP() and (not bool(VarShdThreshold) and Target:DebuffRemainsP(S.FindWeaknessDebuff) < 1) then
