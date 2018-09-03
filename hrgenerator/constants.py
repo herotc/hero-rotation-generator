@@ -39,6 +39,7 @@ COMMON = 'common'
 RANGE = 'range'
 OPENER = 'opener'
 AUTOCHECK = 'autocheck'
+ANYCASTER = 'anycaster'
 
 MAX_INT = 10 ** 10
 

@@ -9,7 +9,7 @@ from .lua import (LuaNamed, LuaTyped, LuaConditions, LuaCastable,
                   LuaExpression, Literal, Method)
 from ..constants import (IGNORED_EXECUTIONS, SPELL, BUFF, DEBUFF, USABLE, READY,
                          MELEE, INTERRUPT, CD, GCDAOGCD, OGCDAOGCD, NUM, BOOL,
-                         FALSE, AUTOCHECK, OPENER)
+                         FALSE, TRUE, AUTOCHECK, OPENER, ANYCASTER)
 from ..database import (SPELL_INFO, COMMON)
 
 
@@ -211,11 +211,18 @@ class Spell(LuaNamed, LuaCastable):
         if not method:
             method = f'{type_.title()}DownP'
         aura_action = Spell(self.action, self.simc, type_=type_)
-        self.additional_conditions.append(
-            LuaExpression(self.action.player,
-                          Method(method, type_=BOOL),
-                          [aura_action])
-        )
+        if self.action.player.spell_property(self, ANYCASTER):
+            self.additional_conditions.append(
+                LuaExpression(self.action.player,
+                            Method(method, type_=BOOL),
+                            [aura_action, Literal(TRUE)])
+            )
+        else:
+            self.additional_conditions.append(
+                LuaExpression(self.action.player,
+                            Method(method, type_=BOOL),
+                            [aura_action])
+            )
 
     def lua_name(self):
         return f'{super().lua_name()}{self.TYPE_SUFFIX[self.type_]}'
