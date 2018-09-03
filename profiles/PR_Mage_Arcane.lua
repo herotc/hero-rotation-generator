@@ -197,7 +197,7 @@ local function APL()
     end
     -- arcane_power
     if S.ArcanePower:IsCastableP() and HR.CDsON() then
-      if HR.Cast(S.ArcanePower) then return ""; end
+      if HR.Cast(S.ArcanePower, Settings.Arcane.GCDasOffGCD.ArcanePower) then return ""; end
     end
     -- use_items,if=buff.arcane_power.up|target.time_to_die<cooldown.arcane_power.remains
     -- blood_fury
@@ -217,8 +217,8 @@ local function APL()
       if HR.Cast(S.AncestralCall, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- presence_of_mind,if=buff.rune_of_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time|buff.arcane_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time
-    if S.PresenceofMind:IsCastableP() and (Player:BuffRemainsP(S.RuneofPowerBuff) <= PresenceOfMindMax() * S.ArcaneBlast:ExecuteTime() or Player:BuffRemainsP(S.ArcanePowerBuff) <= PresenceOfMindMax() * S.ArcaneBlast:ExecuteTime()) then
-      if HR.Cast(S.PresenceofMind) then return ""; end
+    if S.PresenceofMind:IsCastableP() and HR.CDsON() and (Player:BuffRemainsP(S.RuneofPowerBuff) <= PresenceOfMindMax() * S.ArcaneBlast:ExecuteTime() or Player:BuffRemainsP(S.ArcanePowerBuff) <= PresenceOfMindMax() * S.ArcaneBlast:ExecuteTime()) then
+      if HR.Cast(S.PresenceofMind, Settings.Arcane.OffGCDasOffGCD.PresenceofMind) then return ""; end
     end
     -- potion,if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up|!(race.troll|race.orc))
     if I.DeadlyGrace:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.ArcanePowerBuff) and (Player:BuffP(S.BerserkingBuff) or Player:BuffP(S.BloodFuryBuff) or not (Player:IsRace("Troll") or Player:IsRace("Orc")))) then
@@ -267,8 +267,8 @@ local function APL()
       if HR.Cast(S.ChargedUp) then return ""; end
     end
     -- presence_of_mind,if=set_bonus.tier20_2pc&buff.arcane_charge.stack=0
-    if S.PresenceofMind:IsCastableP() and (HL.Tier20_2Pc and Player:ArcaneChargesP() == 0) then
-      if HR.Cast(S.PresenceofMind) then return ""; end
+    if S.PresenceofMind:IsCastableP() and HR.CDsON() and (HL.Tier20_2Pc and Player:ArcaneChargesP() == 0) then
+      if HR.Cast(S.PresenceofMind, Settings.Arcane.OffGCDasOffGCD.PresenceofMind) then return ""; end
     end
     -- nether_tempest,if=(refreshable|!ticking)&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.rune_of_power.down&buff.arcane_power.down
     if S.NetherTempest:IsCastableP() and ((Target:DebuffRefreshableCP(S.NetherTempestDebuff) or not Target:DebuffP(S.NetherTempestDebuff)) and Player:ArcaneChargesP() == Player:ArcaneChargesMax() and Player:BuffDownP(S.RuneofPowerBuff) and Player:BuffDownP(S.ArcanePowerBuff)) then
@@ -321,8 +321,8 @@ local function APL()
       if HR.Cast(S.Blink) then return ""; end
     end
     -- presence_of_mind
-    if S.PresenceofMind:IsCastableP() then
-      if HR.Cast(S.PresenceofMind) then return ""; end
+    if S.PresenceofMind:IsCastableP() and HR.CDsON() then
+      if HR.Cast(S.PresenceofMind, Settings.Arcane.OffGCDasOffGCD.PresenceofMind) then return ""; end
     end
     -- arcane_missiles
     if S.ArcaneMissiles:IsCastableP() then
