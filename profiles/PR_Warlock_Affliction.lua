@@ -99,6 +99,14 @@ local function bool(val)
   return val ~= 0
 end
 
+local UnstableAfflictionDebuffs = {
+  Spell(233490),
+  Spell(233496),
+  Spell(233497),
+  Spell(233498),
+  Spell(233499)
+};
+
 local function ActiveUAs ()
   local UAcount = 0
   for _, v in pairs(UnstableAfflictionDebuffs) do

@@ -188,6 +188,7 @@ CLASS_FUNCTIONS = {
         COMMON: [
         ],
         AFFLICTION: [
+            'UnstableAfflictionDebuffs',
             'ActiveUAs',
             'AfflictionPreAplSetup',
         ],
