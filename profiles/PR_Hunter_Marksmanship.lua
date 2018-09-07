@@ -192,7 +192,7 @@ local function APL()
       if HR.Cast(S.Barrage) then return ""; end
     end
     -- arcane_shot,if=buff.precise_shots.up&(cooldown.aimed_shot.full_recharge_time<gcd*buff.precise_shots.stack+action.aimed_shot.cast_time|buff.lethal_shots.up)
-    if S.ArcaneShot:IsCastableP() and (Player:BuffP(S.PreciseShotsBuff) and (S.AimedShot:FullRechargeTime() < Player:GCD() * Player:BuffStackP(S.PreciseShotsBuff) + S.AimedShot:CastTime() or Player:BuffP(S.LethalShotsBuff))) then
+    if S.ArcaneShot:IsCastableP() and (Player:BuffP(S.PreciseShotsBuff) and (S.AimedShot:FullRechargeTimeP() < Player:GCD() * Player:BuffStackP(S.PreciseShotsBuff) + S.AimedShot:CastTime() or Player:BuffP(S.LethalShotsBuff))) then
       if HR.Cast(S.ArcaneShot) then return ""; end
     end
     -- rapid_fire,if=(!talent.lethal_shots.enabled|buff.lethal_shots.up)&azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1

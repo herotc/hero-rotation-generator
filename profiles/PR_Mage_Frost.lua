@@ -196,7 +196,7 @@ local function APL()
       if HR.Cast(S.RuneofPower, Settings.Frost.GCDasOffGCD.RuneofPower) then return ""; end
     end
     -- call_action_list,name=talent_rop,if=talent.rune_of_power.enabled&active_enemies=1&cooldown.rune_of_power.full_recharge_time<cooldown.frozen_orb.remains
-    if (S.RuneofPower:IsAvailable() and Cache.EnemiesCount[35] == 1 and S.RuneofPower:FullRechargeTime() < S.FrozenOrb:CooldownRemainsP()) then
+    if (S.RuneofPower:IsAvailable() and Cache.EnemiesCount[35] == 1 and S.RuneofPower:FullRechargeTimeP() < S.FrozenOrb:CooldownRemainsP()) then
       local ShouldReturn = TalentRop(); if ShouldReturn then return ShouldReturn; end
     end
     -- potion,if=prev_gcd.1.icy_veins|target.time_to_die<70

@@ -998,7 +998,7 @@ class Cooldown(BuildExpression, Expires):
         Return the arguments for the expression
         cooldown.spell.full_recharge_time.
         """
-        self.method = Method('FullRechargeTime')
+        self.method = Method('FullRechargeTimeP')
 
     def charges_fractional(self):
         """
