@@ -59,6 +59,7 @@ IGNORED_EXECUTIONS = [
     'augmentation',
     'snapshot_stats',
     'use_items',
+    'wait',
     # Monk Brewmaster
     'greater_gift_of_the_ox',
     'gift_of_the_ox',
