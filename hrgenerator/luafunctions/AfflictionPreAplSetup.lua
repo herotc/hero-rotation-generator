@@ -1,8 +1,8 @@
 HL.UnstableAfflictionDebuffsPrev = {
-    [S.UnstableAffliction2Debuff] = S.UnstableAffliction1Debuff,
-    [S.UnstableAffliction3Debuff] = S.UnstableAffliction2Debuff,
-    [S.UnstableAffliction4Debuff] = S.UnstableAffliction3Debuff,
-    [S.UnstableAffliction5Debuff] = S.UnstableAffliction4Debuff
+    [UnstableAfflictionDebuffs[2]] = UnstableAfflictionDebuffs[1],
+    [UnstableAfflictionDebuffs[3]] = UnstableAfflictionDebuffs[2],
+    [UnstableAfflictionDebuffs[4]] = UnstableAfflictionDebuffs[3],
+    [UnstableAfflictionDebuffs[5]] = UnstableAfflictionDebuffs[4]
   };
 
 local function NbAffected (SpellAffected)
