@@ -149,6 +149,7 @@ SPELL_INFO = {
             'swipe':                            {SPELL:     106785,
                                                  RANGE:     8},
             'thrash':                           {SPELL:     106830,
+                                                 DEBUFF:    106830,
                                                  RANGE:     8},
             'tigers_fury':                      {SPELL:     5217,
                                                  BUFF:      5217,

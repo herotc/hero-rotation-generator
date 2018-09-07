@@ -43,10 +43,10 @@ Spell.Druid.Feral = {
   Rake                                  = Spell(1822),
   RakeDebuff                            = Spell(155722),
   RipDebuff                             = Spell(1079),
-  Wait                                  = Spell(),
   MoonfireCat                           = Spell(155625),
   MoonfireCatDebuff                     = Spell(155625),
   Thrash                                = Spell(106830),
+  ThrashDebuff                          = Spell(106830),
   Shred                                 = Spell(5221),
   PredatorySwiftnessBuff                = Spell(69369),
   Rip                                   = Spell(1079),
@@ -220,15 +220,12 @@ local function APL()
       VarOpenerDone = num(Target:DebuffP(S.RipDebuff))
     end
     -- wait,sec=0.001,if=dot.rip.ticking
-    if S.Wait:IsCastableP() and (Target:DebuffP(S.RipDebuff)) then
-      if HR.Cast(S.Wait) then return ""; end
-    end
     -- moonfire_cat,if=!ticking|buff.bloodtalons.stack=1&combo_points<5
     if S.MoonfireCat:IsCastableP() and (not Target:DebuffP(S.MoonfireCatDebuff) or Player:BuffStackP(S.BloodtalonsBuff) == 1 and Player:ComboPoints() < 5) then
       if HR.Cast(S.MoonfireCat) then return ""; end
     end
     -- thrash,if=!ticking&combo_points<5
-    if S.Thrash:IsCastableP() and (not bool(ticking) and Player:ComboPoints() < 5) then
+    if S.Thrash:IsCastableP() and (not Target:DebuffP(S.ThrashDebuff) and Player:ComboPoints() < 5) then
       if HR.Cast(S.Thrash) then return ""; end
     end
     -- shred,if=combo_points<5
