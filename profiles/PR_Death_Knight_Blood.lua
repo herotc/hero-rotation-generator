@@ -38,7 +38,6 @@ Spell.DeathKnight.Blood = {
   RapidDecomposition                    = Spell(194662),
   Consumption                           = Spell(205223),
   ArcaneTorrent                         = Spell(50613),
-  MindFreeze                            = Spell(47528),
   BloodFury                             = Spell(20572),
   DancingRuneWeapon                     = Spell(49028),
   Berserking                            = Spell(26297),
@@ -174,10 +173,6 @@ local function APL()
   end
   if Everyone.TargetIsValid() then
     -- auto_attack
-    -- mind_freeze
-    if S.MindFreeze:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled then
-      if HR.CastAnnotated(S.MindFreeze, false, "Interrupt") then return ""; end
-    end
     -- blood_fury,if=cooldown.dancing_rune_weapon.ready&(!cooldown.blooddrinker.ready|!talent.blooddrinker.enabled)
     if S.BloodFury:IsCastableP() and (S.DancingRuneWeapon:CooldownUpP() and (not S.BloodDrinker:CooldownUpP() or not S.BloodDrinker:IsAvailable())) then
       if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end

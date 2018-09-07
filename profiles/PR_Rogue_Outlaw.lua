@@ -37,7 +37,6 @@ Spell.Rogue.Outlaw = {
   Berserking                            = Spell(26297),
   Fireblood                             = Spell(265221),
   AncestralCall                         = Spell(274738),
-  TrueBearingBuff                       = Spell(193359),
   BladeFlurry                           = Spell(13877),
   BladeFlurryBuff                       = Spell(13877),
   GhostlyStrike                         = Spell(196937),
@@ -46,9 +45,9 @@ Spell.Rogue.Outlaw = {
   Vanish                                = Spell(1856),
   Shadowmeld                            = Spell(58984),
   BetweentheEyes                        = Spell(199804),
+  RuthlessPrecisionBuff                 = Spell(),
   Deadshot                              = Spell(),
   RolltheBonesBuff                      = Spell(),
-  RuthlessPrecisionBuff                 = Spell(),
   AceUpYourSleeve                       = Spell(),
   Dispatch                              = Spell(),
   Ambush                                = Spell(8676),
@@ -87,7 +86,7 @@ local VarBladeFlurrySync = 0;
 local VarAmbushCondition = 0;
 local VarRtbReroll = 0;
 
-local EnemyRanges = {8}
+local EnemyRanges = {35, 8}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do
     HL.GetEnemies(i);
@@ -176,12 +175,16 @@ local function APL()
     if S.AdrenalineRush:IsCastableP() and (not Player:BuffP(S.AdrenalineRushBuff) and Player:EnergyTimeToMaxPredicted() > 1) then
       if HR.Cast(S.AdrenalineRush) then return ""; end
     end
-    -- marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|((raid_event.adds.in>40|buff.true_bearing.remains>15-buff.adrenaline_rush.up*5)&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)
-    if S.MarkedForDeath:IsCastableP() and (bool(min:target.time_to_die)) and (Target:TimeToDie() < Player:ComboPointsDeficit() or ((10000000000 > 40 or Player:BuffRemainsP(S.TrueBearingBuff) > 15 - num(Player:BuffP(S.AdrenalineRushBuff)) * 5) and not bool(stealthed.rogue) and Player:ComboPointsDeficit() >= cp_max_spend - 1)) then
+    -- marked_for_death,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)
+    if S.MarkedForDeath:IsCastableP() and (bool(min:target.time_to_die)) and ((Cache.EnemiesCount[35] > 1) and (Target:TimeToDie() < Player:ComboPointsDeficit() or not bool(stealthed.rogue) and Player:ComboPointsDeficit() >= cp_max_spend - 1)) then
       if HR.Cast(S.MarkedForDeath) then return ""; end
     end
-    -- blade_flurry,if=spell_targets>=2&!buff.blade_flurry.up&(!raid_event.adds.exists|raid_event.adds.remains>8|cooldown.blade_flurry.charges=1&raid_event.adds.in>(2-cooldown.blade_flurry.charges_fractional)*25)
-    if S.BladeFlurry:IsCastableP() and (Cache.EnemiesCount[8] >= 2 and not Player:BuffP(S.BladeFlurryBuff) and (not (Cache.EnemiesCount[8] > 1) or 0 > 8 or S.BladeFlurry:ChargesP() == 1 and 10000000000 > (2 - S.BladeFlurry:ChargesFractionalP()) * 25)) then
+    -- marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1
+    if S.MarkedForDeath:IsCastableP() and (10000000000 > 30 - raid_event.adds.duration and not bool(stealthed.rogue) and Player:ComboPointsDeficit() >= cp_max_spend - 1) then
+      if HR.Cast(S.MarkedForDeath) then return ""; end
+    end
+    -- blade_flurry,if=spell_targets>=2&!buff.blade_flurry.up&(!raid_event.adds.exists|raid_event.adds.remains>8|raid_event.adds.in>(2-cooldown.blade_flurry.charges_fractional)*25)
+    if S.BladeFlurry:IsCastableP() and (Cache.EnemiesCount[8] >= 2 and not Player:BuffP(S.BladeFlurryBuff) and (not (Cache.EnemiesCount[8] > 1) or 0 > 8 or 10000000000 > (2 - S.BladeFlurry:ChargesFractionalP()) * 25)) then
       if HR.Cast(S.BladeFlurry) then return ""; end
     end
     -- ghostly_strike,if=variable.blade_flurry_sync&combo_points.deficit>=1+buff.broadside.up
@@ -206,8 +209,8 @@ local function APL()
     end
   end
   Finish = function()
-    -- between_the_eyes,if=azerite.deadshot.rank>=2&buff.roll_the_bones.up
-    if S.BetweentheEyes:IsCastableP() and (S.Deadshot:AzeriteRank() >= 2 and Player:BuffP(S.RolltheBonesBuff)) then
+    -- between_the_eyes,if=buff.ruthless_precision.up|(azerite.deadshot.rank>=2&buff.roll_the_bones.up)
+    if S.BetweentheEyes:IsCastableP() and (Player:BuffP(S.RuthlessPrecisionBuff) or (S.Deadshot:AzeriteRank() >= 2 and Player:BuffP(S.RolltheBonesBuff))) then
       if HR.Cast(S.BetweentheEyes) then return ""; end
     end
     -- slice_and_dice,if=buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8
@@ -218,8 +221,8 @@ local function APL()
     if S.RolltheBones:IsCastableP() and ((Player:BuffRemainsP(S.RolltheBonesBuff) <= 3 or bool(VarRtbReroll)) and (Target:TimeToDie() > 20 or Player:BuffRemainsP(S.RolltheBonesBuff) < Target:TimeToDie())) then
       if HR.Cast(S.RolltheBones) then return ""; end
     end
-    -- between_the_eyes,if=buff.ruthless_precision.up|azerite.ace_up_your_sleeve.enabled|azerite.deadshot.enabled
-    if S.BetweentheEyes:IsCastableP() and (Player:BuffP(S.RuthlessPrecisionBuff) or S.AceUpYourSleeve:AzeriteEnabled() or S.Deadshot:AzeriteEnabled()) then
+    -- between_the_eyes,if=azerite.ace_up_your_sleeve.enabled|azerite.deadshot.enabled
+    if S.BetweentheEyes:IsCastableP() and (S.AceUpYourSleeve:AzeriteEnabled() or S.Deadshot:AzeriteEnabled()) then
       if HR.Cast(S.BetweentheEyes) then return ""; end
     end
     -- dispatch
@@ -241,6 +244,14 @@ local function APL()
     -- variable,name=rtb_reroll,value=rtb_buffs<2&(buff.loaded_dice.up|!buff.grand_melee.up&!buff.ruthless_precision.up)
     if (true) then
       VarRtbReroll = num(rtb_buffs < 2 and (Player:BuffP(S.LoadedDiceBuff) or not Player:BuffP(S.GrandMeleeBuff) and not Player:BuffP(S.RuthlessPrecisionBuff)))
+    end
+    -- variable,name=rtb_reroll,op=set,if=azerite.deadshot.rank>=2,value=rtb_buffs<2&(buff.loaded_dice.up|buff.ruthless_precision.remains<=cooldown.between_the_eyes.remains)
+    if (S.Deadshot:AzeriteRank() >= 2) then
+      VarRtbReroll = num(rtb_buffs < 2 and (Player:BuffP(S.LoadedDiceBuff) or Player:BuffRemainsP(S.RuthlessPrecisionBuff) <= S.BetweentheEyes:CooldownRemainsP()))
+    end
+    -- variable,name=rtb_reroll,op=set,if=azerite.snake_eyes.enabled,value=rtb_buffs<2|(azerite.snake_eyes.rank=3&rtb_buffs<5)
+    if (S.SnakeEyes:AzeriteEnabled()) then
+      VarRtbReroll = num(rtb_buffs < 2 or (S.SnakeEyes:AzeriteRank() == 3 and rtb_buffs < 5))
     end
     -- variable,name=rtb_reroll,op=reset,if=azerite.snake_eyes.rank>=2&buff.snake_eyes.stack>=2-buff.broadside.up
     if (S.SnakeEyes:AzeriteRank() >= 2 and Player:BuffStackP(S.SnakeEyesBuff) >= 2 - num(Player:BuffP(S.BroadsideBuff))) then

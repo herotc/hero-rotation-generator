@@ -30,11 +30,12 @@ Spell.Mage.Arcane = {
   Evocation                             = Spell(12051),
   ChargedUp                             = Spell(205032),
   ArcaneChargeBuff                      = Spell(36032),
-  PresenceofMind                        = Spell(205025),
   NetherTempest                         = Spell(114923),
   NetherTempestDebuff                   = Spell(114923),
   RuneofPowerBuff                       = Spell(116014),
   ArcanePowerBuff                       = Spell(12042),
+  RuleofThreesBuff                      = Spell(264774),
+  Overpowered                           = Spell(155147),
   LightsJudgment                        = Spell(255647),
   RuneofPower                           = Spell(116011),
   ArcanePower                           = Spell(12042),
@@ -42,6 +43,7 @@ Spell.Mage.Arcane = {
   Berserking                            = Spell(26297),
   Fireblood                             = Spell(265221),
   AncestralCall                         = Spell(274738),
+  PresenceofMind                        = Spell(205025),
   PresenceofMindBuff                    = Spell(205025),
   BerserkingBuff                        = Spell(26297),
   BloodFuryBuff                         = Spell(20572),
@@ -52,9 +54,7 @@ Spell.Mage.Arcane = {
   ArcaneMissiles                        = Spell(5143),
   ClearcastingBuff                      = Spell(263725),
   Amplification                         = Spell(236628),
-  Overpowered                           = Spell(155147),
   ArcanePummeling                       = Spell(270669),
-  RuleofThreesBuff                      = Spell(264774),
   Supernova                             = Spell(157980),
   Shimmer                               = Spell(212653),
   Blink                                 = Spell(1953)
@@ -179,13 +179,17 @@ local function APL()
     if S.MirrorImage:IsCastableP() and HR.CDsON() then
       if HR.Cast(S.MirrorImage) then return ""; end
     end
-    -- charged_up,if=buff.arcane_charge.stack<=1&(!set_bonus.tier20_2pc|cooldown.presence_of_mind.remains>5)
-    if S.ChargedUp:IsCastableP() and (Player:ArcaneChargesP() <= 1 and (not HL.Tier20_2Pc or S.PresenceofMind:CooldownRemainsP() > 5)) then
+    -- charged_up,if=buff.arcane_charge.stack<=1
+    if S.ChargedUp:IsCastableP() and (Player:ArcaneChargesP() <= 1) then
       if HR.Cast(S.ChargedUp) then return ""; end
     end
     -- nether_tempest,if=(refreshable|!ticking)&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.rune_of_power.down&buff.arcane_power.down
     if S.NetherTempest:IsCastableP() and ((Target:DebuffRefreshableCP(S.NetherTempestDebuff) or not Target:DebuffP(S.NetherTempestDebuff)) and Player:ArcaneChargesP() == Player:ArcaneChargesMax() and Player:BuffDownP(S.RuneofPowerBuff) and Player:BuffDownP(S.ArcanePowerBuff)) then
       if HR.Cast(S.NetherTempest) then return ""; end
+    end
+    -- arcane_blast,if=buff.rule_of_threes.up&talent.overpowered.enabled
+    if S.ArcaneBlast:IsReadyP() and (Player:BuffP(S.RuleofThreesBuff) and S.Overpowered:IsAvailable()) then
+      if HR.Cast(S.ArcaneBlast) then return ""; end
     end
     -- lights_judgment,if=buff.arcane_power.down
     if S.LightsJudgment:IsCastableP() and HR.CDsON() and (Player:BuffDownP(S.ArcanePowerBuff)) then
@@ -266,10 +270,6 @@ local function APL()
     if S.ChargedUp:IsCastableP() and (Player:ArcaneChargesP() == 0) then
       if HR.Cast(S.ChargedUp) then return ""; end
     end
-    -- presence_of_mind,if=set_bonus.tier20_2pc&buff.arcane_charge.stack=0
-    if S.PresenceofMind:IsCastableP() and HR.CDsON() and (HL.Tier20_2Pc and Player:ArcaneChargesP() == 0) then
-      if HR.Cast(S.PresenceofMind, Settings.Arcane.OffGCDasOffGCD.PresenceofMind) then return ""; end
-    end
     -- nether_tempest,if=(refreshable|!ticking)&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.rune_of_power.down&buff.arcane_power.down
     if S.NetherTempest:IsCastableP() and ((Target:DebuffRefreshableCP(S.NetherTempestDebuff) or not Target:DebuffP(S.NetherTempestDebuff)) and Player:ArcaneChargesP() == Player:ArcaneChargesMax() and Player:BuffDownP(S.RuneofPowerBuff) and Player:BuffDownP(S.ArcanePowerBuff)) then
       if HR.Cast(S.NetherTempest) then return ""; end
@@ -282,16 +282,16 @@ local function APL()
     if S.ArcaneBlast:IsReadyP() and (Player:BuffP(S.RuleofThreesBuff) and Player:ArcaneChargesP() > 3) then
       if HR.Cast(S.ArcaneBlast) then return ""; end
     end
-    -- rune_of_power,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&(full_recharge_time<=execute_time|recharge_time<=cooldown.arcane_power.remains|target.time_to_die<=cooldown.arcane_power.remains)
-    if S.RuneofPower:IsCastableP() and (Player:ArcaneChargesP() == Player:ArcaneChargesMax() and (S.RuneofPower:FullRechargeTimeP() <= S.RuneofPower:ExecuteTime() or S.RuneofPower:RechargeP() <= S.ArcanePower:CooldownRemainsP() or Target:TimeToDie() <= S.ArcanePower:CooldownRemainsP())) then
+    -- rune_of_power,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&(full_recharge_time<=execute_time|full_recharge_time<=cooldown.arcane_power.remains|target.time_to_die<=cooldown.arcane_power.remains)
+    if S.RuneofPower:IsCastableP() and (Player:ArcaneChargesP() == Player:ArcaneChargesMax() and (S.RuneofPower:FullRechargeTimeP() <= S.RuneofPower:ExecuteTime() or S.RuneofPower:FullRechargeTimeP() <= S.ArcanePower:CooldownRemainsP() or Target:TimeToDie() <= S.ArcanePower:CooldownRemainsP())) then
       if HR.Cast(S.RuneofPower, Settings.Arcane.GCDasOffGCD.RuneofPower) then return ""; end
     end
     -- arcane_missiles,if=mana.pct<=95&buff.clearcasting.react,chain=1
     if S.ArcaneMissiles:IsCastableP() and (Player:ManaPercentage() <= 95 and bool(Player:BuffStackP(S.ClearcastingBuff))) then
       if HR.Cast(S.ArcaneMissiles) then return ""; end
     end
-    -- arcane_barrage,if=((buff.arcane_charge.stack=buff.arcane_charge.max_stack)&mana.pct<=variable.conserve_mana|(talent.arcane_orb.enabled&cooldown.arcane_orb.remains<=gcd&cooldown.arcane_power.remains>10))|mana.pct<=(variable.conserve_mana-10)
-    if S.ArcaneBarrage:IsCastableP() and (((Player:ArcaneChargesP() == Player:ArcaneChargesMax()) and Player:ManaPercentage() <= VarConserveMana or (S.ArcaneOrb:IsAvailable() and S.ArcaneOrb:CooldownRemainsP() <= Player:GCD() and S.ArcanePower:CooldownRemainsP() > 10)) or Player:ManaPercentage() <= (VarConserveMana - 10)) then
+    -- arcane_barrage,if=((buff.arcane_charge.stack=buff.arcane_charge.max_stack)&(mana.pct<=variable.conserve_mana|(cooldown.arcane_power.remains>cooldown.rune_of_power.full_recharge_time&mana.pct<=variable.conserve_mana+25))|(talent.arcane_orb.enabled&cooldown.arcane_orb.remains<=gcd&cooldown.arcane_power.remains>10))|mana.pct<=(variable.conserve_mana-10)
+    if S.ArcaneBarrage:IsCastableP() and (((Player:ArcaneChargesP() == Player:ArcaneChargesMax()) and (Player:ManaPercentage() <= VarConserveMana or (S.ArcanePower:CooldownRemainsP() > S.RuneofPower:FullRechargeTime() and Player:ManaPercentage() <= VarConserveMana + 25)) or (S.ArcaneOrb:IsAvailable() and S.ArcaneOrb:CooldownRemainsP() <= Player:GCD() and S.ArcanePower:CooldownRemainsP() > 10)) or Player:ManaPercentage() <= (VarConserveMana - 10)) then
       if HR.Cast(S.ArcaneBarrage) then return ""; end
     end
     -- supernova,if=mana.pct<=95

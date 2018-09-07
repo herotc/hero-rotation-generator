@@ -31,8 +31,8 @@ Spell.DeathKnight.Unholy = {
   ScourgeStrike                         = Spell(55090),
   ClawingShadows                        = Spell(207311),
   FesteringStrike                       = Spell(85948),
-  BurstingSores                         = Spell(),
   FesteringWoundDebuff                  = Spell(194310),
+  BurstingSores                         = Spell(),
   SuddenDoomBuff                        = Spell(81340),
   UnholyFrenzyBuff                      = Spell(),
   DarkTransformation                    = Spell(63560),
@@ -41,11 +41,9 @@ Spell.DeathKnight.Unholy = {
   SoulReaper                            = Spell(130736),
   UnholyBlight                          = Spell(115989),
   Pestilence                            = Spell(277234),
-  MindFreeze                            = Spell(47528),
   ArcaneTorrent                         = Spell(50613),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
-  TemptationBuff                        = Spell(234143),
   Outbreak                              = Spell(77575),
   VirulentPlagueDebuff                  = Spell(191587)
 };
@@ -55,9 +53,9 @@ local S = Spell.DeathKnight.Unholy;
 if not Item.DeathKnight then Item.DeathKnight = {} end
 Item.DeathKnight.Unholy = {
   ProlongedPower                   = Item(142117),
-  Item137075                       = Item(137075),
-  FeloiledInfernalMachine          = Item(144482),
-  RingofCollapsingFutures          = Item(142173)
+  BygoneBeeAlmanac                 = Item(),
+  JesHowler                        = Item(),
+  GalecallersBeak                  = Item()
 };
 local I = Item.DeathKnight.Unholy;
 
@@ -108,7 +106,7 @@ local function APL()
     if S.RaiseDead:IsCastableP() then
       if HR.Cast(S.RaiseDead) then return ""; end
     end
-    -- army_of_the_dead
+    -- army_of_the_dead,delay=2
     if S.ArmyoftheDead:IsCastableP() then
       if HR.Cast(S.ArmyoftheDead, Settings.Unholy.GCDasOffGCD.ArmyoftheDead) then return ""; end
     end
@@ -141,6 +139,10 @@ local function APL()
     -- epidemic,if=!variable.pooling_for_gargoyle
     if S.Epidemic:IsUsableP() and (not bool(VarPoolingForGargoyle)) then
       if HR.Cast(S.Epidemic) then return ""; end
+    end
+    -- festering_strike,target_if=debuff.festering_wound.stack<=1&cooldown.death_and_decay.remains
+    if S.FesteringStrike:IsCastableP() and (Target:DebuffStackP(S.FesteringWoundDebuff) <= 1 and bool(S.DeathandDecay:CooldownRemainsP())) then
+      if HR.Cast(S.FesteringStrike) then return ""; end
     end
     -- festering_strike,if=talent.bursting_sores.enabled&spell_targets.bursting_sores>=2&debuff.festering_wound.stack<=1
     if S.FesteringStrike:IsCastableP() and (S.BurstingSores:IsAvailable() and Cache.EnemiesCount[5] >= 2 and Target:DebuffStackP(S.FesteringWoundDebuff) <= 1) then
@@ -188,8 +190,8 @@ local function APL()
     if S.Apocalypse:IsCastableP() and (Target:DebuffStackP(S.FesteringWoundDebuff) >= 4) then
       if HR.Cast(S.Apocalypse) then return ""; end
     end
-    -- dark_transformation,if=(equipped.137075&cooldown.summon_gargoyle.remains>40)|(!equipped.137075|!talent.summon_gargoyle.enabled)
-    if S.DarkTransformation:IsCastableP() and ((I.Item137075:IsEquipped() and S.SummonGargoyle:CooldownRemainsP() > 40) or (not I.Item137075:IsEquipped() or not S.SummonGargoyle:IsAvailable())) then
+    -- dark_transformation
+    if S.DarkTransformation:IsCastableP() then
       if HR.Cast(S.DarkTransformation) then return ""; end
     end
     -- summon_gargoyle,if=runic_power.deficit<14
@@ -257,13 +259,9 @@ local function APL()
   end
   if Everyone.TargetIsValid() then
     -- auto_attack
-    -- mind_freeze
-    if S.MindFreeze:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled then
-      if HR.CastAnnotated(S.MindFreeze, false, "Interrupt") then return ""; end
-    end
-    -- variable,name=pooling_for_gargoyle,value=(cooldown.summon_gargoyle.remains<5&(cooldown.dark_transformation.remains<5|!equipped.137075))&talent.summon_gargoyle.enabled
+    -- variable,name=pooling_for_gargoyle,value=cooldown.summon_gargoyle.remains<5&talent.summon_gargoyle.enabled
     if (true) then
-      VarPoolingForGargoyle = num((S.SummonGargoyle:CooldownRemainsP() < 5 and (S.DarkTransformation:CooldownRemainsP() < 5 or not I.Item137075:IsEquipped())) and S.SummonGargoyle:IsAvailable())
+      VarPoolingForGargoyle = num(S.SummonGargoyle:CooldownRemainsP() < 5 and S.SummonGargoyle:IsAvailable())
     end
     -- arcane_torrent,if=runic_power.deficit>65&(pet.gargoyle.active|!talent.summon_gargoyle.enabled)&rune.deficit>=5
     if S.ArcaneTorrent:IsCastableP() and (Player:RunicPowerDeficit() > 65 and (bool(pet.gargoyle.active) or not S.SummonGargoyle:IsAvailable()) and Player:RuneDeficit() >= 5) then
@@ -278,13 +276,17 @@ local function APL()
       if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- use_items
-    -- use_item,name=feloiled_infernal_machine,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled
-    if I.FeloiledInfernalMachine:IsReady() and (bool(pet.gargoyle.active) or not S.SummonGargoyle:IsAvailable()) then
-      if HR.CastSuggested(I.FeloiledInfernalMachine) then return ""; end
+    -- use_item,name=bygone_bee_almanac,if=cooldown.summon_gargoyle.remains>60|!talent.summon_gargoyle.enabled
+    if I.BygoneBeeAlmanac:IsReady() and (S.SummonGargoyle:CooldownRemainsP() > 60 or not S.SummonGargoyle:IsAvailable()) then
+      if HR.CastSuggested(I.BygoneBeeAlmanac) then return ""; end
     end
-    -- use_item,name=ring_of_collapsing_futures,if=(buff.temptation.stack=0&target.time_to_die>60)|target.time_to_die<60
-    if I.RingofCollapsingFutures:IsReady() and ((Player:BuffStackP(S.TemptationBuff) == 0 and Target:TimeToDie() > 60) or Target:TimeToDie() < 60) then
-      if HR.CastSuggested(I.RingofCollapsingFutures) then return ""; end
+    -- use_item,name=jes_howler,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled
+    if I.JesHowler:IsReady() and (bool(pet.gargoyle.active) or not S.SummonGargoyle:IsAvailable()) then
+      if HR.CastSuggested(I.JesHowler) then return ""; end
+    end
+    -- use_item,name=galecallers_beak,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled
+    if I.GalecallersBeak:IsReady() and (bool(pet.gargoyle.active) or not S.SummonGargoyle:IsAvailable()) then
+      if HR.CastSuggested(I.GalecallersBeak) then return ""; end
     end
     -- potion,if=cooldown.army_of_the_dead.ready|pet.gargoyle.active|buff.unholy_frenzy.up
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (S.ArmyoftheDead:CooldownUpP() or bool(pet.gargoyle.active) or Player:BuffP(S.UnholyFrenzyBuff)) then

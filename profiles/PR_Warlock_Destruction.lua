@@ -389,6 +389,10 @@ local function APL()
     if (Cache.EnemiesCount[5] >= 3 and S.Inferno:IsAvailable()) then
       return Inf();
     end
+    -- cataclysm
+    if S.Cataclysm:IsCastableP() then
+      if HR.Cast(S.Cataclysm) then return ""; end
+    end
     -- immolate,cycle_targets=1,if=!debuff.havoc.remains&(refreshable|talent.internal_combustion.enabled&action.chaos_bolt.in_flight&remains-action.chaos_bolt.travel_time-5<duration*0.3)
     if S.Immolate:IsCastableP() and (not bool(Target:DebuffRemainsP(S.HavocDebuff)) and (Target:DebuffRefreshableCP(S.ImmolateDebuff) or S.InternalCombustion:IsAvailable() and S.ChaosBolt:InFlight() and Target:DebuffRemainsP(S.ImmolateDebuff) - S.ChaosBolt:TravelTime() - 5 < S.ImmolateDebuff:BaseDuration() * 0.3)) then
       if HR.Cast(S.Immolate) then return ""; end
@@ -397,6 +401,10 @@ local function APL()
     if HR.CDsON() then
       local ShouldReturn = Cds(); if ShouldReturn then return ShouldReturn; end
     end
+    -- channel_demonfire
+    if S.ChannelDemonfire:IsCastableP() then
+      if HR.Cast(S.ChannelDemonfire) then return ""; end
+    end
     -- havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10
     if S.Havoc:IsCastableP() and (not (target == sim.target) and Target:TimeToDie() > 10) then
       if HR.Cast(S.Havoc) then return ""; end
@@ -404,14 +412,6 @@ local function APL()
     -- havoc,if=active_enemies>1
     if S.Havoc:IsCastableP() and (Cache.EnemiesCount[40] > 1) then
       if HR.Cast(S.Havoc) then return ""; end
-    end
-    -- channel_demonfire
-    if S.ChannelDemonfire:IsCastableP() then
-      if HR.Cast(S.ChannelDemonfire) then return ""; end
-    end
-    -- cataclysm
-    if S.Cataclysm:IsCastableP() then
-      if HR.Cast(S.Cataclysm) then return ""; end
     end
     -- soul_fire,cycle_targets=1,if=!debuff.havoc.remains
     if S.SoulFire:IsCastableP() and (not bool(Target:DebuffRemainsP(S.HavocDebuff))) then

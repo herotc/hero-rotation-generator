@@ -38,29 +38,32 @@ Spell.Rogue.Subtlety = {
   TheDreadlordsDeceitBuff               = Spell(208692),
   Gloomblade                            = Spell(200758),
   Backstab                              = Spell(53),
-  VanishBuff                            = Spell(1856),
+  SymbolsofDeathBuff                    = Spell(212283),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
   Fireblood                             = Spell(265221),
   AncestralCall                         = Spell(274738),
   NightbladeDebuff                      = Spell(195452),
   ShurikenTornado                       = Spell(),
-  SymbolsofDeathBuff                    = Spell(212283),
   ShadowDanceBuff                       = Spell(185313),
   ShadowDance                           = Spell(185313),
   Subterfuge                            = Spell(108208),
+  Eviscerate                            = Spell(196819),
+  ShadowFocus                           = Spell(108209),
+  NightsVengeanceBuff                   = Spell(),
   Nightblade                            = Spell(195452),
   SecretTechnique                       = Spell(),
-  Eviscerate                            = Spell(196819),
+  NightsVengeance                       = Spell(),
   Vanish                                = Spell(1856),
   FindWeaknessDebuff                    = Spell(),
   Shadowmeld                            = Spell(58984),
   PoolResource                          = Spell(9999000010),
   Shadowstrike                          = Spell(185438),
   DeeperStratagem                       = Spell(193531),
+  VanishBuff                            = Spell(1856),
   FindWeakness                          = Spell(),
+  BladeIntheShadows                     = Spell(),
   Alacrity                              = Spell(),
-  ShadowFocus                           = Spell(108209),
   ArcaneTorrent                         = Spell(50613),
   ArcanePulse                           = Spell(),
   LightsJudgment                        = Spell(255647)
@@ -70,7 +73,8 @@ local S = Spell.Rogue.Subtlety;
 -- Items
 if not Item.Rogue then Item.Rogue = {} end
 Item.Rogue.Subtlety = {
-  ProlongedPower                   = Item(142117)
+  ProlongedPower                   = Item(142117),
+  GalecallersBoon                  = Item()
 };
 local I = Item.Rogue.Subtlety;
 
@@ -154,36 +158,40 @@ local function APL()
     end
   end
   Cds = function()
-    -- potion,if=buff.bloodlust.react|target.time_to_die<=60|(buff.vanish.up&(buff.shadow_blades.up|cooldown.shadow_blades.remains<=30))
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:HasHeroism() or Target:TimeToDie() <= 60 or (Player:BuffP(S.VanishBuff) and (Player:BuffP(S.ShadowBladesBuff) or S.ShadowBlades:CooldownRemainsP() <= 30))) then
+    -- potion,if=buff.bloodlust.react|target.time_to_die<=60|buff.symbols_of_death.up&(buff.shadow_blades.up|cooldown.shadow_blades.remains<=10)
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:HasHeroism() or Target:TimeToDie() <= 60 or Player:BuffP(S.SymbolsofDeathBuff) and (Player:BuffP(S.ShadowBladesBuff) or S.ShadowBlades:CooldownRemainsP() <= 10)) then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
-    -- blood_fury,if=stealthed.rogue
-    if S.BloodFury:IsCastableP() and HR.CDsON() and (bool(stealthed.rogue)) then
+    -- use_item,name=galecallers_boon,if=buff.symbols_of_death.up|target.time_to_die<20
+    if I.GalecallersBoon:IsReady() and (Player:BuffP(S.SymbolsofDeathBuff) or Target:TimeToDie() < 20) then
+      if HR.CastSuggested(I.GalecallersBoon) then return ""; end
+    end
+    -- blood_fury,if=buff.symbols_of_death.up
+    if S.BloodFury:IsCastableP() and HR.CDsON() and (Player:BuffP(S.SymbolsofDeathBuff)) then
       if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
-    -- berserking,if=stealthed.rogue
-    if S.Berserking:IsCastableP() and HR.CDsON() and (bool(stealthed.rogue)) then
+    -- berserking,if=buff.symbols_of_death.up
+    if S.Berserking:IsCastableP() and HR.CDsON() and (Player:BuffP(S.SymbolsofDeathBuff)) then
       if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
-    -- fireblood,if=stealthed.rogue
-    if S.Fireblood:IsCastableP() and HR.CDsON() and (bool(stealthed.rogue)) then
+    -- fireblood,if=buff.symbols_of_death.up
+    if S.Fireblood:IsCastableP() and HR.CDsON() and (Player:BuffP(S.SymbolsofDeathBuff)) then
       if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
-    -- ancestral_call,if=stealthed.rogue
-    if S.AncestralCall:IsCastableP() and HR.CDsON() and (bool(stealthed.rogue)) then
+    -- ancestral_call,if=buff.symbols_of_death.up
+    if S.AncestralCall:IsCastableP() and HR.CDsON() and (Player:BuffP(S.SymbolsofDeathBuff)) then
       if HR.Cast(S.AncestralCall, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- symbols_of_death,if=dot.nightblade.ticking
     if S.SymbolsofDeath:IsCastableP() and (Target:DebuffP(S.NightbladeDebuff)) then
       if HR.Cast(S.SymbolsofDeath) then return ""; end
     end
-    -- marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit
-    if S.MarkedForDeath:IsCastableP() and (bool(min:target.time_to_die)) and (Target:TimeToDie() < Player:ComboPointsDeficit()) then
+    -- marked_for_death,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.all&combo_points.deficit>=cp_max_spend)
+    if S.MarkedForDeath:IsCastableP() and (bool(min:target.time_to_die)) and ((Cache.EnemiesCount[15] > 1) and (Target:TimeToDie() < Player:ComboPointsDeficit() or not bool(stealthed.all) and Player:ComboPointsDeficit() >= cp_max_spend)) then
       if HR.Cast(S.MarkedForDeath) then return ""; end
     end
-    -- marked_for_death,if=raid_event.adds.in>30&!stealthed.all&combo_points.deficit>=cp_max_spend
-    if S.MarkedForDeath:IsCastableP() and (10000000000 > 30 and not bool(stealthed.all) and Player:ComboPointsDeficit() >= cp_max_spend) then
+    -- marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration&!stealthed.all&combo_points.deficit>=cp_max_spend
+    if S.MarkedForDeath:IsCastableP() and (10000000000 > 30 - raid_event.adds.duration and not bool(stealthed.all) and Player:ComboPointsDeficit() >= cp_max_spend) then
       if HR.Cast(S.MarkedForDeath) then return ""; end
     end
     -- shadow_blades,if=combo_points.deficit>=2+stealthed.all
@@ -200,12 +208,16 @@ local function APL()
     end
   end
   Finish = function()
+    -- eviscerate,if=talent.shadow_focus.enabled&spell_targets.shuriken_storm>=5&buff.nights_vengeance.up
+    if S.Eviscerate:IsCastableP() and (S.ShadowFocus:IsAvailable() and Cache.EnemiesCount[10] >= 5 and Player:BuffP(S.NightsVengeanceBuff)) then
+      if HR.Cast(S.Eviscerate) then return ""; end
+    end
     -- nightblade,if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&remains<tick_time*2&(spell_targets.shuriken_storm<4|!buff.symbols_of_death.up)
     if S.Nightblade:IsCastableP() and ((not S.DarkShadow:IsAvailable() or not Player:BuffP(S.ShadowDanceBuff)) and Target:TimeToDie() - Target:DebuffRemainsP(S.NightbladeDebuff) > 6 and Target:DebuffRemainsP(S.NightbladeDebuff) < S.NightbladeDebuff:TickTime() * 2 and (Cache.EnemiesCount[10] < 4 or not Player:BuffP(S.SymbolsofDeathBuff))) then
       if HR.Cast(S.Nightblade) then return ""; end
     end
-    -- nightblade,cycle_targets=1,if=spell_targets.shuriken_storm>=2&(spell_targets.shuriken_storm<=5|talent.secret_technique.enabled)&!buff.shadow_dance.up&target.time_to_die>=(5+(2*combo_points))&refreshable
-    if S.Nightblade:IsCastableP() and (Cache.EnemiesCount[10] >= 2 and (Cache.EnemiesCount[10] <= 5 or S.SecretTechnique:IsAvailable()) and not Player:BuffP(S.ShadowDanceBuff) and Target:TimeToDie() >= (5 + (2 * Player:ComboPoints())) and Target:DebuffRefreshableCP(S.NightbladeDebuff)) then
+    -- nightblade,cycle_targets=1,if=spell_targets.shuriken_storm>=2&(talent.secret_technique.enabled|azerite.nights_vengeance.enabled|spell_targets.shuriken_storm<=5)&!buff.shadow_dance.up&target.time_to_die>=(5+(2*combo_points))&refreshable
+    if S.Nightblade:IsCastableP() and (Cache.EnemiesCount[10] >= 2 and (S.SecretTechnique:IsAvailable() or S.NightsVengeance:AzeriteEnabled() or Cache.EnemiesCount[10] <= 5) and not Player:BuffP(S.ShadowDanceBuff) and Target:TimeToDie() >= (5 + (2 * Player:ComboPoints())) and Target:DebuffRefreshableCP(S.NightbladeDebuff)) then
       if HR.Cast(S.Nightblade) then return ""; end
     end
     -- nightblade,if=remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5&target.time_to_die-remains>cooldown.symbols_of_death.remains+5
@@ -267,6 +279,10 @@ local function APL()
     end
     -- shadowstrike,cycle_targets=1,if=talent.secret_technique.enabled&talent.find_weakness.enabled&debuff.find_weakness.remains<1&spell_targets.shuriken_storm=2&target.time_to_die-remains>6
     if S.Shadowstrike:IsCastableP() and (S.SecretTechnique:IsAvailable() and S.FindWeakness:IsAvailable() and Target:DebuffRemainsP(S.FindWeaknessDebuff) < 1 and Cache.EnemiesCount[10] == 2 and Target:TimeToDie() - remains > 6) then
+      if HR.Cast(S.Shadowstrike) then return ""; end
+    end
+    -- shadowstrike,if=!talent.deeper_stratagem.enabled&azerite.blade_in_the_shadows.rank=3&spell_targets.shuriken_storm=3
+    if S.Shadowstrike:IsCastableP() and (not S.DeeperStratagem:IsAvailable() and S.BladeIntheShadows:AzeriteRank() == 3 and Cache.EnemiesCount[10] == 3) then
       if HR.Cast(S.Shadowstrike) then return ""; end
     end
     -- shuriken_storm,if=spell_targets>=3

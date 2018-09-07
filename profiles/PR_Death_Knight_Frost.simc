@@ -29,7 +29,6 @@ actions.precombat+=/potion
 
 # Executed every time the actor is available.
 actions=auto_attack
-actions+=/mind_freeze
 # Apply Frost Fever and maintain Icy Talons
 actions+=/howling_blast,if=!dot.frost_fever.ticking&(!talent.breath_of_sindragosa.enabled|cooldown.breath_of_sindragosa.remains>15)
 actions+=/glacial_advance,if=buff.icy_talons.remains<=gcd&buff.icy_talons.up&spell_targets.glacial_advance>=2&(!talent.breath_of_sindragosa.enabled|cooldown.breath_of_sindragosa.remains>15)
@@ -120,7 +119,7 @@ actions.standard+=/horn_of_winter
 actions.standard+=/arcane_torrent
 
 head=seabrawlers_greathelm,id=155885,bonus_id=4779/1512/4786/4775,azerite_powers=461/479/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=
+neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
 shoulders=skyscorcher_pauldrons,id=159415,bonus_id=4779/1512/4786/4775,azerite_powers=31/504/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
 chest=harpooners_plate_cuirass,id=159416,bonus_id=4779/1512/4786/4775,azerite_powers=31/479/13

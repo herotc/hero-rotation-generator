@@ -135,9 +135,9 @@ local function APL()
     end
   end
   Finishers = function()
-    -- variable,name=ds_castable,value=spell_targets.divine_storm>=3|!talent.righteous_verdict.enabled&talent.divine_judgment.enabled&spell_targets.divine_storm>=2|azerite.divine_right.enabled&target.health.pct<=20&buff.divine_right.down
+    -- variable,name=ds_castable,value=spell_targets.divine_storm>=3|!talent.righteous_verdict.enabled&talent.divine_judgment.enabled&spell_targets.divine_storm>=2|azerite.divine_right.enabled&azerite.divine_right.rank>=2&target.health.pct<=20&buff.divine_right.down
     if (true) then
-      VarDsCastable = num(Cache.EnemiesCount[8] >= 3 or not S.RighteousVerdict:IsAvailable() and S.DivineJudgment:IsAvailable() and Cache.EnemiesCount[8] >= 2 or S.DivineRight:AzeriteEnabled() and Target:HealthPercentage() <= 20 and Player:BuffDownP(S.DivineRightBuff))
+      VarDsCastable = num(Cache.EnemiesCount[8] >= 3 or not S.RighteousVerdict:IsAvailable() and S.DivineJudgment:IsAvailable() and Cache.EnemiesCount[8] >= 2 or S.DivineRight:AzeriteEnabled() and S.DivineRight:AzeriteRank() >= 2 and Target:HealthPercentage() <= 20 and Player:BuffDownP(S.DivineRightBuff))
     end
     -- inquisition,if=buff.inquisition.down|buff.inquisition.remains<5&holy_power>=3|talent.execution_sentence.enabled&cooldown.execution_sentence.remains<10&buff.inquisition.remains<15|cooldown.avenging_wrath.remains<15&buff.inquisition.remains<20&holy_power>=3
     if S.Inquisition:IsCastableP() and (Player:BuffDownP(S.InquisitionBuff) or Player:BuffRemainsP(S.InquisitionBuff) < 5 and Player:HolyPower() >= 3 or S.ExecutionSentence:IsAvailable() and S.ExecutionSentence:CooldownRemainsP() < 10 and Player:BuffRemainsP(S.InquisitionBuff) < 15 or S.AvengingWrath:CooldownRemainsP() < 15 and Player:BuffRemainsP(S.InquisitionBuff) < 20 and Player:HolyPower() >= 3) then
@@ -173,8 +173,8 @@ local function APL()
     if (Player:HolyPower() >= 5) then
       local ShouldReturn = Finishers(); if ShouldReturn then return ShouldReturn; end
     end
-    -- wake_of_ashes,if=(!raid_event.adds.exists|raid_event.adds.in>20)&(holy_power<=0|holy_power=1&cooldown.blade_of_justice.remains>gcd)
-    if S.WakeofAshes:IsCastableP() and ((not (Cache.EnemiesCount[30] > 1) or 10000000000 > 20) and (Player:HolyPower() <= 0 or Player:HolyPower() == 1 and S.BladeofJustice:CooldownRemainsP() > Player:GCD())) then
+    -- wake_of_ashes,if=(!raid_event.adds.exists|raid_event.adds.in>15)&(holy_power<=0|holy_power=1&cooldown.blade_of_justice.remains>gcd)
+    if S.WakeofAshes:IsCastableP() and ((not (Cache.EnemiesCount[30] > 1) or 10000000000 > 15) and (Player:HolyPower() <= 0 or Player:HolyPower() == 1 and S.BladeofJustice:CooldownRemainsP() > Player:GCD())) then
       if HR.Cast(S.WakeofAshes) then return ""; end
     end
     -- blade_of_justice,if=holy_power<=2|(holy_power=3&(cooldown.hammer_of_wrath.remains>gcd*2|variable.HoW))

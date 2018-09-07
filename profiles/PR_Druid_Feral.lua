@@ -24,43 +24,45 @@ Spell.Druid.Feral = {
   Regrowth                              = Spell(8936),
   BloodtalonsBuff                       = Spell(145152),
   Bloodtalons                           = Spell(155672),
+  Sabertooth                            = Spell(202031),
+  LunarInspiration                      = Spell(155580),
   CatFormBuff                           = Spell(768),
   CatForm                               = Spell(768),
   ProwlBuff                             = Spell(5215),
   Prowl                                 = Spell(5215),
+  BerserkBuff                           = Spell(106951),
+  Berserk                               = Spell(106951),
   IncarnationBuff                       = Spell(102543),
   JungleStalkerBuff                     = Spell(252071),
-  Berserk                               = Spell(106951),
   TigersFury                            = Spell(5217),
   TigersFuryBuff                        = Spell(5217),
   Berserking                            = Spell(26297),
   FeralFrenzy                           = Spell(274837),
   Incarnation                           = Spell(102543),
-  BerserkBuff                           = Spell(106951),
   Shadowmeld                            = Spell(58984),
   Rake                                  = Spell(1822),
   RakeDebuff                            = Spell(155722),
+  RipDebuff                             = Spell(1079),
+  Wait                                  = Spell(),
+  MoonfireCat                           = Spell(155625),
+  MoonfireCatDebuff                     = Spell(155625),
+  Thrash                                = Spell(106830),
+  Shred                                 = Spell(5221),
+  PredatorySwiftnessBuff                = Spell(69369),
+  Rip                                   = Spell(1079),
   ShadowmeldBuff                        = Spell(58984),
   FerociousBite                         = Spell(22568),
-  RipDebuff                             = Spell(1079),
-  Sabertooth                            = Spell(202031),
-  PredatorySwiftnessBuff                = Spell(69369),
   ApexPredatorBuff                      = Spell(252752),
   MomentofClarity                       = Spell(236068),
   SavageRoar                            = Spell(52610),
   PoolResource                          = Spell(9999000010),
   SavageRoarBuff                        = Spell(52610),
-  Rip                                   = Spell(1079),
   FerociousBiteMaxEnergy                = Spell(22568),
   BrutalSlash                           = Spell(202028),
   ThrashCat                             = Spell(106830),
   ThrashCatDebuff                       = Spell(106830),
-  MoonfireCat                           = Spell(155625),
-  MoonfireCatDebuff                     = Spell(155625),
   ClearcastingBuff                      = Spell(135700),
-  SwipeCat                              = Spell(106785),
-  Shred                                 = Spell(5221),
-  LunarInspiration                      = Spell(155580)
+  SwipeCat                              = Spell(106785)
 };
 local S = Spell.Druid.Feral;
 
@@ -86,6 +88,8 @@ local Settings = {
 
 -- Variables
 local VarUseThrash = 0;
+local VarDelayedTfOpener = 0;
+local VarOpenerDone = 0;
 
 local EnemyRanges = {8}
 local function UpdateRanges()
@@ -121,7 +125,7 @@ S.Rake:RegisterPMultiplier(
 )
 --- ======= ACTION LISTS =======
 local function APL()
-  local Precombat, Cooldowns, SingleTarget, StFinishers, StGenerators
+  local Precombat, Cooldowns, Opener, SingleTarget, StFinishers, StGenerators
   UpdateRanges()
   Everyone.AoEToggleEnemiesUpdate()
   Precombat = function()
@@ -140,6 +144,14 @@ local function APL()
     if (I.LuffaWrappings:IsEquipped()) then
       VarUseThrash = 1
     end
+    -- variable,name=delayed_tf_opener,value=0
+    if (true) then
+      VarDelayedTfOpener = 0
+    end
+    -- variable,name=delayed_tf_opener,value=1,if=talent.sabertooth.enabled&talent.bloodtalons.enabled&!talent.lunar_inspiration.enabled
+    if (S.Sabertooth:IsAvailable() and S.Bloodtalons:IsAvailable() and not S.LunarInspiration:IsAvailable()) then
+      VarDelayedTfOpener = 1
+    end
     -- cat_form
     if S.CatForm:IsCastableP() and Player:BuffDownP(S.CatFormBuff) then
       if HR.Cast(S.CatForm, Settings.Feral.GCDasOffGCD.CatForm) then return ""; end
@@ -152,6 +164,10 @@ local function APL()
     -- potion
     if I.BattlePotionofAgility:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.BattlePotionofAgility) then return ""; end
+    end
+    -- berserk
+    if S.Berserk:IsCastableP() and Player:BuffDownP(S.BerserkBuff) and HR.CDsON() then
+      if HR.Cast(S.Berserk, Settings.Feral.OffGCDasOffGCD.Berserk) then return ""; end
     end
   end
   Cooldowns = function()
@@ -189,6 +205,48 @@ local function APL()
       if HR.Cast(S.Shadowmeld, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- use_items
+  end
+  Opener = function()
+    -- tigers_fury,if=variable.delayed_tf_opener=0
+    if S.TigersFury:IsCastableP() and (VarDelayedTfOpener == 0) then
+      if HR.Cast(S.TigersFury, Settings.Feral.OffGCDasOffGCD.TigersFury) then return ""; end
+    end
+    -- rake,if=!ticking|buff.prowl.up
+    if S.Rake:IsCastableP() and (not Target:DebuffP(S.RakeDebuff) or Player:BuffP(S.ProwlBuff)) then
+      if HR.Cast(S.Rake) then return ""; end
+    end
+    -- variable,name=opener_done,value=dot.rip.ticking
+    if (true) then
+      VarOpenerDone = num(Target:DebuffP(S.RipDebuff))
+    end
+    -- wait,sec=0.001,if=dot.rip.ticking
+    if S.Wait:IsCastableP() and (Target:DebuffP(S.RipDebuff)) then
+      if HR.Cast(S.Wait) then return ""; end
+    end
+    -- moonfire_cat,if=!ticking|buff.bloodtalons.stack=1&combo_points<5
+    if S.MoonfireCat:IsCastableP() and (not Target:DebuffP(S.MoonfireCatDebuff) or Player:BuffStackP(S.BloodtalonsBuff) == 1 and Player:ComboPoints() < 5) then
+      if HR.Cast(S.MoonfireCat) then return ""; end
+    end
+    -- thrash,if=!ticking&combo_points<5
+    if S.Thrash:IsCastableP() and (not bool(ticking) and Player:ComboPoints() < 5) then
+      if HR.Cast(S.Thrash) then return ""; end
+    end
+    -- shred,if=combo_points<5
+    if S.Shred:IsCastableP() and (Player:ComboPoints() < 5) then
+      if HR.Cast(S.Shred) then return ""; end
+    end
+    -- regrowth,if=combo_points=5&talent.bloodtalons.enabled&(talent.sabertooth.enabled&buff.bloodtalons.down|buff.predatory_swiftness.up)
+    if S.Regrowth:IsCastableP() and (Player:ComboPoints() == 5 and S.Bloodtalons:IsAvailable() and (S.Sabertooth:IsAvailable() and Player:BuffDownP(S.BloodtalonsBuff) or Player:BuffP(S.PredatorySwiftnessBuff))) then
+      if HR.Cast(S.Regrowth) then return ""; end
+    end
+    -- tigers_fury
+    if S.TigersFury:IsCastableP() then
+      if HR.Cast(S.TigersFury, Settings.Feral.OffGCDasOffGCD.TigersFury) then return ""; end
+    end
+    -- rip,if=combo_points=5
+    if S.Rip:IsCastableP() and (Player:ComboPoints() == 5) then
+      if HR.Cast(S.Rip) then return ""; end
+    end
   end
   SingleTarget = function()
     -- cat_form,if=!buff.cat_form.up
@@ -351,51 +409,14 @@ local function APL()
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   if Everyone.TargetIsValid() then
-    -- run_action_list,name=single_target,if=dot.rip.ticking|time>15
-    if (Target:DebuffP(S.RipDebuff) or HL.CombatTime() > 15) then
+    -- auto_attack,if=!buff.prowl.up&!buff.shadowmeld.up
+    -- run_action_list,name=opener,if=variable.opener_done=0
+    if (VarOpenerDone == 0) then
+      return Opener();
+    end
+    -- run_action_list,name=single_target
+    if (true) then
       return SingleTarget();
-    end
-    -- rake,if=!ticking|buff.prowl.up
-    if S.Rake:IsCastableP() and (not Target:DebuffP(S.RakeDebuff) or Player:BuffP(S.ProwlBuff)) then
-      if HR.Cast(S.Rake) then return ""; end
-    end
-    -- dash,if=!buff.cat_form.up
-    -- auto_attack
-    -- moonfire_cat,if=talent.lunar_inspiration.enabled&!ticking
-    if S.MoonfireCat:IsCastableP() and (S.LunarInspiration:IsAvailable() and not Target:DebuffP(S.MoonfireCatDebuff)) then
-      if HR.Cast(S.MoonfireCat) then return ""; end
-    end
-    -- savage_roar,if=!buff.savage_roar.up
-    if S.SavageRoar:IsCastableP() and (not Player:BuffP(S.SavageRoarBuff)) then
-      if HR.Cast(S.SavageRoar) then return ""; end
-    end
-    -- berserk
-    if S.Berserk:IsCastableP() and HR.CDsON() then
-      if HR.Cast(S.Berserk, Settings.Feral.OffGCDasOffGCD.Berserk) then return ""; end
-    end
-    -- incarnation
-    if S.Incarnation:IsCastableP() and HR.CDsON() then
-      if HR.Cast(S.Incarnation, Settings.Feral.OffGCDasOffGCD.Incarnation) then return ""; end
-    end
-    -- tigers_fury
-    if S.TigersFury:IsCastableP() then
-      if HR.Cast(S.TigersFury, Settings.Feral.OffGCDasOffGCD.TigersFury) then return ""; end
-    end
-    -- regrowth,if=(talent.sabertooth.enabled|buff.predatory_swiftness.up)&talent.bloodtalons.enabled&buff.bloodtalons.down&combo_points=5
-    if S.Regrowth:IsCastableP() and ((S.Sabertooth:IsAvailable() or Player:BuffP(S.PredatorySwiftnessBuff)) and S.Bloodtalons:IsAvailable() and Player:BuffDownP(S.BloodtalonsBuff) and Player:ComboPoints() == 5) then
-      if HR.Cast(S.Regrowth) then return ""; end
-    end
-    -- rip,if=combo_points=5
-    if S.Rip:IsCastableP() and (Player:ComboPoints() == 5) then
-      if HR.Cast(S.Rip) then return ""; end
-    end
-    -- thrash_cat,if=!ticking&variable.use_thrash>0
-    if S.ThrashCat:IsCastableP() and (not Target:DebuffP(S.ThrashCatDebuff) and VarUseThrash > 0) then
-      if HR.Cast(S.ThrashCat) then return ""; end
-    end
-    -- shred
-    if S.Shred:IsCastableP() then
-      if HR.Cast(S.Shred) then return ""; end
     end
   end
 end

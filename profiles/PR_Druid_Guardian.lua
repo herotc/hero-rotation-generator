@@ -33,6 +33,9 @@ Spell.Druid.Guardian = {
   LunarBeam                             = Spell(204066),
   BristlingFur                          = Spell(155835),
   Maul                                  = Spell(6807),
+  Ironfur                               = Spell(192081),
+  IronfurBuff                           = Spell(192081),
+  LayeredMane                           = Spell(),
   Pulverize                             = Spell(80313),
   ThrashBearDebuff                      = Spell(192090),
   Moonfire                              = Spell(8921),
@@ -44,7 +47,8 @@ Spell.Druid.Guardian = {
   SwipeCat                              = Spell(106785),
   SwipeBear                             = Spell(213771),
   Mangle                                = Spell(33917),
-  GalacticGuardianBuff                  = Spell(213708)
+  GalacticGuardianBuff                  = Spell(213708),
+  PoweroftheMoon                        = Spell()
 };
 local S = Spell.Druid.Guardian;
 
@@ -175,6 +179,10 @@ local function APL()
     if S.Maul:IsCastableP() and (Player:RageDeficit() < 10 and Cache.EnemiesCount[40] < 4) then
       if HR.Cast(S.Maul) then return ""; end
     end
+    -- ironfur,if=cost=0|(rage>cost&azerite.layered_mane.enabled&active_enemies>2)
+    if S.Ironfur:IsCastableP() and (S.Ironfur:Cost() == 0 or (Player:Rage() > S.Ironfur:Cost() and S.LayeredMane:AzeriteEnabled() and Cache.EnemiesCount[40] > 2)) then
+      if HR.Cast(S.Ironfur) then return ""; end
+    end
     -- pulverize,target_if=dot.thrash_bear.stack=dot.thrash_bear.max_stacks
     if S.Pulverize:IsCastableP() and (Target:DebuffStackP(S.ThrashBearDebuff) == dot.thrash_bear.max_stacks) then
       if HR.Cast(S.Pulverize) then return ""; end
@@ -210,6 +218,10 @@ local function APL()
     -- maul
     if S.Maul:IsCastableP() then
       if HR.Cast(S.Maul) then return ""; end
+    end
+    -- moonfire,if=azerite.power_of_the_moon.rank>1&active_enemies=1
+    if S.Moonfire:IsCastableP() and (S.PoweroftheMoon:AzeriteRank() > 1 and Cache.EnemiesCount[40] == 1) then
+      if HR.Cast(S.Moonfire) then return ""; end
     end
     -- swipe
     if Swipe():IsCastableP() then

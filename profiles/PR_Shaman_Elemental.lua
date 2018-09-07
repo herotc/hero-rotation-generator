@@ -167,8 +167,8 @@ local function APL()
     end
   end
   SingleTarget = function()
-    -- flame_shock,if=!ticking|dot.flame_shock.remains<=gcd
-    if S.FlameShock:IsCastableP() and (not Target:DebuffP(S.FlameShockDebuff) or Target:DebuffRemainsP(S.FlameShockDebuff) <= Player:GCD()) then
+    -- flame_shock,if=!ticking|dot.flame_shock.remains<=gcd|talent.ascendance.enabled&dot.flame_shock.remains<(cooldown.ascendance.remains+buff.ascendance.duration)&cooldown.ascendance.remains<4&(!talent.storm_elemental.enabled|talent.storm_elemental.enabled&cooldown.storm_elemental.remains<120)
+    if S.FlameShock:IsCastableP() and (not Target:DebuffP(S.FlameShockDebuff) or Target:DebuffRemainsP(S.FlameShockDebuff) <= Player:GCD() or S.Ascendance:IsAvailable() and Target:DebuffRemainsP(S.FlameShockDebuff) < (S.Ascendance:CooldownRemainsP() + S.AscendanceBuff:BaseDuration()) and S.Ascendance:CooldownRemainsP() < 4 and (not S.StormElemental:IsAvailable() or S.StormElemental:IsAvailable() and S.StormElemental:CooldownRemainsP() < 120)) then
       if HR.Cast(S.FlameShock) then return ""; end
     end
     -- ascendance,if=talent.ascendance.enabled&(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&!talent.storm_elemental.enabled

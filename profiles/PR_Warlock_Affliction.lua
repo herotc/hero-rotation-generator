@@ -116,11 +116,11 @@ local function ActiveUAs ()
 end
 
 HL.UnstableAfflictionDebuffsPrev = {
-  [UnstableAfflictionDebuffs[2]] = UnstableAfflictionDebuffs[1],
-  [UnstableAfflictionDebuffs[3]] = UnstableAfflictionDebuffs[2],
-  [UnstableAfflictionDebuffs[4]] = UnstableAfflictionDebuffs[3],
-  [UnstableAfflictionDebuffs[5]] = UnstableAfflictionDebuffs[4]
-};
+    [UnstableAfflictionDebuffs[2]] = UnstableAfflictionDebuffs[1],
+    [UnstableAfflictionDebuffs[3]] = UnstableAfflictionDebuffs[2],
+    [UnstableAfflictionDebuffs[4]] = UnstableAfflictionDebuffs[3],
+    [UnstableAfflictionDebuffs[5]] = UnstableAfflictionDebuffs[4]
+  };
 
 local function NbAffected (SpellAffected)
     local nbaff = 0

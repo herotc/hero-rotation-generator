@@ -47,7 +47,6 @@ Spell.DeathKnight.Frost = {
   RazoriceDebuff                        = Spell(51714),
   FrozenPulseBuff                       = Spell(),
   FrozenPulse                           = Spell(194909),
-  MindFreeze                            = Spell(47528),
   FrostFeverDebuff                      = Spell(),
   IcyTalonsBuff                         = Spell(194879),
   BreathofSindragosaDebuff              = Spell(),
@@ -388,10 +387,6 @@ local function APL()
   end
   if Everyone.TargetIsValid() then
     -- auto_attack
-    -- mind_freeze
-    if S.MindFreeze:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled then
-      if HR.CastAnnotated(S.MindFreeze, false, "Interrupt") then return ""; end
-    end
     -- howling_blast,if=!dot.frost_fever.ticking&(!talent.breath_of_sindragosa.enabled|cooldown.breath_of_sindragosa.remains>15)
     if S.HowlingBlast:IsCastableP() and (not Target:DebuffP(S.FrostFeverDebuff) and (not S.BreathofSindragosa:IsAvailable() or S.BreathofSindragosa:CooldownRemainsP() > 15)) then
       if HR.Cast(S.HowlingBlast) then return ""; end
