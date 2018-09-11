@@ -79,7 +79,8 @@ SPELL_INFO = {
                                              BUFF:      273347},
             'preheat':                      {SPELL:     273331,
                                              DEBUFF:    273333}, 
-            'arcane_pummeling':             {SPELL:     270669},                                                                 
+            'arcane_pummeling':             {SPELL:     270669},  
+            'brain_storm':                  {SPELL:     273326},                                                               
         },
         ARCANE: {
             'arcane_charge':                {BUFF:      36032},
