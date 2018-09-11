@@ -35,8 +35,8 @@ actions.precombat+=/adrenaline_rush,precombat_seconds=1
 # Executed every time the actor is available.
 # Reroll for 2+ buffs with Loaded Dice up. Otherwise reroll for 2+ or Grand Melee or Ruthless Precision.
 actions=variable,name=rtb_reroll,value=rtb_buffs<2&(buff.loaded_dice.up|!buff.grand_melee.up&!buff.ruthless_precision.up)
-# Reroll for 2+ buffs or Ruthless Precision with Deadshot Rank 2+.
-actions+=/variable,name=rtb_reroll,op=set,if=azerite.deadshot.rank>=2,value=rtb_buffs<2&(buff.loaded_dice.up|buff.ruthless_precision.remains<=cooldown.between_the_eyes.remains)
+# Reroll for 2+ buffs or Ruthless Precision with Deadshot or Ace up your Sleeve.
+actions+=/variable,name=rtb_reroll,op=set,if=azerite.deadshot.enabled|azerite.ace_up_your_sleeve.enabled,value=rtb_buffs<2&(buff.loaded_dice.up|buff.ruthless_precision.remains<=cooldown.between_the_eyes.remains)
 # Always reroll for 2+ buffs with Snake Eyes unless at 3 Ranks, then reroll everything.
 actions+=/variable,name=rtb_reroll,op=set,if=azerite.snake_eyes.enabled,value=rtb_buffs<2|(azerite.snake_eyes.rank=3&rtb_buffs<5)
 # Do not reroll if Snake Eyes is at 2+ Ranks and 2+ stacks of the buff (1+ stack with Broadside up)
@@ -80,8 +80,8 @@ actions.cds+=/vanish,if=!stealthed.all&variable.ambush_condition
 actions.cds+=/shadowmeld,if=!stealthed.all&variable.ambush_condition
 
 # Finishers
-# BtE over RtB rerolls with 2+ Deadshot traits or Ruthless Precision.
-actions.finish=between_the_eyes,if=buff.ruthless_precision.up|(azerite.deadshot.rank>=2&buff.roll_the_bones.up)
+# BtE over RtB rerolls with Deadshot/Ace traits or Ruthless Precision.
+actions.finish=between_the_eyes,if=buff.ruthless_precision.up|(azerite.deadshot.enabled|azerite.ace_up_your_sleeve.enabled)&buff.roll_the_bones.up
 actions.finish+=/slice_and_dice,if=buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8
 actions.finish+=/roll_the_bones,if=(buff.roll_the_bones.remains<=3|variable.rtb_reroll)&(target.time_to_die>20|buff.roll_the_bones.remains<target.time_to_die)
 # BtE with the Ace Up Your Sleeve or Deadshot traits.
@@ -91,11 +91,11 @@ actions.finish+=/dispatch
 # Stealth
 actions.stealth=ambush
 
-head=flashpowder_hood,id=159334,bonus_id=4779/1512/4786/4775,azerite_powers=129/22/0/13
+head=high_altitude_turban,id=158364,bonus_id=4819/1512/4775,azerite_powers=239/30/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
-shoulders=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775,azerite_powers=410/22/0/13
+shoulders=goldtasseled_epaulets,id=159299,bonus_id=4819/1512/4775,azerite_powers=239/22/0/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=vest_of_reverent_adoration,id=159303,bonus_id=4779/1512/4786/4775,azerite_powers=129/31/0/13
+chest=raiment_of_the_blighted_tribe,id=159335,bonus_id=4819/1512/4775,azerite_powers=239/31/0/13
 wrists=venerated_raptorhide_bindings,id=160214,bonus_id=4779/1512/4786
 hands=grubby_servantgrabbers,id=159346,bonus_id=4779/1512/4786
 waist=cincture_of_the_azerite_arsenal,id=159333,bonus_id=4779/1512/4786

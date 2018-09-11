@@ -5,7 +5,7 @@ level=120
 race=void_elf
 role=attack
 position=back
-talents=2330031
+talents=1320031
 
 # Default consumables
 potion=battle_potion_of_agility
@@ -77,8 +77,8 @@ actions.cds+=/shuriken_tornado,if=spell_targets>=3&dot.nightblade.ticking&buff.s
 actions.cds+=/shadow_dance,if=!buff.shadow_dance.up&target.time_to_die<=5+talent.subterfuge.enabled
 
 # Finishers
-# Eviscerate gets highest priority at 5+ targets with Shadow Focus and Nights Vengeance up
-actions.finish=eviscerate,if=talent.shadow_focus.enabled&spell_targets.shuriken_storm>=5&buff.nights_vengeance.up
+# Eviscerate highest priority at 2+ targets with Shadow Focus (5+ with Secret Technique in addition) and Night's Vengeance up.
+actions.finish=eviscerate,if=talent.shadow_focus.enabled&buff.nights_vengeance.up&spell_targets.shuriken_storm>=2+3*talent.secret_technique.enabled
 # Keep up Nightblade if it is about to run out. Do not use NB during Dance, if talented into Dark Shadow.
 actions.finish+=/nightblade,if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&remains<tick_time*2&(spell_targets.shuriken_storm<4|!buff.symbols_of_death.up)
 # Multidotting outside Dance on targets that will live for the duration of Nightblade with refresh during pandemic if you have less than 6 targets or play with Secret Technique.
@@ -121,7 +121,7 @@ head=hood_of_the_slithering_loa,id=159318,bonus_id=4819/1512/4775,azerite_powers
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
 shoulders=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775,azerite_powers=240/22/0/13
 back=sporecallers_shroud,id=159292,bonus_id=4779/42/1512/4786
-chest=cephalohide_jacket,id=159314,bonus_id=4819/1512/4775,azerite_powers=240/30/0/13
+chest=spymasters_wrap,id=155860,bonus_id=4819/1512/4775,azerite_powers=414/461/0/13
 wrists=venerated_raptorhide_bindings,id=160214,bonus_id=4779/1512
 hands=grubby_servantgrabbers,id=159346,bonus_id=4779/1512/4786
 waist=primal_dinomancers_belt,id=159301,bonus_id=4779/1512/4786
