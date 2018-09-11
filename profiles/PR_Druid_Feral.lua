@@ -24,6 +24,7 @@ Spell.Druid.Feral = {
   Regrowth                              = Spell(8936),
   BloodtalonsBuff                       = Spell(145152),
   Bloodtalons                           = Spell(155672),
+  PoweroftheMoon                        = Spell(),
   Sabertooth                            = Spell(202031),
   LunarInspiration                      = Spell(155580),
   CatFormBuff                           = Spell(768),
@@ -69,9 +70,9 @@ local S = Spell.Druid.Feral;
 -- Items
 if not Item.Druid then Item.Druid = {} end
 Item.Druid.Feral = {
-  LuffaWrappings                   = Item(137056),
   BattlePotionofAgility            = Item(163223),
-  AiluroPouncers                   = Item(137024)
+  AiluroPouncers                   = Item(137024),
+  LuffaWrappings                   = Item(137056)
 };
 local I = Item.Druid.Feral;
 
@@ -136,12 +137,12 @@ local function APL()
     if S.Regrowth:IsCastableP() and (S.Bloodtalons:IsAvailable()) then
       if HR.Cast(S.Regrowth) then return ""; end
     end
-    -- variable,name=use_thrash,value=0
+    -- variable,name=use_thrash,value=2
     if (true) then
-      VarUseThrash = 0
+      VarUseThrash = 2
     end
-    -- variable,name=use_thrash,value=1,if=equipped.luffa_wrappings
-    if (I.LuffaWrappings:IsEquipped()) then
+    -- variable,name=use_thrash,value=1,if=azerite.power_of_the_moon.enabled
+    if (S.PoweroftheMoon:AzeriteEnabled()) then
       VarUseThrash = 1
     end
     -- variable,name=delayed_tf_opener,value=0
@@ -395,6 +396,14 @@ local function APL()
       else
         if HR.Cast(S.PoolResource) then return ""; end
       end
+    end
+    -- shred,if=buff.clearcasting.react
+    if S.Shred:IsCastableP() and (bool(Player:BuffStackP(S.ClearcastingBuff))) then
+      if HR.Cast(S.Shred) then return ""; end
+    end
+    -- moonfire_cat,if=azerite.power_of_the_moon.enabled
+    if S.MoonfireCat:IsCastableP() and (S.PoweroftheMoon:AzeriteEnabled()) then
+      if HR.Cast(S.MoonfireCat) then return ""; end
     end
     -- shred,if=dot.rake.remains>(action.shred.cost+action.rake.cost-energy)%energy.regen|buff.clearcasting.react
     if S.Shred:IsCastableP() and (Target:DebuffRemainsP(S.RakeDebuff) > (S.Shred:Cost() + S.Rake:Cost() - Player:EnergyPredicted()) / Player:EnergyRegen() or bool(Player:BuffStackP(S.ClearcastingBuff))) then

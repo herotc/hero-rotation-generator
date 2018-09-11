@@ -51,8 +51,8 @@ Spell.Rogue.Subtlety = {
   Eviscerate                            = Spell(196819),
   ShadowFocus                           = Spell(108209),
   NightsVengeanceBuff                   = Spell(),
-  Nightblade                            = Spell(195452),
   SecretTechnique                       = Spell(),
+  Nightblade                            = Spell(195452),
   NightsVengeance                       = Spell(),
   Vanish                                = Spell(1856),
   FindWeaknessDebuff                    = Spell(),
@@ -208,8 +208,8 @@ local function APL()
     end
   end
   Finish = function()
-    -- eviscerate,if=talent.shadow_focus.enabled&spell_targets.shuriken_storm>=5&buff.nights_vengeance.up
-    if S.Eviscerate:IsCastableP() and (S.ShadowFocus:IsAvailable() and Cache.EnemiesCount[10] >= 5 and Player:BuffP(S.NightsVengeanceBuff)) then
+    -- eviscerate,if=talent.shadow_focus.enabled&buff.nights_vengeance.up&spell_targets.shuriken_storm>=2+3*talent.secret_technique.enabled
+    if S.Eviscerate:IsCastableP() and (S.ShadowFocus:IsAvailable() and Player:BuffP(S.NightsVengeanceBuff) and Cache.EnemiesCount[10] >= 2 + 3 * num(S.SecretTechnique:IsAvailable())) then
       if HR.Cast(S.Eviscerate) then return ""; end
     end
     -- nightblade,if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&remains<tick_time*2&(spell_targets.shuriken_storm<4|!buff.symbols_of_death.up)

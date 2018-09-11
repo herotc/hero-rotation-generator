@@ -58,7 +58,8 @@ Spell.Warlock.Affliction = {
   SiphonLifeDebuff                      = Spell(63106),
   UnstableAffliction                    = Spell(30108),
   UnstableAfflictionDebuff              = Spell(30108),
-  Berserking                            = Spell(26297)
+  Berserking                            = Spell(26297),
+  CascadingCalamityBuff                 = Spell()
 };
 local S = Spell.Warlock.Affliction;
 
@@ -349,8 +350,8 @@ local function APL()
     if S.UnstableAffliction:IsReadyP() and (not bool(VarSpammableSeed) and contagion <= S.UnstableAffliction:CastTime() + VarPadding) then
       if HR.Cast(S.UnstableAffliction) then return ""; end
     end
-    -- unstable_affliction,cycle_targets=1,if=!variable.spammable_seed&(!talent.deathbolt.enabled|cooldown.deathbolt.remains>time_to_shard|soul_shard>1)&contagion<=cast_time+variable.padding
-    if S.UnstableAffliction:IsReadyP() and (not bool(VarSpammableSeed) and (not S.Deathbolt:IsAvailable() or S.Deathbolt:CooldownRemainsP() > time_to_shard or Player:SoulShardsP() > 1) and contagion <= S.UnstableAffliction:CastTime() + VarPadding) then
+    -- unstable_affliction,cycle_targets=1,if=!variable.spammable_seed&(!talent.deathbolt.enabled|cooldown.deathbolt.remains>time_to_shard|soul_shard>1)&contagion<=cast_time+variable.padding&(!azerite.cascading_calamity.enabled|buff.cascading_calamity.remains>time_to_shard)
+    if S.UnstableAffliction:IsReadyP() and (not bool(VarSpammableSeed) and (not S.Deathbolt:IsAvailable() or S.Deathbolt:CooldownRemainsP() > time_to_shard or Player:SoulShardsP() > 1) and contagion <= S.UnstableAffliction:CastTime() + VarPadding and (not S.CascadingCalamity:AzeriteEnabled() or Player:BuffRemainsP(S.CascadingCalamityBuff) > time_to_shard)) then
       if HR.Cast(S.UnstableAffliction) then return ""; end
     end
     -- call_action_list,name=fillers

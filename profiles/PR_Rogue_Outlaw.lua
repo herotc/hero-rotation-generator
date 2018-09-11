@@ -47,8 +47,8 @@ Spell.Rogue.Outlaw = {
   BetweentheEyes                        = Spell(199804),
   RuthlessPrecisionBuff                 = Spell(),
   Deadshot                              = Spell(),
-  RolltheBonesBuff                      = Spell(),
   AceUpYourSleeve                       = Spell(),
+  RolltheBonesBuff                      = Spell(),
   Dispatch                              = Spell(),
   Ambush                                = Spell(8676),
   LoadedDiceBuff                        = Spell(240837),
@@ -209,8 +209,8 @@ local function APL()
     end
   end
   Finish = function()
-    -- between_the_eyes,if=buff.ruthless_precision.up|(azerite.deadshot.rank>=2&buff.roll_the_bones.up)
-    if S.BetweentheEyes:IsCastableP() and (Player:BuffP(S.RuthlessPrecisionBuff) or (S.Deadshot:AzeriteRank() >= 2 and Player:BuffP(S.RolltheBonesBuff))) then
+    -- between_the_eyes,if=buff.ruthless_precision.up|(azerite.deadshot.enabled|azerite.ace_up_your_sleeve.enabled)&buff.roll_the_bones.up
+    if S.BetweentheEyes:IsCastableP() and (Player:BuffP(S.RuthlessPrecisionBuff) or (S.Deadshot:AzeriteEnabled() or S.AceUpYourSleeve:AzeriteEnabled()) and Player:BuffP(S.RolltheBonesBuff)) then
       if HR.Cast(S.BetweentheEyes) then return ""; end
     end
     -- slice_and_dice,if=buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8
@@ -245,8 +245,8 @@ local function APL()
     if (true) then
       VarRtbReroll = num(rtb_buffs < 2 and (Player:BuffP(S.LoadedDiceBuff) or not Player:BuffP(S.GrandMeleeBuff) and not Player:BuffP(S.RuthlessPrecisionBuff)))
     end
-    -- variable,name=rtb_reroll,op=set,if=azerite.deadshot.rank>=2,value=rtb_buffs<2&(buff.loaded_dice.up|buff.ruthless_precision.remains<=cooldown.between_the_eyes.remains)
-    if (S.Deadshot:AzeriteRank() >= 2) then
+    -- variable,name=rtb_reroll,op=set,if=azerite.deadshot.enabled|azerite.ace_up_your_sleeve.enabled,value=rtb_buffs<2&(buff.loaded_dice.up|buff.ruthless_precision.remains<=cooldown.between_the_eyes.remains)
+    if (S.Deadshot:AzeriteEnabled() or S.AceUpYourSleeve:AzeriteEnabled()) then
       VarRtbReroll = num(rtb_buffs < 2 and (Player:BuffP(S.LoadedDiceBuff) or Player:BuffRemainsP(S.RuthlessPrecisionBuff) <= S.BetweentheEyes:CooldownRemainsP()))
     end
     -- variable,name=rtb_reroll,op=set,if=azerite.snake_eyes.enabled,value=rtb_buffs<2|(azerite.snake_eyes.rank=3&rtb_buffs<5)

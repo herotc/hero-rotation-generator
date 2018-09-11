@@ -26,16 +26,16 @@ Spell.Rogue.Assassination = {
   MarkedForDeath                        = Spell(137619),
   VendettaDebuff                        = Spell(79140),
   Vanish                                = Spell(1856),
+  Vendetta                              = Spell(79140),
+  Subterfuge                            = Spell(108208),
+  GarroteDebuff                         = Spell(703),
+  Garrote                               = Spell(703),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
   Fireblood                             = Spell(265221),
   AncestralCall                         = Spell(274738),
-  Vendetta                              = Spell(79140),
   RuptureDebuff                         = Spell(1943),
-  Subterfuge                            = Spell(108208),
   ShroudedSuffocation                   = Spell(),
-  GarroteDebuff                         = Spell(703),
-  Garrote                               = Spell(703),
   Exsanguinate                          = Spell(200806),
   Nightstalker                          = Spell(14062),
   MasterAssassin                        = Spell(),
@@ -133,8 +133,8 @@ local function APL()
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:HasHeroism() or Target:TimeToDie() <= 60 or Target:DebuffP(S.VendettaDebuff) and S.Vanish:CooldownRemainsP() < 5) then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
-    -- use_item,name=galecallers_boon
-    if I.GalecallersBoon:IsReady() then
+    -- use_item,name=galecallers_boon,if=cooldown.vendetta.remains<=1&(!talent.subterfuge.enabled|dot.garrote.pmultiplier>1)|cooldown.vendetta.remains>45
+    if I.GalecallersBoon:IsReady() and (S.Vendetta:CooldownRemainsP() <= 1 and (not S.Subterfuge:IsAvailable() or Target:PMultiplier(S.Garrote) > 1) or S.Vendetta:CooldownRemainsP() > 45) then
       if HR.CastSuggested(I.GalecallersBoon) then return ""; end
     end
     -- blood_fury,if=debuff.vendetta.up
@@ -244,8 +244,8 @@ local function APL()
     end
   end
   Stealthed = function()
-    -- rupture,if=combo_points>=4&(talent.nightstalker.enabled|talent.subterfuge.enabled&talent.exsanguinate.enabled&variable.single_target|!ticking)&target.time_to_die-remains>6
-    if S.Rupture:IsCastableP() and (Player:ComboPoints() >= 4 and (S.Nightstalker:IsAvailable() or S.Subterfuge:IsAvailable() and S.Exsanguinate:IsAvailable() and bool(VarSingleTarget) or not Target:DebuffP(S.RuptureDebuff)) and Target:TimeToDie() - Target:DebuffRemainsP(S.RuptureDebuff) > 6) then
+    -- rupture,if=combo_points>=4&(talent.nightstalker.enabled|talent.subterfuge.enabled&talent.exsanguinate.enabled&cooldown.exsanguinate.remains<=2&variable.single_target|!ticking)&target.time_to_die-remains>6
+    if S.Rupture:IsCastableP() and (Player:ComboPoints() >= 4 and (S.Nightstalker:IsAvailable() or S.Subterfuge:IsAvailable() and S.Exsanguinate:IsAvailable() and S.Exsanguinate:CooldownRemainsP() <= 2 and bool(VarSingleTarget) or not Target:DebuffP(S.RuptureDebuff)) and Target:TimeToDie() - Target:DebuffRemainsP(S.RuptureDebuff) > 6) then
       if HR.Cast(S.Rupture) then return ""; end
     end
     -- envenom,if=combo_points>=cp_max_spend
