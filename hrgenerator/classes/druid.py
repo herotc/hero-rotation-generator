@@ -84,6 +84,8 @@ SPELL_INFO = {
             'sephuzs_secret':                   {BUFF:      208052},
             'norgannons_foresight':             {BUFF:      236431},
             'fiery_red_maimers':                {BUFF:      236757},
+            # Azerite
+            'power_of_the_moon':                {SPELL:     273367},
         },
         BALANCE: {
             'moonkin_form':                     {SPELL:     24858},

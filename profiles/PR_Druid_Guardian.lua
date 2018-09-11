@@ -48,7 +48,7 @@ Spell.Druid.Guardian = {
   SwipeBear                             = Spell(213771),
   Mangle                                = Spell(33917),
   GalacticGuardianBuff                  = Spell(213708),
-  PoweroftheMoon                        = Spell()
+  PoweroftheMoon                        = Spell(273367)
 };
 local S = Spell.Druid.Guardian;
 
