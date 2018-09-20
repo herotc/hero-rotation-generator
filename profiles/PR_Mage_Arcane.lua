@@ -29,8 +29,9 @@ Spell.Mage.Arcane = {
   RuneofPowerBuff                       = Spell(116014),
   RuneofPower                           = Spell(116011),
   MirrorImage                           = Spell(55342),
-  ArcaneBlast                           = Spell(30451),
   Evocation                             = Spell(12051),
+  ArcaneBlast                           = Spell(30451),
+  BrainStormBuff                        = Spell(),
   ArcanePowerBuff                       = Spell(12042),
   ArcanePower                           = Spell(12042),
   ChargedUp                             = Spell(205032),
@@ -163,8 +164,12 @@ local function APL()
     if I.DeadlyGrace:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.DeadlyGrace) then return ""; end
     end
-    -- arcane_blast
-    if S.ArcaneBlast:IsReadyP() then
+    -- evocation,if=variable.bs_rotation=1,precombat=1
+    if S.Evocation:IsCastableP() and (VarBsRotation == 1) then
+      if HR.Cast(S.Evocation) then return ""; end
+    end
+    -- arcane_blast,if=variable.bs_rotation=0
+    if S.ArcaneBlast:IsReadyP() and (VarBsRotation == 0) then
       if HR.Cast(S.ArcaneBlast) then return ""; end
     end
   end
@@ -181,16 +186,16 @@ local function APL()
     if (bool(VarBurnPhase) and VarBsRotation == 0 and Player:PrevGCDP(1, S.Evocation) and Target:TimeToDie() > VarAverageBurnLength and VarBurnPhaseDuration > 0) then
       StopBurnPhase()
     end
-    -- stop_burn_phase,if=burn_phase&variable.bs_rotation=1&buff.arcane_power.down&cooldown.arcane_power.remains>0&buff.arcane_power.down&target.time_to_die>variable.average_burn_length&burn_phase_duration>0
-    if (bool(VarBurnPhase) and VarBsRotation == 1 and Player:BuffDownP(S.ArcanePowerBuff) and S.ArcanePower:CooldownRemainsP() > 0 and Player:BuffDownP(S.ArcanePowerBuff) and Target:TimeToDie() > VarAverageBurnLength and VarBurnPhaseDuration > 0) then
+    -- stop_burn_phase,if=burn_phase&variable.bs_rotation=1&buff.brain_storm.down&buff.arcane_power.down&cooldown.arcane_power.remains>10&target.time_to_die>variable.average_burn_length&burn_phase_duration>0
+    if (bool(VarBurnPhase) and VarBsRotation == 1 and Player:BuffDownP(S.BrainStormBuff) and Player:BuffDownP(S.ArcanePowerBuff) and S.ArcanePower:CooldownRemainsP() > 10 and Target:TimeToDie() > VarAverageBurnLength and VarBurnPhaseDuration > 0) then
       StopBurnPhase()
     end
     -- charged_up,if=buff.arcane_charge.stack<=1
     if S.ChargedUp:IsCastableP() and (Player:ArcaneChargesP() <= 1) then
       if HR.Cast(S.ChargedUp) then return ""; end
     end
-    -- rune_of_power,if=variable.bs_rotation=1&!buff.arcane_power.up&mana.pct>=50&(buff.arcane_charge.stack=buff.arcane_charge.max_stack)&(full_recharge_time<=execute_time|full_recharge_time<=cooldown.arcane_power.remains|target.time_to_die<=cooldown.arcane_power.remains)
-    if S.RuneofPower:IsCastableP() and (VarBsRotation == 1 and not Player:BuffP(S.ArcanePowerBuff) and Player:ManaPercentage() >= 50 and (Player:ArcaneChargesP() == Player:ArcaneChargesMax()) and (S.RuneofPower:FullRechargeTimeP() <= S.RuneofPower:ExecuteTime() or S.RuneofPower:FullRechargeTimeP() <= S.ArcanePower:CooldownRemainsP() or Target:TimeToDie() <= S.ArcanePower:CooldownRemainsP())) then
+    -- rune_of_power,if=variable.bs_rotation=1&!buff.arcane_power.up&mana.pct>=50&cooldown.arcane_power.remains>0&(buff.arcane_charge.stack=buff.arcane_charge.max_stack)&(full_recharge_time<=execute_time|full_recharge_time<=cooldown.arcane_power.remains|target.time_to_die<=cooldown.arcane_power.remains)
+    if S.RuneofPower:IsCastableP() and (VarBsRotation == 1 and not Player:BuffP(S.ArcanePowerBuff) and Player:ManaPercentage() >= 50 and S.ArcanePower:CooldownRemainsP() > 0 and (Player:ArcaneChargesP() == Player:ArcaneChargesMax()) and (S.RuneofPower:FullRechargeTimeP() <= S.RuneofPower:ExecuteTime() or S.RuneofPower:FullRechargeTimeP() <= S.ArcanePower:CooldownRemainsP() or Target:TimeToDie() <= S.ArcanePower:CooldownRemainsP())) then
       if HR.Cast(S.RuneofPower, Settings.Arcane.GCDasOffGCD.RuneofPower) then return ""; end
     end
     -- arcane_blast,if=variable.bs_rotation=1&(cooldown.evocation.remains>action.arcane_blast.execute_time&cooldown.evocation.remains<=variable.average_burn_length|cooldown.evocation.remains=0)&!prev_gcd.1.evocation
@@ -312,8 +317,8 @@ local function APL()
     if S.ArcaneMissiles:IsCastableP() and (Player:ManaPercentage() <= 95 and bool(Player:BuffStackP(S.ClearcastingBuff))) then
       if HR.Cast(S.ArcaneMissiles) then return ""; end
     end
-    -- arcane_barrage,if=((buff.arcane_charge.stack=buff.arcane_charge.max_stack)&((mana.pct<=variable.conserve_mana&variable.bs_rotation=0|mana.pct<=variable.conserve_mana-30&variable.bs_rotation=1)|(cooldown.arcane_power.remains>cooldown.rune_of_power.full_recharge_time&mana.pct<=variable.conserve_mana+25))|(talent.arcane_orb.enabled&cooldown.arcane_orb.remains<=gcd&cooldown.arcane_power.remains>10))|mana.pct<=(variable.conserve_mana-10)&variable.bs_rotation=0|mana.pct<=(variable.conserve_mana-50)&variable.bs_rotation=1
-    if S.ArcaneBarrage:IsCastableP() and (((Player:ArcaneChargesP() == Player:ArcaneChargesMax()) and ((Player:ManaPercentage() <= VarConserveMana and VarBsRotation == 0 or Player:ManaPercentage() <= VarConserveMana - 30 and VarBsRotation == 1) or (S.ArcanePower:CooldownRemainsP() > S.RuneofPower:FullRechargeTimeP() and Player:ManaPercentage() <= VarConserveMana + 25)) or (S.ArcaneOrb:IsAvailable() and S.ArcaneOrb:CooldownRemainsP() <= Player:GCD() and S.ArcanePower:CooldownRemainsP() > 10)) or Player:ManaPercentage() <= (VarConserveMana - 10) and VarBsRotation == 0 or Player:ManaPercentage() <= (VarConserveMana - 50) and VarBsRotation == 1) then
+    -- arcane_barrage,if=((buff.arcane_charge.stack=buff.arcane_charge.max_stack)&((mana.pct<=variable.conserve_mana&variable.bs_rotation=0|(mana.pct<=variable.conserve_mana-30&variable.bs_rotation=1&buff.rune_of_power.down))|(cooldown.arcane_power.remains>cooldown.rune_of_power.full_recharge_time&mana.pct<=variable.conserve_mana+25&variable.bs_rotation=0))|(talent.arcane_orb.enabled&cooldown.arcane_orb.remains<=gcd&cooldown.arcane_power.remains>10))|mana.pct<=(variable.conserve_mana-10)&variable.bs_rotation=0|mana.pct<=(variable.conserve_mana-50)&variable.bs_rotation=1
+    if S.ArcaneBarrage:IsCastableP() and (((Player:ArcaneChargesP() == Player:ArcaneChargesMax()) and ((Player:ManaPercentage() <= VarConserveMana and VarBsRotation == 0 or (Player:ManaPercentage() <= VarConserveMana - 30 and VarBsRotation == 1 and Player:BuffDownP(S.RuneofPowerBuff))) or (S.ArcanePower:CooldownRemainsP() > S.RuneofPower:FullRechargeTimeP() and Player:ManaPercentage() <= VarConserveMana + 25 and VarBsRotation == 0)) or (S.ArcaneOrb:IsAvailable() and S.ArcaneOrb:CooldownRemainsP() <= Player:GCD() and S.ArcanePower:CooldownRemainsP() > 10)) or Player:ManaPercentage() <= (VarConserveMana - 10) and VarBsRotation == 0 or Player:ManaPercentage() <= (VarConserveMana - 50) and VarBsRotation == 1) then
       if HR.Cast(S.ArcaneBarrage) then return ""; end
     end
     -- supernova,if=mana.pct<=95
@@ -374,8 +379,8 @@ local function APL()
     if HR.CDsON() and ((S.ArcanePower:CooldownRemainsP() == 0 and S.Evocation:CooldownRemainsP() <= VarAverageBurnLength and (Player:ArcaneChargesP() == Player:ArcaneChargesMax() or (S.ChargedUp:IsAvailable() and S.ChargedUp:CooldownRemainsP() == 0)))) then
       local ShouldReturn = Burn(); if ShouldReturn then return ShouldReturn; end
     end
-    -- call_action_list,name=burn,if=variable.bs_rotation=1&(cooldown.evocation.remains=0|cooldown.evocation.remains<=variable.average_burn_length)&(buff.arcane_charge.stack=buff.arcane_charge.max_stack|(talent.charged_up.enabled&cooldown.charged_up.remains=0))
-    if HR.CDsON() and (VarBsRotation == 1 and (S.Evocation:CooldownRemainsP() == 0 or S.Evocation:CooldownRemainsP() <= VarAverageBurnLength) and (Player:ArcaneChargesP() == Player:ArcaneChargesMax() or (S.ChargedUp:IsAvailable() and S.ChargedUp:CooldownRemainsP() == 0))) then
+    -- call_action_list,name=burn,if=variable.bs_rotation=1&(buff.brain_storm.up|cooldown.evocation.remains<=variable.average_burn_length)&(buff.arcane_charge.stack=buff.arcane_charge.max_stack|(talent.charged_up.enabled&cooldown.charged_up.remains=0))
+    if HR.CDsON() and (VarBsRotation == 1 and (Player:BuffP(S.BrainStormBuff) or S.Evocation:CooldownRemainsP() <= VarAverageBurnLength) and (Player:ArcaneChargesP() == Player:ArcaneChargesMax() or (S.ChargedUp:IsAvailable() and S.ChargedUp:CooldownRemainsP() == 0))) then
       local ShouldReturn = Burn(); if ShouldReturn then return ShouldReturn; end
     end
     -- call_action_list,name=conserve,if=!burn_phase

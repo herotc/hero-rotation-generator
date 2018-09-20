@@ -21,8 +21,6 @@ local HR     = HeroRotation
 -- Spells
 if not Spell.Rogue then Spell.Rogue = {} end
 Spell.Rogue.Subtlety = {
-  Vigor                                 = Spell(14983),
-  MasterofShadows                       = Spell(),
   StealthBuff                           = Spell(1784),
   Stealth                               = Spell(1784),
   MarkedForDeath                        = Spell(137619),
@@ -63,6 +61,8 @@ Spell.Rogue.Subtlety = {
   VanishBuff                            = Spell(1856),
   FindWeakness                          = Spell(),
   BladeIntheShadows                     = Spell(),
+  Vigor                                 = Spell(14983),
+  MasterofShadows                       = Spell(),
   Alacrity                              = Spell(),
   ArcaneTorrent                         = Spell(50613),
   ArcanePulse                           = Spell(),
@@ -90,8 +90,8 @@ local Settings = {
 };
 
 -- Variables
-local VarStealthThreshold = 0;
 local VarShdThreshold = 0;
+local VarStealthThreshold = 0;
 
 local EnemyRanges = {15, 10}
 local function UpdateRanges()
@@ -118,10 +118,6 @@ local function APL()
     -- augmentation
     -- food
     -- snapshot_stats
-    -- variable,name=stealth_threshold,value=60+talent.vigor.enabled*35+talent.master_of_shadows.enabled*10
-    if (true) then
-      VarStealthThreshold = 60 + num(S.Vigor:IsAvailable()) * 35 + num(S.MasterofShadows:IsAvailable()) * 10
-    end
     -- stealth
     if S.Stealth:IsCastableP() and Player:BuffDownP(S.StealthBuff) then
       if HR.Cast(S.Stealth) then return ""; end
@@ -202,8 +198,8 @@ local function APL()
     if S.ShurikenTornado:IsCastableP() and (Cache.EnemiesCount[15] >= 3 and Target:DebuffP(S.NightbladeDebuff) and Player:BuffP(S.SymbolsofDeathBuff) and Player:BuffP(S.ShadowDanceBuff)) then
       if HR.Cast(S.ShurikenTornado) then return ""; end
     end
-    -- shadow_dance,if=!buff.shadow_dance.up&target.time_to_die<=5+talent.subterfuge.enabled
-    if S.ShadowDance:IsCastableP() and (not Player:BuffP(S.ShadowDanceBuff) and Target:TimeToDie() <= 5 + num(S.Subterfuge:IsAvailable())) then
+    -- shadow_dance,if=!stealthed.all&target.time_to_die<=5+talent.subterfuge.enabled
+    if S.ShadowDance:IsCastableP() and (not bool(stealthed.all) and Target:TimeToDie() <= 5 + num(S.Subterfuge:IsAvailable())) then
       if HR.Cast(S.ShadowDance) then return ""; end
     end
   end
@@ -224,8 +220,8 @@ local function APL()
     if S.Nightblade:IsCastableP() and (Target:DebuffRemainsP(S.NightbladeDebuff) < S.SymbolsofDeath:CooldownRemainsP() + 10 and S.SymbolsofDeath:CooldownRemainsP() <= 5 and Target:TimeToDie() - Target:DebuffRemainsP(S.NightbladeDebuff) > S.SymbolsofDeath:CooldownRemainsP() + 5) then
       if HR.Cast(S.Nightblade) then return ""; end
     end
-    -- secret_technique,if=buff.symbols_of_death.up&(!talent.dark_shadow.enabled|spell_targets.shuriken_storm<2|buff.shadow_dance.up)
-    if S.SecretTechnique:IsCastableP() and (Player:BuffP(S.SymbolsofDeathBuff) and (not S.DarkShadow:IsAvailable() or Cache.EnemiesCount[10] < 2 or Player:BuffP(S.ShadowDanceBuff))) then
+    -- secret_technique,if=buff.symbols_of_death.up&(!talent.dark_shadow.enabled|buff.shadow_dance.up)
+    if S.SecretTechnique:IsCastableP() and (Player:BuffP(S.SymbolsofDeathBuff) and (not S.DarkShadow:IsAvailable() or Player:BuffP(S.ShadowDanceBuff))) then
       if HR.Cast(S.SecretTechnique) then return ""; end
     end
     -- secret_technique,if=spell_targets.shuriken_storm>=2+talent.dark_shadow.enabled+talent.nightstalker.enabled
@@ -242,13 +238,13 @@ local function APL()
     if (true) then
       VarShdThreshold = num(S.ShadowDance:ChargesFractionalP() >= 1.75)
     end
-    -- vanish,if=!variable.shd_threshold&debuff.find_weakness.remains<1
-    if S.Vanish:IsCastableP() and (not bool(VarShdThreshold) and Target:DebuffRemainsP(S.FindWeaknessDebuff) < 1) then
+    -- vanish,if=!variable.shd_threshold&debuff.find_weakness.remains<1&combo_points.deficit>1
+    if S.Vanish:IsCastableP() and (not bool(VarShdThreshold) and Target:DebuffRemainsP(S.FindWeaknessDebuff) < 1 and Player:ComboPointsDeficit() > 1) then
       if HR.Cast(S.Vanish) then return ""; end
     end
     -- pool_resource,for_next=1,extra_amount=40
-    -- shadowmeld,if=energy>=40&energy.deficit>=10&!variable.shd_threshold&debuff.find_weakness.remains<1
-    if S.Shadowmeld:IsCastableP() and HR.CDsON() and (Player:EnergyPredicted() >= 40 and Player:EnergyDeficitPredicted() >= 10 and not bool(VarShdThreshold) and Target:DebuffRemainsP(S.FindWeaknessDebuff) < 1) then
+    -- shadowmeld,if=energy>=40&energy.deficit>=10&!variable.shd_threshold&debuff.find_weakness.remains<1&combo_points.deficit>1
+    if S.Shadowmeld:IsCastableP() and HR.CDsON() and (Player:EnergyPredicted() >= 40 and Player:EnergyDeficitPredicted() >= 10 and not bool(VarShdThreshold) and Target:DebuffRemainsP(S.FindWeaknessDebuff) < 1 and Player:ComboPointsDeficit() > 1) then
       if S.Shadowmeld:IsUsablePPool(40) then
         if HR.Cast(S.Shadowmeld, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
       else
@@ -311,20 +307,24 @@ local function APL()
     if S.Nightblade:IsCastableP() and (Target:TimeToDie() > 6 and Target:DebuffRemainsP(S.NightbladeDebuff) < Player:GCD() and Player:ComboPoints() >= 4 - num((HL.CombatTime() < 10)) * 2) then
       if HR.Cast(S.Nightblade) then return ""; end
     end
-    -- call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&combo_points.deficit>=4
-    if (Player:EnergyDeficitPredicted() <= VarStealthThreshold and Player:ComboPointsDeficit() >= 4) then
+    -- variable,name=stealth_threshold,value=25+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+talent.shadow_focus.enabled*20+talent.alacrity.enabled*10+15*(spell_targets.shuriken_storm>=3)
+    if (true) then
+      VarStealthThreshold = 25 + num(S.Vigor:IsAvailable()) * 35 + num(S.MasterofShadows:IsAvailable()) * 25 + num(S.ShadowFocus:IsAvailable()) * 20 + num(S.Alacrity:IsAvailable()) * 10 + 15 * num((Cache.EnemiesCount[10] >= 3))
+    end
+    -- call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&(talent.dark_shadow.enabled&cooldown.secret_technique.up|combo_points.deficit>=4)
+    if (Player:EnergyDeficitPredicted() <= VarStealthThreshold and (S.DarkShadow:IsAvailable() and S.SecretTechnique:CooldownUpP() or Player:ComboPointsDeficit() >= 4)) then
       local ShouldReturn = StealthCds(); if ShouldReturn then return ShouldReturn; end
     end
-    -- call_action_list,name=finish,if=combo_points>=4+talent.deeper_stratagem.enabled|target.time_to_die<=1&combo_points>=3
-    if (Player:ComboPoints() >= 4 + num(S.DeeperStratagem:IsAvailable()) or Target:TimeToDie() <= 1 and Player:ComboPoints() >= 3) then
+    -- call_action_list,name=finish,if=combo_points.deficit<=1|target.time_to_die<=1&combo_points>=3
+    if (Player:ComboPointsDeficit() <= 1 or Target:TimeToDie() <= 1 and Player:ComboPoints() >= 3) then
       local ShouldReturn = Finish(); if ShouldReturn then return ShouldReturn; end
     end
     -- call_action_list,name=finish,if=spell_targets.shuriken_storm=4&combo_points>=4
     if (Cache.EnemiesCount[10] == 4 and Player:ComboPoints() >= 4) then
       local ShouldReturn = Finish(); if ShouldReturn then return ShouldReturn; end
     end
-    -- call_action_list,name=build,if=energy.deficit<=variable.stealth_threshold-40*!(talent.alacrity.enabled|talent.shadow_focus.enabled|talent.master_of_shadows.enabled)
-    if (Player:EnergyDeficitPredicted() <= VarStealthThreshold - 40 * num(not (S.Alacrity:IsAvailable() or S.ShadowFocus:IsAvailable() or S.MasterofShadows:IsAvailable()))) then
+    -- call_action_list,name=build,if=energy.deficit<=variable.stealth_threshold
+    if (Player:EnergyDeficitPredicted() <= VarStealthThreshold) then
       local ShouldReturn = Build(); if ShouldReturn then return ShouldReturn; end
     end
     -- arcane_torrent,if=energy.deficit>=15+energy.regen

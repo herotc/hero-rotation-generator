@@ -24,13 +24,14 @@ Spell.Hunter.BeastMastery = {
   SummonPet                             = Spell(),
   AspectoftheWildBuff                   = Spell(193530),
   AspectoftheWild                       = Spell(193530),
-  Berserking                            = Spell(26297),
+  PrimalInstincts                       = Spell(),
+  BestialWrathBuff                      = Spell(19574),
   BestialWrath                          = Spell(19574),
+  Berserking                            = Spell(26297),
   BloodFury                             = Spell(20572),
   AncestralCall                         = Spell(274738),
   Fireblood                             = Spell(265221),
   LightsJudgment                        = Spell(255647),
-  BestialWrathBuff                      = Spell(19574),
   BarbedShot                            = Spell(),
   FrenzyBuff                            = Spell(),
   AMurderofCrows                        = Spell(131894),
@@ -38,10 +39,10 @@ Spell.Hunter.BeastMastery = {
   Stampede                              = Spell(201430),
   Multishot                             = Spell(2643),
   BeastCleaveBuff                       = Spell(118455, "pet"),
+  Barrage                               = Spell(120360),
   ChimaeraShot                          = Spell(53209),
   KillCommand                           = Spell(34026),
   DireBeast                             = Spell(120679),
-  Barrage                               = Spell(120360),
   CobraShot                             = Spell(193455),
   ArcaneTorrent                         = Spell(50613)
 };
@@ -100,9 +101,13 @@ local function APL()
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
-    -- aspect_of_the_wild
-    if S.AspectoftheWild:IsCastableP() and Player:BuffDownP(S.AspectoftheWildBuff) then
+    -- aspect_of_the_wild,if=!azerite.primal_instincts.enabled
+    if S.AspectoftheWild:IsCastableP() and Player:BuffDownP(S.AspectoftheWildBuff) and (not S.PrimalInstincts:AzeriteEnabled()) then
       if HR.Cast(S.AspectoftheWild) then return ""; end
+    end
+    -- bestial_wrath,if=azerite.primal_instincts.enabled
+    if S.BestialWrath:IsCastableP() and Player:BuffDownP(S.BestialWrathBuff) and (S.PrimalInstincts:AzeriteEnabled()) then
+      if HR.Cast(S.BestialWrath) then return ""; end
     end
   end
   -- call precombat
@@ -136,13 +141,17 @@ local function APL()
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.BestialWrathBuff) and Player:BuffP(S.AspectoftheWildBuff)) then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
-    -- barbed_shot,if=full_recharge_time<gcd.max|pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains<=gcd.max
-    if S.BarbedShot:IsCastableP() and (S.BarbedShot:FullRechargeTimeP() < Player:GCD() or Pet:BuffP(S.FrenzyBuff) and Pet:BuffRemainsP(S.FrenzyBuff) <= Player:GCD()) then
+    -- barbed_shot,if=pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains<=gcd.max
+    if S.BarbedShot:IsCastableP() and (Pet:BuffP(S.FrenzyBuff) and Pet:BuffRemainsP(S.FrenzyBuff) <= Player:GCD()) then
       if HR.Cast(S.BarbedShot) then return ""; end
     end
-    -- a_murder_of_crows
-    if S.AMurderofCrows:IsCastableP() then
+    -- a_murder_of_crows,if=active_enemies=1
+    if S.AMurderofCrows:IsCastableP() and (Cache.EnemiesCount[40] == 1) then
       if HR.Cast(S.AMurderofCrows) then return ""; end
+    end
+    -- barbed_shot,if=full_recharge_time<gcd.max&cooldown.bestial_wrath.remains
+    if S.BarbedShot:IsCastableP() and (S.BarbedShot:FullRechargeTimeP() < Player:GCD() and bool(S.BestialWrath:CooldownRemainsP())) then
+      if HR.Cast(S.BarbedShot) then return ""; end
     end
     -- spitting_cobra
     if S.SpittingCobra:IsCastableP() then
@@ -156,21 +165,37 @@ local function APL()
     if S.AspectoftheWild:IsCastableP() then
       if HR.Cast(S.AspectoftheWild) then return ""; end
     end
+    -- multishot,if=spell_targets>2&gcd.max-pet.cat.buff.beast_cleave.remains>0.25
+    if S.Multishot:IsCastableP() and (Cache.EnemiesCount[40] > 2 and Player:GCD() - Pet:BuffRemainsP(S.BeastCleaveBuff) > 0.25) then
+      if HR.Cast(S.Multishot) then return ""; end
+    end
     -- bestial_wrath,if=!buff.bestial_wrath.up
     if S.BestialWrath:IsCastableP() and (not Player:BuffP(S.BestialWrathBuff)) then
       if HR.Cast(S.BestialWrath) then return ""; end
     end
-    -- multishot,if=spell_targets>2&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)
-    if S.Multishot:IsCastableP() and (Cache.EnemiesCount[40] > 2 and (Pet:BuffRemainsP(S.BeastCleaveBuff) < Player:GCD() or Pet:BuffDownP(S.BeastCleaveBuff))) then
+    -- barrage,if=active_enemies>1
+    if S.Barrage:IsCastableP() and (Cache.EnemiesCount[40] > 1) then
+      if HR.Cast(S.Barrage) then return ""; end
+    end
+    -- chimaera_shot,if=spell_targets>1
+    if S.ChimaeraShot:IsCastableP() and (Cache.EnemiesCount[40] > 1) then
+      if HR.Cast(S.ChimaeraShot) then return ""; end
+    end
+    -- multishot,if=spell_targets>1&gcd.max-pet.cat.buff.beast_cleave.remains>0.25
+    if S.Multishot:IsCastableP() and (Cache.EnemiesCount[40] > 1 and Player:GCD() - Pet:BuffRemainsP(S.BeastCleaveBuff) > 0.25) then
       if HR.Cast(S.Multishot) then return ""; end
+    end
+    -- kill_command
+    if S.KillCommand:IsCastableP() then
+      if HR.Cast(S.KillCommand) then return ""; end
     end
     -- chimaera_shot
     if S.ChimaeraShot:IsCastableP() then
       if HR.Cast(S.ChimaeraShot) then return ""; end
     end
-    -- kill_command
-    if S.KillCommand:IsCastableP() then
-      if HR.Cast(S.KillCommand) then return ""; end
+    -- a_murder_of_crows
+    if S.AMurderofCrows:IsCastableP() then
+      if HR.Cast(S.AMurderofCrows) then return ""; end
     end
     -- dire_beast
     if S.DireBeast:IsCastableP() then
@@ -180,13 +205,9 @@ local function APL()
     if S.BarbedShot:IsCastableP() and (Pet:BuffDownP(S.FrenzyBuff) and S.BarbedShot:ChargesFractionalP() > 1.8 or Target:TimeToDie() < 9) then
       if HR.Cast(S.BarbedShot) then return ""; end
     end
-    -- barrage,if=active_enemies>1
-    if S.Barrage:IsCastableP() and (Cache.EnemiesCount[40] > 1) then
+    -- barrage
+    if S.Barrage:IsCastableP() then
       if HR.Cast(S.Barrage) then return ""; end
-    end
-    -- multishot,if=spell_targets>1&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)
-    if S.Multishot:IsCastableP() and (Cache.EnemiesCount[40] > 1 and (Pet:BuffRemainsP(S.BeastCleaveBuff) < Player:GCD() or Pet:BuffDownP(S.BeastCleaveBuff))) then
-      if HR.Cast(S.Multishot) then return ""; end
     end
     -- cobra_shot,if=(active_enemies<2|cooldown.kill_command.remains>focus.time_to_max)&(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd)&cooldown.kill_command.remains>1
     if S.CobraShot:IsCastableP() and ((Cache.EnemiesCount[40] < 2 or S.KillCommand:CooldownRemainsP() > Player:FocusTimeToMaxPredicted()) and (Player:Focus() - S.CobraShot:Cost() + Player:FocusRegen() * (S.KillCommand:CooldownRemainsP() - 1) > S.KillCommand:Cost() or S.KillCommand:CooldownRemainsP() > 1 + Player:GCD()) and S.KillCommand:CooldownRemainsP() > 1) then

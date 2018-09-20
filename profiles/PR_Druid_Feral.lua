@@ -53,8 +53,6 @@ Spell.Druid.Feral = {
   Rip                                   = Spell(1079),
   ShadowmeldBuff                        = Spell(58984),
   FerociousBite                         = Spell(22568),
-  ApexPredatorBuff                      = Spell(252752),
-  MomentofClarity                       = Spell(236068),
   SavageRoar                            = Spell(52610),
   PoolResource                          = Spell(9999000010),
   SavageRoarBuff                        = Spell(52610),
@@ -70,9 +68,7 @@ local S = Spell.Druid.Feral;
 -- Items
 if not Item.Druid then Item.Druid = {} end
 Item.Druid.Feral = {
-  BattlePotionofAgility            = Item(163223),
-  AiluroPouncers                   = Item(137024),
-  LuffaWrappings                   = Item(137056)
+  BattlePotionofAgility            = Item(163223)
 };
 local I = Item.Druid.Feral;
 
@@ -268,14 +264,6 @@ local function APL()
     if S.Regrowth:IsCastableP() and (Player:ComboPoints() == 5 and Player:BuffP(S.PredatorySwiftnessBuff) and S.Bloodtalons:IsAvailable() and Player:BuffDownP(S.BloodtalonsBuff) and (not Player:BuffP(S.IncarnationBuff) or Target:DebuffRemainsP(S.RipDebuff) < 8)) then
       if HR.Cast(S.Regrowth) then return ""; end
     end
-    -- regrowth,if=combo_points>3&talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.apex_predator.up&buff.incarnation.down
-    if S.Regrowth:IsCastableP() and (Player:ComboPoints() > 3 and S.Bloodtalons:IsAvailable() and Player:BuffP(S.PredatorySwiftnessBuff) and Player:BuffP(S.ApexPredatorBuff) and Player:BuffDownP(S.IncarnationBuff)) then
-      if HR.Cast(S.Regrowth) then return ""; end
-    end
-    -- ferocious_bite,if=buff.apex_predator.up&((combo_points>4&(buff.incarnation.up|talent.moment_of_clarity.enabled))|(talent.bloodtalons.enabled&buff.bloodtalons.up&combo_points>3))
-    if S.FerociousBite:IsCastableP() and (Player:BuffP(S.ApexPredatorBuff) and ((Player:ComboPoints() > 4 and (Player:BuffP(S.IncarnationBuff) or S.MomentofClarity:IsAvailable())) or (S.Bloodtalons:IsAvailable() and Player:BuffP(S.BloodtalonsBuff) and Player:ComboPoints() > 3))) then
-      if HR.Cast(S.FerociousBite) then return ""; end
-    end
     -- run_action_list,name=st_finishers,if=combo_points>4
     if (Player:ComboPoints() > 4) then
       return StFinishers();
@@ -323,8 +311,8 @@ local function APL()
     if S.Regrowth:IsCastableP() and (S.Bloodtalons:IsAvailable() and Player:BuffP(S.PredatorySwiftnessBuff) and Player:BuffDownP(S.BloodtalonsBuff) and Player:ComboPoints() == 4 and Target:DebuffRemainsP(S.RakeDebuff) < 4) then
       if HR.Cast(S.Regrowth) then return ""; end
     end
-    -- regrowth,if=equipped.ailuro_pouncers&talent.bloodtalons.enabled&(buff.predatory_swiftness.stack>2|(buff.predatory_swiftness.stack>1&dot.rake.remains<3))&buff.bloodtalons.down
-    if S.Regrowth:IsCastableP() and (I.AiluroPouncers:IsEquipped() and S.Bloodtalons:IsAvailable() and (Player:BuffStackP(S.PredatorySwiftnessBuff) > 2 or (Player:BuffStackP(S.PredatorySwiftnessBuff) > 1 and Target:DebuffRemainsP(S.RakeDebuff) < 3)) and Player:BuffDownP(S.BloodtalonsBuff)) then
+    -- regrowth,if=talent.bloodtalons.enabled&buff.bloodtalons.down&buff.predatory_swiftness.up&talent.lunar_inspiration.enabled&dot.rake.remains<1
+    if S.Regrowth:IsCastableP() and (S.Bloodtalons:IsAvailable() and Player:BuffDownP(S.BloodtalonsBuff) and Player:BuffP(S.PredatorySwiftnessBuff) and S.LunarInspiration:IsAvailable() and Target:DebuffRemainsP(S.RakeDebuff) < 1) then
       if HR.Cast(S.Regrowth) then return ""; end
     end
     -- brutal_slash,if=spell_targets.brutal_slash>desired_targets
@@ -334,15 +322,6 @@ local function APL()
     -- pool_resource,for_next=1
     -- thrash_cat,if=refreshable&(spell_targets.thrash_cat>2)
     if S.ThrashCat:IsCastableP() and (Target:DebuffRefreshableCP(S.ThrashCatDebuff) and (Cache.EnemiesCount[8] > 2)) then
-      if S.ThrashCat:IsUsablePPool() then
-        if HR.Cast(S.ThrashCat) then return ""; end
-      else
-        if HR.Cast(S.PoolResource) then return ""; end
-      end
-    end
-    -- pool_resource,for_next=1
-    -- thrash_cat,if=spell_targets.thrash_cat>3&equipped.luffa_wrappings&talent.brutal_slash.enabled
-    if S.ThrashCat:IsCastableP() and (Cache.EnemiesCount[8] > 3 and I.LuffaWrappings:IsEquipped() and S.BrutalSlash:IsAvailable()) then
       if S.ThrashCat:IsUsablePPool() then
         if HR.Cast(S.ThrashCat) then return ""; end
       else
@@ -366,6 +345,10 @@ local function APL()
       else
         if HR.Cast(S.PoolResource) then return ""; end
       end
+    end
+    -- moonfire_cat,if=buff.bloodtalons.up&buff.predatory_swiftness.down&combo_points<5
+    if S.MoonfireCat:IsCastableP() and (Player:BuffP(S.BloodtalonsBuff) and Player:BuffDownP(S.PredatorySwiftnessBuff) and Player:ComboPoints() < 5) then
+      if HR.Cast(S.MoonfireCat) then return ""; end
     end
     -- brutal_slash,if=(buff.tigers_fury.up&(raid_event.adds.in>(1+max_charges-charges_fractional)*recharge_time))
     if S.BrutalSlash:IsCastableP() and ((Player:BuffP(S.TigersFuryBuff) and (10000000000 > (1 + S.BrutalSlash:MaxCharges() - S.BrutalSlash:ChargesFractionalP()) * S.BrutalSlash:RechargeP()))) then

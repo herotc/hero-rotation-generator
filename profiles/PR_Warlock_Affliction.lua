@@ -28,12 +28,14 @@ Spell.Warlock.Affliction = {
   HauntDebuff                           = Spell(48181),
   Haunt                                 = Spell(48181),
   ShadowBolt                            = Spell(232670),
-  Deathbolt                             = Spell(264106),
+  Agony                                 = Spell(980),
+  AgonyDebuff                           = Spell(980),
   SummonDarkglare                       = Spell(205180),
+  Deathbolt                             = Spell(264106),
+  SuddenOnset                           = Spell(),
+  SiphonLife                            = Spell(63106),
   MovementBuff                          = Spell(),
   NightfallBuff                         = Spell(),
-  Agony                                 = Spell(980),
-  SiphonLife                            = Spell(63106),
   Corruption                            = Spell(172),
   AbsoluteCorruption                    = Spell(),
   DrainLife                             = Spell(),
@@ -49,7 +51,6 @@ Spell.Warlock.Affliction = {
   CascadingCalamity                     = Spell(),
   Fireblood                             = Spell(265221),
   BloodFury                             = Spell(20572),
-  AgonyDebuff                           = Spell(980),
   CorruptionDebuff                      = Spell(146739),
   ActiveUasBuff                         = Spell(),
   CreepingDeath                         = Spell(),
@@ -178,6 +179,10 @@ local function APL()
     end
   end
   Fillers = function()
+    -- agony,if=remains<18&cooldown.summon_darkglare.remains>=30+gcd&cooldown.deathbolt.remains<=gcd&!prev_gcd.1.summon_darkglare&!prev_gcd.1.agony&(azerite.sudden_onset.rank>1|azerite.sudden_onset.rank=1&!talent.siphon_life.enabled)
+    if S.Agony:IsCastableP() and (Target:DebuffRemainsP(S.AgonyDebuff) < 18 and S.SummonDarkglare:CooldownRemainsP() >= 30 + Player:GCD() and S.Deathbolt:CooldownRemainsP() <= Player:GCD() and not Player:PrevGCDP(1, S.SummonDarkglare) and not Player:PrevGCDP(1, S.Agony) and (S.SuddenOnset:AzeriteRank() > 1 or S.SuddenOnset:AzeriteRank() == 1 and not S.SiphonLife:IsAvailable())) then
+      if HR.Cast(S.Agony) then return ""; end
+    end
     -- deathbolt,if=cooldown.summon_darkglare.remains>=30+gcd|cooldown.summon_darkglare.remains>140
     if S.Deathbolt:IsCastableP() and (S.SummonDarkglare:CooldownRemainsP() >= 30 + Player:GCD() or S.SummonDarkglare:CooldownRemainsP() > 140) then
       if HR.Cast(S.Deathbolt) then return ""; end
