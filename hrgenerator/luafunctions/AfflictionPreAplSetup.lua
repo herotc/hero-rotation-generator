@@ -20,3 +20,6 @@ local function TimeToShard()
     end
     return 1 / (0.16 / math.sqrt(agony_count) * (agony_count == 1 and 1.15 or 1) * agony_count / S.Agony:TickTime())
 end
+
+S.ShadowBolt:RegisterInFlight()
+S.S.SeedofCorruption:RegisterInFlight()
