@@ -25,13 +25,13 @@ Spell.Mage.Arcane = {
   ArcaneIntellect                       = Spell(1459),
   SummonArcaneFamiliarBuff              = Spell(210126),
   SummonArcaneFamiliar                  = Spell(205022),
+  BrainStormBuff                        = Spell(273330),
   BrainStorm                            = Spell(273326),
   RuneofPowerBuff                       = Spell(116014),
   RuneofPower                           = Spell(116011),
   MirrorImage                           = Spell(55342),
   Evocation                             = Spell(12051),
   ArcaneBlast                           = Spell(30451),
-  BrainStormBuff                        = Spell(),
   ArcanePowerBuff                       = Spell(12042),
   ArcanePower                           = Spell(12042),
   ChargedUp                             = Spell(205032),
@@ -85,6 +85,7 @@ local Settings = {
 local VarBurnPhase = 0;
 local VarBurnPhaseStart = 0;
 local VarBurnPhaseDuration = 0;
+local VarBurnPhaseEnd = 0;
 local VarConserveMana = 0;
 local VarBsRotation = 0;
 local VarTotalBurns = 0;
@@ -112,8 +113,6 @@ end
 local function ArcaneMissilesProcMax ()
   return 3
 end
-
-local VarBurnPhaseEnd = 0
 
 local function StartBurnPhase ()
   VarBurnPhase = 1

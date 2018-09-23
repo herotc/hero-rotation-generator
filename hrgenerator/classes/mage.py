@@ -80,7 +80,8 @@ SPELL_INFO = {
             'preheat':                      {SPELL:     273331,
                                              DEBUFF:    273333}, 
             'arcane_pummeling':             {SPELL:     270669},  
-            'brain_storm':                  {SPELL:     273326},                                                               
+            'brain_storm':                  {SPELL:     273326,
+                                             BUFF:      273330},                                                               
         },
         ARCANE: {
             'arcane_charge':                {BUFF:      36032},
@@ -265,6 +266,7 @@ def arcane_burn_phase_variables(fun):
             self.apl.context.add_variable(Variable(None, 'burn_phase'))
             self.apl.context.add_variable(Variable(None, 'burn_phase_start'))
             self.apl.context.add_variable(Variable(None, 'burn_phase_duration'))
+            self.apl.context.add_variable(Variable(None, 'burn_phase_end'))
 
     return set_spec
 
