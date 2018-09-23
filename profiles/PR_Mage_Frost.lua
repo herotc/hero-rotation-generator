@@ -182,7 +182,6 @@ local function APL()
     end
   end
   Cooldowns = function()
-    -- time_warp
     -- icy_veins
     if S.IcyVeins:IsCastableP() and HR.CDsON() then
       if HR.Cast(S.IcyVeins, Settings.Frost.GCDasOffGCD.IcyVeins) then return ""; end

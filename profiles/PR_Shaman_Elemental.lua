@@ -253,7 +253,7 @@ local function APL()
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   if Everyone.TargetIsValid() then
-    -- bloodlust,if=target.health.pct<25|time>0.500
+    -- bloodlust,if=azerite.ancestral_resonance.enabled
     -- potion
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.ProlongedPower) then return ""; end

@@ -345,7 +345,6 @@ local function APL()
   end
   if Everyone.TargetIsValid() then
     -- counterspell,if=target.debuff.casting.react
-    -- time_warp,if=time=0&buff.bloodlust.down
     -- mirror_image,if=buff.combustion.down
     if S.MirrorImage:IsCastableP() and (Player:BuffDownP(S.CombustionBuff)) then
       if HR.Cast(S.MirrorImage) then return ""; end

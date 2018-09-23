@@ -269,8 +269,8 @@ local function APL()
     if (Player:ComboPointsDeficit() <= 1 - num((S.DeeperStratagem:IsAvailable() and Player:BuffP(S.VanishBuff)))) then
       local ShouldReturn = Finish(); if ShouldReturn then return ShouldReturn; end
     end
-    -- shuriken_toss,if=buff.sharpened_blades.stack>=29
-    if S.ShurikenToss:IsCastableP() and (Player:BuffStackP(S.SharpenedBladesBuff) >= 29) then
+    -- shuriken_toss,if=buff.sharpened_blades.stack>=29&(!talent.find_weakness.enabled|debuff.find_weakness.up)
+    if S.ShurikenToss:IsCastableP() and (Player:BuffStackP(S.SharpenedBladesBuff) >= 29 and (not S.FindWeakness:IsAvailable() or Target:DebuffP(S.FindWeaknessDebuff))) then
       if HR.Cast(S.ShurikenToss) then return ""; end
     end
     -- shadowstrike,cycle_targets=1,if=talent.secret_technique.enabled&talent.find_weakness.enabled&debuff.find_weakness.remains<1&spell_targets.shuriken_storm=2&target.time_to_die-remains>6

@@ -23,9 +23,8 @@ if not Spell.Warrior then Spell.Warrior = {} end
 Spell.Warrior.Fury = {
   HeroicLeap                            = Spell(6544),
   Siegebreaker                          = Spell(),
-  RecklessnessBuff                      = Spell(),
-  Recklessness                          = Spell(),
   Rampage                               = Spell(184367),
+  RecklessnessBuff                      = Spell(),
   FrothingBerserker                     = Spell(215571),
   Carnage                               = Spell(202922),
   EnrageBuff                            = Spell(184362),
@@ -40,6 +39,7 @@ Spell.Warrior.Fury = {
   Whirlwind                             = Spell(190411),
   Charge                                = Spell(100),
   FuriousSlashBuff                      = Spell(),
+  Recklessness                          = Spell(),
   FujiedasFuryBuff                      = Spell(207775),
   MeatCleaverBuff                       = Spell(85739),
   BloodFury                             = Spell(20572),
@@ -109,8 +109,8 @@ local function APL()
     end
   end
   SingleTarget = function()
-    -- siegebreaker,if=buff.recklessness.up|cooldown.recklessness.remains>20
-    if S.Siegebreaker:IsCastableP() and (Player:BuffP(S.RecklessnessBuff) or S.Recklessness:CooldownRemainsP() > 20) then
+    -- siegebreaker
+    if S.Siegebreaker:IsCastableP() then
       if HR.Cast(S.Siegebreaker) then return ""; end
     end
     -- rampage,if=buff.recklessness.up|(talent.frothing_berserker.enabled|talent.carnage.enabled&(buff.enrage.remains<gcd|rage>90)|talent.massacre.enabled&(buff.enrage.remains<gcd|rage>90))
@@ -137,8 +137,8 @@ local function APL()
     if S.Bladestorm:IsCastableP() and (Player:PrevGCDP(1, S.Rampage) and (Target:DebuffP(S.SiegebreakerDebuff) or not S.Siegebreaker:IsAvailable())) then
       if HR.Cast(S.Bladestorm) then return ""; end
     end
-    -- dragon_roar,if=buff.enrage.up&(debuff.siegebreaker.up|!talent.siegebreaker.enabled)
-    if S.DragonRoar:IsCastableP() and (Player:BuffP(S.EnrageBuff) and (Target:DebuffP(S.SiegebreakerDebuff) or not S.Siegebreaker:IsAvailable())) then
+    -- dragon_roar,if=buff.enrage.up
+    if S.DragonRoar:IsCastableP() and (Player:BuffP(S.EnrageBuff)) then
       if HR.Cast(S.DragonRoar) then return ""; end
     end
     -- raging_blow,if=talent.carnage.enabled|(talent.massacre.enabled&rage<80)|(talent.frothing_berserker.enabled&rage<90)

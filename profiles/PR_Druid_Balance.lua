@@ -36,11 +36,11 @@ Spell.Druid.Balance = {
   LightsJudgment                        = Spell(255647),
   Fireblood                             = Spell(265221),
   AncestralCall                         = Spell(274738),
+  Incarnation                           = Spell(102560),
+  CelestialAlignment                    = Spell(194223),
   WarriorofElune                        = Spell(202425),
   Innervate                             = Spell(29166),
   LivelySpirit                          = Spell(),
-  Incarnation                           = Spell(102560),
-  CelestialAlignment                    = Spell(194223),
   LivelySpiritBuff                      = Spell(),
   FuryofElune                           = Spell(202770),
   ForceofNature                         = Spell(205636),
@@ -68,7 +68,11 @@ local S = Spell.Druid.Balance;
 -- Items
 if not Item.Druid then Item.Druid = {} end
 Item.Druid.Balance = {
-  ProlongedPower                   = Item(142117)
+  ProlongedPower                   = Item(142117),
+  AzurethosSingedPlumage           = Item(),
+  Item161377                       = Item(161377),
+  DreadGladiatorsBadge             = Item(),
+  Item161902                       = Item(161902)
 };
 local I = Item.Druid.Balance;
 
@@ -198,6 +202,14 @@ local function APL()
     -- ancestral_call,if=buff.celestial_alignment.up|buff.incarnation.up
     if S.AncestralCall:IsCastableP() and HR.CDsON() and (Player:BuffP(S.CelestialAlignmentBuff) or Player:BuffP(S.IncarnationBuff)) then
       if HR.Cast(S.AncestralCall, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
+    end
+    -- use_item,name=azurethos_singed_plumage,if=equipped.161377&(cooldown.incarnation.remains>30|cooldown.celestial_alignment.remains>30)
+    if I.AzurethosSingedPlumage:IsReady() and (I.Item161377:IsEquipped() and (S.Incarnation:CooldownRemainsP() > 30 or S.CelestialAlignment:CooldownRemainsP() > 30)) then
+      if HR.CastSuggested(I.AzurethosSingedPlumage) then return ""; end
+    end
+    -- use_item,name=dread_gladiators_badge,if=equipped.161902&(cooldown.incarnation.remains>30|cooldown.celestial_alignment.remains>30)
+    if I.DreadGladiatorsBadge:IsReady() and (I.Item161902:IsEquipped() and (S.Incarnation:CooldownRemainsP() > 30 or S.CelestialAlignment:CooldownRemainsP() > 30)) then
+      if HR.CastSuggested(I.DreadGladiatorsBadge) then return ""; end
     end
     -- use_items
     -- warrior_of_elune

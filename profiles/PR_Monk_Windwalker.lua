@@ -34,6 +34,7 @@ Spell.Monk.Windwalker = {
   RushingJadeWindBuff                   = Spell(116847),
   RisingSunKick                         = Spell(107428),
   SpinningCraneKick                     = Spell(107270),
+  HitCombo                              = Spell(),
   FlyingSerpentKick                     = Spell(),
   BokProcBuff                           = Spell(),
   BlackoutKick                          = Spell(100784),
@@ -123,20 +124,20 @@ local function APL()
     if S.EnergizingElixir:IsCastableP() and HR.CDsON() and (not Player:PrevGCDP(1, S.TigerPalm) and Player:Chi() <= 1 and Player:EnergyPredicted() < 50) then
       if HR.Cast(S.EnergizingElixir, Settings.Windwalker.OffGCDasOffGCD.EnergizingElixir) then return ""; end
     end
-    -- fists_of_fury,if=energy.time_to_max>2.5
-    if S.FistsofFury:IsCastableP() and (Player:EnergyTimeToMaxPredicted() > 2.5) then
+    -- fists_of_fury,if=energy.time_to_max>3
+    if S.FistsofFury:IsCastableP() and (Player:EnergyTimeToMaxPredicted() > 3) then
       if HR.Cast(S.FistsofFury) then return ""; end
     end
     -- rushing_jade_wind,if=buff.rushing_jade_wind.down&energy.time_to_max>1
     if S.RushingJadeWind:IsCastableP() and (Player:BuffDownP(S.RushingJadeWindBuff) and Player:EnergyTimeToMaxPredicted() > 1) then
       if HR.Cast(S.RushingJadeWind) then return ""; end
     end
-    -- rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=(talent.whirling_dragon_punch.enabled&cooldown.whirling_dragon_punch.remains<gcd)&cooldown.fists_of_fury.remains>3
-    if S.RisingSunKick:IsCastableP() and (bool(min:debuff.mark_of_the_crane.remains)) and ((S.WhirlingDragonPunch:IsAvailable() and S.WhirlingDragonPunch:CooldownRemainsP() < Player:GCD()) and S.FistsofFury:CooldownRemainsP() > 3) then
+    -- rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=(talent.whirling_dragon_punch.enabled&cooldown.whirling_dragon_punch.remains<5)&cooldown.fists_of_fury.remains>3
+    if S.RisingSunKick:IsCastableP() and (bool(min:debuff.mark_of_the_crane.remains)) and ((S.WhirlingDragonPunch:IsAvailable() and S.WhirlingDragonPunch:CooldownRemainsP() < 5) and S.FistsofFury:CooldownRemainsP() > 3) then
       if HR.Cast(S.RisingSunKick) then return ""; end
     end
-    -- spinning_crane_kick,if=!prev_gcd.1.spinning_crane_kick&(chi>2|cooldown.fists_of_fury.remains>4)
-    if S.SpinningCraneKick:IsCastableP() and (not Player:PrevGCDP(1, S.SpinningCraneKick) and (Player:Chi() > 2 or S.FistsofFury:CooldownRemainsP() > 4)) then
+    -- spinning_crane_kick,if=!prev_gcd.1.spinning_crane_kick&(chi>3|cooldown.fists_of_fury.remains>6)&(chi>=5|cooldown.fists_of_fury.remains>2)
+    if S.SpinningCraneKick:IsCastableP() and (not Player:PrevGCDP(1, S.SpinningCraneKick) and (Player:Chi() > 3 or S.FistsofFury:CooldownRemainsP() > 6) and (Player:Chi() >= 5 or S.FistsofFury:CooldownRemainsP() > 2)) then
       if HR.Cast(S.SpinningCraneKick) then return ""; end
     end
     -- chi_burst,if=chi<=3
@@ -147,8 +148,8 @@ local function APL()
     if S.FistoftheWhiteTiger:IsCastableP() and (Player:ChiMax() - Player:Chi() >= 3 and (Player:EnergyPredicted() > 46 or Player:BuffDownP(S.RushingJadeWindBuff))) then
       if HR.Cast(S.FistoftheWhiteTiger) then return ""; end
     end
-    -- tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&chi.max-chi>=2&(energy>56|buff.rushing_jade_wind.down)
-    if S.TigerPalm:IsCastableP() and (bool(min:debuff.mark_of_the_crane.remains)) and (not Player:PrevGCDP(1, S.TigerPalm) and Player:ChiMax() - Player:Chi() >= 2 and (Player:EnergyPredicted() > 56 or Player:BuffDownP(S.RushingJadeWindBuff))) then
+    -- tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=2&(energy>56|buff.rushing_jade_wind.down)&(!talent.hit_combo.enabled|!prev_gcd.1.tiger_palm)
+    if S.TigerPalm:IsCastableP() and (bool(min:debuff.mark_of_the_crane.remains)) and (Player:ChiMax() - Player:Chi() >= 2 and (Player:EnergyPredicted() > 56 or Player:BuffDownP(S.RushingJadeWindBuff)) and (not S.HitCombo:IsAvailable() or not Player:PrevGCDP(1, S.TigerPalm))) then
       if HR.Cast(S.TigerPalm) then return ""; end
     end
     -- chi_wave
@@ -159,8 +160,8 @@ local function APL()
     if S.FlyingSerpentKick:IsCastableP() and (Player:BuffDownP(S.BokProcBuff)) then
       if HR.Cast(S.FlyingSerpentKick) then return ""; end
     end
-    -- blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick
-    if S.BlackoutKick:IsCastableP() and (bool(min:debuff.mark_of_the_crane.remains)) and (not Player:PrevGCDP(1, S.BlackoutKick)) then
+    -- blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&(buff.bok_proc.up|(talent.hit_combo.enabled&prev_gcd.1.tiger_palm&chi<4))
+    if S.BlackoutKick:IsCastableP() and (bool(min:debuff.mark_of_the_crane.remains)) and (not Player:PrevGCDP(1, S.BlackoutKick) and (Player:BuffP(S.BokProcBuff) or (S.HitCombo:IsAvailable() and Player:PrevGCDP(1, S.TigerPalm) and Player:Chi() < 4))) then
       if HR.Cast(S.BlackoutKick) then return ""; end
     end
   end
@@ -211,12 +212,12 @@ local function APL()
     end
   end
   Serenity = function()
-    -- rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains
-    if S.RisingSunKick:IsCastableP() and (bool(min:debuff.mark_of_the_crane.remains)) then
+    -- rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies<3|prev_gcd.1.spinning_crane_kick
+    if S.RisingSunKick:IsCastableP() and (bool(min:debuff.mark_of_the_crane.remains)) and (Cache.EnemiesCount[8] < 3 or Player:PrevGCDP(1, S.SpinningCraneKick)) then
       if HR.Cast(S.RisingSunKick) then return ""; end
     end
-    -- fists_of_fury,if=(buff.bloodlust.up&prev_gcd.1.rising_sun_kick&!azerite.swift_roundhouse.enabled)|buff.serenity.remains<1|active_enemies>1
-    if S.FistsofFury:IsCastableP() and ((Player:HasHeroism() and Player:PrevGCDP(1, S.RisingSunKick) and not S.SwiftRoundhouse:AzeriteEnabled()) or Player:BuffRemainsP(S.SerenityBuff) < 1 or Cache.EnemiesCount[8] > 1) then
+    -- fists_of_fury,if=(buff.bloodlust.up&prev_gcd.1.rising_sun_kick&!azerite.swift_roundhouse.enabled)|buff.serenity.remains<1|(active_enemies>1&active_enemies<5)
+    if S.FistsofFury:IsCastableP() and ((Player:HasHeroism() and Player:PrevGCDP(1, S.RisingSunKick) and not S.SwiftRoundhouse:AzeriteEnabled()) or Player:BuffRemainsP(S.SerenityBuff) < 1 or (Cache.EnemiesCount[8] > 1 and Cache.EnemiesCount[8] < 5)) then
       if HR.Cast(S.FistsofFury) then return ""; end
     end
     -- spinning_crane_kick,if=!prev_gcd.1.spinning_crane_kick&(active_enemies>=3|(active_enemies=2&prev_gcd.1.blackout_kick))
@@ -237,6 +238,14 @@ local function APL()
     if S.WhirlingDragonPunch:IsCastableP() then
       if HR.Cast(S.WhirlingDragonPunch) then return ""; end
     end
+    -- rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=chi>=5
+    if S.RisingSunKick:IsCastableP() and (bool(min:debuff.mark_of_the_crane.remains)) and (Player:Chi() >= 5) then
+      if HR.Cast(S.RisingSunKick) then return ""; end
+    end
+    -- fists_of_fury,if=energy.time_to_max>3
+    if S.FistsofFury:IsCastableP() and (Player:EnergyTimeToMaxPredicted() > 3) then
+      if HR.Cast(S.FistsofFury) then return ""; end
+    end
     -- rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains
     if S.RisingSunKick:IsCastableP() and (bool(min:debuff.mark_of_the_crane.remains)) then
       if HR.Cast(S.RisingSunKick) then return ""; end
@@ -244,10 +253,6 @@ local function APL()
     -- rushing_jade_wind,if=buff.rushing_jade_wind.down&energy.time_to_max>1&active_enemies>1
     if S.RushingJadeWind:IsCastableP() and (Player:BuffDownP(S.RushingJadeWindBuff) and Player:EnergyTimeToMaxPredicted() > 1 and Cache.EnemiesCount[8] > 1) then
       if HR.Cast(S.RushingJadeWind) then return ""; end
-    end
-    -- fists_of_fury,if=energy.time_to_max>2.5
-    if S.FistsofFury:IsCastableP() and (Player:EnergyTimeToMaxPredicted() > 2.5) then
-      if HR.Cast(S.FistsofFury) then return ""; end
     end
     -- fist_of_the_white_tiger,if=chi<=2&(buff.rushing_jade_wind.down|energy>46)
     if S.FistoftheWhiteTiger:IsCastableP() and (Player:Chi() <= 2 and (Player:BuffDownP(S.RushingJadeWindBuff) or Player:EnergyPredicted() > 46)) then
@@ -257,8 +262,8 @@ local function APL()
     if S.EnergizingElixir:IsCastableP() and HR.CDsON() and (Player:Chi() <= 3 and Player:EnergyPredicted() < 50) then
       if HR.Cast(S.EnergizingElixir, Settings.Windwalker.OffGCDasOffGCD.EnergizingElixir) then return ""; end
     end
-    -- blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&(cooldown.rising_sun_kick.remains>2|chi>=3)&(cooldown.fists_of_fury.remains>2|chi>=4|(chi=2&prev_gcd.1.tiger_palm))&buff.swift_roundhouse.stack<2
-    if S.BlackoutKick:IsCastableP() and (bool(min:debuff.mark_of_the_crane.remains)) and (not Player:PrevGCDP(1, S.BlackoutKick) and (S.RisingSunKick:CooldownRemainsP() > 2 or Player:Chi() >= 3) and (S.FistsofFury:CooldownRemainsP() > 2 or Player:Chi() >= 4 or (Player:Chi() == 2 and Player:PrevGCDP(1, S.TigerPalm))) and Player:BuffStackP(S.SwiftRoundhouseBuff) < 2) then
+    -- blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&(cooldown.rising_sun_kick.remains>3|chi>=3)&(cooldown.fists_of_fury.remains>4|chi>=4|(chi=2&prev_gcd.1.tiger_palm))&buff.swift_roundhouse.stack<2
+    if S.BlackoutKick:IsCastableP() and (bool(min:debuff.mark_of_the_crane.remains)) and (not Player:PrevGCDP(1, S.BlackoutKick) and (S.RisingSunKick:CooldownRemainsP() > 3 or Player:Chi() >= 3) and (S.FistsofFury:CooldownRemainsP() > 4 or Player:Chi() >= 4 or (Player:Chi() == 2 and Player:PrevGCDP(1, S.TigerPalm))) and Player:BuffStackP(S.SwiftRoundhouseBuff) < 2) then
       if HR.Cast(S.BlackoutKick) then return ""; end
     end
     -- chi_wave
@@ -273,8 +278,8 @@ local function APL()
     if S.TigerPalm:IsCastableP() and (bool(min:debuff.mark_of_the_crane.remains)) and (not Player:PrevGCDP(1, S.TigerPalm) and Player:ChiMax() - Player:Chi() >= 2 and (Player:BuffDownP(S.RushingJadeWindBuff) or Player:EnergyPredicted() > 56)) then
       if HR.Cast(S.TigerPalm) then return ""; end
     end
-    -- flying_serpent_kick,if=prev_gcd.1.blackout_kick&chi>1&buff.swift_roundhouse.stack<2,interrupt=1
-    if S.FlyingSerpentKick:IsCastableP() and (Player:PrevGCDP(1, S.BlackoutKick) and Player:Chi() > 1 and Player:BuffStackP(S.SwiftRoundhouseBuff) < 2) then
+    -- flying_serpent_kick,if=prev_gcd.1.blackout_kick&chi>3&buff.swift_roundhouse.stack<2,interrupt=1
+    if S.FlyingSerpentKick:IsCastableP() and (Player:PrevGCDP(1, S.BlackoutKick) and Player:Chi() > 3 and Player:BuffStackP(S.SwiftRoundhouseBuff) < 2) then
       if HR.Cast(S.FlyingSerpentKick) then return ""; end
     end
   end

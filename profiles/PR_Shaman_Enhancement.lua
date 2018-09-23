@@ -175,7 +175,7 @@ local function APL()
     end
   end
   Cds = function()
-    -- bloodlust,if=target.health.pct<25|time>0.500
+    -- bloodlust,if=azerite.ancestral_resonance.enabled
     -- berserking,if=(talent.ascendance.enabled&buff.ascendance.up)|(talent.elemental_spirits.enabled&feral_spirit.remains>5)|(!talent.ascendance.enabled&!talent.elemental_spirits.enabled)
     if S.Berserking:IsCastableP() and HR.CDsON() and ((S.Ascendance:IsAvailable() and Player:BuffP(S.AscendanceBuff)) or (S.ElementalSpirits:IsAvailable() and feral_spirit.remains > 5) or (not S.Ascendance:IsAvailable() and not S.ElementalSpirits:IsAvailable())) then
       if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
