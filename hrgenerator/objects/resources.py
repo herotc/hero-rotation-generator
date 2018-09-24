@@ -41,7 +41,7 @@ class Resource(BuildExpression):
         """
         Return the arguments for the expression {resource}.pct.
         """
-        self.method = Method(f'{self.simc.print_lua()}Percentage')
+        self.method = Method(f'{self.simc.print_lua()}PercentageP')
 
     def regen(self):
         """
