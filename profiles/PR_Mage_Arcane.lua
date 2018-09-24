@@ -80,10 +80,6 @@ local Settings = {
 };
 
 -- Variables
-local VarBurnPhase = 0;
-local VarBurnPhaseStart = 0;
-local VarBurnPhaseDuration = 0;
-local VarBurnPhaseEnd = 0;
 local VarConserveMana = 0;
 local VarTotalBurns = 0;
 local VarAverageBurnLength = 0;
@@ -103,6 +99,48 @@ local function bool(val)
   return val ~= 0
 end
 
+local function InitVars()
+  VarConserveMana = 0;
+  VarTotalBurns = 0;
+  VarAverageBurnLength = 0;
+end
+
+Player.ArcaneBurnPhase = {}
+local BurnPhase = Player.ArcaneBurnPhase
+
+function BurnPhase:Reset()
+  self.state = false
+  self.last_start = HL.GetTime()
+  self.last_stop = HL.GetTime()
+end
+BurnPhase:Reset()
+
+function BurnPhase:Start()
+  self.state = true
+  self.last_start = HL.GetTime()
+end
+
+function BurnPhase:Stop()
+  self.state = false
+  self.last_stop = HL.GetTime()
+end
+
+function BurnPhase:On()
+  return self.state
+end
+
+function BurnPhase:Duration()
+  return self.state and (HL.GetTime() - self.last_start) or 0
+end
+
+HL:RegisterForEvent(function()
+  InitVars()
+end, "PLAYER_REGEN_ENABLED")
+
+HL:RegisterForEvent(function()
+  BurnPhase:Reset()
+end, "PLAYER_REGEN_DISABLED")
+
 local function PresenceOfMindMax ()
   return 2
 end
@@ -111,20 +149,8 @@ local function ArcaneMissilesProcMax ()
   return 3
 end
 
-local function StartBurnPhase ()
-  VarBurnPhase = 1
-  VarBurnPhaseStart = HL.GetTime()
-end
-
-local function StopBurnPhase ()
-  VarBurnPhase = 0
-  VarBurnPhaseEnd = HL.GetTime()
-  VarBurnPhaseDuration = VarBurnPhaseEnd - VarBurnPhaseStart
-  VarAverageBurnLength = (VarAverageBurnLength * VarTotalBurns - VarAverageBurnLength + (VarBurnPhaseDuration)) / VarTotalBurns
-end
-
 function Player:ArcaneChargesP()
-    return math.min(self:ArcaneCharges() + num(self:IsCasting(S.ArcaneBlast)),4)
+  return math.min(self:ArcaneCharges() + num(self:IsCasting(S.ArcaneBlast)),4)
 end
 --- ======= ACTION LISTS =======
 local function APL()
@@ -163,16 +189,16 @@ local function APL()
   end
   Burn = function()
     -- variable,name=total_burns,op=add,value=1,if=!burn_phase
-    if (not bool(VarBurnPhase)) then
+    if (not BurnPhase:On()) then
       VarTotalBurns = VarTotalBurns + 1
     end
     -- start_burn_phase,if=!burn_phase
-    if (not bool(VarBurnPhase)) then
-      StartBurnPhase()
+    if (not BurnPhase:On()) then
+      BurnPhase:Start()
     end
     -- stop_burn_phase,if=burn_phase&prev_gcd.1.evocation&target.time_to_die>variable.average_burn_length&burn_phase_duration>0
-    if (bool(VarBurnPhase) and Player:PrevGCDP(1, S.Evocation) and Target:TimeToDie() > VarAverageBurnLength and VarBurnPhaseDuration > 0) then
-      StopBurnPhase()
+    if (BurnPhase:On() and Player:PrevGCDP(1, S.Evocation) and Target:TimeToDie() > VarAverageBurnLength and BurnPhase:Duration() > 0) then
+      BurnPhase:Stop()
     end
     -- charged_up,if=buff.arcane_charge.stack<=1
     if S.ChargedUp:IsCastableP() and (Player:ArcaneChargesP() <= 1) then
@@ -249,7 +275,7 @@ local function APL()
     end
     -- variable,name=average_burn_length,op=set,value=(variable.average_burn_length*variable.total_burns-variable.average_burn_length+(burn_phase_duration))%variable.total_burns
     if (true) then
-      VarAverageBurnLength = (VarAverageBurnLength * VarTotalBurns - VarAverageBurnLength + (VarBurnPhaseDuration)) / VarTotalBurns
+      VarAverageBurnLength = (VarAverageBurnLength * VarTotalBurns - VarAverageBurnLength + (BurnPhase:Duration())) / VarTotalBurns
     end
     -- evocation,interrupt_if=mana.pct>=85,interrupt_immediate=1
     if S.Evocation:IsCastableP() then
@@ -343,7 +369,7 @@ local function APL()
   if Everyone.TargetIsValid() then
     -- counterspell,if=target.debuff.casting.react
     -- call_action_list,name=burn,if=burn_phase|target.time_to_die<variable.average_burn_length
-    if HR.CDsON() and (bool(VarBurnPhase) or Target:TimeToDie() < VarAverageBurnLength) then
+    if HR.CDsON() and (BurnPhase:On() or Target:TimeToDie() < VarAverageBurnLength) then
       local ShouldReturn = Burn(); if ShouldReturn then return ShouldReturn; end
     end
     -- call_action_list,name=burn,if=(cooldown.arcane_power.remains=0&cooldown.evocation.remains<=variable.average_burn_length&(buff.arcane_charge.stack=buff.arcane_charge.max_stack|(talent.charged_up.enabled&cooldown.charged_up.remains=0)))
@@ -351,7 +377,7 @@ local function APL()
       local ShouldReturn = Burn(); if ShouldReturn then return ShouldReturn; end
     end
     -- call_action_list,name=conserve,if=!burn_phase
-    if (not bool(VarBurnPhase)) then
+    if (not BurnPhase:On()) then
       local ShouldReturn = Conserve(); if ShouldReturn then return ShouldReturn; end
     end
     -- call_action_list,name=movement

@@ -238,9 +238,7 @@ CLASS_FUNCTIONS = {
         COMMON: [
         ],
         ARCANE: [
-            'MaxStack',
-            'BurnPhase',
-            'ArcaneChargesP',
+            'ArcanePreAplSetup',
         ],
         FIRE: [
             'FirePreAplSetup',
@@ -282,13 +280,13 @@ def arcane_burn_phase(fun):
         """
         if self.execution == 'start_burn_phase':
             type_, object_ = 'start_burn_phase', LuaCastable(
-                cast_method=Method('StartBurnPhase'),
+                cast_method=Method('BurnPhase:Start'),
                 cast_args=[],
                 cast_template='{}'
             )
         elif self.execution == 'stop_burn_phase':
             type_, object_ = 'stop_burn_phase', LuaCastable(
-                cast_method=Method('StopBurnPhase'),
+                cast_method=Method('BurnPhase:Stop'),
                 cast_args=[],
                 cast_template='{}'
             )
@@ -303,15 +301,19 @@ def arcane_burn_expressions(fun):
     """
     Handle burn phase specific variables.
     """
-    from ..objects.executions import Variable
+    from ..objects.executions import Literal
 
     def expression(self):
         """
         Return the expression of the condition.
         """
-        if self.condition_list[0] in ['burn_phase', 'burn_phase_start',
-                                      'burn_phase_duration']:
-            return Variable(self.parent_action, self.condition_list[0])
+        # if self.condition_list[0] in ['burn_phase', 'burn_phase_start',
+        #                               'burn_phase_duration']:
+        #     return Variable(self.parent_action, self.condition_list[0])
+        if self.condition_list[0] == 'burn_phase':
+            return Literal('BurnPhase:On()', type_=BOOL)
+        elif self.condition_list[0] == 'burn_phase_duration':
+            return Literal('BurnPhase:Duration()')
         return fun(self)
 
     return expression
@@ -441,11 +443,11 @@ def frost_fingers_of_frost_active(fun):
 
 DECORATORS = {
     MAGE: [
-        {
-            'class_name': 'Player',
-            'method': 'set_spec',
-            'decorator': arcane_burn_phase_variables,
-        },
+        # {
+        #     'class_name': 'Player',
+        #     'method': 'set_spec',
+        #     'decorator': arcane_burn_phase_variables,
+        # },
         {
             'class_name': 'Execution',
             'method': 'switch_type',
