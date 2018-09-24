@@ -262,7 +262,7 @@ local function APL()
       if HR.Cast(S.ArcaneBarrage) then return ""; end
     end
     -- arcane_explosion,if=active_enemies>=3
-    if S.ArcaneExplosion:IsCastableP() and (Cache.EnemiesCount[10] >= 3) then
+    if S.ArcaneExplosion:IsReadyP() and (Cache.EnemiesCount[10] >= 3) then
       if HR.Cast(S.ArcaneExplosion) then return ""; end
     end
     -- arcane_missiles,if=buff.clearcasting.react&active_enemies<3&(talent.amplification.enabled|(!talent.overpowered.enabled&azerite.arcane_pummeling.rank>=2)|buff.arcane_power.down),chain=1
@@ -324,7 +324,7 @@ local function APL()
       if HR.Cast(S.Supernova) then return ""; end
     end
     -- arcane_explosion,if=active_enemies>=3&(mana.pct>=variable.conserve_mana|buff.arcane_charge.stack=3)
-    if S.ArcaneExplosion:IsCastableP() and (Cache.EnemiesCount[10] >= 3 and (Player:ManaPercentageP() >= VarConserveMana or Player:ArcaneChargesP() == 3)) then
+    if S.ArcaneExplosion:IsReadyP() and (Cache.EnemiesCount[10] >= 3 and (Player:ManaPercentageP() >= VarConserveMana or Player:ArcaneChargesP() == 3)) then
       if HR.Cast(S.ArcaneExplosion) then return ""; end
     end
     -- arcane_blast
