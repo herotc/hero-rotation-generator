@@ -236,6 +236,10 @@ local function APL()
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   if Everyone.TargetIsValid() then
+    -- stealth
+    if S.Stealth:IsCastableP() then
+      if HR.Cast(S.Stealth) then return ""; end
+    end
     -- variable,name=rtb_reroll,value=rtb_buffs<2&(buff.loaded_dice.up|!buff.grand_melee.up&!buff.ruthless_precision.up)
     if (true) then
       VarRtbReroll = num(rtb_buffs < 2 and (Player:BuffP(S.LoadedDiceBuff) or not Player:BuffP(S.GrandMeleeBuff) and not Player:BuffP(S.RuthlessPrecisionBuff)))

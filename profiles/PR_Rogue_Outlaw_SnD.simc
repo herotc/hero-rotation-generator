@@ -5,7 +5,7 @@ level=120
 race=pandaren
 role=attack
 position=back
-talents=2310032
+talents=2010032
 
 # Default consumables
 potion=battle_potion_of_agility
@@ -33,8 +33,10 @@ actions.precombat+=/slice_and_dice,precombat_seconds=2
 actions.precombat+=/adrenaline_rush,precombat_seconds=1
 
 # Executed every time the actor is available.
+# Restealth if possible (no vulnerable enemies in combat)
+actions=stealth
 # Reroll for 2+ buffs with Loaded Dice up. Otherwise reroll for 2+ or Grand Melee or Ruthless Precision.
-actions=variable,name=rtb_reroll,value=rtb_buffs<2&(buff.loaded_dice.up|!buff.grand_melee.up&!buff.ruthless_precision.up)
+actions+=/variable,name=rtb_reroll,value=rtb_buffs<2&(buff.loaded_dice.up|!buff.grand_melee.up&!buff.ruthless_precision.up)
 # Reroll for 2+ buffs or Ruthless Precision with Deadshot or Ace up your Sleeve.
 actions+=/variable,name=rtb_reroll,op=set,if=azerite.deadshot.enabled|azerite.ace_up_your_sleeve.enabled,value=rtb_buffs<2&(buff.loaded_dice.up|buff.ruthless_precision.remains<=cooldown.between_the_eyes.remains)
 # Always reroll for 2+ buffs with Snake Eyes unless at 3 Ranks, then reroll everything.
@@ -89,11 +91,11 @@ actions.finish+=/dispatch
 # Stealth
 actions.stealth=ambush
 
-head=hood_of_the_slithering_loa,id=159318,bonus_id=4819/1512/4775,azerite_powers=410/30/0/13
-neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
-shoulders=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775,azerite_powers=410/461/0/13
+head=hood_of_the_slithering_loa,id=159318,bonus_id=4819/1512/4775,azerite_powers=410/30/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
+shoulders=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775,azerite_powers=410/461/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=goresplattered_vest,id=159330,bonus_id=4819/1512/4775,azerite_powers=410/22/0/13
+chest=goresplattered_vest,id=159330,bonus_id=4819/1512/4775,azerite_powers=410/22/13
 wrists=sea_dogs_cuffs,id=158305,bonus_id=4779/1512/4786
 hands=gloves_of_corrupted_waters,id=159321,bonus_id=4779/1512/4786
 waist=belt_of_gleaming_determination,id=158306,bonus_id=4779/1512/4786

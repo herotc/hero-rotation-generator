@@ -24,11 +24,11 @@ Spell.Warrior.Arms = {
   Skullsplitter                         = Spell(260643),
   DeadlyCalm                            = Spell(262228),
   DeadlyCalmBuff                        = Spell(262228),
-  Bladestorm                            = Spell(227847),
+  Ravager                               = Spell(152277),
   ColossusSmash                         = Spell(167105),
   Warbreaker                            = Spell(262161),
-  Ravager                               = Spell(152277),
   ColossusSmashDebuff                   = Spell(208086),
+  Bladestorm                            = Spell(227847),
   Cleave                                = Spell(845),
   Slam                                  = Spell(1464),
   CrushingAssaultBuff                   = Spell(278826),
@@ -36,8 +36,8 @@ Spell.Warrior.Arms = {
   OverpowerBuff                         = Spell(7384),
   Dreadnaught                           = Spell(262150),
   ExecutionersPrecisionBuff             = Spell(242188),
-  Overpower                             = Spell(7384),
   Execute                               = Spell(163201),
+  Overpower                             = Spell(7384),
   SweepingStrikesBuff                   = Spell(260708),
   TestofMight                           = Spell(275529),
   TestofMightBuff                       = Spell(275540),
@@ -122,13 +122,9 @@ local function APL()
     end
   end
   Execute = function()
-    -- skullsplitter,if=rage<60&((cooldown.deadly_calm.remains>3&!buff.deadly_calm.up)|!talent.deadly_calm.enabled)
-    if S.Skullsplitter:IsCastableP() and (Player:Rage() < 60 and ((S.DeadlyCalm:CooldownRemainsP() > 3 and not Player:BuffP(S.DeadlyCalmBuff)) or not S.DeadlyCalm:IsAvailable())) then
+    -- skullsplitter,if=rage<60&(!talent.deadly_calm.enabled|buff.deadly_calm.down)
+    if S.Skullsplitter:IsCastableP() and (Player:Rage() < 60 and (not S.DeadlyCalm:IsAvailable() or Player:BuffDownP(S.DeadlyCalmBuff))) then
       if HR.Cast(S.Skullsplitter) then return ""; end
-    end
-    -- deadly_calm,if=cooldown.bladestorm.remains>6&(cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown.warbreaker.remains<2))
-    if S.DeadlyCalm:IsCastableP() and (S.Bladestorm:CooldownRemainsP() > 6 and (S.ColossusSmash:CooldownRemainsP() < 2 or (S.Warbreaker:IsAvailable() and S.Warbreaker:CooldownRemainsP() < 2))) then
-      if HR.Cast(S.DeadlyCalm) then return ""; end
     end
     -- ravager,if=!buff.deadly_calm.up&(cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown.warbreaker.remains<2))
     if S.Ravager:IsCastableP() and (not Player:BuffP(S.DeadlyCalmBuff) and (S.ColossusSmash:CooldownRemainsP() < 2 or (S.Warbreaker:IsAvailable() and S.Warbreaker:CooldownRemainsP() < 2))) then
@@ -141,6 +137,10 @@ local function APL()
     -- warbreaker,if=debuff.colossus_smash.down
     if S.Warbreaker:IsCastableP() and (Target:DebuffDownP(S.ColossusSmashDebuff)) then
       if HR.Cast(S.Warbreaker) then return ""; end
+    end
+    -- deadly_calm
+    if S.DeadlyCalm:IsCastableP() then
+      if HR.Cast(S.DeadlyCalm) then return ""; end
     end
     -- bladestorm,if=rage<30&!buff.deadly_calm.up
     if S.Bladestorm:IsCastableP() and (Player:Rage() < 30 and not Player:BuffP(S.DeadlyCalmBuff)) then
@@ -154,9 +154,13 @@ local function APL()
     if S.Slam:IsReadyP() and (Player:BuffP(S.CrushingAssaultBuff)) then
       if HR.Cast(S.Slam) then return ""; end
     end
-    -- mortal_strike,if=debuff.colossus_smash.up&buff.overpower.stack=2&(talent.dreadnaught.enabled|buff.executioners_precision.stack=2)
-    if S.MortalStrike:IsReadyP() and (Target:DebuffP(S.ColossusSmashDebuff) and Player:BuffStackP(S.OverpowerBuff) == 2 and (S.Dreadnaught:IsAvailable() or Player:BuffStackP(S.ExecutionersPrecisionBuff) == 2)) then
+    -- mortal_strike,if=buff.overpower.stack=2&talent.dreadnaught.enabled|buff.executioners_precision.stack=2
+    if S.MortalStrike:IsReadyP() and (Player:BuffStackP(S.OverpowerBuff) == 2 and S.Dreadnaught:IsAvailable() or Player:BuffStackP(S.ExecutionersPrecisionBuff) == 2) then
       if HR.Cast(S.MortalStrike) then return ""; end
+    end
+    -- execute,if=buff.deadly_calm.up
+    if S.Execute:IsCastableP() and (Player:BuffP(S.DeadlyCalmBuff)) then
+      if HR.Cast(S.Execute) then return ""; end
     end
     -- overpower
     if S.Overpower:IsCastableP() then
@@ -168,16 +172,12 @@ local function APL()
     end
   end
   FiveTarget = function()
-    -- skullsplitter,if=rage<60&(cooldown.deadly_calm.remains>3|!talent.deadly_calm.enabled)
-    if S.Skullsplitter:IsCastableP() and (Player:Rage() < 60 and (S.DeadlyCalm:CooldownRemainsP() > 3 or not S.DeadlyCalm:IsAvailable())) then
+    -- skullsplitter,if=rage<60&(!talent.deadly_calm.enabled|buff.deadly_calm.down)
+    if S.Skullsplitter:IsCastableP() and (Player:Rage() < 60 and (not S.DeadlyCalm:IsAvailable() or Player:BuffDownP(S.DeadlyCalmBuff))) then
       if HR.Cast(S.Skullsplitter) then return ""; end
     end
-    -- deadly_calm,if=cooldown.bladestorm.remains>6&(cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown.warbreaker.remains<2))
-    if S.DeadlyCalm:IsCastableP() and (S.Bladestorm:CooldownRemainsP() > 6 and (S.ColossusSmash:CooldownRemainsP() < 2 or (S.Warbreaker:IsAvailable() and S.Warbreaker:CooldownRemainsP() < 2))) then
-      if HR.Cast(S.DeadlyCalm) then return ""; end
-    end
-    -- ravager,if=!buff.deadly_calm.up&(cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown.warbreaker.remains<2))
-    if S.Ravager:IsCastableP() and (not Player:BuffP(S.DeadlyCalmBuff) and (S.ColossusSmash:CooldownRemainsP() < 2 or (S.Warbreaker:IsAvailable() and S.Warbreaker:CooldownRemainsP() < 2))) then
+    -- ravager,if=(!talent.warbreaker.enabled|cooldown.warbreaker.remains<2)
+    if S.Ravager:IsCastableP() and ((not S.Warbreaker:IsAvailable() or S.Warbreaker:CooldownRemainsP() < 2)) then
       if HR.Cast(S.Ravager) then return ""; end
     end
     -- colossus_smash,if=debuff.colossus_smash.down
@@ -188,9 +188,13 @@ local function APL()
     if S.Warbreaker:IsCastableP() and (Target:DebuffDownP(S.ColossusSmashDebuff)) then
       if HR.Cast(S.Warbreaker) then return ""; end
     end
-    -- bladestorm,if=buff.sweeping_strikes.down&!buff.deadly_calm.up&((debuff.colossus_smash.remains>4.5&!azerite.test_of_might.enabled)|buff.test_of_might.up)
-    if S.Bladestorm:IsCastableP() and (Player:BuffDownP(S.SweepingStrikesBuff) and not Player:BuffP(S.DeadlyCalmBuff) and ((Target:DebuffRemainsP(S.ColossusSmashDebuff) > 4.5 and not S.TestofMight:AzeriteEnabled()) or Player:BuffP(S.TestofMightBuff))) then
+    -- bladestorm,if=buff.sweeping_strikes.down&(!talent.deadly_calm.enabled|buff.deadly_calm.down)&((debuff.colossus_smash.remains>4.5&!azerite.test_of_might.enabled)|buff.test_of_might.up)
+    if S.Bladestorm:IsCastableP() and (Player:BuffDownP(S.SweepingStrikesBuff) and (not S.DeadlyCalm:IsAvailable() or Player:BuffDownP(S.DeadlyCalmBuff)) and ((Target:DebuffRemainsP(S.ColossusSmashDebuff) > 4.5 and not S.TestofMight:AzeriteEnabled()) or Player:BuffP(S.TestofMightBuff))) then
       if HR.Cast(S.Bladestorm) then return ""; end
+    end
+    -- deadly_calm
+    if S.DeadlyCalm:IsCastableP() then
+      if HR.Cast(S.DeadlyCalm) then return ""; end
     end
     -- cleave
     if S.Cleave:IsReadyP() then
@@ -206,6 +210,10 @@ local function APL()
     end
     -- whirlwind,if=debuff.colossus_smash.up|(buff.crushing_assault.up&talent.fervor_of_battle.enabled)
     if S.Whirlwind:IsReadyP() and (Target:DebuffP(S.ColossusSmashDebuff) or (Player:BuffP(S.CrushingAssaultBuff) and S.FervorofBattle:IsAvailable())) then
+      if HR.Cast(S.Whirlwind) then return ""; end
+    end
+    -- whirlwind,if=buff.deadly_calm.up|rage>60
+    if S.Whirlwind:IsReadyP() and (Player:BuffP(S.DeadlyCalmBuff) or Player:Rage() > 60) then
       if HR.Cast(S.Whirlwind) then return ""; end
     end
     -- overpower
@@ -284,13 +292,9 @@ local function APL()
     if S.Rend:IsReadyP() and (Target:DebuffRemainsP(S.RendDebuff) <= S.RendDebuff:BaseDuration() * 0.3 and Target:DebuffDownP(S.ColossusSmashDebuff)) then
       if HR.Cast(S.Rend) then return ""; end
     end
-    -- skullsplitter,if=rage<60&(cooldown.deadly_calm.remains>3|!talent.deadly_calm.enabled)
-    if S.Skullsplitter:IsCastableP() and (Player:Rage() < 60 and (S.DeadlyCalm:CooldownRemainsP() > 3 or not S.DeadlyCalm:IsAvailable())) then
+    -- skullsplitter,if=rage<60&(!talent.deadly_calm.enabled|buff.deadly_calm.down)
+    if S.Skullsplitter:IsCastableP() and (Player:Rage() < 60 and (not S.DeadlyCalm:IsAvailable() or Player:BuffDownP(S.DeadlyCalmBuff))) then
       if HR.Cast(S.Skullsplitter) then return ""; end
-    end
-    -- deadly_calm,if=(cooldown.bladestorm.remains>6|talent.ravager.enabled&cooldown.ravager.remains>6)&(cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown.warbreaker.remains<2))
-    if S.DeadlyCalm:IsCastableP() and ((S.Bladestorm:CooldownRemainsP() > 6 or S.Ravager:IsAvailable() and S.Ravager:CooldownRemainsP() > 6) and (S.ColossusSmash:CooldownRemainsP() < 2 or (S.Warbreaker:IsAvailable() and S.Warbreaker:CooldownRemainsP() < 2))) then
-      if HR.Cast(S.DeadlyCalm) then return ""; end
     end
     -- ravager,if=!buff.deadly_calm.up&(cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown.warbreaker.remains<2))
     if S.Ravager:IsCastableP() and (not Player:BuffP(S.DeadlyCalmBuff) and (S.ColossusSmash:CooldownRemainsP() < 2 or (S.Warbreaker:IsAvailable() and S.Warbreaker:CooldownRemainsP() < 2))) then
@@ -304,12 +308,16 @@ local function APL()
     if S.Warbreaker:IsCastableP() and (Target:DebuffDownP(S.ColossusSmashDebuff)) then
       if HR.Cast(S.Warbreaker) then return ""; end
     end
+    -- deadly_calm
+    if S.DeadlyCalm:IsCastableP() then
+      if HR.Cast(S.DeadlyCalm) then return ""; end
+    end
     -- execute,if=buff.sudden_death.react
     if S.Execute:IsCastableP() and (bool(Player:BuffStackP(S.SuddenDeathBuff))) then
       if HR.Cast(S.Execute) then return ""; end
     end
-    -- bladestorm,if=cooldown.mortal_strike.remains&((debuff.colossus_smash.up&!azerite.test_of_might.enabled)|buff.test_of_might.up)
-    if S.Bladestorm:IsCastableP() and (bool(S.MortalStrike:CooldownRemainsP()) and ((Target:DebuffP(S.ColossusSmashDebuff) and not S.TestofMight:AzeriteEnabled()) or Player:BuffP(S.TestofMightBuff))) then
+    -- bladestorm,if=cooldown.mortal_strike.remains&(!talent.deadly_calm.enabled|buff.deadly_calm.down)&((debuff.colossus_smash.up&!azerite.test_of_might.enabled)|buff.test_of_might.up)
+    if S.Bladestorm:IsCastableP() and (bool(S.MortalStrike:CooldownRemainsP()) and (not S.DeadlyCalm:IsAvailable() or Player:BuffDownP(S.DeadlyCalmBuff)) and ((Target:DebuffP(S.ColossusSmashDebuff) and not S.TestofMight:AzeriteEnabled()) or Player:BuffP(S.TestofMightBuff))) then
       if HR.Cast(S.Bladestorm) then return ""; end
     end
     -- cleave,if=spell_targets.whirlwind>2
@@ -324,16 +332,20 @@ local function APL()
     if S.MortalStrike:IsReadyP() then
       if HR.Cast(S.MortalStrike) then return ""; end
     end
+    -- whirlwind,if=talent.fervor_of_battle.enabled&(buff.deadly_calm.up|rage>=60)
+    if S.Whirlwind:IsReadyP() and (S.FervorofBattle:IsAvailable() and (Player:BuffP(S.DeadlyCalmBuff) or Player:Rage() >= 60)) then
+      if HR.Cast(S.Whirlwind) then return ""; end
+    end
     -- overpower
     if S.Overpower:IsCastableP() then
       if HR.Cast(S.Overpower) then return ""; end
     end
-    -- whirlwind,if=talent.fervor_of_battle.enabled&(!azerite.test_of_might.enabled|(rage>=60|debuff.colossus_smash.up|buff.deadly_calm.up))
-    if S.Whirlwind:IsReadyP() and (S.FervorofBattle:IsAvailable() and (not S.TestofMight:AzeriteEnabled() or (Player:Rage() >= 60 or Target:DebuffP(S.ColossusSmashDebuff) or Player:BuffP(S.DeadlyCalmBuff)))) then
+    -- whirlwind,if=talent.fervor_of_battle.enabled&(!azerite.test_of_might.enabled|debuff.colossus_smash.up)
+    if S.Whirlwind:IsReadyP() and (S.FervorofBattle:IsAvailable() and (not S.TestofMight:AzeriteEnabled() or Target:DebuffP(S.ColossusSmashDebuff))) then
       if HR.Cast(S.Whirlwind) then return ""; end
     end
-    -- slam,if=!talent.fervor_of_battle.enabled&(!azerite.test_of_might.enabled|(rage>=60|debuff.colossus_smash.up|buff.deadly_calm.up))
-    if S.Slam:IsReadyP() and (not S.FervorofBattle:IsAvailable() and (not S.TestofMight:AzeriteEnabled() or (Player:Rage() >= 60 or Target:DebuffP(S.ColossusSmashDebuff) or Player:BuffP(S.DeadlyCalmBuff)))) then
+    -- slam,if=!talent.fervor_of_battle.enabled&(!azerite.test_of_might.enabled|debuff.colossus_smash.up|buff.deadly_calm.up|rage>=60)
+    if S.Slam:IsReadyP() and (not S.FervorofBattle:IsAvailable() and (not S.TestofMight:AzeriteEnabled() or Target:DebuffP(S.ColossusSmashDebuff) or Player:BuffP(S.DeadlyCalmBuff) or Player:Rage() >= 60)) then
       if HR.Cast(S.Slam) then return ""; end
     end
   end

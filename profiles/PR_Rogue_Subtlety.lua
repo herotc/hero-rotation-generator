@@ -295,6 +295,10 @@ local function APL()
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   if Everyone.TargetIsValid() then
+    -- stealth
+    if S.Stealth:IsCastableP() then
+      if HR.Cast(S.Stealth) then return ""; end
+    end
     -- call_action_list,name=cds
     if (true) then
       local ShouldReturn = Cds(); if ShouldReturn then return ShouldReturn; end

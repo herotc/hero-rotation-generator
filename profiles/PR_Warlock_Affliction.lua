@@ -29,13 +29,14 @@ Spell.Warlock.Affliction = {
   Haunt                                 = Spell(48181),
   ShadowBolt                            = Spell(232670),
   Agony                                 = Spell(980),
-  AgonyDebuff                           = Spell(980),
-  SummonDarkglare                       = Spell(205180),
   Deathbolt                             = Spell(264106),
+  SummonDarkglare                       = Spell(205180),
+  WritheInAgony                         = Spell(196102),
   SuddenOnset                           = Spell(),
-  SiphonLife                            = Spell(63106),
+  AgonyDebuff                           = Spell(980),
   MovementBuff                          = Spell(),
   NightfallBuff                         = Spell(),
+  SiphonLife                            = Spell(63106),
   Corruption                            = Spell(172),
   AbsoluteCorruption                    = Spell(),
   DrainLife                             = Spell(),
@@ -46,6 +47,7 @@ Spell.Warlock.Affliction = {
   VileTaint                             = Spell(278350),
   DrainSoul                             = Spell(198590),
   ShadowEmbrace                         = Spell(),
+  DrainSoulDebuff                       = Spell(198590),
   ShadowEmbraceDebuff                   = Spell(),
   SowtheSeeds                           = Spell(196226),
   CascadingCalamity                     = Spell(),
@@ -54,7 +56,6 @@ Spell.Warlock.Affliction = {
   CorruptionDebuff                      = Spell(146739),
   ActiveUasBuff                         = Spell(),
   CreepingDeath                         = Spell(),
-  WritheInAgony                         = Spell(196102),
   SeedofCorruptionDebuff                = Spell(),
   SiphonLifeDebuff                      = Spell(63106),
   UnstableAffliction                    = Spell(30108),
@@ -179,8 +180,8 @@ local function APL()
     end
   end
   Fillers = function()
-    -- agony,if=remains<18&cooldown.summon_darkglare.remains>=30+gcd&cooldown.deathbolt.remains<=gcd&!prev_gcd.1.summon_darkglare&!prev_gcd.1.agony&(azerite.sudden_onset.rank>1|azerite.sudden_onset.rank=1&!talent.siphon_life.enabled)
-    if S.Agony:IsCastableP() and (Target:DebuffRemainsP(S.AgonyDebuff) < 18 and S.SummonDarkglare:CooldownRemainsP() >= 30 + Player:GCD() and S.Deathbolt:CooldownRemainsP() <= Player:GCD() and not Player:PrevGCDP(1, S.SummonDarkglare) and not Player:PrevGCDP(1, S.Agony) and (S.SuddenOnset:AzeriteRank() > 1 or S.SuddenOnset:AzeriteRank() == 1 and not S.SiphonLife:IsAvailable())) then
+    -- agony,if=talent.deathbolt.enabled&cooldown.summon_darkglare.remains>=30+gcd&cooldown.deathbolt.remains<=gcd&!prev_gcd.1.summon_darkglare&!prev_gcd.1.agony&talent.writhe_in_agony.enabled&azerite.sudden_onset.enabled&remains<duration*0.5
+    if S.Agony:IsCastableP() and (S.Deathbolt:IsAvailable() and S.SummonDarkglare:CooldownRemainsP() >= 30 + Player:GCD() and S.Deathbolt:CooldownRemainsP() <= Player:GCD() and not Player:PrevGCDP(1, S.SummonDarkglare) and not Player:PrevGCDP(1, S.Agony) and S.WritheInAgony:IsAvailable() and S.SuddenOnset:AzeriteEnabled() and Target:DebuffRemainsP(S.AgonyDebuff) < S.AgonyDebuff:BaseDuration() * 0.5) then
       if HR.Cast(S.Agony) then return ""; end
     end
     -- deathbolt,if=cooldown.summon_darkglare.remains>=30+gcd|cooldown.summon_darkglare.remains>140
@@ -207,11 +208,19 @@ local function APL()
     if S.DrainLife:IsCastableP() and ((Player:BuffStackP(S.InevitableDemiseBuff) >= 90 and (S.Deathbolt:CooldownRemainsP() > S.DrainLife:ExecuteTime() or not S.Deathbolt:IsAvailable()) and (S.PhantomSingularity:CooldownRemainsP() > S.DrainLife:ExecuteTime() or not S.PhantomSingularity:IsAvailable()) and (S.DarkSoul:CooldownRemainsP() > S.DrainLife:ExecuteTime() or not S.DarkSoulMisery:IsAvailable()) and (S.VileTaint:CooldownRemainsP() > S.DrainLife:ExecuteTime() or not S.VileTaint:IsAvailable()) and S.SummonDarkglare:CooldownRemainsP() > S.DrainLife:ExecuteTime() + 10 or Player:BuffStackP(S.InevitableDemiseBuff) > 30 and Target:TimeToDie() <= 10)) then
       if HR.Cast(S.DrainLife) then return ""; end
     end
-    -- drain_soul,interrupt_global=1,chain=1,cycle_targets=1,if=target.time_to_die<=gcd
+    -- drain_soul,interrupt_global=1,chain=1,interrupt=1,cycle_targets=1,if=target.time_to_die<=gcd
     if S.DrainSoul:IsCastableP() and (Target:TimeToDie() <= Player:GCD()) then
       if HR.Cast(S.DrainSoul) then return ""; end
     end
-    -- drain_soul,interrupt_global=1,chain=1
+    -- drain_soul,target_if=min:debuff.shadow_embrace.remains,chain=1,interrupt_if=ticks_remain<5,interrupt_global=1,if=talent.shadow_embrace.enabled&active_enemies=2&!debuff.shadow_embrace.remains
+    if S.DrainSoul:IsCastableP() and (bool(min:debuff.shadow_embrace.remains)) and (S.ShadowEmbrace:IsAvailable() and Cache.EnemiesCount[40] == 2 and not bool(Target:DebuffRemainsP(S.ShadowEmbraceDebuff))) then
+      if HR.Cast(S.DrainSoul) then return ""; end
+    end
+    -- drain_soul,target_if=min:debuff.shadow_embrace.remains,chain=1,interrupt_if=ticks_remain<5,interrupt_global=1,if=talent.shadow_embrace.enabled&active_enemies=2
+    if S.DrainSoul:IsCastableP() and (bool(min:debuff.shadow_embrace.remains)) and (S.ShadowEmbrace:IsAvailable() and Cache.EnemiesCount[40] == 2) then
+      if HR.Cast(S.DrainSoul) then return ""; end
+    end
+    -- drain_soul,interrupt_global=1,chain=1,interrupt=1
     if S.DrainSoul:IsCastableP() then
       if HR.Cast(S.DrainSoul) then return ""; end
     end
@@ -270,12 +279,16 @@ local function APL()
     if S.SummonDarkglare:IsCastableP() and HR.CDsON() and (Target:DebuffP(S.AgonyDebuff) and Target:DebuffP(S.CorruptionDebuff) and (ActiveUAs() == 5 or Player:SoulShardsP() == 0) and (not S.PhantomSingularity:IsAvailable() or bool(S.PhantomSingularity:CooldownRemainsP()))) then
       if HR.Cast(S.SummonDarkglare, Settings.Affliction.GCDasOffGCD.SummonDarkglare) then return ""; end
     end
-    -- agony,cycle_targets=1,if=remains<=gcd
-    if S.Agony:IsCastableP() and (Target:DebuffRemainsP(S.AgonyDebuff) <= Player:GCD()) then
+    -- agony,target_if=min:dot.agony.remains,if=remains<=gcd+action.shadow_bolt.execute_time
+    if S.Agony:IsCastableP() and (bool(min:dot.agony.remains)) and (Target:DebuffRemainsP(S.AgonyDebuff) <= Player:GCD() + S.ShadowBolt:ExecuteTime()) then
       if HR.Cast(S.Agony) then return ""; end
     end
-    -- shadow_bolt,target_if=min:debuff.shadow_embrace.remains,if=talent.shadow_embrace.enabled&talent.absolute_corruption.enabled&active_enemies=2&debuff.shadow_embrace.remains&debuff.shadow_embrace.remains<=execute_time*2+travel_time&!action.shadow_bolt.in_flight
-    if S.ShadowBolt:IsCastableP() and (bool(min:debuff.shadow_embrace.remains)) and (S.ShadowEmbrace:IsAvailable() and S.AbsoluteCorruption:IsAvailable() and Cache.EnemiesCount[40] == 2 and bool(Target:DebuffRemainsP(S.ShadowEmbraceDebuff)) and Target:DebuffRemainsP(S.ShadowEmbraceDebuff) <= S.ShadowBolt:ExecuteTime() * 2 + S.ShadowBolt:TravelTime() and not S.ShadowBolt:InFlight()) then
+    -- drain_soul,target_if=min:debuff.shadow_embrace.remains,interrupt_immediate=1,interrupt_if=ticks_remain<5,if=talent.shadow_embrace.enabled&active_enemies<=2&debuff.shadow_embrace.remains&debuff.shadow_embrace.remains<=gcd*2
+    if S.DrainSoul:IsCastableP() and (bool(min:debuff.shadow_embrace.remains)) and (S.ShadowEmbrace:IsAvailable() and Cache.EnemiesCount[40] <= 2 and bool(Target:DebuffRemainsP(S.ShadowEmbraceDebuff)) and Target:DebuffRemainsP(S.ShadowEmbraceDebuff) <= Player:GCD() * 2) then
+      if HR.Cast(S.DrainSoul) then return ""; end
+    end
+    -- shadow_bolt,target_if=min:debuff.shadow_embrace.remains,if=talent.shadow_embrace.enabled&talent.absolute_corruption.enabled&active_enemies<=2&debuff.shadow_embrace.remains&debuff.shadow_embrace.remains<=execute_time*2+travel_time&!action.shadow_bolt.in_flight
+    if S.ShadowBolt:IsCastableP() and (bool(min:debuff.shadow_embrace.remains)) and (S.ShadowEmbrace:IsAvailable() and S.AbsoluteCorruption:IsAvailable() and Cache.EnemiesCount[40] <= 2 and bool(Target:DebuffRemainsP(S.ShadowEmbraceDebuff)) and Target:DebuffRemainsP(S.ShadowEmbraceDebuff) <= S.ShadowBolt:ExecuteTime() * 2 + S.ShadowBolt:TravelTime() and not S.ShadowBolt:InFlight()) then
       if HR.Cast(S.ShadowBolt) then return ""; end
     end
     -- phantom_singularity,if=time>40&(cooldown.summon_darkglare.remains>=45|cooldown.summon_darkglare.remains<8)

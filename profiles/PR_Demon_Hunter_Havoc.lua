@@ -339,9 +339,9 @@ local function APL()
   end
   if Everyone.TargetIsValid() then
     -- auto_attack
-    -- variable,name=blade_dance,value=talent.first_blood.enabled|set_bonus.tier20_4pc|spell_targets.blade_dance1>=(3-talent.trail_of_ruin.enabled)
+    -- variable,name=blade_dance,value=talent.first_blood.enabled|spell_targets.blade_dance1>=(3-talent.trail_of_ruin.enabled)
     if (true) then
-      VarBladeDance = num(S.FirstBlood:IsAvailable() or HL.Tier20_4Pc or Cache.EnemiesCount[8] >= (3 - num(S.TrailofRuin:IsAvailable())))
+      VarBladeDance = num(S.FirstBlood:IsAvailable() or Cache.EnemiesCount[8] >= (3 - num(S.TrailofRuin:IsAvailable())))
     end
     -- variable,name=waiting_for_nemesis,value=!(!talent.nemesis.enabled|cooldown.nemesis.ready|cooldown.nemesis.remains>target.time_to_die|cooldown.nemesis.remains>60)
     if (true) then

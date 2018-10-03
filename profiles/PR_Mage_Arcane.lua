@@ -212,8 +212,8 @@ local function APL()
     if S.NetherTempest:IsCastableP() and ((Target:DebuffRefreshableCP(S.NetherTempestDebuff) or not Target:DebuffP(S.NetherTempestDebuff)) and Player:ArcaneChargesP() == Player:ArcaneChargesMax() and Player:BuffDownP(S.RuneofPowerBuff) and Player:BuffDownP(S.ArcanePowerBuff)) then
       if HR.Cast(S.NetherTempest) then return ""; end
     end
-    -- arcane_blast,if=buff.rule_of_threes.up&talent.overpowered.enabled
-    if S.ArcaneBlast:IsReadyP() and (Player:BuffP(S.RuleofThreesBuff) and S.Overpowered:IsAvailable()) then
+    -- arcane_blast,if=buff.rule_of_threes.up&talent.overpowered.enabled&active_enemies<3
+    if S.ArcaneBlast:IsReadyP() and (Player:BuffP(S.RuleofThreesBuff) and S.Overpowered:IsAvailable() and Cache.EnemiesCount[40] < 3) then
       if HR.Cast(S.ArcaneBlast) then return ""; end
     end
     -- lights_judgment,if=buff.arcane_power.down
@@ -269,8 +269,8 @@ local function APL()
     if S.ArcaneMissiles:IsCastableP() and (bool(Player:BuffStackP(S.ClearcastingBuff)) and Cache.EnemiesCount[40] < 3 and (S.Amplification:IsAvailable() or (not S.Overpowered:IsAvailable() and S.ArcanePummeling:AzeriteRank() >= 2) or Player:BuffDownP(S.ArcanePowerBuff))) then
       if HR.Cast(S.ArcaneMissiles) then return ""; end
     end
-    -- arcane_blast
-    if S.ArcaneBlast:IsReadyP() then
+    -- arcane_blast,if=active_enemies<3
+    if S.ArcaneBlast:IsReadyP() and (Cache.EnemiesCount[40] < 3) then
       if HR.Cast(S.ArcaneBlast) then return ""; end
     end
     -- variable,name=average_burn_length,op=set,value=(variable.average_burn_length*variable.total_burns-variable.average_burn_length+(burn_phase_duration))%variable.total_burns

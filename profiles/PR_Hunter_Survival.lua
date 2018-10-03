@@ -438,21 +438,21 @@ local function APL()
     if (true) then
       local ShouldReturn = Cds(); if ShouldReturn then return ShouldReturn; end
     end
-    -- call_action_list,name=wfi_st,if=active_enemies<2&talent.wildfire_infusion.enabled&(!talent.alpha_predator.enabled|!talent.mongoose_bite.enabled)
-    if (Cache.EnemiesCount[40] < 2 and S.WildfireInfusion:IsAvailable() and (not S.AlphaPredator:IsAvailable() or not S.MongooseBite:IsAvailable())) then
-      local ShouldReturn = WfiSt(); if ShouldReturn then return ShouldReturn; end
-    end
-    -- call_action_list,name=mb_ap_wfi_st,if=active_enemies<2&talent.wildfire_infusion.enabled&talent.alpha_predator.enabled&talent.mongoose_bite.enabled
+    -- run_action_list,name=mb_ap_wfi_st,if=active_enemies<2&talent.wildfire_infusion.enabled&talent.alpha_predator.enabled&talent.mongoose_bite.enabled
     if (Cache.EnemiesCount[40] < 2 and S.WildfireInfusion:IsAvailable() and S.AlphaPredator:IsAvailable() and S.MongooseBite:IsAvailable()) then
-      local ShouldReturn = MbApWfiSt(); if ShouldReturn then return ShouldReturn; end
+      return MbApWfiSt();
     end
-    -- call_action_list,name=st,if=active_enemies<2&!talent.wildfire_infusion.enabled
-    if (Cache.EnemiesCount[40] < 2 and not S.WildfireInfusion:IsAvailable()) then
-      local ShouldReturn = St(); if ShouldReturn then return ShouldReturn; end
+    -- run_action_list,name=wfi_st,if=active_enemies<2&talent.wildfire_infusion.enabled
+    if (Cache.EnemiesCount[40] < 2 and S.WildfireInfusion:IsAvailable()) then
+      return WfiSt();
     end
-    -- call_action_list,name=cleave,if=active_enemies>1
-    if (Cache.EnemiesCount[40] > 1) then
-      local ShouldReturn = Cleave(); if ShouldReturn then return ShouldReturn; end
+    -- run_action_list,name=st,if=active_enemies<2
+    if (Cache.EnemiesCount[40] < 2) then
+      return St();
+    end
+    -- run_action_list,name=cleave
+    if (true) then
+      return Cleave();
     end
     -- arcane_torrent
     if S.ArcaneTorrent:IsCastableP() and HR.CDsON() then

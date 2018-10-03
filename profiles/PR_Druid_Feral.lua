@@ -56,6 +56,8 @@ Spell.Druid.Feral = {
   SavageRoar                            = Spell(52610),
   PoolResource                          = Spell(9999000010),
   SavageRoarBuff                        = Spell(52610),
+  Maim                                  = Spell(22570),
+  IronJawsBuff                          = Spell(),
   FerociousBiteMaxEnergy                = Spell(22568),
   BrutalSlash                           = Spell(202028),
   ThrashCat                             = Spell(106830),
@@ -297,6 +299,15 @@ local function APL()
     if S.SavageRoar:IsCastableP() and (Player:BuffRemainsP(S.SavageRoarBuff) < 12) then
       if S.SavageRoar:IsUsablePPool() then
         if HR.Cast(S.SavageRoar) then return ""; end
+      else
+        if HR.Cast(S.PoolResource) then return ""; end
+      end
+    end
+    -- pool_resource,for_next=1
+    -- maim,if=buff.iron_jaws.up
+    if S.Maim:IsCastableP() and (Player:BuffP(S.IronJawsBuff)) then
+      if S.Maim:IsUsablePPool() then
+        if HR.Cast(S.Maim) then return ""; end
       else
         if HR.Cast(S.PoolResource) then return ""; end
       end

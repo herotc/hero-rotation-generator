@@ -52,7 +52,8 @@ Spell.Hunter.Marksmanship = {
   SteadyShot                            = Spell(),
   TrickShotsBuff                        = Spell(),
   Multishot                             = Spell(2643),
-  SteadyFocusBuff                       = Spell()
+  SteadyFocusBuff                       = Spell(),
+  SteadyAim                             = Spell()
 };
 local S = Spell.Hunter.Marksmanship;
 
@@ -111,7 +112,7 @@ end
 
 --- ======= ACTION LISTS =======
 local function APL()
-  local Precombat, Cds, St, Trickshots
+  local Precombat, Cds, St, SteadySt, Trickshots
   UpdateRanges()
   Everyone.AoEToggleEnemiesUpdate()
   Precombat = function()
@@ -236,6 +237,32 @@ local function APL()
       if HR.Cast(S.ArcaneShot) then return ""; end
     end
   end
+  SteadySt = function()
+    -- a_murder_of_crows
+    if S.AMurderofCrows:IsCastableP() then
+      if HR.Cast(S.AMurderofCrows) then return ""; end
+    end
+    -- aimed_shot,if=buff.lethal_shots.up
+    if S.AimedShot:IsCastableP() and (Player:BuffP(S.LethalShotsBuff)) then
+      if HR.Cast(S.AimedShot) then return ""; end
+    end
+    -- steady_shot,if=buff.lethal_shots.down
+    if S.SteadyShot:IsCastableP() and (Player:BuffDownP(S.LethalShotsBuff)) then
+      if HR.Cast(S.SteadyShot) then return ""; end
+    end
+    -- arcane_shot,if=buff.precise_shots.up
+    if S.ArcaneShot:IsCastableP() and (Player:BuffP(S.PreciseShotsBuff)) then
+      if HR.Cast(S.ArcaneShot) then return ""; end
+    end
+    -- serpent_sting,if=refreshable
+    if S.SerpentSting:IsCastableP() and (Target:DebuffRefreshableCP(S.SerpentStingDebuff)) then
+      if HR.Cast(S.SerpentSting) then return ""; end
+    end
+    -- steady_shot
+    if S.SteadyShot:IsCastableP() then
+      if HR.Cast(S.SteadyShot) then return ""; end
+    end
+  end
   Trickshots = function()
     -- barrage
     if S.Barrage:IsCastableP() then
@@ -289,13 +316,17 @@ local function APL()
     if (true) then
       local ShouldReturn = Cds(); if ShouldReturn then return ShouldReturn; end
     end
-    -- call_action_list,name=st,if=active_enemies<3
-    if (Cache.EnemiesCount[40] < 3) then
-      local ShouldReturn = St(); if ShouldReturn then return ShouldReturn; end
+    -- run_action_list,name=steady_st,if=active_enemies<2&talent.lethal_shots.enabled&talent.steady_focus.enabled&azerite.steady_aim.rank>1
+    if (Cache.EnemiesCount[40] < 2 and S.LethalShots:IsAvailable() and S.SteadyFocus:IsAvailable() and S.SteadyAim:AzeriteRank() > 1) then
+      return SteadySt();
     end
-    -- call_action_list,name=trickshots,if=active_enemies>2
-    if (Cache.EnemiesCount[40] > 2) then
-      local ShouldReturn = Trickshots(); if ShouldReturn then return ShouldReturn; end
+    -- run_action_list,name=st,if=active_enemies<3
+    if (Cache.EnemiesCount[40] < 3) then
+      return St();
+    end
+    -- run_action_list,name=trickshots
+    if (true) then
+      return Trickshots();
     end
   end
 end

@@ -5,7 +5,7 @@ level=120
 race=troll
 role=attack
 position=back
-talents=2210021
+talents=2310021
 
 # Default consumables
 potion=battle_potion_of_agility
@@ -31,7 +31,9 @@ actions.precombat+=/potion
 actions.precombat+=/marked_for_death,precombat_seconds=5,if=raid_event.adds.in>40
 
 # Executed every time the actor is available.
-actions=variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*7%(2*spell_haste)
+# Restealth if possible (no vulnerable enemies in combat)
+actions=stealth
+actions+=/variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*7%(2*spell_haste)
 actions+=/variable,name=single_target,value=spell_targets.fan_of_knives<2
 actions+=/call_action_list,name=stealthed,if=stealthed.rogue
 actions+=/call_action_list,name=cds
@@ -74,8 +76,12 @@ actions.direct=envenom,if=combo_points>=4+talent.deeper_stratagem.enabled&(debuf
 actions.direct+=/variable,name=use_filler,value=combo_points.deficit>1|energy.deficit<=25+variable.energy_regen_combined|!variable.single_target
 # Poisoned Knife at 29+ stacks of Sharpened Blades.
 actions.direct+=/poisoned_knife,if=variable.use_filler&buff.sharpened_blades.stack>=29
-actions.direct+=/fan_of_knives,if=variable.use_filler&(buff.hidden_blades.stack>=19|spell_targets.fan_of_knives>=2+stealthed.rogue|buff.the_dreadlords_deceit.stack>=29)
+actions.direct+=/fan_of_knives,if=variable.use_filler&(buff.hidden_blades.stack>=19|spell_targets.fan_of_knives>=4+(azerite.double_dose.rank>2)+stealthed.rogue)
+# Fan of Knives to apply Deadly Poison if inactive on any target at 3 targets
+actions.direct+=/fan_of_knives,target_if=!dot.deadly_poison_dot.ticking,if=variable.use_filler&spell_targets.fan_of_knives>=3
 actions.direct+=/blindside,if=variable.use_filler&(buff.blindside.up|!talent.venom_rush.enabled)
+# Tab-Mutilate to apply Deadly Poison at 2 targets
+actions.direct+=/mutilate,target_if=!dot.deadly_poison_dot.ticking,if=variable.use_filler&spell_targets.fan_of_knives=2
 actions.direct+=/mutilate,if=variable.use_filler
 
 # Damage over time abilities
@@ -105,11 +111,11 @@ actions.stealthed+=/garrote,cycle_targets=1,if=talent.subterfuge.enabled&azerite
 actions.stealthed+=/pool_resource,for_next=1
 actions.stealthed+=/garrote,if=talent.subterfuge.enabled&talent.exsanguinate.enabled&cooldown.exsanguinate.remains<1&prev_gcd.1.rupture&dot.rupture.remains>5+4*cp_max_spend
 
-head=cowl_of_fluid_machinations,id=159302,bonus_id=4819/1512/4775,azerite_powers=408/22/0/13
-neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
-shoulders=goldtasseled_epaulets,id=159299,bonus_id=4819/1512/4775,azerite_powers=408/22/0/13
+head=high_altitude_turban,id=158364,bonus_id=4819/1512/4775,azerite_powers=136/30/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
+shoulders=tentaclelaced_spaulders,id=159307,bonus_id=4819/1512/4775,azerite_powers=136/31/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=goresplattered_vest,id=159330,bonus_id=4819/1512/4775,azerite_powers=408/22/0/13
+chest=spymasters_wrap,id=155860,bonus_id=4819/1512/4775,azerite_powers=136/461/13
 wrists=servoarm_bindings,id=158353,bonus_id=4779/1512/4786
 hands=underrot_grotto_tenders,id=159344,bonus_id=4779/1512/4786
 waist=port_pillagers_belt,id=159309,bonus_id=4779/1512/4786

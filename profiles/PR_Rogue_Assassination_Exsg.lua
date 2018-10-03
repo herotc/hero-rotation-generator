@@ -47,7 +47,8 @@ Spell.Rogue.Assassination = {
   SharpenedBladesBuff                   = Spell(),
   FanofKnives                           = Spell(51723),
   HiddenBladesBuff                      = Spell(),
-  TheDreadlordsDeceitBuff               = Spell(208692),
+  DoubleDose                            = Spell(),
+  DeadlyPoisonDotDebuff                 = Spell(177918),
   Blindside                             = Spell(),
   BlindsideBuff                         = Spell(),
   VenomRush                             = Spell(152152),
@@ -207,13 +208,21 @@ local function APL()
     if S.PoisonedKnife:IsCastableP() and (bool(VarUseFiller) and Player:BuffStackP(S.SharpenedBladesBuff) >= 29) then
       if HR.Cast(S.PoisonedKnife) then return ""; end
     end
-    -- fan_of_knives,if=variable.use_filler&(buff.hidden_blades.stack>=19|spell_targets.fan_of_knives>=2+stealthed.rogue|buff.the_dreadlords_deceit.stack>=29)
-    if S.FanofKnives:IsCastableP() and (bool(VarUseFiller) and (Player:BuffStackP(S.HiddenBladesBuff) >= 19 or Cache.EnemiesCount[10] >= 2 + stealthed.rogue or Player:BuffStackP(S.TheDreadlordsDeceitBuff) >= 29)) then
+    -- fan_of_knives,if=variable.use_filler&(buff.hidden_blades.stack>=19|spell_targets.fan_of_knives>=4+(azerite.double_dose.rank>2)+stealthed.rogue)
+    if S.FanofKnives:IsCastableP() and (bool(VarUseFiller) and (Player:BuffStackP(S.HiddenBladesBuff) >= 19 or Cache.EnemiesCount[10] >= 4 + num((S.DoubleDose:AzeriteRank() > 2)) + stealthed.rogue)) then
+      if HR.Cast(S.FanofKnives) then return ""; end
+    end
+    -- fan_of_knives,target_if=!dot.deadly_poison_dot.ticking,if=variable.use_filler&spell_targets.fan_of_knives>=3
+    if S.FanofKnives:IsCastableP() and (not Target:DebuffP(S.DeadlyPoisonDotDebuff)) and (bool(VarUseFiller) and Cache.EnemiesCount[10] >= 3) then
       if HR.Cast(S.FanofKnives) then return ""; end
     end
     -- blindside,if=variable.use_filler&(buff.blindside.up|!talent.venom_rush.enabled)
     if S.Blindside:IsCastableP() and (bool(VarUseFiller) and (Player:BuffP(S.BlindsideBuff) or not S.VenomRush:IsAvailable())) then
       if HR.Cast(S.Blindside) then return ""; end
+    end
+    -- mutilate,target_if=!dot.deadly_poison_dot.ticking,if=variable.use_filler&spell_targets.fan_of_knives=2
+    if S.Mutilate:IsCastableP() and (not Target:DebuffP(S.DeadlyPoisonDotDebuff)) and (bool(VarUseFiller) and Cache.EnemiesCount[10] == 2) then
+      if HR.Cast(S.Mutilate) then return ""; end
     end
     -- mutilate,if=variable.use_filler
     if S.Mutilate:IsCastableP() and (bool(VarUseFiller)) then
@@ -283,6 +292,10 @@ local function APL()
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   if Everyone.TargetIsValid() then
+    -- stealth
+    if S.Stealth:IsCastableP() then
+      if HR.Cast(S.Stealth) then return ""; end
+    end
     -- variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*7%(2*spell_haste)
     if (true) then
       VarEnergyRegenCombined = Player:EnergyRegen() + poisoned_bleeds * 7 / (2 * Player:SpellHaste())

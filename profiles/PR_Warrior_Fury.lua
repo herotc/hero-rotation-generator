@@ -44,7 +44,6 @@ Spell.Warrior.Fury = {
   MeatCleaverBuff                       = Spell(85739),
   BloodFury                             = Spell(20572),
   Berserking                            = Spell(26297),
-  ArcaneTorrent                         = Spell(50613),
   LightsJudgment                        = Spell(255647),
   Fireblood                             = Spell(265221),
   AncestralCall                         = Spell(274738)
@@ -203,10 +202,6 @@ local function APL()
     -- berserking,if=buff.recklessness.up
     if S.Berserking:IsCastableP() and HR.CDsON() and (Player:BuffP(S.RecklessnessBuff)) then
       if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
-    end
-    -- arcane_torrent,if=rage<40&!buff.recklessness.up
-    if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (Player:Rage() < 40 and not Player:BuffP(S.RecklessnessBuff)) then
-      if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
     end
     -- lights_judgment,if=buff.recklessness.down
     if S.LightsJudgment:IsCastableP() and HR.CDsON() and (Player:BuffDownP(S.RecklessnessBuff)) then
