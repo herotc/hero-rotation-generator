@@ -107,11 +107,11 @@ local function APL()
       if HR.Cast(S.Shadowform) then return ""; end
     end
     -- mind_blast
-    if S.MindBlast:IsReadyP() then
+    if S.MindBlast:IsReadyP() and Everyone.TargetIsValid() then
       if HR.Cast(S.MindBlast) then return ""; end
     end
     -- shadow_word_void
-    if S.ShadowWordVoid:IsReadyP() then
+    if S.ShadowWordVoid:IsReadyP() and Everyone.TargetIsValid() then
       if HR.Cast(S.ShadowWordVoid) then return ""; end
     end
   end

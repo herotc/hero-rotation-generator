@@ -5,7 +5,7 @@ Priest specific constants and functions.
 @author: skasch
 """
 
-from ..constants import COMMON, SPELL, BUFF, DEBUFF, INTERRUPT, RANGE, READY
+from ..constants import COMMON, SPELL, BUFF, DEBUFF, INTERRUPT, RANGE, READY, OPENER
 
 PRIEST = 'priest'
 DISCIPLINE = 'discipline'
@@ -43,7 +43,8 @@ SPELL_INFO = {
         SHADOW: {
             'mind_blast':                       {SPELL:     8092,
                                                  READY:     True,
-                                                 RANGE:     40},
+                                                 RANGE:     40,
+                                                 OPENER:    True},
             'mind_flay':                        {SPELL:     15407,
                                                  RANGE:     40},
             'mind_sear':                        {SPELL:     48045,
@@ -58,7 +59,8 @@ SPELL_INFO = {
                                                  INTERRUPT: True},
             'vampiric_touch':                   {SPELL:     34914,
                                                  DEBUFF:    34914,
-                                                 RANGE:     40},                             
+                                                 RANGE:     40,
+                                                 OPENER:    True},                             
             'void_eruption':                    {SPELL:     228260,
                                                  READY:     True,
                                                  RANGE:     40},
@@ -79,9 +81,10 @@ SPELL_INFO = {
                                                  BUFF:      124430},    
             'shadow_word_void':                 {SPELL:     205351,
                                                  READY:     True,
-                                                 RANGE:     40},
+                                                 RANGE:     40,
+                                                 OPENER:    True},
 
-            'body_and_sould':                   {SPELL:     64129},
+            'body_and_soul':                    {SPELL:     64129},
             'sanlayn':                          {SPELL:     199855},
             'mania':                            {SPELL:     193173},
             
