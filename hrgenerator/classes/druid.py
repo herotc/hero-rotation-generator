@@ -5,7 +5,7 @@ Druid specific constants and functions.
 @author: skasch
 """
 
-from ..constants import SPELL, BUFF, DEBUFF, COMMON, RANGE, GCDAOGCD, OGCDAOGCD, CD
+from ..constants import SPELL, BUFF, DEBUFF, COMMON, RANGE, GCDAOGCD, OGCDAOGCD, CD, OPENER
 
 DRUID = 'druid'
 BALANCE = 'balance'
@@ -95,10 +95,12 @@ SPELL_INFO = {
                                                  RANGE:     40},
             'innervate':                        {SPELL:     29166},
             'solar_wrath':                      {SPELL:     190984,
-                                                 RANGE:     40},
+                                                 RANGE:     40,
+                                                 OPENER:    True},
             'sunfire':                          {SPELL:     93402,
                                                  DEBUFF:    164815,
-                                                 RANGE:     40},
+                                                 RANGE:     40,
+                                                 OPENER:    True},
             'starsurge':                        {SPELL:     78674,
                                                  RANGE:     40},
             'starfall':                         {SPELL:     191034,

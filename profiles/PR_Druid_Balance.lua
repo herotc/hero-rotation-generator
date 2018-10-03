@@ -166,7 +166,7 @@ local function APL()
       if HR.CastSuggested(I.ProlongedPower) then return ""; end
     end
     -- solar_wrath
-    if S.SolarWrath:IsCastableP() then
+    if S.SolarWrath:IsCastableP() and Everyone.TargetIsValid() then
       if HR.Cast(S.SolarWrath) then return ""; end
     end
   end
