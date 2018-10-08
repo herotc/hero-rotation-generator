@@ -83,14 +83,18 @@ class LuaCastable(Decorable):
     The class for castable elements: items and spells.
     """
 
+    cid = 0 
+
     def __init__(self, cast_method=None, cast_args=None, cast_template=None):
+        self.cid = LuaCastable.cid
+        LuaCastable.cid += 1
         self.condition_method = None
         self.condition_args = []
         self.additional_conditions = []
         self.has_property = lambda execution, tag: False
         self.cast_method = cast_method or Method('HR.Cast')
         self.cast_args = [self] if cast_args is None else cast_args
-        self.cast_template = cast_template or 'if {} then return ""; end'
+        self.cast_template = cast_template or 'if {} then return "{}"; end'
 
     def main_condition(self):
         """
@@ -112,11 +116,22 @@ class LuaCastable(Decorable):
         """
         return LuaExpression(None, self.cast_method, self.cast_args)
 
+    def return_string(self):
+        """
+        Return the return string of the cast.
+        """
+        try:
+            return_string = [self.simc]
+        except AttributeError:
+            return_string = []
+        return " ".join(return_string + [str(self.cid)])
+
     def print_cast(self):
         """
         Print the lua code of what to do when casting the action.
         """
-        return self.cast_template.format(self.cast().print_lua())
+        return self.cast_template.format(self.cast().print_lua(),
+                                         self.return_string())
 
 
 class LuaTemplated(LuaTyped):
