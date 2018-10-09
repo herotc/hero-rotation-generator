@@ -118,235 +118,235 @@ local function APL()
     -- snapshot_stats
     -- potion
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 9671"; end
+      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 4"; end
     end
   end
   Execute = function()
     -- skullsplitter,if=rage<60&(!talent.deadly_calm.enabled|buff.deadly_calm.down)
     if S.Skullsplitter:IsCastableP() and (Player:Rage() < 60 and (not S.DeadlyCalm:IsAvailable() or Player:BuffDownP(S.DeadlyCalmBuff))) then
-      if HR.Cast(S.Skullsplitter) then return "skullsplitter 9673"; end
+      if HR.Cast(S.Skullsplitter) then return "skullsplitter 6"; end
     end
     -- ravager,if=!buff.deadly_calm.up&(cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown.warbreaker.remains<2))
     if S.Ravager:IsCastableP() and (not Player:BuffP(S.DeadlyCalmBuff) and (S.ColossusSmash:CooldownRemainsP() < 2 or (S.Warbreaker:IsAvailable() and S.Warbreaker:CooldownRemainsP() < 2))) then
-      if HR.Cast(S.Ravager) then return "ravager 9679"; end
+      if HR.Cast(S.Ravager) then return "ravager 12"; end
     end
     -- colossus_smash,if=debuff.colossus_smash.down
     if S.ColossusSmash:IsCastableP() and (Target:DebuffDownP(S.ColossusSmashDebuff)) then
-      if HR.Cast(S.ColossusSmash) then return "colossus_smash 9689"; end
+      if HR.Cast(S.ColossusSmash) then return "colossus_smash 22"; end
     end
     -- warbreaker,if=debuff.colossus_smash.down
     if S.Warbreaker:IsCastableP() and (Target:DebuffDownP(S.ColossusSmashDebuff)) then
-      if HR.Cast(S.Warbreaker) then return "warbreaker 9693"; end
+      if HR.Cast(S.Warbreaker) then return "warbreaker 26"; end
     end
     -- deadly_calm
     if S.DeadlyCalm:IsCastableP() then
-      if HR.Cast(S.DeadlyCalm) then return "deadly_calm 9697"; end
+      if HR.Cast(S.DeadlyCalm) then return "deadly_calm 30"; end
     end
     -- bladestorm,if=rage<30&!buff.deadly_calm.up
     if S.Bladestorm:IsCastableP() and (Player:Rage() < 30 and not Player:BuffP(S.DeadlyCalmBuff)) then
-      if HR.Cast(S.Bladestorm) then return "bladestorm 9699"; end
+      if HR.Cast(S.Bladestorm) then return "bladestorm 32"; end
     end
     -- cleave,if=spell_targets.whirlwind>2
     if S.Cleave:IsReadyP() and (Cache.EnemiesCount[8] > 2) then
-      if HR.Cast(S.Cleave) then return "cleave 9703"; end
+      if HR.Cast(S.Cleave) then return "cleave 36"; end
     end
     -- slam,if=buff.crushing_assault.up
     if S.Slam:IsReadyP() and (Player:BuffP(S.CrushingAssaultBuff)) then
-      if HR.Cast(S.Slam) then return "slam 9705"; end
+      if HR.Cast(S.Slam) then return "slam 38"; end
     end
     -- mortal_strike,if=buff.overpower.stack=2&talent.dreadnaught.enabled|buff.executioners_precision.stack=2
     if S.MortalStrike:IsReadyP() and (Player:BuffStackP(S.OverpowerBuff) == 2 and S.Dreadnaught:IsAvailable() or Player:BuffStackP(S.ExecutionersPrecisionBuff) == 2) then
-      if HR.Cast(S.MortalStrike) then return "mortal_strike 9709"; end
+      if HR.Cast(S.MortalStrike) then return "mortal_strike 42"; end
     end
     -- execute,if=buff.deadly_calm.up
     if S.Execute:IsCastableP() and (Player:BuffP(S.DeadlyCalmBuff)) then
-      if HR.Cast(S.Execute) then return "execute 9717"; end
+      if HR.Cast(S.Execute) then return "execute 50"; end
     end
     -- overpower
     if S.Overpower:IsCastableP() then
-      if HR.Cast(S.Overpower) then return "overpower 9721"; end
+      if HR.Cast(S.Overpower) then return "overpower 54"; end
     end
     -- execute
     if S.Execute:IsCastableP() then
-      if HR.Cast(S.Execute) then return "execute 9723"; end
+      if HR.Cast(S.Execute) then return "execute 56"; end
     end
   end
   FiveTarget = function()
     -- skullsplitter,if=rage<60&(!talent.deadly_calm.enabled|buff.deadly_calm.down)
     if S.Skullsplitter:IsCastableP() and (Player:Rage() < 60 and (not S.DeadlyCalm:IsAvailable() or Player:BuffDownP(S.DeadlyCalmBuff))) then
-      if HR.Cast(S.Skullsplitter) then return "skullsplitter 9725"; end
+      if HR.Cast(S.Skullsplitter) then return "skullsplitter 58"; end
     end
     -- ravager,if=(!talent.warbreaker.enabled|cooldown.warbreaker.remains<2)
     if S.Ravager:IsCastableP() and ((not S.Warbreaker:IsAvailable() or S.Warbreaker:CooldownRemainsP() < 2)) then
-      if HR.Cast(S.Ravager) then return "ravager 9731"; end
+      if HR.Cast(S.Ravager) then return "ravager 64"; end
     end
     -- colossus_smash,if=debuff.colossus_smash.down
     if S.ColossusSmash:IsCastableP() and (Target:DebuffDownP(S.ColossusSmashDebuff)) then
-      if HR.Cast(S.ColossusSmash) then return "colossus_smash 9737"; end
+      if HR.Cast(S.ColossusSmash) then return "colossus_smash 70"; end
     end
     -- warbreaker,if=debuff.colossus_smash.down
     if S.Warbreaker:IsCastableP() and (Target:DebuffDownP(S.ColossusSmashDebuff)) then
-      if HR.Cast(S.Warbreaker) then return "warbreaker 9741"; end
+      if HR.Cast(S.Warbreaker) then return "warbreaker 74"; end
     end
     -- bladestorm,if=buff.sweeping_strikes.down&(!talent.deadly_calm.enabled|buff.deadly_calm.down)&((debuff.colossus_smash.remains>4.5&!azerite.test_of_might.enabled)|buff.test_of_might.up)
     if S.Bladestorm:IsCastableP() and (Player:BuffDownP(S.SweepingStrikesBuff) and (not S.DeadlyCalm:IsAvailable() or Player:BuffDownP(S.DeadlyCalmBuff)) and ((Target:DebuffRemainsP(S.ColossusSmashDebuff) > 4.5 and not S.TestofMight:AzeriteEnabled()) or Player:BuffP(S.TestofMightBuff))) then
-      if HR.Cast(S.Bladestorm) then return "bladestorm 9745"; end
+      if HR.Cast(S.Bladestorm) then return "bladestorm 78"; end
     end
     -- deadly_calm
     if S.DeadlyCalm:IsCastableP() then
-      if HR.Cast(S.DeadlyCalm) then return "deadly_calm 9759"; end
+      if HR.Cast(S.DeadlyCalm) then return "deadly_calm 92"; end
     end
     -- cleave
     if S.Cleave:IsReadyP() then
-      if HR.Cast(S.Cleave) then return "cleave 9761"; end
+      if HR.Cast(S.Cleave) then return "cleave 94"; end
     end
     -- execute,if=(!talent.cleave.enabled&dot.deep_wounds.remains<2)|(buff.sudden_death.react|buff.stone_heart.react)&(buff.sweeping_strikes.up|cooldown.sweeping_strikes.remains>8)
     if S.Execute:IsCastableP() and ((not S.Cleave:IsAvailable() and Target:DebuffRemainsP(S.DeepWoundsDebuff) < 2) or (bool(Player:BuffStackP(S.SuddenDeathBuff)) or bool(Player:BuffStackP(S.StoneHeartBuff))) and (Player:BuffP(S.SweepingStrikesBuff) or S.SweepingStrikes:CooldownRemainsP() > 8)) then
-      if HR.Cast(S.Execute) then return "execute 9763"; end
+      if HR.Cast(S.Execute) then return "execute 96"; end
     end
     -- mortal_strike,if=(!talent.cleave.enabled&dot.deep_wounds.remains<2)|buff.sweeping_strikes.up&buff.overpower.stack=2&(talent.dreadnaught.enabled|buff.executioners_precision.stack=2)
     if S.MortalStrike:IsReadyP() and ((not S.Cleave:IsAvailable() and Target:DebuffRemainsP(S.DeepWoundsDebuff) < 2) or Player:BuffP(S.SweepingStrikesBuff) and Player:BuffStackP(S.OverpowerBuff) == 2 and (S.Dreadnaught:IsAvailable() or Player:BuffStackP(S.ExecutionersPrecisionBuff) == 2)) then
-      if HR.Cast(S.MortalStrike) then return "mortal_strike 9777"; end
+      if HR.Cast(S.MortalStrike) then return "mortal_strike 110"; end
     end
     -- whirlwind,if=debuff.colossus_smash.up|(buff.crushing_assault.up&talent.fervor_of_battle.enabled)
     if S.Whirlwind:IsReadyP() and (Target:DebuffP(S.ColossusSmashDebuff) or (Player:BuffP(S.CrushingAssaultBuff) and S.FervorofBattle:IsAvailable())) then
-      if HR.Cast(S.Whirlwind) then return "whirlwind 9791"; end
+      if HR.Cast(S.Whirlwind) then return "whirlwind 124"; end
     end
     -- whirlwind,if=buff.deadly_calm.up|rage>60
     if S.Whirlwind:IsReadyP() and (Player:BuffP(S.DeadlyCalmBuff) or Player:Rage() > 60) then
-      if HR.Cast(S.Whirlwind) then return "whirlwind 9799"; end
+      if HR.Cast(S.Whirlwind) then return "whirlwind 132"; end
     end
     -- overpower
     if S.Overpower:IsCastableP() then
-      if HR.Cast(S.Overpower) then return "overpower 9803"; end
+      if HR.Cast(S.Overpower) then return "overpower 136"; end
     end
     -- whirlwind
     if S.Whirlwind:IsReadyP() then
-      if HR.Cast(S.Whirlwind) then return "whirlwind 9805"; end
+      if HR.Cast(S.Whirlwind) then return "whirlwind 138"; end
     end
   end
   Hac = function()
     -- rend,if=remains<=duration*0.3&(!raid_event.adds.up|buff.sweeping_strikes.up)
     if S.Rend:IsReadyP() and (Target:DebuffRemainsP(S.RendDebuff) <= S.RendDebuff:BaseDuration() * 0.3 and (not (Cache.EnemiesCount[8] > 1) or Player:BuffP(S.SweepingStrikesBuff))) then
-      if HR.Cast(S.Rend) then return "rend 9807"; end
+      if HR.Cast(S.Rend) then return "rend 140"; end
     end
     -- skullsplitter,if=rage<60&(cooldown.deadly_calm.remains>3|!talent.deadly_calm.enabled)
     if S.Skullsplitter:IsCastableP() and (Player:Rage() < 60 and (S.DeadlyCalm:CooldownRemainsP() > 3 or not S.DeadlyCalm:IsAvailable())) then
-      if HR.Cast(S.Skullsplitter) then return "skullsplitter 9825"; end
+      if HR.Cast(S.Skullsplitter) then return "skullsplitter 158"; end
     end
     -- deadly_calm,if=(cooldown.bladestorm.remains>6|talent.ravager.enabled&cooldown.ravager.remains>6)&(cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown.warbreaker.remains<2))
     if S.DeadlyCalm:IsCastableP() and ((S.Bladestorm:CooldownRemainsP() > 6 or S.Ravager:IsAvailable() and S.Ravager:CooldownRemainsP() > 6) and (S.ColossusSmash:CooldownRemainsP() < 2 or (S.Warbreaker:IsAvailable() and S.Warbreaker:CooldownRemainsP() < 2))) then
-      if HR.Cast(S.DeadlyCalm) then return "deadly_calm 9831"; end
+      if HR.Cast(S.DeadlyCalm) then return "deadly_calm 164"; end
     end
     -- ravager,if=(raid_event.adds.up|raid_event.adds.in>target.time_to_die)&(cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown.warbreaker.remains<2))
     if S.Ravager:IsCastableP() and (((Cache.EnemiesCount[8] > 1) or 10000000000 > Target:TimeToDie()) and (S.ColossusSmash:CooldownRemainsP() < 2 or (S.Warbreaker:IsAvailable() and S.Warbreaker:CooldownRemainsP() < 2))) then
-      if HR.Cast(S.Ravager) then return "ravager 9845"; end
+      if HR.Cast(S.Ravager) then return "ravager 178"; end
     end
     -- colossus_smash,if=raid_event.adds.up|raid_event.adds.in>40|(raid_event.adds.in>20&talent.anger_management.enabled)
     if S.ColossusSmash:IsCastableP() and ((Cache.EnemiesCount[8] > 1) or 10000000000 > 40 or (10000000000 > 20 and S.AngerManagement:IsAvailable())) then
-      if HR.Cast(S.ColossusSmash) then return "colossus_smash 9855"; end
+      if HR.Cast(S.ColossusSmash) then return "colossus_smash 188"; end
     end
     -- warbreaker,if=raid_event.adds.up|raid_event.adds.in>40|(raid_event.adds.in>20&talent.anger_management.enabled)
     if S.Warbreaker:IsCastableP() and ((Cache.EnemiesCount[8] > 1) or 10000000000 > 40 or (10000000000 > 20 and S.AngerManagement:IsAvailable())) then
-      if HR.Cast(S.Warbreaker) then return "warbreaker 9861"; end
+      if HR.Cast(S.Warbreaker) then return "warbreaker 194"; end
     end
     -- bladestorm,if=(debuff.colossus_smash.up&raid_event.adds.in>target.time_to_die)|raid_event.adds.up&((debuff.colossus_smash.remains>4.5&!azerite.test_of_might.enabled)|buff.test_of_might.up)
     if S.Bladestorm:IsCastableP() and ((Target:DebuffP(S.ColossusSmashDebuff) and 10000000000 > Target:TimeToDie()) or (Cache.EnemiesCount[8] > 1) and ((Target:DebuffRemainsP(S.ColossusSmashDebuff) > 4.5 and not S.TestofMight:AzeriteEnabled()) or Player:BuffP(S.TestofMightBuff))) then
-      if HR.Cast(S.Bladestorm) then return "bladestorm 9867"; end
+      if HR.Cast(S.Bladestorm) then return "bladestorm 200"; end
     end
     -- overpower,if=!raid_event.adds.up|(raid_event.adds.up&azerite.seismic_wave.enabled)
     if S.Overpower:IsCastableP() and (not (Cache.EnemiesCount[8] > 1) or ((Cache.EnemiesCount[8] > 1) and S.SeismicWave:AzeriteEnabled())) then
-      if HR.Cast(S.Overpower) then return "overpower 9879"; end
+      if HR.Cast(S.Overpower) then return "overpower 212"; end
     end
     -- cleave,if=spell_targets.whirlwind>2
     if S.Cleave:IsReadyP() and (Cache.EnemiesCount[8] > 2) then
-      if HR.Cast(S.Cleave) then return "cleave 9887"; end
+      if HR.Cast(S.Cleave) then return "cleave 220"; end
     end
     -- execute,if=!raid_event.adds.up|(!talent.cleave.enabled&dot.deep_wounds.remains<2)|buff.sudden_death.react
     if S.Execute:IsCastableP() and (not (Cache.EnemiesCount[8] > 1) or (not S.Cleave:IsAvailable() and Target:DebuffRemainsP(S.DeepWoundsDebuff) < 2) or bool(Player:BuffStackP(S.SuddenDeathBuff))) then
-      if HR.Cast(S.Execute) then return "execute 9889"; end
+      if HR.Cast(S.Execute) then return "execute 222"; end
     end
     -- mortal_strike,if=!raid_event.adds.up|(!talent.cleave.enabled&dot.deep_wounds.remains<2)
     if S.MortalStrike:IsReadyP() and (not (Cache.EnemiesCount[8] > 1) or (not S.Cleave:IsAvailable() and Target:DebuffRemainsP(S.DeepWoundsDebuff) < 2)) then
-      if HR.Cast(S.MortalStrike) then return "mortal_strike 9899"; end
+      if HR.Cast(S.MortalStrike) then return "mortal_strike 232"; end
     end
     -- whirlwind,if=raid_event.adds.up
     if S.Whirlwind:IsReadyP() and ((Cache.EnemiesCount[8] > 1)) then
-      if HR.Cast(S.Whirlwind) then return "whirlwind 9907"; end
+      if HR.Cast(S.Whirlwind) then return "whirlwind 240"; end
     end
     -- overpower
     if S.Overpower:IsCastableP() then
-      if HR.Cast(S.Overpower) then return "overpower 9911"; end
+      if HR.Cast(S.Overpower) then return "overpower 244"; end
     end
     -- whirlwind,if=talent.fervor_of_battle.enabled
     if S.Whirlwind:IsReadyP() and (S.FervorofBattle:IsAvailable()) then
-      if HR.Cast(S.Whirlwind) then return "whirlwind 9913"; end
+      if HR.Cast(S.Whirlwind) then return "whirlwind 246"; end
     end
     -- slam,if=!talent.fervor_of_battle.enabled&!raid_event.adds.up
     if S.Slam:IsReadyP() and (not S.FervorofBattle:IsAvailable() and not (Cache.EnemiesCount[8] > 1)) then
-      if HR.Cast(S.Slam) then return "slam 9917"; end
+      if HR.Cast(S.Slam) then return "slam 250"; end
     end
   end
   SingleTarget = function()
     -- rend,if=remains<=duration*0.3&debuff.colossus_smash.down
     if S.Rend:IsReadyP() and (Target:DebuffRemainsP(S.RendDebuff) <= S.RendDebuff:BaseDuration() * 0.3 and Target:DebuffDownP(S.ColossusSmashDebuff)) then
-      if HR.Cast(S.Rend) then return "rend 9923"; end
+      if HR.Cast(S.Rend) then return "rend 256"; end
     end
     -- skullsplitter,if=rage<60&(!talent.deadly_calm.enabled|buff.deadly_calm.down)
     if S.Skullsplitter:IsCastableP() and (Player:Rage() < 60 and (not S.DeadlyCalm:IsAvailable() or Player:BuffDownP(S.DeadlyCalmBuff))) then
-      if HR.Cast(S.Skullsplitter) then return "skullsplitter 9939"; end
+      if HR.Cast(S.Skullsplitter) then return "skullsplitter 272"; end
     end
     -- ravager,if=!buff.deadly_calm.up&(cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown.warbreaker.remains<2))
     if S.Ravager:IsCastableP() and (not Player:BuffP(S.DeadlyCalmBuff) and (S.ColossusSmash:CooldownRemainsP() < 2 or (S.Warbreaker:IsAvailable() and S.Warbreaker:CooldownRemainsP() < 2))) then
-      if HR.Cast(S.Ravager) then return "ravager 9945"; end
+      if HR.Cast(S.Ravager) then return "ravager 278"; end
     end
     -- colossus_smash,if=debuff.colossus_smash.down
     if S.ColossusSmash:IsCastableP() and (Target:DebuffDownP(S.ColossusSmashDebuff)) then
-      if HR.Cast(S.ColossusSmash) then return "colossus_smash 9955"; end
+      if HR.Cast(S.ColossusSmash) then return "colossus_smash 288"; end
     end
     -- warbreaker,if=debuff.colossus_smash.down
     if S.Warbreaker:IsCastableP() and (Target:DebuffDownP(S.ColossusSmashDebuff)) then
-      if HR.Cast(S.Warbreaker) then return "warbreaker 9959"; end
+      if HR.Cast(S.Warbreaker) then return "warbreaker 292"; end
     end
     -- deadly_calm
     if S.DeadlyCalm:IsCastableP() then
-      if HR.Cast(S.DeadlyCalm) then return "deadly_calm 9963"; end
+      if HR.Cast(S.DeadlyCalm) then return "deadly_calm 296"; end
     end
     -- execute,if=buff.sudden_death.react
     if S.Execute:IsCastableP() and (bool(Player:BuffStackP(S.SuddenDeathBuff))) then
-      if HR.Cast(S.Execute) then return "execute 9965"; end
+      if HR.Cast(S.Execute) then return "execute 298"; end
     end
     -- bladestorm,if=cooldown.mortal_strike.remains&(!talent.deadly_calm.enabled|buff.deadly_calm.down)&((debuff.colossus_smash.up&!azerite.test_of_might.enabled)|buff.test_of_might.up)
     if S.Bladestorm:IsCastableP() and (bool(S.MortalStrike:CooldownRemainsP()) and (not S.DeadlyCalm:IsAvailable() or Player:BuffDownP(S.DeadlyCalmBuff)) and ((Target:DebuffP(S.ColossusSmashDebuff) and not S.TestofMight:AzeriteEnabled()) or Player:BuffP(S.TestofMightBuff))) then
-      if HR.Cast(S.Bladestorm) then return "bladestorm 9969"; end
+      if HR.Cast(S.Bladestorm) then return "bladestorm 302"; end
     end
     -- cleave,if=spell_targets.whirlwind>2
     if S.Cleave:IsReadyP() and (Cache.EnemiesCount[8] > 2) then
-      if HR.Cast(S.Cleave) then return "cleave 9983"; end
+      if HR.Cast(S.Cleave) then return "cleave 316"; end
     end
     -- overpower,if=azerite.seismic_wave.rank=3
     if S.Overpower:IsCastableP() and (S.SeismicWave:AzeriteRank() == 3) then
-      if HR.Cast(S.Overpower) then return "overpower 9985"; end
+      if HR.Cast(S.Overpower) then return "overpower 318"; end
     end
     -- mortal_strike
     if S.MortalStrike:IsReadyP() then
-      if HR.Cast(S.MortalStrike) then return "mortal_strike 9989"; end
+      if HR.Cast(S.MortalStrike) then return "mortal_strike 322"; end
     end
     -- whirlwind,if=talent.fervor_of_battle.enabled&(buff.deadly_calm.up|rage>=60)
     if S.Whirlwind:IsReadyP() and (S.FervorofBattle:IsAvailable() and (Player:BuffP(S.DeadlyCalmBuff) or Player:Rage() >= 60)) then
-      if HR.Cast(S.Whirlwind) then return "whirlwind 9991"; end
+      if HR.Cast(S.Whirlwind) then return "whirlwind 324"; end
     end
     -- overpower
     if S.Overpower:IsCastableP() then
-      if HR.Cast(S.Overpower) then return "overpower 9997"; end
+      if HR.Cast(S.Overpower) then return "overpower 330"; end
     end
     -- whirlwind,if=talent.fervor_of_battle.enabled&(!azerite.test_of_might.enabled|debuff.colossus_smash.up)
     if S.Whirlwind:IsReadyP() and (S.FervorofBattle:IsAvailable() and (not S.TestofMight:AzeriteEnabled() or Target:DebuffP(S.ColossusSmashDebuff))) then
-      if HR.Cast(S.Whirlwind) then return "whirlwind 9999"; end
+      if HR.Cast(S.Whirlwind) then return "whirlwind 332"; end
     end
     -- slam,if=!talent.fervor_of_battle.enabled&(!azerite.test_of_might.enabled|debuff.colossus_smash.up|buff.deadly_calm.up|rage>=60)
     if S.Slam:IsReadyP() and (not S.FervorofBattle:IsAvailable() and (not S.TestofMight:AzeriteEnabled() or Target:DebuffP(S.ColossusSmashDebuff) or Player:BuffP(S.DeadlyCalmBuff) or Player:Rage() >= 60)) then
-      if HR.Cast(S.Slam) then return "slam 10007"; end
+      if HR.Cast(S.Slam) then return "slam 340"; end
     end
   end
   -- call precombat
@@ -356,44 +356,44 @@ local function APL()
   if Everyone.TargetIsValid() then
     -- charge
     if S.Charge:IsCastableP() then
-      if HR.Cast(S.Charge, Settings.Arms.GCDasOffGCD.Charge) then return "charge 10018"; end
+      if HR.Cast(S.Charge, Settings.Arms.GCDasOffGCD.Charge) then return "charge 351"; end
     end
     -- auto_attack
     -- potion
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 10021"; end
+      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 354"; end
     end
     -- blood_fury,if=debuff.colossus_smash.up
     if S.BloodFury:IsCastableP() and HR.CDsON() and (Target:DebuffP(S.ColossusSmashDebuff)) then
-      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return "blood_fury 10023"; end
+      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return "blood_fury 356"; end
     end
     -- berserking,if=debuff.colossus_smash.up
     if S.Berserking:IsCastableP() and HR.CDsON() and (Target:DebuffP(S.ColossusSmashDebuff)) then
-      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return "berserking 10027"; end
+      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return "berserking 360"; end
     end
     -- arcane_torrent,if=debuff.colossus_smash.down&cooldown.mortal_strike.remains>1.5&rage<50
     if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (Target:DebuffDownP(S.ColossusSmashDebuff) and S.MortalStrike:CooldownRemainsP() > 1.5 and Player:Rage() < 50) then
-      if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return "arcane_torrent 10031"; end
+      if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return "arcane_torrent 364"; end
     end
     -- lights_judgment,if=debuff.colossus_smash.down
     if S.LightsJudgment:IsCastableP() and HR.CDsON() and (Target:DebuffDownP(S.ColossusSmashDebuff)) then
-      if HR.Cast(S.LightsJudgment) then return "lights_judgment 10037"; end
+      if HR.Cast(S.LightsJudgment) then return "lights_judgment 370"; end
     end
     -- fireblood,if=debuff.colossus_smash.up
     if S.Fireblood:IsCastableP() and HR.CDsON() and (Target:DebuffP(S.ColossusSmashDebuff)) then
-      if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return "fireblood 10041"; end
+      if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return "fireblood 374"; end
     end
     -- ancestral_call,if=debuff.colossus_smash.up
     if S.AncestralCall:IsCastableP() and HR.CDsON() and (Target:DebuffP(S.ColossusSmashDebuff)) then
-      if HR.Cast(S.AncestralCall, Settings.Commons.OffGCDasOffGCD.Racials) then return "ancestral_call 10045"; end
+      if HR.Cast(S.AncestralCall, Settings.Commons.OffGCDasOffGCD.Racials) then return "ancestral_call 378"; end
     end
     -- avatar,if=cooldown.colossus_smash.remains<8|(talent.warbreaker.enabled&cooldown.warbreaker.remains<8)
     if S.Avatar:IsCastableP() and HR.CDsON() and (S.ColossusSmash:CooldownRemainsP() < 8 or (S.Warbreaker:IsAvailable() and S.Warbreaker:CooldownRemainsP() < 8)) then
-      if HR.Cast(S.Avatar, Settings.Arms.GCDasOffGCD.Avatar) then return "avatar 10049"; end
+      if HR.Cast(S.Avatar, Settings.Arms.GCDasOffGCD.Avatar) then return "avatar 382"; end
     end
     -- sweeping_strikes,if=spell_targets.whirlwind>1&(cooldown.bladestorm.remains>10|cooldown.colossus_smash.remains>8|azerite.test_of_might.enabled)
     if S.SweepingStrikes:IsCastableP() and (Cache.EnemiesCount[8] > 1 and (S.Bladestorm:CooldownRemainsP() > 10 or S.ColossusSmash:CooldownRemainsP() > 8 or S.TestofMight:AzeriteEnabled())) then
-      if HR.Cast(S.SweepingStrikes) then return "sweeping_strikes 10057"; end
+      if HR.Cast(S.SweepingStrikes) then return "sweeping_strikes 390"; end
     end
     -- run_action_list,name=hac,if=raid_event.adds.exists
     if ((Cache.EnemiesCount[8] > 1)) then
