@@ -98,59 +98,59 @@ local function APL()
     -- snapshot_stats
     -- potion
     if I.OldWar:IsReady() and Settings.Commons.UsePotions then
-      if HR.CastSuggested(I.OldWar) then return "old_war 10081"; end
+      if HR.CastSuggested(I.OldWar) then return "old_war 4"; end
     end
   end
   Movement = function()
     -- heroic_leap
     if S.HeroicLeap:IsCastableP() then
-      if HR.Cast(S.HeroicLeap) then return "heroic_leap 10083"; end
+      if HR.Cast(S.HeroicLeap) then return "heroic_leap 6"; end
     end
   end
   SingleTarget = function()
     -- siegebreaker
     if S.Siegebreaker:IsCastableP() then
-      if HR.Cast(S.Siegebreaker) then return "siegebreaker 10085"; end
+      if HR.Cast(S.Siegebreaker) then return "siegebreaker 8"; end
     end
     -- rampage,if=buff.recklessness.up|(talent.frothing_berserker.enabled|talent.carnage.enabled&(buff.enrage.remains<gcd|rage>90)|talent.massacre.enabled&(buff.enrage.remains<gcd|rage>90))
     if S.Rampage:IsCastableP() and (Player:BuffP(S.RecklessnessBuff) or (S.FrothingBerserker:IsAvailable() or S.Carnage:IsAvailable() and (Player:BuffRemainsP(S.EnrageBuff) < Player:GCD() or Player:Rage() > 90) or S.Massacre:IsAvailable() and (Player:BuffRemainsP(S.EnrageBuff) < Player:GCD() or Player:Rage() > 90))) then
-      if HR.Cast(S.Rampage) then return "rampage 10087"; end
+      if HR.Cast(S.Rampage) then return "rampage 10"; end
     end
     -- execute,if=buff.enrage.up
     if S.Execute:IsCastableP() and (Player:BuffP(S.EnrageBuff)) then
-      if HR.Cast(S.Execute) then return "execute 10101"; end
+      if HR.Cast(S.Execute) then return "execute 24"; end
     end
     -- bloodthirst,if=buff.enrage.down
     if S.Bloodthirst:IsCastableP() and (Player:BuffDownP(S.EnrageBuff)) then
-      if HR.Cast(S.Bloodthirst) then return "bloodthirst 10105"; end
+      if HR.Cast(S.Bloodthirst) then return "bloodthirst 28"; end
     end
     -- raging_blow,if=charges=2
     if S.RagingBlow:IsCastableP() and (S.RagingBlow:ChargesP() == 2) then
-      if HR.Cast(S.RagingBlow) then return "raging_blow 10109"; end
+      if HR.Cast(S.RagingBlow) then return "raging_blow 32"; end
     end
     -- bloodthirst
     if S.Bloodthirst:IsCastableP() then
-      if HR.Cast(S.Bloodthirst) then return "bloodthirst 10115"; end
+      if HR.Cast(S.Bloodthirst) then return "bloodthirst 38"; end
     end
     -- bladestorm,if=prev_gcd.1.rampage&(debuff.siegebreaker.up|!talent.siegebreaker.enabled)
     if S.Bladestorm:IsCastableP() and (Player:PrevGCDP(1, S.Rampage) and (Target:DebuffP(S.SiegebreakerDebuff) or not S.Siegebreaker:IsAvailable())) then
-      if HR.Cast(S.Bladestorm) then return "bladestorm 10117"; end
+      if HR.Cast(S.Bladestorm) then return "bladestorm 40"; end
     end
     -- dragon_roar,if=buff.enrage.up
     if S.DragonRoar:IsCastableP() and (Player:BuffP(S.EnrageBuff)) then
-      if HR.Cast(S.DragonRoar) then return "dragon_roar 10125"; end
+      if HR.Cast(S.DragonRoar) then return "dragon_roar 48"; end
     end
     -- raging_blow,if=talent.carnage.enabled|(talent.massacre.enabled&rage<80)|(talent.frothing_berserker.enabled&rage<90)
     if S.RagingBlow:IsCastableP() and (S.Carnage:IsAvailable() or (S.Massacre:IsAvailable() and Player:Rage() < 80) or (S.FrothingBerserker:IsAvailable() and Player:Rage() < 90)) then
-      if HR.Cast(S.RagingBlow) then return "raging_blow 10129"; end
+      if HR.Cast(S.RagingBlow) then return "raging_blow 52"; end
     end
     -- furious_slash,if=talent.furious_slash.enabled
     if S.FuriousSlash:IsCastableP() and (S.FuriousSlash:IsAvailable()) then
-      if HR.Cast(S.FuriousSlash) then return "furious_slash 10137"; end
+      if HR.Cast(S.FuriousSlash) then return "furious_slash 60"; end
     end
     -- whirlwind
     if S.Whirlwind:IsCastableP() then
-      if HR.Cast(S.Whirlwind) then return "whirlwind 10141"; end
+      if HR.Cast(S.Whirlwind) then return "whirlwind 64"; end
     end
   end
   -- call precombat
@@ -161,7 +161,7 @@ local function APL()
     -- auto_attack
     -- charge
     if S.Charge:IsCastableP() then
-      if HR.Cast(S.Charge, Settings.Fury.GCDasOffGCD.Charge) then return "charge 10145"; end
+      if HR.Cast(S.Charge, Settings.Fury.GCDasOffGCD.Charge) then return "charge 68"; end
     end
     -- run_action_list,name=movement,if=movement.distance>5
     if (movement.distance > 5) then
@@ -169,51 +169,51 @@ local function APL()
     end
     -- heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists
     if S.HeroicLeap:IsCastableP() and ((raid_event.movement.distance > 25 and 10000000000 > 45) or not false) then
-      if HR.Cast(S.HeroicLeap) then return "heroic_leap 10149"; end
+      if HR.Cast(S.HeroicLeap) then return "heroic_leap 72"; end
     end
     -- potion
     if I.OldWar:IsReady() and Settings.Commons.UsePotions then
-      if HR.CastSuggested(I.OldWar) then return "old_war 10151"; end
+      if HR.CastSuggested(I.OldWar) then return "old_war 74"; end
     end
     -- furious_slash,if=talent.furious_slash.enabled&(buff.furious_slash.stack<3|buff.furious_slash.remains<3|(cooldown.recklessness.remains<3&buff.furious_slash.remains<9))
     if S.FuriousSlash:IsCastableP() and (S.FuriousSlash:IsAvailable() and (Player:BuffStackP(S.FuriousSlashBuff) < 3 or Player:BuffRemainsP(S.FuriousSlashBuff) < 3 or (S.Recklessness:CooldownRemainsP() < 3 and Player:BuffRemainsP(S.FuriousSlashBuff) < 9))) then
-      if HR.Cast(S.FuriousSlash) then return "furious_slash 10153"; end
+      if HR.Cast(S.FuriousSlash) then return "furious_slash 76"; end
     end
     -- bloodthirst,if=equipped.kazzalax_fujiedas_fury&(buff.fujiedas_fury.down|remains<2)
     if S.Bloodthirst:IsCastableP() and (I.KazzalaxFujiedasFury:IsEquipped() and (Player:BuffDownP(S.FujiedasFuryBuff) or remains < 2)) then
-      if HR.Cast(S.Bloodthirst) then return "bloodthirst 10165"; end
+      if HR.Cast(S.Bloodthirst) then return "bloodthirst 88"; end
     end
     -- rampage,if=cooldown.recklessness.remains<3
     if S.Rampage:IsCastableP() and (S.Recklessness:CooldownRemainsP() < 3) then
-      if HR.Cast(S.Rampage) then return "rampage 10175"; end
+      if HR.Cast(S.Rampage) then return "rampage 98"; end
     end
     -- recklessness
     if S.Recklessness:IsCastableP() then
-      if HR.Cast(S.Recklessness) then return "recklessness 10179"; end
+      if HR.Cast(S.Recklessness) then return "recklessness 102"; end
     end
     -- whirlwind,if=spell_targets.whirlwind>1&!buff.meat_cleaver.up
     if S.Whirlwind:IsCastableP() and (Cache.EnemiesCount[8] > 1 and not Player:BuffP(S.MeatCleaverBuff)) then
-      if HR.Cast(S.Whirlwind) then return "whirlwind 10181"; end
+      if HR.Cast(S.Whirlwind) then return "whirlwind 104"; end
     end
     -- blood_fury,if=buff.recklessness.up
     if S.BloodFury:IsCastableP() and HR.CDsON() and (Player:BuffP(S.RecklessnessBuff)) then
-      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return "blood_fury 10185"; end
+      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return "blood_fury 108"; end
     end
     -- berserking,if=buff.recklessness.up
     if S.Berserking:IsCastableP() and HR.CDsON() and (Player:BuffP(S.RecklessnessBuff)) then
-      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return "berserking 10189"; end
+      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return "berserking 112"; end
     end
     -- lights_judgment,if=buff.recklessness.down
     if S.LightsJudgment:IsCastableP() and HR.CDsON() and (Player:BuffDownP(S.RecklessnessBuff)) then
-      if HR.Cast(S.LightsJudgment) then return "lights_judgment 10193"; end
+      if HR.Cast(S.LightsJudgment) then return "lights_judgment 116"; end
     end
     -- fireblood,if=buff.recklessness.up
     if S.Fireblood:IsCastableP() and HR.CDsON() and (Player:BuffP(S.RecklessnessBuff)) then
-      if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return "fireblood 10197"; end
+      if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return "fireblood 120"; end
     end
     -- ancestral_call,if=buff.recklessness.up
     if S.AncestralCall:IsCastableP() and HR.CDsON() and (Player:BuffP(S.RecklessnessBuff)) then
-      if HR.Cast(S.AncestralCall, Settings.Commons.OffGCDasOffGCD.Racials) then return "ancestral_call 10201"; end
+      if HR.Cast(S.AncestralCall, Settings.Commons.OffGCDasOffGCD.Racials) then return "ancestral_call 124"; end
     end
     -- run_action_list,name=single_target
     if (true) then

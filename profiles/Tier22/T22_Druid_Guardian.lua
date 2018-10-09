@@ -110,54 +110,54 @@ local function APL()
     -- augmentation
     -- bear_form
     if S.BearForm:IsCastableP() then
-      if HR.Cast(S.BearForm) then return "bear_form 1354"; end
+      if HR.Cast(S.BearForm) then return "bear_form 3"; end
     end
     -- snapshot_stats
     -- potion
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 1357"; end
+      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 6"; end
     end
   end
   Cooldowns = function()
     -- potion
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 1359"; end
+      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 8"; end
     end
     -- blood_fury
     if S.BloodFury:IsCastableP() and HR.CDsON() then
-      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return "blood_fury 1361"; end
+      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return "blood_fury 10"; end
     end
     -- berserking
     if S.Berserking:IsCastableP() and HR.CDsON() then
-      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return "berserking 1363"; end
+      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return "berserking 12"; end
     end
     -- arcane_torrent
     if S.ArcaneTorrent:IsCastableP() and HR.CDsON() then
-      if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return "arcane_torrent 1365"; end
+      if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return "arcane_torrent 14"; end
     end
     -- lights_judgment
     if S.LightsJudgment:IsCastableP() and HR.CDsON() then
-      if HR.Cast(S.LightsJudgment) then return "lights_judgment 1367"; end
+      if HR.Cast(S.LightsJudgment) then return "lights_judgment 16"; end
     end
     -- fireblood
     if S.Fireblood:IsCastableP() and HR.CDsON() then
-      if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return "fireblood 1369"; end
+      if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return "fireblood 18"; end
     end
     -- ancestral_call
     if S.AncestralCall:IsCastableP() and HR.CDsON() then
-      if HR.Cast(S.AncestralCall, Settings.Commons.OffGCDasOffGCD.Racials) then return "ancestral_call 1371"; end
+      if HR.Cast(S.AncestralCall, Settings.Commons.OffGCDasOffGCD.Racials) then return "ancestral_call 20"; end
     end
     -- barkskin,if=buff.bear_form.up
     if S.Barkskin:IsCastableP() and (Player:BuffP(S.BearFormBuff)) then
-      if HR.Cast(S.Barkskin) then return "barkskin 1373"; end
+      if HR.Cast(S.Barkskin) then return "barkskin 22"; end
     end
     -- lunar_beam,if=buff.bear_form.up
     if S.LunarBeam:IsCastableP() and (Player:BuffP(S.BearFormBuff)) then
-      if HR.Cast(S.LunarBeam) then return "lunar_beam 1377"; end
+      if HR.Cast(S.LunarBeam) then return "lunar_beam 26"; end
     end
     -- bristling_fur,if=buff.bear_form.up
     if S.BristlingFur:IsCastableP() and (Player:BuffP(S.BearFormBuff)) then
-      if HR.Cast(S.BristlingFur) then return "bristling_fur 1381"; end
+      if HR.Cast(S.BristlingFur) then return "bristling_fur 30"; end
     end
     -- use_items
   end
@@ -173,47 +173,47 @@ local function APL()
     end
     -- maul,if=rage.deficit<10&active_enemies<4
     if S.Maul:IsCastableP() and (Player:RageDeficit() < 10 and Cache.EnemiesCount[40] < 4) then
-      if HR.Cast(S.Maul) then return "maul 1390"; end
+      if HR.Cast(S.Maul) then return "maul 39"; end
     end
     -- pulverize,target_if=dot.thrash_bear.stack=dot.thrash_bear.max_stacks
     if S.Pulverize:IsCastableP() and (Target:DebuffStackP(S.ThrashBearDebuff) == dot.thrash_bear.max_stacks) then
-      if HR.Cast(S.Pulverize) then return "pulverize 1398"; end
+      if HR.Cast(S.Pulverize) then return "pulverize 47"; end
     end
     -- moonfire,target_if=dot.moonfire.refreshable&active_enemies<2
     if S.Moonfire:IsCastableP() and (Target:DebuffRefreshableCP(S.MoonfireDebuff) and Cache.EnemiesCount[40] < 2) then
-      if HR.Cast(S.Moonfire) then return "moonfire 1404"; end
+      if HR.Cast(S.Moonfire) then return "moonfire 53"; end
     end
     -- incarnation
     if S.Incarnation:IsCastableP() then
-      if HR.Cast(S.Incarnation) then return "incarnation 1416"; end
+      if HR.Cast(S.Incarnation) then return "incarnation 65"; end
     end
     -- thrash,if=(buff.incarnation.down&active_enemies>1)|(buff.incarnation.up&active_enemies>4)
     if Thrash():IsCastableP() and ((Player:BuffDownP(S.IncarnationBuff) and Cache.EnemiesCount[40] > 1) or (Player:BuffP(S.IncarnationBuff) and Cache.EnemiesCount[40] > 4)) then
-      if HR.Cast(Thrash()) then return "thrash 1418"; end
+      if HR.Cast(Thrash()) then return "thrash 67"; end
     end
     -- swipe,if=buff.incarnation.down&active_enemies>4
     if Swipe():IsCastableP() and (Player:BuffDownP(S.IncarnationBuff) and Cache.EnemiesCount[40] > 4) then
-      if HR.Cast(Swipe()) then return "swipe 1436"; end
+      if HR.Cast(Swipe()) then return "swipe 85"; end
     end
     -- mangle,if=dot.thrash_bear.ticking
     if S.Mangle:IsCastableP() and (Target:DebuffP(S.ThrashBearDebuff)) then
-      if HR.Cast(S.Mangle) then return "mangle 1446"; end
+      if HR.Cast(S.Mangle) then return "mangle 95"; end
     end
     -- moonfire,target_if=buff.galactic_guardian.up&active_enemies<2
     if S.Moonfire:IsCastableP() and (Player:BuffP(S.GalacticGuardianBuff) and Cache.EnemiesCount[40] < 2) then
-      if HR.Cast(S.Moonfire) then return "moonfire 1450"; end
+      if HR.Cast(S.Moonfire) then return "moonfire 99"; end
     end
     -- thrash
     if Thrash():IsCastableP() then
-      if HR.Cast(Thrash()) then return "thrash 1462"; end
+      if HR.Cast(Thrash()) then return "thrash 111"; end
     end
     -- maul
     if S.Maul:IsCastableP() then
-      if HR.Cast(S.Maul) then return "maul 1464"; end
+      if HR.Cast(S.Maul) then return "maul 113"; end
     end
     -- swipe
     if Swipe():IsCastableP() then
-      if HR.Cast(Swipe()) then return "swipe 1466"; end
+      if HR.Cast(Swipe()) then return "swipe 115"; end
     end
   end
 end
