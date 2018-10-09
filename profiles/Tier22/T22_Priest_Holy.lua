@@ -85,74 +85,74 @@ local function APL()
     -- snapshot_stats
     -- potion
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
-      if HR.CastSuggested(I.ProlongedPower) then return ""; end
+      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 4588"; end
     end
     -- smite
     if S.Smite:IsCastableP() then
-      if HR.Cast(S.Smite) then return ""; end
+      if HR.Cast(S.Smite) then return "smite 4590"; end
     end
   end
   -- call precombat
-  if not Player:AffectingCombat() then
+  if not Player:AffectingCombat() and not Player:IsCasting() then
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   if Everyone.TargetIsValid() then
     -- use_items
     -- potion,if=buff.bloodlust.react|target.time_to_die<=80
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:HasHeroism() or Target:TimeToDie() <= 80) then
-      if HR.CastSuggested(I.ProlongedPower) then return ""; end
+      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 4594"; end
     end
     -- blood_fury
     if S.BloodFury:IsCastableP() and HR.CDsON() then
-      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
+      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return "blood_fury 4596"; end
     end
     -- berserking
     if S.Berserking:IsCastableP() and HR.CDsON() then
-      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
+      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return "berserking 4598"; end
     end
     -- arcane_torrent
     if S.ArcaneTorrent:IsCastableP() and HR.CDsON() then
-      if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
+      if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return "arcane_torrent 4600"; end
     end
     -- lights_judgment
     if S.LightsJudgment:IsCastableP() and HR.CDsON() then
-      if HR.Cast(S.LightsJudgment) then return ""; end
+      if HR.Cast(S.LightsJudgment) then return "lights_judgment 4602"; end
     end
     -- fireblood
     if S.Fireblood:IsCastableP() and HR.CDsON() then
-      if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
+      if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return "fireblood 4604"; end
     end
     -- ancestral_call
     if S.AncestralCall:IsCastableP() and HR.CDsON() then
-      if HR.Cast(S.AncestralCall, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
+      if HR.Cast(S.AncestralCall, Settings.Commons.OffGCDasOffGCD.Racials) then return "ancestral_call 4606"; end
     end
     -- holy_fire,if=refreshable&dot.holy_fire.ticking&dot.holy_fire.stack>1|dot.holy_fire.stack<2
     if S.HolyFire:IsCastableP() and (bool(refreshable) and Target:DebuffP(S.HolyFireDebuff) and Target:DebuffStackP(S.HolyFireDebuff) > 1 or Target:DebuffStackP(S.HolyFireDebuff) < 2) then
-      if HR.Cast(S.HolyFire) then return ""; end
+      if HR.Cast(S.HolyFire) then return "holy_fire 4608"; end
     end
     -- holy_word_chastise
     if S.HolyWordChastise:IsCastableP() then
-      if HR.Cast(S.HolyWordChastise) then return ""; end
+      if HR.Cast(S.HolyWordChastise) then return "holy_word_chastise 4620"; end
     end
     -- apotheosis
     if S.Apotheosis:IsCastableP() then
-      if HR.Cast(S.Apotheosis) then return ""; end
+      if HR.Cast(S.Apotheosis) then return "apotheosis 4622"; end
     end
     -- divine_star
     if S.DivineStar:IsCastableP() then
-      if HR.Cast(S.DivineStar) then return ""; end
+      if HR.Cast(S.DivineStar) then return "divine_star 4624"; end
     end
     -- halo,if=!dot.holy_fire.stack=2
     if S.Halo:IsCastableP() and (num(not bool(Target:DebuffStackP(S.HolyFireDebuff))) == 2) then
-      if HR.Cast(S.Halo) then return ""; end
+      if HR.Cast(S.Halo) then return "halo 4626"; end
     end
     -- holy_nova,if=active_enemies>2
     if S.HolyNova:IsCastableP() and (Cache.EnemiesCount[40] > 2) then
-      if HR.Cast(S.HolyNova) then return ""; end
+      if HR.Cast(S.HolyNova) then return "holy_nova 4630"; end
     end
     -- smite
     if S.Smite:IsCastableP() then
-      if HR.Cast(S.Smite) then return ""; end
+      if HR.Cast(S.Smite) then return "smite 4638"; end
     end
   end
 end
