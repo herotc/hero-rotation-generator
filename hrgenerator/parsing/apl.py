@@ -9,6 +9,7 @@ from collections import OrderedDict
 
 from .actions import ActionList, PrecombatAction
 from ..objects.units import Player, Target
+from ..objects.lua import LuaCastable
 from .context import Context
 from ..abstract.helpers import indent
 from ..constants import IGNORED_ACTION_LISTS
@@ -45,6 +46,7 @@ class APL:
         self.show_comments = True
         self.action_lists_simc = OrderedDict()
         self.context = Context()
+        LuaCastable.cid = 0
 
     def hide_simc_comments(self):
         """
