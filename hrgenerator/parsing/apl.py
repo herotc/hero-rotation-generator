@@ -188,7 +188,9 @@ class APL:
         """
         action_list_names_lua = [action_list.name.print_lua()
                                  for action_list in self.action_lists()]
-        return indent('local ' + ', '.join(action_list_names_lua))
+        if len(action_list_names_lua) > 0:
+            return indent('local ' + ', '.join(action_list_names_lua))
+        return ''
 
     def print_action_lists_lua(self):
         """
