@@ -114,48 +114,48 @@ local function APL()
     -- augmentation
     -- arcane_intellect
     if S.ArcaneIntellect:IsCastableP() and Player:BuffDownP(S.ArcaneIntellectBuff, true) then
-      if HR.Cast(S.ArcaneIntellect) then return "arcane_intellect 3"; end
+      if HR.Cast(S.ArcaneIntellect) then return "arcane_intellect 3678"; end
     end
     -- snapshot_stats
     -- mirror_image
     if S.MirrorImage:IsCastableP() then
-      if HR.Cast(S.MirrorImage) then return "mirror_image 8"; end
+      if HR.Cast(S.MirrorImage) then return "mirror_image 3683"; end
     end
     -- potion
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 10"; end
+      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 3685"; end
     end
     -- pyroblast
     if S.Pyroblast:IsCastableP() and Everyone.TargetIsValid() then
-      if HR.Cast(S.Pyroblast) then return "pyroblast 12"; end
+      if HR.Cast(S.Pyroblast) then return "pyroblast 3687"; end
     end
   end
   ActiveTalents = function()
     -- blast_wave,if=(buff.combustion.down)|(buff.combustion.up&action.fire_blast.charges<1)
     if S.BlastWave:IsCastableP() and ((Player:BuffDownP(S.CombustionBuff)) or (Player:BuffP(S.CombustionBuff) and S.FireBlast:ChargesP() < 1)) then
-      if HR.Cast(S.BlastWave) then return "blast_wave 14"; end
+      if HR.Cast(S.BlastWave) then return "blast_wave 3689"; end
     end
     -- meteor,if=cooldown.combustion.remains>40|(cooldown.combustion.remains>target.time_to_die)|buff.rune_of_power.up|firestarter.active
     if S.Meteor:IsCastableP() and (S.Combustion:CooldownRemainsP() > 40 or (S.Combustion:CooldownRemainsP() > Target:TimeToDie()) or Player:BuffP(S.RuneofPowerBuff) or bool(S.Firestarter:ActiveStatus())) then
-      if HR.Cast(S.Meteor) then return "meteor 24"; end
+      if HR.Cast(S.Meteor) then return "meteor 3699"; end
     end
     -- dragons_breath,if=talent.alexstraszas_fury.enabled&!buff.hot_streak.react
     if S.DragonsBreath:IsCastableP() and (S.AlexstraszasFury:IsAvailable() and not bool(Player:BuffStackP(S.HotStreakBuff))) then
-      if HR.Cast(S.DragonsBreath) then return "dragons_breath 32"; end
+      if HR.Cast(S.DragonsBreath) then return "dragons_breath 3707"; end
     end
     -- living_bomb,if=active_enemies>1&buff.combustion.down
     if S.LivingBomb:IsCastableP() and (Cache.EnemiesCount[40] > 1 and Player:BuffDownP(S.CombustionBuff)) then
-      if HR.Cast(S.LivingBomb) then return "living_bomb 38"; end
+      if HR.Cast(S.LivingBomb) then return "living_bomb 3713"; end
     end
   end
   CombustionPhase = function()
     -- lights_judgment,if=buff.combustion.down
     if S.LightsJudgment:IsCastableP() and HR.CDsON() and (Player:BuffDownP(S.CombustionBuff)) then
-      if HR.Cast(S.LightsJudgment) then return "lights_judgment 48"; end
+      if HR.Cast(S.LightsJudgment) then return "lights_judgment 3723"; end
     end
     -- rune_of_power,if=buff.combustion.down
     if S.RuneofPower:IsCastableP() and (Player:BuffDownP(S.CombustionBuff)) then
-      if HR.Cast(S.RuneofPower, Settings.Fire.GCDasOffGCD.RuneofPower) then return "rune_of_power 52"; end
+      if HR.Cast(S.RuneofPower, Settings.Fire.GCDasOffGCD.RuneofPower) then return "rune_of_power 3727"; end
     end
     -- call_action_list,name=active_talents
     if (true) then
@@ -163,74 +163,74 @@ local function APL()
     end
     -- combustion
     if S.Combustion:IsCastableP() and HR.CDsON() then
-      if HR.Cast(S.Combustion, Settings.Fire.OffGCDasOffGCD.Combustion) then return "combustion 58"; end
+      if HR.Cast(S.Combustion, Settings.Fire.OffGCDasOffGCD.Combustion) then return "combustion 3733"; end
     end
     -- potion
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 60"; end
+      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 3735"; end
     end
     -- blood_fury
     if S.BloodFury:IsCastableP() and HR.CDsON() then
-      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return "blood_fury 62"; end
+      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return "blood_fury 3737"; end
     end
     -- berserking
     if S.Berserking:IsCastableP() and HR.CDsON() then
-      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return "berserking 64"; end
+      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return "berserking 3739"; end
     end
     -- fireblood
     if S.Fireblood:IsCastableP() and HR.CDsON() then
-      if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return "fireblood 66"; end
+      if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return "fireblood 3741"; end
     end
     -- ancestral_call
     if S.AncestralCall:IsCastableP() and HR.CDsON() then
-      if HR.Cast(S.AncestralCall, Settings.Commons.OffGCDasOffGCD.Racials) then return "ancestral_call 68"; end
+      if HR.Cast(S.AncestralCall, Settings.Commons.OffGCDasOffGCD.Racials) then return "ancestral_call 3743"; end
     end
     -- use_items
     -- flamestrike,if=((talent.flame_patch.enabled&active_enemies>2)|active_enemies>6)&buff.hot_streak.react
     if S.Flamestrike:IsCastableP() and (((S.FlamePatch:IsAvailable() and Cache.EnemiesCount[40] > 2) or Cache.EnemiesCount[40] > 6) and bool(Player:BuffStackP(S.HotStreakBuff))) then
-      if HR.Cast(S.Flamestrike) then return "flamestrike 71"; end
+      if HR.Cast(S.Flamestrike) then return "flamestrike 3746"; end
     end
     -- pyroblast,if=buff.pyroclasm.react&buff.combustion.remains>execute_time
     if S.Pyroblast:IsCastableP() and (bool(Player:BuffStackP(S.PyroclasmBuff)) and Player:BuffRemainsP(S.CombustionBuff) > S.Pyroblast:ExecuteTime()) then
-      if HR.Cast(S.Pyroblast) then return "pyroblast 89"; end
+      if HR.Cast(S.Pyroblast) then return "pyroblast 3764"; end
     end
     -- pyroblast,if=buff.hot_streak.react
     if S.Pyroblast:IsCastableP() and (bool(Player:BuffStackP(S.HotStreakBuff))) then
-      if HR.Cast(S.Pyroblast) then return "pyroblast 99"; end
+      if HR.Cast(S.Pyroblast) then return "pyroblast 3774"; end
     end
     -- fire_blast,if=buff.heating_up.react
     if S.FireBlast:IsCastableP() and (bool(Player:BuffStackP(S.HeatingUpBuff))) then
-      if HR.Cast(S.FireBlast) then return "fire_blast 103"; end
+      if HR.Cast(S.FireBlast) then return "fire_blast 3778"; end
     end
     -- phoenix_flames
     if S.PhoenixFlames:IsCastableP() then
-      if HR.Cast(S.PhoenixFlames) then return "phoenix_flames 107"; end
+      if HR.Cast(S.PhoenixFlames) then return "phoenix_flames 3782"; end
     end
     -- scorch,if=buff.combustion.remains>cast_time
     if S.Scorch:IsCastableP() and (Player:BuffRemainsP(S.CombustionBuff) > S.Scorch:CastTime()) then
-      if HR.Cast(S.Scorch) then return "scorch 109"; end
+      if HR.Cast(S.Scorch) then return "scorch 3784"; end
     end
     -- dragons_breath,if=!buff.hot_streak.react&action.fire_blast.charges<1
     if S.DragonsBreath:IsCastableP() and (not bool(Player:BuffStackP(S.HotStreakBuff)) and S.FireBlast:ChargesP() < 1) then
-      if HR.Cast(S.DragonsBreath) then return "dragons_breath 117"; end
+      if HR.Cast(S.DragonsBreath) then return "dragons_breath 3792"; end
     end
     -- scorch,if=target.health.pct<=30&talent.searing_touch.enabled
     if S.Scorch:IsCastableP() and (Target:HealthPercentage() <= 30 and S.SearingTouch:IsAvailable()) then
-      if HR.Cast(S.Scorch) then return "scorch 125"; end
+      if HR.Cast(S.Scorch) then return "scorch 3800"; end
     end
   end
   RopPhase = function()
     -- rune_of_power
     if S.RuneofPower:IsCastableP() then
-      if HR.Cast(S.RuneofPower, Settings.Fire.GCDasOffGCD.RuneofPower) then return "rune_of_power 129"; end
+      if HR.Cast(S.RuneofPower, Settings.Fire.GCDasOffGCD.RuneofPower) then return "rune_of_power 3804"; end
     end
     -- flamestrike,if=((talent.flame_patch.enabled&active_enemies>1)|active_enemies>4)&buff.hot_streak.react
     if S.Flamestrike:IsCastableP() and (((S.FlamePatch:IsAvailable() and Cache.EnemiesCount[40] > 1) or Cache.EnemiesCount[40] > 4) and bool(Player:BuffStackP(S.HotStreakBuff))) then
-      if HR.Cast(S.Flamestrike) then return "flamestrike 131"; end
+      if HR.Cast(S.Flamestrike) then return "flamestrike 3806"; end
     end
     -- pyroblast,if=buff.hot_streak.react
     if S.Pyroblast:IsCastableP() and (bool(Player:BuffStackP(S.HotStreakBuff))) then
-      if HR.Cast(S.Pyroblast) then return "pyroblast 149"; end
+      if HR.Cast(S.Pyroblast) then return "pyroblast 3824"; end
     end
     -- call_action_list,name=active_talents
     if (true) then
@@ -238,69 +238,69 @@ local function APL()
     end
     -- pyroblast,if=buff.pyroclasm.react&execute_time<buff.pyroclasm.remains&buff.rune_of_power.remains>cast_time
     if S.Pyroblast:IsCastableP() and (bool(Player:BuffStackP(S.PyroclasmBuff)) and S.Pyroblast:ExecuteTime() < Player:BuffRemainsP(S.PyroclasmBuff) and Player:BuffRemainsP(S.RuneofPowerBuff) > S.Pyroblast:CastTime()) then
-      if HR.Cast(S.Pyroblast) then return "pyroblast 155"; end
+      if HR.Cast(S.Pyroblast) then return "pyroblast 3830"; end
     end
     -- fire_blast,if=!prev_off_gcd.fire_blast&buff.heating_up.react&firestarter.active&charges_fractional>1.7
     if S.FireBlast:IsCastableP() and (not Player:PrevOffGCDP(1, S.FireBlast) and bool(Player:BuffStackP(S.HeatingUpBuff)) and bool(S.Firestarter:ActiveStatus()) and S.FireBlast:ChargesFractionalP() > 1.7) then
-      if HR.Cast(S.FireBlast) then return "fire_blast 171"; end
+      if HR.Cast(S.FireBlast) then return "fire_blast 3846"; end
     end
     -- phoenix_flames,if=!prev_gcd.1.phoenix_flames&charges_fractional>2.7&firestarter.active
     if S.PhoenixFlames:IsCastableP() and (not Player:PrevGCDP(1, S.PhoenixFlames) and S.PhoenixFlames:ChargesFractionalP() > 2.7 and bool(S.Firestarter:ActiveStatus())) then
-      if HR.Cast(S.PhoenixFlames) then return "phoenix_flames 181"; end
+      if HR.Cast(S.PhoenixFlames) then return "phoenix_flames 3856"; end
     end
     -- fire_blast,if=!prev_off_gcd.fire_blast&!firestarter.active
     if S.FireBlast:IsCastableP() and (not Player:PrevOffGCDP(1, S.FireBlast) and not bool(S.Firestarter:ActiveStatus())) then
-      if HR.Cast(S.FireBlast) then return "fire_blast 189"; end
+      if HR.Cast(S.FireBlast) then return "fire_blast 3864"; end
     end
     -- phoenix_flames,if=!prev_gcd.1.phoenix_flames
     if S.PhoenixFlames:IsCastableP() and (not Player:PrevGCDP(1, S.PhoenixFlames)) then
-      if HR.Cast(S.PhoenixFlames) then return "phoenix_flames 193"; end
+      if HR.Cast(S.PhoenixFlames) then return "phoenix_flames 3868"; end
     end
     -- scorch,if=target.health.pct<=30&talent.searing_touch.enabled
     if S.Scorch:IsCastableP() and (Target:HealthPercentage() <= 30 and S.SearingTouch:IsAvailable()) then
-      if HR.Cast(S.Scorch) then return "scorch 197"; end
+      if HR.Cast(S.Scorch) then return "scorch 3872"; end
     end
     -- dragons_breath,if=active_enemies>2
     if S.DragonsBreath:IsCastableP() and (Cache.EnemiesCount[40] > 2) then
-      if HR.Cast(S.DragonsBreath) then return "dragons_breath 201"; end
+      if HR.Cast(S.DragonsBreath) then return "dragons_breath 3876"; end
     end
     -- flamestrike,if=(talent.flame_patch.enabled&active_enemies>2)|active_enemies>5
     if S.Flamestrike:IsCastableP() and ((S.FlamePatch:IsAvailable() and Cache.EnemiesCount[40] > 2) or Cache.EnemiesCount[40] > 5) then
-      if HR.Cast(S.Flamestrike) then return "flamestrike 209"; end
+      if HR.Cast(S.Flamestrike) then return "flamestrike 3884"; end
     end
     -- fireball
     if S.Fireball:IsCastableP() then
-      if HR.Cast(S.Fireball) then return "fireball 225"; end
+      if HR.Cast(S.Fireball) then return "fireball 3900"; end
     end
   end
   StandardRotation = function()
     -- flamestrike,if=((talent.flame_patch.enabled&active_enemies>1)|active_enemies>4)&buff.hot_streak.react
     if S.Flamestrike:IsCastableP() and (((S.FlamePatch:IsAvailable() and Cache.EnemiesCount[40] > 1) or Cache.EnemiesCount[40] > 4) and bool(Player:BuffStackP(S.HotStreakBuff))) then
-      if HR.Cast(S.Flamestrike) then return "flamestrike 227"; end
+      if HR.Cast(S.Flamestrike) then return "flamestrike 3902"; end
     end
     -- pyroblast,if=buff.hot_streak.react&buff.hot_streak.remains<action.fireball.execute_time
     if S.Pyroblast:IsCastableP() and (bool(Player:BuffStackP(S.HotStreakBuff)) and Player:BuffRemainsP(S.HotStreakBuff) < S.Fireball:ExecuteTime()) then
-      if HR.Cast(S.Pyroblast) then return "pyroblast 245"; end
+      if HR.Cast(S.Pyroblast) then return "pyroblast 3920"; end
     end
     -- pyroblast,if=buff.hot_streak.react&firestarter.active&!talent.rune_of_power.enabled
     if S.Pyroblast:IsCastableP() and (bool(Player:BuffStackP(S.HotStreakBuff)) and bool(S.Firestarter:ActiveStatus()) and not S.RuneofPower:IsAvailable()) then
-      if HR.Cast(S.Pyroblast) then return "pyroblast 255"; end
+      if HR.Cast(S.Pyroblast) then return "pyroblast 3930"; end
     end
     -- phoenix_flames,if=charges_fractional>2.7&active_enemies>2
     if S.PhoenixFlames:IsCastableP() and (S.PhoenixFlames:ChargesFractionalP() > 2.7 and Cache.EnemiesCount[40] > 2) then
-      if HR.Cast(S.PhoenixFlames) then return "phoenix_flames 261"; end
+      if HR.Cast(S.PhoenixFlames) then return "phoenix_flames 3936"; end
     end
     -- pyroblast,if=buff.hot_streak.react&(!prev_gcd.1.pyroblast|action.pyroblast.in_flight)
     if S.Pyroblast:IsCastableP() and (bool(Player:BuffStackP(S.HotStreakBuff)) and (not Player:PrevGCDP(1, S.Pyroblast) or S.Pyroblast:InFlight())) then
-      if HR.Cast(S.Pyroblast) then return "pyroblast 273"; end
+      if HR.Cast(S.Pyroblast) then return "pyroblast 3948"; end
     end
     -- pyroblast,if=buff.hot_streak.react&target.health.pct<=30&talent.searing_touch.enabled
     if S.Pyroblast:IsCastableP() and (bool(Player:BuffStackP(S.HotStreakBuff)) and Target:HealthPercentage() <= 30 and S.SearingTouch:IsAvailable()) then
-      if HR.Cast(S.Pyroblast) then return "pyroblast 283"; end
+      if HR.Cast(S.Pyroblast) then return "pyroblast 3958"; end
     end
     -- pyroblast,if=buff.pyroclasm.react&execute_time<buff.pyroclasm.remains
     if S.Pyroblast:IsCastableP() and (bool(Player:BuffStackP(S.PyroclasmBuff)) and S.Pyroblast:ExecuteTime() < Player:BuffRemainsP(S.PyroclasmBuff)) then
-      if HR.Cast(S.Pyroblast) then return "pyroblast 289"; end
+      if HR.Cast(S.Pyroblast) then return "pyroblast 3964"; end
     end
     -- call_action_list,name=active_talents
     if (true) then
@@ -308,35 +308,35 @@ local function APL()
     end
     -- fire_blast,if=!talent.kindling.enabled&buff.heating_up.react&(!talent.rune_of_power.enabled|charges_fractional>1.4|cooldown.combustion.remains<40)&(3-charges_fractional)*(12*spell_haste)<cooldown.combustion.remains+3|target.time_to_die<4
     if S.FireBlast:IsCastableP() and (not S.Kindling:IsAvailable() and bool(Player:BuffStackP(S.HeatingUpBuff)) and (not S.RuneofPower:IsAvailable() or S.FireBlast:ChargesFractionalP() > 1.4 or S.Combustion:CooldownRemainsP() < 40) and (3 - S.FireBlast:ChargesFractionalP()) * (12 * Player:SpellHaste()) < S.Combustion:CooldownRemainsP() + 3 or Target:TimeToDie() < 4) then
-      if HR.Cast(S.FireBlast) then return "fire_blast 301"; end
+      if HR.Cast(S.FireBlast) then return "fire_blast 3976"; end
     end
     -- fire_blast,if=talent.kindling.enabled&buff.heating_up.react&(!talent.rune_of_power.enabled|charges_fractional>1.5|cooldown.combustion.remains<40)&(3-charges_fractional)*(18*spell_haste)<cooldown.combustion.remains+3|target.time_to_die<4
     if S.FireBlast:IsCastableP() and (S.Kindling:IsAvailable() and bool(Player:BuffStackP(S.HeatingUpBuff)) and (not S.RuneofPower:IsAvailable() or S.FireBlast:ChargesFractionalP() > 1.5 or S.Combustion:CooldownRemainsP() < 40) and (3 - S.FireBlast:ChargesFractionalP()) * (18 * Player:SpellHaste()) < S.Combustion:CooldownRemainsP() + 3 or Target:TimeToDie() < 4) then
-      if HR.Cast(S.FireBlast) then return "fire_blast 321"; end
+      if HR.Cast(S.FireBlast) then return "fire_blast 3996"; end
     end
     -- phoenix_flames,if=(buff.combustion.up|buff.rune_of_power.up|buff.incanters_flow.stack>3|talent.mirror_image.enabled)&(4-charges_fractional)*13<cooldown.combustion.remains+5|target.time_to_die<10
     if S.PhoenixFlames:IsCastableP() and ((Player:BuffP(S.CombustionBuff) or Player:BuffP(S.RuneofPowerBuff) or Player:BuffStackP(S.IncantersFlowBuff) > 3 or S.MirrorImage:IsAvailable()) and (4 - S.PhoenixFlames:ChargesFractionalP()) * 13 < S.Combustion:CooldownRemainsP() + 5 or Target:TimeToDie() < 10) then
-      if HR.Cast(S.PhoenixFlames) then return "phoenix_flames 341"; end
+      if HR.Cast(S.PhoenixFlames) then return "phoenix_flames 4016"; end
     end
     -- phoenix_flames,if=(buff.combustion.up|buff.rune_of_power.up)&(4-charges_fractional)*30<cooldown.combustion.remains+5
     if S.PhoenixFlames:IsCastableP() and ((Player:BuffP(S.CombustionBuff) or Player:BuffP(S.RuneofPowerBuff)) and (4 - S.PhoenixFlames:ChargesFractionalP()) * 30 < S.Combustion:CooldownRemainsP() + 5) then
-      if HR.Cast(S.PhoenixFlames) then return "phoenix_flames 357"; end
+      if HR.Cast(S.PhoenixFlames) then return "phoenix_flames 4032"; end
     end
     -- phoenix_flames,if=charges_fractional>2.5&cooldown.combustion.remains>23
     if S.PhoenixFlames:IsCastableP() and (S.PhoenixFlames:ChargesFractionalP() > 2.5 and S.Combustion:CooldownRemainsP() > 23) then
-      if HR.Cast(S.PhoenixFlames) then return "phoenix_flames 369"; end
+      if HR.Cast(S.PhoenixFlames) then return "phoenix_flames 4044"; end
     end
     -- scorch,if=(target.health.pct<=30&talent.searing_touch.enabled)|(azerite.preheat.enabled&debuff.preheat.down)
     if S.Scorch:IsCastableP() and ((Target:HealthPercentage() <= 30 and S.SearingTouch:IsAvailable()) or (S.Preheat:AzeriteEnabled() and Target:DebuffDownP(S.PreheatDebuff))) then
-      if HR.Cast(S.Scorch) then return "scorch 377"; end
+      if HR.Cast(S.Scorch) then return "scorch 4052"; end
     end
     -- fireball
     if S.Fireball:IsCastableP() then
-      if HR.Cast(S.Fireball) then return "fireball 385"; end
+      if HR.Cast(S.Fireball) then return "fireball 4060"; end
     end
     -- scorch
     if S.Scorch:IsCastableP() then
-      if HR.Cast(S.Scorch) then return "scorch 387"; end
+      if HR.Cast(S.Scorch) then return "scorch 4062"; end
     end
   end
   -- call precombat
@@ -347,15 +347,15 @@ local function APL()
     -- counterspell,if=target.debuff.casting.react
     -- mirror_image,if=buff.combustion.down
     if S.MirrorImage:IsCastableP() and (Player:BuffDownP(S.CombustionBuff)) then
-      if HR.Cast(S.MirrorImage) then return "mirror_image 391"; end
+      if HR.Cast(S.MirrorImage) then return "mirror_image 4066"; end
     end
     -- rune_of_power,if=firestarter.active&action.rune_of_power.charges=2|cooldown.combustion.remains>40&buff.combustion.down&!talent.kindling.enabled|target.time_to_die<11|talent.kindling.enabled&(charges_fractional>1.8|time<40)&cooldown.combustion.remains>40
     if S.RuneofPower:IsCastableP() and (bool(S.Firestarter:ActiveStatus()) and S.RuneofPower:ChargesP() == 2 or S.Combustion:CooldownRemainsP() > 40 and Player:BuffDownP(S.CombustionBuff) and not S.Kindling:IsAvailable() or Target:TimeToDie() < 11 or S.Kindling:IsAvailable() and (S.RuneofPower:ChargesFractionalP() > 1.8 or HL.CombatTime() < 40) and S.Combustion:CooldownRemainsP() > 40) then
-      if HR.Cast(S.RuneofPower, Settings.Fire.GCDasOffGCD.RuneofPower) then return "rune_of_power 395"; end
+      if HR.Cast(S.RuneofPower, Settings.Fire.GCDasOffGCD.RuneofPower) then return "rune_of_power 4070"; end
     end
     -- rune_of_power,if=buff.pyroclasm.react&(cooldown.combustion.remains>40|action.rune_of_power.charges>1)
     if S.RuneofPower:IsCastableP() and (bool(Player:BuffStackP(S.PyroclasmBuff)) and (S.Combustion:CooldownRemainsP() > 40 or S.RuneofPower:ChargesP() > 1)) then
-      if HR.Cast(S.RuneofPower, Settings.Fire.GCDasOffGCD.RuneofPower) then return "rune_of_power 419"; end
+      if HR.Cast(S.RuneofPower, Settings.Fire.GCDasOffGCD.RuneofPower) then return "rune_of_power 4094"; end
     end
     -- call_action_list,name=combustion_phase,if=cooldown.combustion.remains<=action.rune_of_power.cast_time+(!talent.kindling.enabled*gcd)&(!talent.firestarter.enabled|!firestarter.active|active_enemies>=4|active_enemies>=2&talent.flame_patch.enabled)|buff.combustion.up
     if HR.CDsON() and (S.Combustion:CooldownRemainsP() <= S.RuneofPower:CastTime() + (num(not S.Kindling:IsAvailable()) * Player:GCD()) and (not S.Firestarter:IsAvailable() or not bool(S.Firestarter:ActiveStatus()) or Cache.EnemiesCount[40] >= 4 or Cache.EnemiesCount[40] >= 2 and S.FlamePatch:IsAvailable()) or Player:BuffP(S.CombustionBuff)) then

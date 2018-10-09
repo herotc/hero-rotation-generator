@@ -37,7 +37,6 @@ Spell.Shaman.Enhancement = {
   FrostbrandBuff                        = Spell(196834),
   TotemMastery                          = Spell(),
   ResonanceTotemBuff                    = Spell(),
-  Bloodlust                             = Spell(2825),
   Berserking                            = Spell(26297),
   Ascendance                            = Spell(114051),
   AscendanceBuff                        = Spell(114051),
@@ -47,7 +46,6 @@ Spell.Shaman.Enhancement = {
   Fireblood                             = Spell(265221),
   AncestralCall                         = Spell(274738),
   Strike                                = Spell(),
-  EarthElemental                        = Spell(),
   EarthenSpike                          = Spell(188089),
   Sundering                             = Spell(197214),
   SunderingDebuff                       = Spell(197214),
@@ -121,185 +119,179 @@ local function APL()
     -- snapshot_stats
     -- potion
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
-      if HR.CastSuggested(I.ProlongedPower) then return ""; end
+      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 6192"; end
     end
     -- lightning_shield
     if S.LightningShield:IsCastableP() then
-      if HR.Cast(S.LightningShield) then return ""; end
+      if HR.Cast(S.LightningShield) then return "lightning_shield 6194"; end
     end
   end
   Asc = function()
     -- crash_lightning,if=!buff.crash_lightning.up&active_enemies>1&variable.furyCheck25
     if S.CrashLightning:IsCastableP() and (not Player:BuffP(S.CrashLightningBuff) and Cache.EnemiesCount[8] > 1 and bool(VarFurycheck25)) then
-      if HR.Cast(S.CrashLightning) then return ""; end
+      if HR.Cast(S.CrashLightning) then return "crash_lightning 6196"; end
     end
     -- rockbiter,if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7
-    if S.Rockbiter:IsCastableP() and (S.Landslide:IsAvailable() and not Player:BuffP(S.LandslideBuff) and S.Rockbiter:ChargesFractional() > 1.7) then
-      if HR.Cast(S.Rockbiter) then return ""; end
+    if S.Rockbiter:IsCastableP() and (S.Landslide:IsAvailable() and not Player:BuffP(S.LandslideBuff) and S.Rockbiter:ChargesFractionalP() > 1.7) then
+      if HR.Cast(S.Rockbiter) then return "rockbiter 6210"; end
     end
     -- windstrike
     if S.Windstrike:IsCastableP() then
-      if HR.Cast(S.Windstrike) then return ""; end
+      if HR.Cast(S.Windstrike) then return "windstrike 6220"; end
     end
   end
   Buffs = function()
     -- crash_lightning,if=!buff.crash_lightning.up&active_enemies>1&variable.furyCheck25
     if S.CrashLightning:IsCastableP() and (not Player:BuffP(S.CrashLightningBuff) and Cache.EnemiesCount[8] > 1 and bool(VarFurycheck25)) then
-      if HR.Cast(S.CrashLightning) then return ""; end
+      if HR.Cast(S.CrashLightning) then return "crash_lightning 6222"; end
     end
     -- rockbiter,if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7
-    if S.Rockbiter:IsCastableP() and (S.Landslide:IsAvailable() and not Player:BuffP(S.LandslideBuff) and S.Rockbiter:ChargesFractional() > 1.7) then
-      if HR.Cast(S.Rockbiter) then return ""; end
+    if S.Rockbiter:IsCastableP() and (S.Landslide:IsAvailable() and not Player:BuffP(S.LandslideBuff) and S.Rockbiter:ChargesFractionalP() > 1.7) then
+      if HR.Cast(S.Rockbiter) then return "rockbiter 6236"; end
     end
     -- fury_of_air,if=!ticking&maelstrom>=20
     if S.FuryofAir:IsCastableP() and (not Player:BuffP(S.FuryofAirBuff) and Player:Maelstrom() >= 20) then
-      if HR.Cast(S.FuryofAir) then return ""; end
+      if HR.Cast(S.FuryofAir) then return "fury_of_air 6246"; end
     end
     -- flametongue,if=!buff.flametongue.up
     if S.Flametongue:IsCastableP() and (not Player:BuffP(S.FlametongueBuff)) then
-      if HR.Cast(S.Flametongue) then return ""; end
+      if HR.Cast(S.Flametongue) then return "flametongue 6254"; end
     end
     -- frostbrand,if=talent.hailstorm.enabled&!buff.frostbrand.up&variable.furyCheck25
     if S.Frostbrand:IsCastableP() and (S.Hailstorm:IsAvailable() and not Player:BuffP(S.FrostbrandBuff) and bool(VarFurycheck25)) then
-      if HR.Cast(S.Frostbrand) then return ""; end
+      if HR.Cast(S.Frostbrand) then return "frostbrand 6258"; end
     end
     -- flametongue,if=buff.flametongue.remains<4.8+gcd
     if S.Flametongue:IsCastableP() and (Player:BuffRemainsP(S.FlametongueBuff) < 4.8 + Player:GCD()) then
-      if HR.Cast(S.Flametongue) then return ""; end
+      if HR.Cast(S.Flametongue) then return "flametongue 6266"; end
     end
     -- frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8+gcd&variable.furyCheck25
     if S.Frostbrand:IsCastableP() and (S.Hailstorm:IsAvailable() and Player:BuffRemainsP(S.FrostbrandBuff) < 4.8 + Player:GCD() and bool(VarFurycheck25)) then
-      if HR.Cast(S.Frostbrand) then return ""; end
+      if HR.Cast(S.Frostbrand) then return "frostbrand 6270"; end
     end
     -- totem_mastery,if=buff.resonance_totem.remains<2
     if S.TotemMastery:IsCastableP() and (Player:BuffRemainsP(S.ResonanceTotemBuff) < 2) then
-      if HR.Cast(S.TotemMastery) then return ""; end
+      if HR.Cast(S.TotemMastery) then return "totem_mastery 6278"; end
     end
   end
   Cds = function()
     -- bloodlust,if=target.health.pct<25|time>0.500
-    if S.Bloodlust:IsCastableP() and (Target:HealthPercentage() < 25 or HL.CombatTime() > 0.500) then
-      if HR.Cast(S.Bloodlust) then return ""; end
-    end
     -- berserking,if=(talent.ascendance.enabled&buff.ascendance.up)|(talent.elemental_spirits.enabled&feral_spirit.remains>5)|(!talent.ascendance.enabled&!talent.elemental_spirits.enabled)
     if S.Berserking:IsCastableP() and HR.CDsON() and ((S.Ascendance:IsAvailable() and Player:BuffP(S.AscendanceBuff)) or (S.ElementalSpirits:IsAvailable() and feral_spirit.remains > 5) or (not S.Ascendance:IsAvailable() and not S.ElementalSpirits:IsAvailable())) then
-      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
+      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return "berserking 6283"; end
     end
     -- blood_fury,if=(talent.ascendance.enabled&(buff.ascendance.up|cooldown.ascendance.remains>50))|(!talent.ascendance.enabled&(feral_spirit.remains>5|cooldown.feral_spirit.remains>50))
     if S.BloodFury:IsCastableP() and HR.CDsON() and ((S.Ascendance:IsAvailable() and (Player:BuffP(S.AscendanceBuff) or S.Ascendance:CooldownRemainsP() > 50)) or (not S.Ascendance:IsAvailable() and (feral_spirit.remains > 5 or S.FeralSpirit:CooldownRemainsP() > 50))) then
-      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
+      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return "blood_fury 6295"; end
     end
     -- fireblood,if=(talent.ascendance.enabled&(buff.ascendance.up|cooldown.ascendance.remains>50))|(!talent.ascendance.enabled&(feral_spirit.remains>5|cooldown.feral_spirit.remains>50))
     if S.Fireblood:IsCastableP() and HR.CDsON() and ((S.Ascendance:IsAvailable() and (Player:BuffP(S.AscendanceBuff) or S.Ascendance:CooldownRemainsP() > 50)) or (not S.Ascendance:IsAvailable() and (feral_spirit.remains > 5 or S.FeralSpirit:CooldownRemainsP() > 50))) then
-      if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
+      if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return "fireblood 6307"; end
     end
     -- ancestral_call,if=(talent.ascendance.enabled&(buff.ascendance.up|cooldown.ascendance.remains>50))|(!talent.ascendance.enabled&(feral_spirit.remains>5|cooldown.feral_spirit.remains>50))
     if S.AncestralCall:IsCastableP() and HR.CDsON() and ((S.Ascendance:IsAvailable() and (Player:BuffP(S.AscendanceBuff) or S.Ascendance:CooldownRemainsP() > 50)) or (not S.Ascendance:IsAvailable() and (feral_spirit.remains > 5 or S.FeralSpirit:CooldownRemainsP() > 50))) then
-      if HR.Cast(S.AncestralCall, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
+      if HR.Cast(S.AncestralCall, Settings.Commons.OffGCDasOffGCD.Racials) then return "ancestral_call 6319"; end
     end
     -- potion,if=buff.ascendance.up|!talent.ascendance.enabled&feral_spirit.remains>5|target.time_to_die<=60
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.AscendanceBuff) or not S.Ascendance:IsAvailable() and feral_spirit.remains > 5 or Target:TimeToDie() <= 60) then
-      if HR.CastSuggested(I.ProlongedPower) then return ""; end
+      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 6331"; end
     end
     -- feral_spirit
     if S.FeralSpirit:IsCastableP() then
-      if HR.Cast(S.FeralSpirit) then return ""; end
+      if HR.Cast(S.FeralSpirit) then return "feral_spirit 6337"; end
     end
     -- ascendance,if=cooldown.strike.remains>0
     if S.Ascendance:IsCastableP() and (S.Strike:CooldownRemainsP() > 0) then
-      if HR.Cast(S.Ascendance) then return ""; end
+      if HR.Cast(S.Ascendance) then return "ascendance 6339"; end
     end
     -- earth_elemental
-    if S.EarthElemental:IsCastableP() then
-      if HR.Cast(S.EarthElemental) then return ""; end
-    end
   end
   Core = function()
     -- earthen_spike,if=variable.furyCheck25
     if S.EarthenSpike:IsCastableP() and (bool(VarFurycheck25)) then
-      if HR.Cast(S.EarthenSpike) then return ""; end
+      if HR.Cast(S.EarthenSpike) then return "earthen_spike 6344"; end
     end
     -- sundering,if=active_enemies>=3
     if S.Sundering:IsCastableP() and (Cache.EnemiesCount[8] >= 3) then
-      if HR.Cast(S.Sundering) then return ""; end
+      if HR.Cast(S.Sundering) then return "sundering 6348"; end
     end
     -- stormstrike,cycle_targets=1,if=azerite.lightning_conduit.enabled&!debuff.lightning_conduit.up&active_enemies>1&(buff.stormbringer.up|(variable.OCPool70&variable.furyCheck35))
     if S.Stormstrike:IsCastableP() and (S.LightningConduit:AzeriteEnabled() and not Target:DebuffP(S.LightningConduitDebuff) and Cache.EnemiesCount[8] > 1 and (Player:BuffP(S.StormbringerBuff) or (bool(VarOcpool70) and bool(VarFurycheck35)))) then
-      if HR.Cast(S.Stormstrike) then return ""; end
+      if HR.Cast(S.Stormstrike) then return "stormstrike 6358"; end
     end
     -- stormstrike,if=buff.stormbringer.up|(buff.gathering_storms.up&variable.OCPool70&variable.furyCheck35)
     if S.Stormstrike:IsCastableP() and (Player:BuffP(S.StormbringerBuff) or (Player:BuffP(S.GatheringStormsBuff) and bool(VarOcpool70) and bool(VarFurycheck35))) then
-      if HR.Cast(S.Stormstrike) then return ""; end
+      if HR.Cast(S.Stormstrike) then return "stormstrike 6376"; end
     end
     -- crash_lightning,if=active_enemies>=3&variable.furyCheck25
     if S.CrashLightning:IsCastableP() and (Cache.EnemiesCount[8] >= 3 and bool(VarFurycheck25)) then
-      if HR.Cast(S.CrashLightning) then return ""; end
+      if HR.Cast(S.CrashLightning) then return "crash_lightning 6386"; end
     end
     -- lightning_bolt,if=talent.overcharge.enabled&active_enemies=1&variable.furyCheck45&maelstrom>=40
     if S.LightningBolt:IsCastableP() and (S.Overcharge:IsAvailable() and Cache.EnemiesCount[8] == 1 and bool(VarFurycheck45) and Player:Maelstrom() >= 40) then
-      if HR.Cast(S.LightningBolt) then return ""; end
+      if HR.Cast(S.LightningBolt) then return "lightning_bolt 6398"; end
     end
     -- stormstrike,if=variable.OCPool70&variable.furyCheck35
     if S.Stormstrike:IsCastableP() and (bool(VarOcpool70) and bool(VarFurycheck35)) then
-      if HR.Cast(S.Stormstrike) then return ""; end
+      if HR.Cast(S.Stormstrike) then return "stormstrike 6410"; end
     end
     -- sundering
     if S.Sundering:IsCastableP() then
-      if HR.Cast(S.Sundering) then return ""; end
+      if HR.Cast(S.Sundering) then return "sundering 6416"; end
     end
     -- crash_lightning,if=talent.forceful_winds.enabled&active_enemies>1&variable.furyCheck25
     if S.CrashLightning:IsCastableP() and (S.ForcefulWinds:IsAvailable() and Cache.EnemiesCount[8] > 1 and bool(VarFurycheck25)) then
-      if HR.Cast(S.CrashLightning) then return ""; end
+      if HR.Cast(S.CrashLightning) then return "crash_lightning 6418"; end
     end
     -- flametongue,if=talent.searing_assault.enabled
     if S.Flametongue:IsCastableP() and (S.SearingAssault:IsAvailable()) then
-      if HR.Cast(S.Flametongue) then return ""; end
+      if HR.Cast(S.Flametongue) then return "flametongue 6432"; end
     end
     -- lava_lash,if=talent.hot_hand.enabled&buff.hot_hand.react
     if S.LavaLash:IsCastableP() and (S.HotHand:IsAvailable() and bool(Player:BuffStackP(S.HotHandBuff))) then
-      if HR.Cast(S.LavaLash) then return ""; end
+      if HR.Cast(S.LavaLash) then return "lava_lash 6436"; end
     end
     -- crash_lightning,if=active_enemies>1&variable.furyCheck25
     if S.CrashLightning:IsCastableP() and (Cache.EnemiesCount[8] > 1 and bool(VarFurycheck25)) then
-      if HR.Cast(S.CrashLightning) then return ""; end
+      if HR.Cast(S.CrashLightning) then return "crash_lightning 6442"; end
     end
   end
   Filler = function()
     -- rockbiter,if=maelstrom<70
     if S.Rockbiter:IsCastableP() and (Player:Maelstrom() < 70) then
-      if HR.Cast(S.Rockbiter) then return ""; end
+      if HR.Cast(S.Rockbiter) then return "rockbiter 6454"; end
     end
     -- crash_lightning,if=talent.crashing_storm.enabled&variable.OCPool60
     if S.CrashLightning:IsCastableP() and (S.CrashingStorm:IsAvailable() and bool(VarOcpool60)) then
-      if HR.Cast(S.CrashLightning) then return ""; end
+      if HR.Cast(S.CrashLightning) then return "crash_lightning 6456"; end
     end
     -- lava_lash,if=variable.OCPool80&variable.furyCheck45
     if S.LavaLash:IsCastableP() and (bool(VarOcpool80) and bool(VarFurycheck45)) then
-      if HR.Cast(S.LavaLash) then return ""; end
+      if HR.Cast(S.LavaLash) then return "lava_lash 6462"; end
     end
     -- rockbiter
     if S.Rockbiter:IsCastableP() then
-      if HR.Cast(S.Rockbiter) then return ""; end
+      if HR.Cast(S.Rockbiter) then return "rockbiter 6468"; end
     end
     -- flametongue
     if S.Flametongue:IsCastableP() then
-      if HR.Cast(S.Flametongue) then return ""; end
+      if HR.Cast(S.Flametongue) then return "flametongue 6470"; end
     end
   end
   Opener = function()
     -- rockbiter,if=maelstrom<15&time<gcd
     if S.Rockbiter:IsCastableP() and (Player:Maelstrom() < 15 and HL.CombatTime() < Player:GCD()) then
-      if HR.Cast(S.Rockbiter) then return ""; end
+      if HR.Cast(S.Rockbiter) then return "rockbiter 6472"; end
     end
   end
   -- call precombat
-  if not Player:AffectingCombat() then
+  if not Player:AffectingCombat() and not Player:IsCasting() then
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   if Everyone.TargetIsValid() then
     -- wind_shear
     if S.WindShear:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled then
-      if HR.CastAnnotated(S.WindShear, false, "Interrupt") then return ""; end
+      if HR.CastAnnotated(S.WindShear, false, "Interrupt") then return "wind_shear 6475"; end
     end
     -- variable,name=furyCheck45,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>45))
     if (true) then
