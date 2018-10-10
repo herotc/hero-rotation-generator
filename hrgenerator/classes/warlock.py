@@ -88,21 +88,14 @@ SPELL_INFO = {
                                                  GCDAOGCD:  True},
             'summon_pet':                       {SPELL:     691,
                                                  GCDAOGCD:  True},
-            'unstable_affliction_1':            {
-                                                 DEBUFF:    233490,
-                                                 RANGE:     40},
-            'unstable_affliction_2':            {
-                                                 DEBUFF:    233496,
-                                                 RANGE:     40},
-            'unstable_affliction_3':            {
-                                                 DEBUFF:    233497,
-                                                 RANGE:     40},   
-            'unstable_affliction_4':            {
-                                                 DEBUFF:    233498,
-                                                 RANGE:     40},
-            'unstable_affliction_5':            {
-                                                 DEBUFF:    233499,
-                                                 RANGE:     40},                                                                                                                                                
+            'unstable_affliction_1':            {DEBUFF:    233490},
+            'unstable_affliction_2':            {DEBUFF:    233496},
+            'unstable_affliction_3':            {DEBUFF:    233497},
+            'unstable_affliction_4':            {DEBUFF:    233498},
+            'unstable_affliction_5':            {DEBUFF:    233499},
+            'drain_life':                       {SPELL:     234153,
+                                                 RANGE:     40,
+                                                 CD:        True}
         },
         DEMONOLOGY: {
             'summon_pet':                       {SPELL:     30146},
