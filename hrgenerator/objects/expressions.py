@@ -11,7 +11,7 @@ from .resources import (Rune, AstralPower, HolyPower, Insanity, Pain, Focus,
                         Maelstrom, Energy, ComboPoints, SoulShard,
                         ArcaneCharges, Chi, RunicPower, Fury, Rage, Mana)
 from .units import Pet
-from ..constants import (SPELL, BUFF, DEBUFF, BOOL, PET, BLOODLUST, RANGE,
+from ..constants import (SPELL, BUFF, DEBUFF, BOOL, PET, BLOODLUST, MOVEMENT, RANGE,
                          FALSE, MAX_INT, POTION)
 from ..abstract.decoratormanager import Decorable
 
@@ -530,6 +530,8 @@ class Expires:
             spell_simc = condition.condition_list[1]
             if spell_simc == BLOODLUST:
                 self.spell = Literal(BLOODLUST)
+            elif spell_simc == MOVEMENT:
+                self.spell = Literal(MOVEMENT)
             elif spell_simc == POTION:
                 self.spell = Spell(condition.parent_action,
                                    condition.player_unit.potion(), spell_type)
@@ -548,6 +550,10 @@ class Expires:
         """
         if self.spell.simc == BLOODLUST:
             self.method = Method('HasHeroism', type_=BOOL)
+            # Required when called from Aura
+            self.args = []
+        elif self.spell.simc == MOVEMENT:
+            self.method = Method('IsMoving', type_=BOOL)
             # Required when called from Aura
             self.args = []
         else:

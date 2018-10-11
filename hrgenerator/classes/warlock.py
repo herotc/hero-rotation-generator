@@ -112,7 +112,6 @@ SPELL_INFO = {
             'inevitable_demise':                {SPELL:     273521,
                                                  BUFF:      273525},
             # Placeholders
-            'movement':                         {BUFF:      152576},
             'active_uas':                       {BUFF:      233490}
         },
         DEMONOLOGY: {
