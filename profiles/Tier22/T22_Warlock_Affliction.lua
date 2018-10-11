@@ -200,91 +200,91 @@ local function APL()
     end
     -- agony,target_if=min:remains,if=talent.creeping_death.enabled&active_dot.agony<6&target.time_to_die>10&(remains<=gcd|cooldown.summon_darkglare.remains>10&refreshable)
     if S.Agony:IsCastableP() then
-      if HR.CastTargetIf(S.Agony, 40, "min", function(TargetUnit) return TargetUnit:DebuffRemainsP(S.AgonyDebuff) end, function(TargetUnit) return S.CreepingDeath:IsAvailable() and active_dot.agony < 6 and TargetUnit:TimeToDie() > 10 and (TargetUnit:DebuffRemainsP(S.AgonyDebuff) <= Player:GCD() or S.SummonDarkglare:CooldownRemainsP() > 10 and TargetUnit:DebuffRefreshableCP(S.AgonyDebuff)) end) then return "agony 103" end
+      if HR.CastTargetIf(S.Agony, 40, "min", function(TargetUnit) return TargetUnit:DebuffRemainsP(S.AgonyDebuff) end, function(TargetUnit) return S.CreepingDeath:IsAvailable() and S.AgonyDebuff:ActiveDot() < 6 and TargetUnit:TimeToDie() > 10 and (TargetUnit:DebuffRemainsP(S.AgonyDebuff) <= Player:GCD() or S.SummonDarkglare:CooldownRemainsP() > 10 and TargetUnit:DebuffRefreshableCP(S.AgonyDebuff)) end) then return "agony 105" end
     end
     -- agony,target_if=min:remains,if=!talent.creeping_death.enabled&active_dot.agony<8&target.time_to_die>10&(remains<=gcd|cooldown.summon_darkglare.remains>10&refreshable)
     if S.Agony:IsCastableP() then
-      if HR.CastTargetIf(S.Agony, 40, "min", function(TargetUnit) return TargetUnit:DebuffRemainsP(S.AgonyDebuff) end, function(TargetUnit) return not S.CreepingDeath:IsAvailable() and active_dot.agony < 8 and TargetUnit:TimeToDie() > 10 and (TargetUnit:DebuffRemainsP(S.AgonyDebuff) <= Player:GCD() or S.SummonDarkglare:CooldownRemainsP() > 10 and TargetUnit:DebuffRefreshableCP(S.AgonyDebuff)) end) then return "agony 136" end
+      if HR.CastTargetIf(S.Agony, 40, "min", function(TargetUnit) return TargetUnit:DebuffRemainsP(S.AgonyDebuff) end, function(TargetUnit) return not S.CreepingDeath:IsAvailable() and S.AgonyDebuff:ActiveDot() < 8 and TargetUnit:TimeToDie() > 10 and (TargetUnit:DebuffRemainsP(S.AgonyDebuff) <= Player:GCD() or S.SummonDarkglare:CooldownRemainsP() > 10 and TargetUnit:DebuffRefreshableCP(S.AgonyDebuff)) end) then return "agony 140" end
     end
     -- siphon_life,target_if=min:remains,if=-spell_targets.sow_the_seeds_aoe<5&target.time_to_die>10&refreshable&!(cooldown.summon_darkglare.remains<=soul_shard*action.unstable_affliction.execute_time)
     if S.SiphonLife:IsCastableP() then
-      if HR.CastTargetIf(S.SiphonLife, 40, "min", function(TargetUnit) return TargetUnit:DebuffRemainsP(S.SiphonLifeDebuff) end, function(TargetUnit) return num(true) - Cache.EnemiesCount[5] < 5 and TargetUnit:TimeToDie() > 10 and TargetUnit:DebuffRefreshableCP(S.SiphonLifeDebuff) and not (S.SummonDarkglare:CooldownRemainsP() <= Player:SoulShardsP() * S.UnstableAffliction:ExecuteTime()) end) then return "siphon_life 167" end
+      if HR.CastTargetIf(S.SiphonLife, 40, "min", function(TargetUnit) return TargetUnit:DebuffRemainsP(S.SiphonLifeDebuff) end, function(TargetUnit) return num(true) - Cache.EnemiesCount[5] < 5 and TargetUnit:TimeToDie() > 10 and TargetUnit:DebuffRefreshableCP(S.SiphonLifeDebuff) and not (S.SummonDarkglare:CooldownRemainsP() <= Player:SoulShardsP() * S.UnstableAffliction:ExecuteTime()) end) then return "siphon_life 171" end
     end
     -- siphon_life,target_if=min:remains,if=(active_dot.siphon_life<8-talent.creeping_death.enabled-spell_targets.sow_the_seeds_aoe)&target.time_to_die>10&refreshable&!(cooldown.summon_darkglare.remains<=soul_shard*action.unstable_affliction.execute_time)
     if S.SiphonLife:IsCastableP() then
-      if HR.CastTargetIf(S.SiphonLife, 40, "min", function(TargetUnit) return TargetUnit:DebuffRemainsP(S.SiphonLifeDebuff) end, function(TargetUnit) return (active_dot.siphon_life < 8 - num(S.CreepingDeath:IsAvailable()) - Cache.EnemiesCount[5]) and TargetUnit:TimeToDie() > 10 and TargetUnit:DebuffRefreshableCP(S.SiphonLifeDebuff) and not (S.SummonDarkglare:CooldownRemainsP() <= Player:SoulShardsP() * S.UnstableAffliction:ExecuteTime()) end) then return "siphon_life 200" end
+      if HR.CastTargetIf(S.SiphonLife, 40, "min", function(TargetUnit) return TargetUnit:DebuffRemainsP(S.SiphonLifeDebuff) end, function(TargetUnit) return (S.SiphonLifeDebuff:ActiveDot() < 8 - num(S.CreepingDeath:IsAvailable()) - Cache.EnemiesCount[5]) and TargetUnit:TimeToDie() > 10 and TargetUnit:DebuffRefreshableCP(S.SiphonLifeDebuff) and not (S.SummonDarkglare:CooldownRemainsP() <= Player:SoulShardsP() * S.UnstableAffliction:ExecuteTime()) end) then return "siphon_life 206" end
     end
     -- corruption,cycle_targets=1,if=active_enemies<3+talent.writhe_in_agony.enabled&(remains<=gcd|cooldown.summon_darkglare.remains>10&refreshable)&target.time_to_die>10
     if S.Corruption:IsCastableP() then
-      if HR.CastCycle(S.Corruption, 40, function(TargetUnit) return Cache.EnemiesCount[40] < 3 + num(S.WritheInAgony:IsAvailable()) and (TargetUnit:DebuffRemainsP(S.CorruptionDebuff) <= Player:GCD() or S.SummonDarkglare:CooldownRemainsP() > 10 and TargetUnit:DebuffRefreshableCP(S.CorruptionDebuff)) and TargetUnit:TimeToDie() > 10 end) then return "corruption 229" end
+      if HR.CastCycle(S.Corruption, 40, function(TargetUnit) return Cache.EnemiesCount[40] < 3 + num(S.WritheInAgony:IsAvailable()) and (TargetUnit:DebuffRemainsP(S.CorruptionDebuff) <= Player:GCD() or S.SummonDarkglare:CooldownRemainsP() > 10 and TargetUnit:DebuffRefreshableCP(S.CorruptionDebuff)) and TargetUnit:TimeToDie() > 10 end) then return "corruption 235" end
     end
   end
   Fillers = function()
     -- agony,if=talent.deathbolt.enabled&cooldown.summon_darkglare.remains>=30+gcd&cooldown.deathbolt.remains<=gcd&!prev_gcd.1.summon_darkglare&!prev_gcd.1.agony&talent.writhe_in_agony.enabled&azerite.sudden_onset.enabled&remains<duration*0.5
     if S.Agony:IsCastableP() and (S.Deathbolt:IsAvailable() and S.SummonDarkglare:CooldownRemainsP() >= 30 + Player:GCD() and S.Deathbolt:CooldownRemainsP() <= Player:GCD() and not Player:PrevGCDP(1, S.SummonDarkglare) and not Player:PrevGCDP(1, S.Agony) and S.WritheInAgony:IsAvailable() and S.SuddenOnset:AzeriteEnabled() and Target:DebuffRemainsP(S.AgonyDebuff) < S.AgonyDebuff:BaseDuration() * 0.5) then
-      if HR.Cast(S.Agony) then return "agony 230"; end
+      if HR.Cast(S.Agony) then return "agony 236"; end
     end
     -- deathbolt,if=cooldown.summon_darkglare.remains>=30+gcd|cooldown.summon_darkglare.remains>140
     if S.Deathbolt:IsCastableP() and (S.SummonDarkglare:CooldownRemainsP() >= 30 + Player:GCD() or S.SummonDarkglare:CooldownRemainsP() > 140) then
-      if HR.Cast(S.Deathbolt) then return "deathbolt 258"; end
+      if HR.Cast(S.Deathbolt) then return "deathbolt 264"; end
     end
     -- shadow_bolt,if=buff.movement.up&buff.nightfall.remains
     if S.ShadowBolt:IsCastableP() and (Player:IsMoving() and bool(Player:BuffRemainsP(S.NightfallBuff))) then
-      if HR.Cast(S.ShadowBolt) then return "shadow_bolt 264"; end
+      if HR.Cast(S.ShadowBolt) then return "shadow_bolt 270"; end
     end
     -- agony,if=buff.movement.up&!(talent.siphon_life.enabled&(prev_gcd.1.agony&prev_gcd.2.agony&prev_gcd.3.agony)|prev_gcd.1.agony)
     if S.Agony:IsCastableP() and (Player:IsMoving() and not (S.SiphonLife:IsAvailable() and (Player:PrevGCDP(1, S.Agony) and Player:PrevGCDP(2, S.Agony) and Player:PrevGCDP(3, S.Agony)) or Player:PrevGCDP(1, S.Agony))) then
-      if HR.Cast(S.Agony) then return "agony 268"; end
+      if HR.Cast(S.Agony) then return "agony 274"; end
     end
     -- siphon_life,if=buff.movement.up&!(prev_gcd.1.siphon_life&prev_gcd.2.siphon_life&prev_gcd.3.siphon_life)
     if S.SiphonLife:IsCastableP() and (Player:IsMoving() and not (Player:PrevGCDP(1, S.SiphonLife) and Player:PrevGCDP(2, S.SiphonLife) and Player:PrevGCDP(3, S.SiphonLife))) then
-      if HR.Cast(S.SiphonLife) then return "siphon_life 280"; end
+      if HR.Cast(S.SiphonLife) then return "siphon_life 286"; end
     end
     -- corruption,if=buff.movement.up&!prev_gcd.1.corruption&!talent.absolute_corruption.enabled
     if S.Corruption:IsCastableP() and (Player:IsMoving() and not Player:PrevGCDP(1, S.Corruption) and not S.AbsoluteCorruption:IsAvailable()) then
-      if HR.Cast(S.Corruption) then return "corruption 288"; end
+      if HR.Cast(S.Corruption) then return "corruption 294"; end
     end
     -- drain_life,if=(buff.inevitable_demise.stack>=90&(cooldown.deathbolt.remains>execute_time|!talent.deathbolt.enabled)&(cooldown.phantom_singularity.remains>execute_time|!talent.phantom_singularity.enabled)&(cooldown.dark_soul.remains>execute_time|!talent.dark_soul_misery.enabled)&(cooldown.vile_taint.remains>execute_time|!talent.vile_taint.enabled)&cooldown.summon_darkglare.remains>execute_time+10|buff.inevitable_demise.stack>30&target.time_to_die<=10)
     if S.DrainLife:IsCastableP() and HR.CDsON() and ((Player:BuffStackP(S.InevitableDemiseBuff) >= 90 and (S.Deathbolt:CooldownRemainsP() > S.DrainLife:ExecuteTime() or not S.Deathbolt:IsAvailable()) and (S.PhantomSingularity:CooldownRemainsP() > S.DrainLife:ExecuteTime() or not S.PhantomSingularity:IsAvailable()) and (S.DarkSoul:CooldownRemainsP() > S.DrainLife:ExecuteTime() or not S.DarkSoulMisery:IsAvailable()) and (S.VileTaint:CooldownRemainsP() > S.DrainLife:ExecuteTime() or not S.VileTaint:IsAvailable()) and S.SummonDarkglare:CooldownRemainsP() > S.DrainLife:ExecuteTime() + 10 or Player:BuffStackP(S.InevitableDemiseBuff) > 30 and Target:TimeToDie() <= 10)) then
-      if HR.Cast(S.DrainLife) then return "drain_life 294"; end
+      if HR.Cast(S.DrainLife) then return "drain_life 300"; end
     end
     -- haunt
     if S.Haunt:IsCastableP() then
-      if HR.Cast(S.Haunt) then return "haunt 338"; end
+      if HR.Cast(S.Haunt) then return "haunt 344"; end
     end
     -- drain_soul,interrupt_global=1,chain=1,interrupt=1,cycle_targets=1,if=target.time_to_die<=gcd
     if S.DrainSoul:IsCastableP() then
-      if HR.CastCycle(S.DrainSoul, 40, function(TargetUnit) return TargetUnit:TimeToDie() <= Player:GCD() end) then return "drain_soul 344" end
+      if HR.CastCycle(S.DrainSoul, 40, function(TargetUnit) return TargetUnit:TimeToDie() <= Player:GCD() end) then return "drain_soul 350" end
     end
     -- drain_soul,target_if=min:debuff.shadow_embrace.remains,chain=1,interrupt_if=ticks_remain<5,interrupt_global=1,if=talent.shadow_embrace.enabled&active_enemies=2&!debuff.shadow_embrace.remains
     if S.DrainSoul:IsCastableP() then
-      if HR.CastTargetIf(S.DrainSoul, 40, "min", function(TargetUnit) return TargetUnit:DebuffRemainsP(S.ShadowEmbraceDebuff) end, function(TargetUnit) return S.ShadowEmbrace:IsAvailable() and Cache.EnemiesCount[40] == 2 and not bool(TargetUnit:DebuffRemainsP(S.ShadowEmbraceDebuff)) end) then return "drain_soul 365" end
+      if HR.CastTargetIf(S.DrainSoul, 40, "min", function(TargetUnit) return TargetUnit:DebuffRemainsP(S.ShadowEmbraceDebuff) end, function(TargetUnit) return S.ShadowEmbrace:IsAvailable() and Cache.EnemiesCount[40] == 2 and not bool(TargetUnit:DebuffRemainsP(S.ShadowEmbraceDebuff)) end) then return "drain_soul 371" end
     end
     -- drain_soul,target_if=min:debuff.shadow_embrace.remains,chain=1,interrupt_if=ticks_remain<5,interrupt_global=1,if=talent.shadow_embrace.enabled&active_enemies=2
     if S.DrainSoul:IsCastableP() then
-      if HR.CastTargetIf(S.DrainSoul, 40, "min", function(TargetUnit) return TargetUnit:DebuffRemainsP(S.ShadowEmbraceDebuff) end, function(TargetUnit) return S.ShadowEmbrace:IsAvailable() and Cache.EnemiesCount[40] == 2 end) then return "drain_soul 384" end
+      if HR.CastTargetIf(S.DrainSoul, 40, "min", function(TargetUnit) return TargetUnit:DebuffRemainsP(S.ShadowEmbraceDebuff) end, function(TargetUnit) return S.ShadowEmbrace:IsAvailable() and Cache.EnemiesCount[40] == 2 end) then return "drain_soul 390" end
     end
     -- drain_soul,interrupt_global=1,chain=1,interrupt=1
     if S.DrainSoul:IsCastableP() then
-      if HR.Cast(S.DrainSoul) then return "drain_soul 385"; end
+      if HR.Cast(S.DrainSoul) then return "drain_soul 391"; end
     end
     -- shadow_bolt,cycle_targets=1,if=talent.shadow_embrace.enabled&talent.absolute_corruption.enabled&active_enemies=2&!debuff.shadow_embrace.remains&!action.shadow_bolt.in_flight
     if S.ShadowBolt:IsCastableP() then
-      if HR.CastCycle(S.ShadowBolt, 40, function(TargetUnit) return S.ShadowEmbrace:IsAvailable() and S.AbsoluteCorruption:IsAvailable() and Cache.EnemiesCount[40] == 2 and not bool(TargetUnit:DebuffRemainsP(S.ShadowEmbraceDebuff)) and not S.ShadowBolt:InFlight() end) then return "shadow_bolt 407" end
+      if HR.CastCycle(S.ShadowBolt, 40, function(TargetUnit) return S.ShadowEmbrace:IsAvailable() and S.AbsoluteCorruption:IsAvailable() and Cache.EnemiesCount[40] == 2 and not bool(TargetUnit:DebuffRemainsP(S.ShadowEmbraceDebuff)) and not S.ShadowBolt:InFlight() end) then return "shadow_bolt 413" end
     end
     -- shadow_bolt,target_if=min:debuff.shadow_embrace.remains,if=talent.shadow_embrace.enabled&talent.absolute_corruption.enabled&active_enemies=2
     if S.ShadowBolt:IsCastableP() then
-      if HR.CastTargetIf(S.ShadowBolt, 40, "min", function(TargetUnit) return TargetUnit:DebuffRemainsP(S.ShadowEmbraceDebuff) end, function(TargetUnit) return S.ShadowEmbrace:IsAvailable() and S.AbsoluteCorruption:IsAvailable() and Cache.EnemiesCount[40] == 2 end) then return "shadow_bolt 426" end
+      if HR.CastTargetIf(S.ShadowBolt, 40, "min", function(TargetUnit) return TargetUnit:DebuffRemainsP(S.ShadowEmbraceDebuff) end, function(TargetUnit) return S.ShadowEmbrace:IsAvailable() and S.AbsoluteCorruption:IsAvailable() and Cache.EnemiesCount[40] == 2 end) then return "shadow_bolt 432" end
     end
     -- shadow_bolt
     if S.ShadowBolt:IsCastableP() then
-      if HR.Cast(S.ShadowBolt) then return "shadow_bolt 427"; end
+      if HR.Cast(S.ShadowBolt) then return "shadow_bolt 433"; end
     end
   end
   Spenders = function()
     -- unstable_affliction,if=cooldown.summon_darkglare.remains<=soul_shard*execute_time
     if S.UnstableAffliction:IsReadyP() and (S.SummonDarkglare:CooldownRemainsP() <= Player:SoulShardsP() * S.UnstableAffliction:ExecuteTime()) then
-      if HR.Cast(S.UnstableAffliction) then return "unstable_affliction 429"; end
+      if HR.Cast(S.UnstableAffliction) then return "unstable_affliction 435"; end
     end
     -- call_action_list,name=fillers,if=(cooldown.summon_darkglare.remains<time_to_shard*(5-soul_shard)|cooldown.summon_darkglare.up)&time_to_die>cooldown.summon_darkglare.remains
     if ((S.SummonDarkglare:CooldownRemainsP() < time_to_shard * (5 - Player:SoulShardsP()) or S.SummonDarkglare:CooldownUpP()) and Target:TimeToDie() > S.SummonDarkglare:CooldownRemainsP()) then
@@ -292,19 +292,19 @@ local function APL()
     end
     -- seed_of_corruption,if=variable.use_seed
     if S.SeedofCorruption:IsCastableP() and (bool(VarUseSeed)) then
-      if HR.Cast(S.SeedofCorruption) then return "seed_of_corruption 451"; end
+      if HR.Cast(S.SeedofCorruption) then return "seed_of_corruption 457"; end
     end
     -- unstable_affliction,if=!variable.use_seed&!prev_gcd.1.summon_darkglare&(talent.deathbolt.enabled&cooldown.deathbolt.remains<=execute_time&!azerite.cascading_calamity.enabled|soul_shard>=2&target.time_to_die>4+execute_time&active_enemies=1|target.time_to_die<=8+execute_time*soul_shard)
     if S.UnstableAffliction:IsReadyP() and (not bool(VarUseSeed) and not Player:PrevGCDP(1, S.SummonDarkglare) and (S.Deathbolt:IsAvailable() and S.Deathbolt:CooldownRemainsP() <= S.UnstableAffliction:ExecuteTime() and not S.CascadingCalamity:AzeriteEnabled() or Player:SoulShardsP() >= 2 and Target:TimeToDie() > 4 + S.UnstableAffliction:ExecuteTime() and Cache.EnemiesCount[40] == 1 or Target:TimeToDie() <= 8 + S.UnstableAffliction:ExecuteTime() * Player:SoulShardsP())) then
-      if HR.Cast(S.UnstableAffliction) then return "unstable_affliction 455"; end
+      if HR.Cast(S.UnstableAffliction) then return "unstable_affliction 461"; end
     end
     -- unstable_affliction,if=!variable.use_seed&contagion<=cast_time+variable.padding
     if S.UnstableAffliction:IsReadyP() and (not bool(VarUseSeed) and contagion <= S.UnstableAffliction:CastTime() + VarPadding) then
-      if HR.Cast(S.UnstableAffliction) then return "unstable_affliction 493"; end
+      if HR.Cast(S.UnstableAffliction) then return "unstable_affliction 499"; end
     end
     -- unstable_affliction,cycle_targets=1,if=!variable.use_seed&(!talent.deathbolt.enabled|cooldown.deathbolt.remains>time_to_shard|soul_shard>1)&contagion<=cast_time+variable.padding&(!azerite.cascading_calamity.enabled|buff.cascading_calamity.remains>time_to_shard)
     if S.UnstableAffliction:IsReadyP() then
-      if HR.CastCycle(S.UnstableAffliction, 40, function(TargetUnit) return not bool(VarUseSeed) and (not S.Deathbolt:IsAvailable() or S.Deathbolt:CooldownRemainsP() > time_to_shard or Player:SoulShardsP() > 1) and contagion <= S.UnstableAffliction:CastTime() + VarPadding and (not S.CascadingCalamity:AzeriteEnabled() or Player:BuffRemainsP(S.CascadingCalamityBuff) > time_to_shard) end) then return "unstable_affliction 527" end
+      if HR.CastCycle(S.UnstableAffliction, 40, function(TargetUnit) return not bool(VarUseSeed) and (not S.Deathbolt:IsAvailable() or S.Deathbolt:CooldownRemainsP() > time_to_shard or Player:SoulShardsP() > 1) and contagion <= S.UnstableAffliction:CastTime() + VarPadding and (not S.CascadingCalamity:AzeriteEnabled() or Player:BuffRemainsP(S.CascadingCalamityBuff) > time_to_shard) end) then return "unstable_affliction 533" end
     end
   end
   -- call precombat
@@ -330,47 +330,47 @@ local function APL()
     end
     -- drain_soul,interrupt_global=1,chain=1,cycle_targets=1,if=target.time_to_die<=gcd&soul_shard<5
     if S.DrainSoul:IsCastableP() then
-      if HR.CastCycle(S.DrainSoul, 40, function(TargetUnit) return TargetUnit:TimeToDie() <= Player:GCD() and Player:SoulShardsP() < 5 end) then return "drain_soul 560" end
+      if HR.CastCycle(S.DrainSoul, 40, function(TargetUnit) return TargetUnit:TimeToDie() <= Player:GCD() and Player:SoulShardsP() < 5 end) then return "drain_soul 566" end
     end
     -- haunt,if=spell_targets.seed_of_corruption_aoe<=2
     if S.Haunt:IsCastableP() and (Cache.EnemiesCount[5] <= 2) then
-      if HR.Cast(S.Haunt) then return "haunt 561"; end
+      if HR.Cast(S.Haunt) then return "haunt 567"; end
     end
     -- summon_darkglare,if=dot.agony.ticking&dot.corruption.ticking&(buff.active_uas.stack=5|soul_shard=0)&(!talent.phantom_singularity.enabled|cooldown.phantom_singularity.remains)
     if S.SummonDarkglare:IsCastableP() and HR.CDsON() and (Target:DebuffP(S.AgonyDebuff) and Target:DebuffP(S.CorruptionDebuff) and (ActiveUAs() == 5 or Player:SoulShardsP() == 0) and (not S.PhantomSingularity:IsAvailable() or bool(S.PhantomSingularity:CooldownRemainsP()))) then
-      if HR.Cast(S.SummonDarkglare, Settings.Affliction.GCDasOffGCD.SummonDarkglare) then return "summon_darkglare 563"; end
+      if HR.Cast(S.SummonDarkglare, Settings.Affliction.GCDasOffGCD.SummonDarkglare) then return "summon_darkglare 569"; end
     end
     -- agony,target_if=min:dot.agony.remains,if=remains<=gcd+action.shadow_bolt.execute_time&target.time_to_die>8
     if S.Agony:IsCastableP() then
-      if HR.CastTargetIf(S.Agony, 40, "min", function(TargetUnit) return TargetUnit:DebuffRemainsP(S.AgonyDebuff) end, function(TargetUnit) return TargetUnit:DebuffRemainsP(S.AgonyDebuff) <= Player:GCD() + S.ShadowBolt:ExecuteTime() and TargetUnit:TimeToDie() > 8 end) then return "agony 593" end
+      if HR.CastTargetIf(S.Agony, 40, "min", function(TargetUnit) return TargetUnit:DebuffRemainsP(S.AgonyDebuff) end, function(TargetUnit) return TargetUnit:DebuffRemainsP(S.AgonyDebuff) <= Player:GCD() + S.ShadowBolt:ExecuteTime() and TargetUnit:TimeToDie() > 8 end) then return "agony 599" end
     end
     -- unstable_affliction,target_if=!contagion&target.time_to_die<=8
     if S.UnstableAffliction:IsReadyP() then
-      if HR.CastCycle(S.UnstableAffliction, 40, function(TargetUnit) return not bool(contagion) and TargetUnit:TimeToDie() <= 8 end) then return "unstable_affliction 598" end
+      if HR.CastCycle(S.UnstableAffliction, 40, function(TargetUnit) return not bool(contagion) and TargetUnit:TimeToDie() <= 8 end) then return "unstable_affliction 604" end
     end
     -- drain_soul,target_if=min:debuff.shadow_embrace.remains,interrupt_immediate=1,interrupt_if=ticks_remain<5,if=talent.shadow_embrace.enabled&active_enemies<=2&debuff.shadow_embrace.remains&debuff.shadow_embrace.remains<=gcd*2
     if S.DrainSoul:IsCastableP() then
-      if HR.CastTargetIf(S.DrainSoul, 40, "min", function(TargetUnit) return TargetUnit:DebuffRemainsP(S.ShadowEmbraceDebuff) end, function(TargetUnit) return S.ShadowEmbrace:IsAvailable() and Cache.EnemiesCount[40] <= 2 and bool(TargetUnit:DebuffRemainsP(S.ShadowEmbraceDebuff)) and TargetUnit:DebuffRemainsP(S.ShadowEmbraceDebuff) <= Player:GCD() * 2 end) then return "drain_soul 621" end
+      if HR.CastTargetIf(S.DrainSoul, 40, "min", function(TargetUnit) return TargetUnit:DebuffRemainsP(S.ShadowEmbraceDebuff) end, function(TargetUnit) return S.ShadowEmbrace:IsAvailable() and Cache.EnemiesCount[40] <= 2 and bool(TargetUnit:DebuffRemainsP(S.ShadowEmbraceDebuff)) and TargetUnit:DebuffRemainsP(S.ShadowEmbraceDebuff) <= Player:GCD() * 2 end) then return "drain_soul 627" end
     end
     -- shadow_bolt,target_if=min:debuff.shadow_embrace.remains,if=talent.shadow_embrace.enabled&talent.absolute_corruption.enabled&active_enemies<=2&debuff.shadow_embrace.remains&debuff.shadow_embrace.remains<=execute_time*2+travel_time&!action.shadow_bolt.in_flight
     if S.ShadowBolt:IsCastableP() then
-      if HR.CastTargetIf(S.ShadowBolt, 40, "min", function(TargetUnit) return TargetUnit:DebuffRemainsP(S.ShadowEmbraceDebuff) end, function(TargetUnit) return S.ShadowEmbrace:IsAvailable() and S.AbsoluteCorruption:IsAvailable() and Cache.EnemiesCount[40] <= 2 and bool(TargetUnit:DebuffRemainsP(S.ShadowEmbraceDebuff)) and TargetUnit:DebuffRemainsP(S.ShadowEmbraceDebuff) <= S.ShadowBolt:ExecuteTime() * 2 + S.ShadowBolt:TravelTime() and not S.ShadowBolt:InFlight() end) then return "shadow_bolt 656" end
+      if HR.CastTargetIf(S.ShadowBolt, 40, "min", function(TargetUnit) return TargetUnit:DebuffRemainsP(S.ShadowEmbraceDebuff) end, function(TargetUnit) return S.ShadowEmbrace:IsAvailable() and S.AbsoluteCorruption:IsAvailable() and Cache.EnemiesCount[40] <= 2 and bool(TargetUnit:DebuffRemainsP(S.ShadowEmbraceDebuff)) and TargetUnit:DebuffRemainsP(S.ShadowEmbraceDebuff) <= S.ShadowBolt:ExecuteTime() * 2 + S.ShadowBolt:TravelTime() and not S.ShadowBolt:InFlight() end) then return "shadow_bolt 662" end
     end
     -- phantom_singularity,target_if=max:target.time_to_die,if=time>35&(cooldown.summon_darkglare.remains>=45|cooldown.summon_darkglare.remains<8)&target.time_to_die>16*spell_haste
     if S.PhantomSingularity:IsCastableP() then
-      if HR.CastTargetIf(S.PhantomSingularity, 40, "max", function(TargetUnit) return TargetUnit:TimeToDie() end, function(TargetUnit) return HL.CombatTime() > 35 and (S.SummonDarkglare:CooldownRemainsP() >= 45 or S.SummonDarkglare:CooldownRemainsP() < 8) and TargetUnit:TimeToDie() > 16 * Player:SpellHaste() end) then return "phantom_singularity 665" end
+      if HR.CastTargetIf(S.PhantomSingularity, 40, "max", function(TargetUnit) return TargetUnit:TimeToDie() end, function(TargetUnit) return HL.CombatTime() > 35 and (S.SummonDarkglare:CooldownRemainsP() >= 45 or S.SummonDarkglare:CooldownRemainsP() < 8) and TargetUnit:TimeToDie() > 16 * Player:SpellHaste() end) then return "phantom_singularity 671" end
     end
     -- vile_taint,target_if=max:target.time_to_die,if=time>15&target.time_to_die>=10
     if S.VileTaint:IsCastableP() then
-      if HR.CastTargetIf(S.VileTaint, 40, "max", function(TargetUnit) return TargetUnit:TimeToDie() end, function(TargetUnit) return HL.CombatTime() > 15 and TargetUnit:TimeToDie() >= 10 end) then return "vile_taint 670" end
+      if HR.CastTargetIf(S.VileTaint, 40, "max", function(TargetUnit) return TargetUnit:TimeToDie() end, function(TargetUnit) return HL.CombatTime() > 15 and TargetUnit:TimeToDie() >= 10 end) then return "vile_taint 676" end
     end
     -- unstable_affliction,if=!variable.use_seed&soul_shard=5
     if S.UnstableAffliction:IsReadyP() and (not bool(VarUseSeed) and Player:SoulShardsP() == 5) then
-      if HR.Cast(S.UnstableAffliction) then return "unstable_affliction 671"; end
+      if HR.Cast(S.UnstableAffliction) then return "unstable_affliction 677"; end
     end
     -- seed_of_corruption,if=variable.use_seed&soul_shard=5
     if S.SeedofCorruption:IsCastableP() and (bool(VarUseSeed) and Player:SoulShardsP() == 5) then
-      if HR.Cast(S.SeedofCorruption) then return "seed_of_corruption 675"; end
+      if HR.Cast(S.SeedofCorruption) then return "seed_of_corruption 681"; end
     end
     -- call_action_list,name=dots
     if (true) then
@@ -378,19 +378,19 @@ local function APL()
     end
     -- phantom_singularity,if=time<=35
     if S.PhantomSingularity:IsCastableP() and (HL.CombatTime() <= 35) then
-      if HR.Cast(S.PhantomSingularity, Settings.Affliction.GCDasOffGCD.PhantomSingularity) then return "phantom_singularity 681"; end
+      if HR.Cast(S.PhantomSingularity, Settings.Affliction.GCDasOffGCD.PhantomSingularity) then return "phantom_singularity 687"; end
     end
     -- vile_taint,if=time<15
     if S.VileTaint:IsCastableP() and (HL.CombatTime() < 15) then
-      if HR.Cast(S.VileTaint) then return "vile_taint 683"; end
+      if HR.Cast(S.VileTaint) then return "vile_taint 689"; end
     end
     -- dark_soul
     if S.DarkSoul:IsCastableP() and HR.CDsON() then
-      if HR.Cast(S.DarkSoul, Settings.Affliction.GCDasOffGCD.DarkSoul) then return "dark_soul 685"; end
+      if HR.Cast(S.DarkSoul, Settings.Affliction.GCDasOffGCD.DarkSoul) then return "dark_soul 691"; end
     end
     -- berserking
     if S.Berserking:IsCastableP() and HR.CDsON() then
-      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return "berserking 687"; end
+      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return "berserking 693"; end
     end
     -- call_action_list,name=spenders
     if (true) then

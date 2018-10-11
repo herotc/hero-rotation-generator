@@ -326,6 +326,12 @@ class Expression(Decorable):
         """
         return Dot.build(self)
 
+    def active_dot(self):
+        """
+        Return the condition when the prefix is active_dot.
+        """
+        return ActiveDot.build(self)
+
     def prev_gcd(self):
         """
         Return the condition when the prefix is prev_gcd.
@@ -482,12 +488,6 @@ class Expression(Decorable):
         Return the condition when the prefix is race.
         """
         return Race.build(self)
-
-    def active_dot(self):
-        """
-        Return the condition when the prefix is active_dot.
-        """
-        return ActiveDot.build(self)
 
     def spell_targets(self):
         """
@@ -727,6 +727,25 @@ class PrevGCD(BuildExpression):
         """
         self.method = Method('PrevGCDP', type_=BOOL)
 
+class ActiveDot(BuildExpression):
+    """
+    Represent the expression for a active_dot. condition.
+    """
+
+    def __init__(self, condition):
+        self.condition = condition
+        call = 'value'
+        self.object_ = Spell(condition.parent_action,condition.condition_list[1], type_=DEBUFF)
+        self.method = None
+        self.args = []
+        super().__init__(call)
+
+    def value(self):
+        """
+        Return the arguments for the expression active_dot.
+        """
+        self.method = Method('ActiveDot')
+
 
 class PrevOffGCD(BuildExpression):
     """
@@ -914,17 +933,6 @@ class Race(BuildExpression):
         self.method = Method('IsRace', type_=BOOL)
         self.args = [Literal(condition.condition_list[1], convert=True,
                              quoted=True)]
-        super().__init__('')
-
-class ActiveDot(BuildExpression):
-    """
-    Represent the expression for a active_dot. condition.
-    """
-
-    def __init__(self, condition):
-        self.condition = condition
-        self.object_ = condition.condition_list[1]
-        self.method = Method('ActiveDot')
         super().__init__('')
 
 class SpellTargets(BuildExpression):
