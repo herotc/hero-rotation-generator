@@ -316,7 +316,10 @@ class BuildExpression(Decorable):
 
     def try_builder(self, model, arg_names, kwarg_names):
         """
-        Try to build the model.
+        Try to build the model. model is a class defining a print_lua method,
+        initialized with the attributes of self named after arg_names and
+        kwarg_names. A typical example would be a LuaExpression method built
+        with self.object_, self.method and self.args.
         """
         try:
             args = [getattr(self, arg_name) for arg_name in arg_names]
