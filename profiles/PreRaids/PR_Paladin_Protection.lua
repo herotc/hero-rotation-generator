@@ -120,7 +120,7 @@ local function APL()
     -- use_items,if=buff.seraphim.up|!talent.seraphim.enabled
   end
   -- call precombat
-  if not Player:AffectingCombat() and not Player:IsCasting() then
+  if not Player:AffectingCombat() then
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   if Everyone.TargetIsValid() then

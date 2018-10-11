@@ -169,7 +169,7 @@ local function APL()
       if HR.CastCycle(S.Havoc, 40, function(TargetUnit) return not (target == sim.target) and TargetUnit:TimeToDie() > 10 and Cache.EnemiesCount[35] <= 8 and S.GrimoireofSupremacy:IsAvailable() and bool(pet.infernal.active) and TargetUnit:DebuffRemainsP(S.HavocDebuff) <= 10 end) then return "havoc 54" end
     end
     -- havoc,if=spell_targets.rain_of_fire<=8&talent.grimoire_of_supremacy.enabled&pet.infernal.active&pet.infernal.remains<=10
-    if S.Havoc:IsCastableP() and (Cache.EnemiesCount[35] <= 8 and S.GrimoireofSupremacy:IsAvailable() and bool(pet.infernal.active) and TargetUnit:DebuffRemainsP(S.HavocDebuff) <= 10) then
+    if S.Havoc:IsCastableP() and (Cache.EnemiesCount[35] <= 8 and S.GrimoireofSupremacy:IsAvailable() and bool(pet.infernal.active) and Target:DebuffRemainsP(S.HavocDebuff) <= 10) then
       if HR.Cast(S.Havoc) then return "havoc 55"; end
     end
     -- chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&talent.grimoire_of_supremacy.enabled&pet.infernal.remains>execute_time&active_enemies<=8&((108*spell_targets.rain_of_fire%3)<(240*(1+0.08*buff.grimoire_of_supremacy.stack)%2*(1+buff.active_havoc.remains>execute_time)))
@@ -215,15 +215,15 @@ local function APL()
   end
   Cds = function()
     -- summon_infernal,if=target.time_to_die>=210|!cooldown.dark_soul_instability.remains|target.time_to_die<=30+gcd|!talent.dark_soul_instability.enabled
-    if S.SummonInfernal:IsCastableP() and (TargetUnit:TimeToDie() >= 210 or not bool(S.DarkSoulInstability:CooldownRemainsP()) or TargetUnit:TimeToDie() <= 30 + Player:GCD() or not S.DarkSoulInstability:IsAvailable()) then
+    if S.SummonInfernal:IsCastableP() and (Target:TimeToDie() >= 210 or not bool(S.DarkSoulInstability:CooldownRemainsP()) or Target:TimeToDie() <= 30 + Player:GCD() or not S.DarkSoulInstability:IsAvailable()) then
       if HR.Cast(S.SummonInfernal) then return "summon_infernal 183"; end
     end
     -- dark_soul_instability,if=target.time_to_die>=140|pet.infernal.active|target.time_to_die<=20+gcd
-    if S.DarkSoulInstability:IsCastableP() and (TargetUnit:TimeToDie() >= 140 or bool(pet.infernal.active) or TargetUnit:TimeToDie() <= 20 + Player:GCD()) then
+    if S.DarkSoulInstability:IsCastableP() and (Target:TimeToDie() >= 140 or bool(pet.infernal.active) or Target:TimeToDie() <= 20 + Player:GCD()) then
       if HR.Cast(S.DarkSoulInstability) then return "dark_soul_instability 189"; end
     end
     -- potion,if=pet.infernal.active|target.time_to_die<65
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (bool(pet.infernal.active) or TargetUnit:TimeToDie() < 65) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (bool(pet.infernal.active) or Target:TimeToDie() < 65) then
       if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 191"; end
     end
     -- berserking
@@ -250,7 +250,7 @@ local function APL()
       if HR.Cast(S.RainofFire) then return "rain_of_fire 202"; end
     end
     -- immolate,if=talent.channel_demonfire.enabled&!remains&cooldown.channel_demonfire.remains<=action.chaos_bolt.execute_time
-    if S.Immolate:IsCastableP() and (S.ChannelDemonfire:IsAvailable() and not bool(TargetUnit:DebuffRemainsP(S.ImmolateDebuff)) and S.ChannelDemonfire:CooldownRemainsP() <= S.ChaosBolt:ExecuteTime()) then
+    if S.Immolate:IsCastableP() and (S.ChannelDemonfire:IsAvailable() and not bool(Target:DebuffRemainsP(S.ImmolateDebuff)) and S.ChannelDemonfire:CooldownRemainsP() <= S.ChaosBolt:ExecuteTime()) then
       if HR.Cast(S.Immolate) then return "immolate 204"; end
     end
     -- channel_demonfire
@@ -262,7 +262,7 @@ local function APL()
       if HR.CastCycle(S.Havoc, 40, function(TargetUnit) return not (target == sim.target) and TargetUnit:TimeToDie() > 10 and Cache.EnemiesCount[35] <= 4 and S.GrimoireofSupremacy:IsAvailable() and bool(pet.infernal.active) and TargetUnit:DebuffRemainsP(S.HavocDebuff) <= 10 end) then return "havoc 234" end
     end
     -- havoc,if=spell_targets.rain_of_fire<=4&talent.grimoire_of_supremacy.enabled&pet.infernal.active&pet.infernal.remains<=10
-    if S.Havoc:IsCastableP() and (Cache.EnemiesCount[35] <= 4 and S.GrimoireofSupremacy:IsAvailable() and bool(pet.infernal.active) and TargetUnit:DebuffRemainsP(S.HavocDebuff) <= 10) then
+    if S.Havoc:IsCastableP() and (Cache.EnemiesCount[35] <= 4 and S.GrimoireofSupremacy:IsAvailable() and bool(pet.infernal.active) and Target:DebuffRemainsP(S.HavocDebuff) <= 10) then
       if HR.Cast(S.Havoc) then return "havoc 235"; end
     end
     -- chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&talent.grimoire_of_supremacy.enabled&pet.infernal.remains>execute_time&active_enemies<=4&((108*spell_targets.rain_of_fire%3)<(240*(1+0.08*buff.grimoire_of_supremacy.stack)%2*(1+buff.active_havoc.remains>execute_time)))
@@ -316,7 +316,7 @@ local function APL()
       if HR.Cast(S.Cataclysm) then return "cataclysm 342"; end
     end
     -- immolate,if=talent.channel_demonfire.enabled&!remains&cooldown.channel_demonfire.remains<=action.chaos_bolt.execute_time
-    if S.Immolate:IsCastableP() and (S.ChannelDemonfire:IsAvailable() and not bool(TargetUnit:DebuffRemainsP(S.ImmolateDebuff)) and S.ChannelDemonfire:CooldownRemainsP() <= S.ChaosBolt:ExecuteTime()) then
+    if S.Immolate:IsCastableP() and (S.ChannelDemonfire:IsAvailable() and not bool(Target:DebuffRemainsP(S.ImmolateDebuff)) and S.ChannelDemonfire:CooldownRemainsP() <= S.ChaosBolt:ExecuteTime()) then
       if HR.Cast(S.Immolate) then return "immolate 344"; end
     end
     -- channel_demonfire
@@ -328,7 +328,7 @@ local function APL()
       if HR.CastCycle(S.Havoc, 40, function(TargetUnit) return not (target == sim.target) and TargetUnit:TimeToDie() > 10 and Cache.EnemiesCount[35] <= 4 + num(S.InternalCombustion:IsAvailable()) and S.GrimoireofSupremacy:IsAvailable() and bool(pet.infernal.active) and TargetUnit:DebuffRemainsP(S.HavocDebuff) <= 10 end) then return "havoc 376" end
     end
     -- havoc,if=spell_targets.rain_of_fire<=4+talent.internal_combustion.enabled&talent.grimoire_of_supremacy.enabled&pet.infernal.active&pet.infernal.remains<=10
-    if S.Havoc:IsCastableP() and (Cache.EnemiesCount[35] <= 4 + num(S.InternalCombustion:IsAvailable()) and S.GrimoireofSupremacy:IsAvailable() and bool(pet.infernal.active) and TargetUnit:DebuffRemainsP(S.HavocDebuff) <= 10) then
+    if S.Havoc:IsCastableP() and (Cache.EnemiesCount[35] <= 4 + num(S.InternalCombustion:IsAvailable()) and S.GrimoireofSupremacy:IsAvailable() and bool(pet.infernal.active) and Target:DebuffRemainsP(S.HavocDebuff) <= 10) then
       if HR.Cast(S.Havoc) then return "havoc 377"; end
     end
     -- chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&talent.grimoire_of_supremacy.enabled&pet.infernal.remains>execute_time&spell_targets.rain_of_fire<=4+talent.internal_combustion.enabled&((108*spell_targets.rain_of_fire%(3-0.16*spell_targets.rain_of_fire))<(240*(1+0.08*buff.grimoire_of_supremacy.stack)%2*(1+buff.active_havoc.remains>execute_time)))

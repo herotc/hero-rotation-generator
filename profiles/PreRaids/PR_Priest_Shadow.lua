@@ -208,7 +208,7 @@ local function APL()
     end
     -- mind_sear,target_if=spell_targets.mind_sear>2,chain=1,interrupt=1
     if S.MindSear:IsCastableP() then
-      if HR.CastTargetIf(S.MindSear, 40, "min", function(TargetUnit) return num(Cache.EnemiesCount[40] > 2) end) then return "mind_sear 114" end
+      if HR.CastCycle(S.MindSear, 40, function(TargetUnit) return Cache.EnemiesCount[40] > 2 end) then return "mind_sear 114" end
     end
     -- mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(cooldown.void_bolt.up|cooldown.mind_blast.up)
     if S.MindFlay:IsCastableP() then
@@ -233,11 +233,11 @@ local function APL()
       if HR.Cast(S.VoidBolt) then return "void_bolt 125"; end
     end
     -- shadow_word_death,if=target.time_to_die<3|cooldown.shadow_word_death.charges=2|(cooldown.shadow_word_death.charges=1&cooldown.shadow_word_death.remains<gcd.max)
-    if S.ShadowWordDeath:IsReadyP() and (TargetUnit:TimeToDie() < 3 or S.ShadowWordDeath:ChargesP() == 2 or (S.ShadowWordDeath:ChargesP() == 1 and S.ShadowWordDeath:CooldownRemainsP() < Player:GCD())) then
+    if S.ShadowWordDeath:IsReadyP() and (Target:TimeToDie() < 3 or S.ShadowWordDeath:ChargesP() == 2 or (S.ShadowWordDeath:ChargesP() == 1 and S.ShadowWordDeath:CooldownRemainsP() < Player:GCD())) then
       if HR.Cast(S.ShadowWordDeath) then return "shadow_word_death 127"; end
     end
     -- surrender_to_madness,if=buff.voidform.stack>=(15+buff.bloodlust.up)&target.time_to_die>200|target.time_to_die<75
-    if S.SurrenderToMadness:IsReadyP() and (Player:BuffStackP(S.VoidformBuff) >= (15 + num(Player:HasHeroism())) and TargetUnit:TimeToDie() > 200 or TargetUnit:TimeToDie() < 75) then
+    if S.SurrenderToMadness:IsReadyP() and (Player:BuffStackP(S.VoidformBuff) >= (15 + num(Player:HasHeroism())) and Target:TimeToDie() > 200 or Target:TimeToDie() < 75) then
       if HR.Cast(S.SurrenderToMadness) then return "surrender_to_madness 135"; end
     end
     -- dark_void,if=raid_event.adds.in>10
@@ -261,15 +261,15 @@ local function APL()
       if HR.Cast(S.MindBlast) then return "mind_blast 153"; end
     end
     -- void_torrent,if=dot.shadow_word_pain.remains>4&dot.vampiric_touch.remains>4
-    if S.VoidTorrent:IsReadyP() and (TargetUnit:DebuffRemainsP(S.ShadowWordPainDebuff) > 4 and TargetUnit:DebuffRemainsP(S.VampiricTouchDebuff) > 4) then
+    if S.VoidTorrent:IsReadyP() and (Target:DebuffRemainsP(S.ShadowWordPainDebuff) > 4 and Target:DebuffRemainsP(S.VampiricTouchDebuff) > 4) then
       if HR.Cast(S.VoidTorrent) then return "void_torrent 157"; end
     end
     -- shadow_word_pain,if=refreshable&target.time_to_die>4&!talent.misery.enabled&!talent.dark_void.enabled
-    if S.ShadowWordPain:IsCastableP() and (TargetUnit:DebuffRefreshableCP(S.ShadowWordPainDebuff) and TargetUnit:TimeToDie() > 4 and not S.Misery:IsAvailable() and not S.DarkVoid:IsAvailable()) then
+    if S.ShadowWordPain:IsCastableP() and (Target:DebuffRefreshableCP(S.ShadowWordPainDebuff) and Target:TimeToDie() > 4 and not S.Misery:IsAvailable() and not S.DarkVoid:IsAvailable()) then
       if HR.Cast(S.ShadowWordPain) then return "shadow_word_pain 163"; end
     end
     -- vampiric_touch,if=refreshable&target.time_to_die>6|(talent.misery.enabled&dot.shadow_word_pain.refreshable)
-    if S.VampiricTouch:IsCastableP() and (TargetUnit:DebuffRefreshableCP(S.VampiricTouchDebuff) and TargetUnit:TimeToDie() > 6 or (S.Misery:IsAvailable() and TargetUnit:DebuffRefreshableCP(S.ShadowWordPainDebuff))) then
+    if S.VampiricTouch:IsCastableP() and (Target:DebuffRefreshableCP(S.VampiricTouchDebuff) and Target:TimeToDie() > 6 or (S.Misery:IsAvailable() and Target:DebuffRefreshableCP(S.ShadowWordPainDebuff))) then
       if HR.Cast(S.VampiricTouch) then return "vampiric_touch 175"; end
     end
     -- mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(cooldown.void_bolt.up|cooldown.mind_blast.up)
@@ -288,12 +288,12 @@ local function APL()
   if Everyone.TargetIsValid() then
     -- use_item,slot=trinket2
     -- potion,if=buff.bloodlust.react|target.time_to_die<=80|target.health.pct<35
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:HasHeroism() or TargetUnit:TimeToDie() <= 80 or TargetUnit:HealthPercentage() < 35) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:HasHeroism() or Target:TimeToDie() <= 80 or Target:HealthPercentage() < 35) then
       if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 192"; end
     end
     -- variable,name=dots_up,op=set,value=dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking
     if (true) then
-      VarDotsUp = num(TargetUnit:DebuffP(S.ShadowWordPainDebuff) and TargetUnit:DebuffP(S.VampiricTouchDebuff))
+      VarDotsUp = num(Target:DebuffP(S.ShadowWordPainDebuff) and Target:DebuffP(S.VampiricTouchDebuff))
     end
     -- berserking
     if S.Berserking:IsCastableP() and HR.CDsON() then

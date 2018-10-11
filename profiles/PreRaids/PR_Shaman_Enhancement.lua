@@ -290,7 +290,7 @@ local function APL()
   end
   if Everyone.TargetIsValid() then
     -- wind_shear
-    if S.WindShear:IsCastableP() and TargetUnit:IsInterruptible() and Settings.General.InterruptEnabled then
+    if S.WindShear:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled then
       if HR.CastAnnotated(S.WindShear, false, "Interrupt") then return "wind_shear 290"; end
     end
     -- variable,name=furyCheck45,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>45))

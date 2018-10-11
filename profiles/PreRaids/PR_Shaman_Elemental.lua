@@ -168,7 +168,7 @@ local function APL()
   end
   SingleTarget = function()
     -- flame_shock,if=!ticking|dot.flame_shock.remains<=gcd|talent.ascendance.enabled&dot.flame_shock.remains<(cooldown.ascendance.remains+buff.ascendance.duration)&cooldown.ascendance.remains<4&(!talent.storm_elemental.enabled|talent.storm_elemental.enabled&cooldown.storm_elemental.remains<120)
-    if S.FlameShock:IsCastableP() and (not TargetUnit:DebuffP(S.FlameShockDebuff) or TargetUnit:DebuffRemainsP(S.FlameShockDebuff) <= Player:GCD() or S.Ascendance:IsAvailable() and TargetUnit:DebuffRemainsP(S.FlameShockDebuff) < (S.Ascendance:CooldownRemainsP() + S.AscendanceBuff:BaseDuration()) and S.Ascendance:CooldownRemainsP() < 4 and (not S.StormElemental:IsAvailable() or S.StormElemental:IsAvailable() and S.StormElemental:CooldownRemainsP() < 120)) then
+    if S.FlameShock:IsCastableP() and (not Target:DebuffP(S.FlameShockDebuff) or Target:DebuffRemainsP(S.FlameShockDebuff) <= Player:GCD() or S.Ascendance:IsAvailable() and Target:DebuffRemainsP(S.FlameShockDebuff) < (S.Ascendance:CooldownRemainsP() + S.AscendanceBuff:BaseDuration()) and S.Ascendance:CooldownRemainsP() < 4 and (not S.StormElemental:IsAvailable() or S.StormElemental:IsAvailable() and S.StormElemental:CooldownRemainsP() < 120)) then
       if HR.Cast(S.FlameShock) then return "flame_shock 78"; end
     end
     -- ascendance,if=talent.ascendance.enabled&(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&!talent.storm_elemental.enabled
@@ -196,7 +196,7 @@ local function APL()
       if HR.Cast(S.Earthquake) then return "earthquake 142"; end
     end
     -- lightning_bolt,if=talent.exposed_elements.enabled&debuff.exposed_elements.up&maelstrom>=60&!buff.ascendance.up
-    if S.LightningBolt:IsCastableP() and (S.ExposedElements:IsAvailable() and TargetUnit:DebuffP(S.ExposedElementsDebuff) and Player:Maelstrom() >= 60 and not Player:BuffP(S.AscendanceBuff)) then
+    if S.LightningBolt:IsCastableP() and (S.ExposedElements:IsAvailable() and Target:DebuffP(S.ExposedElementsDebuff) and Player:Maelstrom() >= 60 and not Player:BuffP(S.AscendanceBuff)) then
       if HR.Cast(S.LightningBolt) then return "lightning_bolt 152"; end
     end
     -- earth_shock,if=talent.master_of_the_elements.enabled&(buff.master_of_the_elements.up|maelstrom>=92)|!talent.master_of_the_elements.enabled
@@ -259,7 +259,7 @@ local function APL()
       if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 248"; end
     end
     -- wind_shear
-    if S.WindShear:IsCastableP() and TargetUnit:IsInterruptible() and Settings.General.InterruptEnabled then
+    if S.WindShear:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled then
       if HR.CastAnnotated(S.WindShear, false, "Interrupt") then return "wind_shear 250"; end
     end
     -- totem_mastery,if=talent.totem_mastery.enabled&buff.resonance_totem.remains<2

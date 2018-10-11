@@ -291,7 +291,7 @@ local function APL()
   end
   ColdHeart = function()
     -- chains_of_ice,if=buff.cold_heart.stack>5&target.time_to_die<gcd
-    if S.ChainsofIce:IsCastableP() and (Player:BuffStackP(S.ColdHeartBuff) > 5 and TargetUnit:TimeToDie() < Player:GCD()) then
+    if S.ChainsofIce:IsCastableP() and (Player:BuffStackP(S.ColdHeartBuff) > 5 and Target:TimeToDie() < Player:GCD()) then
       if HR.Cast(S.ChainsofIce) then return "chains_of_ice 253"; end
     end
     -- chains_of_ice,if=(buff.pillar_of_frost.remains<=gcd*(1+cooldown.frostwyrms_fury.ready)|buff.pillar_of_frost.remains<rune.time_to_3)&buff.pillar_of_frost.up
@@ -306,7 +306,7 @@ local function APL()
       if HR.CastSuggested(I.RazdunksBigRedButton) then return "razdunks_big_red_button 268"; end
     end
     -- use_item,name=merekthas_fang,if=!dot.breath_of_sindragosa.ticking&!buff.pillar_of_frost.up
-    if I.MerekthasFang:IsReady() and (not TargetUnit:DebuffP(S.BreathofSindragosaDebuff) and not Player:BuffP(S.PillarofFrostBuff)) then
+    if I.MerekthasFang:IsReady() and (not Target:DebuffP(S.BreathofSindragosaDebuff) and not Player:BuffP(S.PillarofFrostBuff)) then
       if HR.CastSuggested(I.MerekthasFang) then return "merekthas_fang 270"; end
     end
     -- potion,if=buff.pillar_of_frost.up&buff.empower_rune_weapon.up
@@ -338,7 +338,7 @@ local function APL()
       if HR.Cast(S.EmpowerRuneWeapon, Settings.Frost.GCDasOffGCD.EmpowerRuneWeapon) then return "empower_rune_weapon 308"; end
     end
     -- call_action_list,name=cold_heart,if=talent.cold_heart.enabled&((buff.cold_heart.stack>=10&debuff.razorice.stack=5)|target.time_to_die<=gcd)
-    if (S.ColdHeart:IsAvailable() and ((Player:BuffStackP(S.ColdHeartBuff) >= 10 and TargetUnit:DebuffStackP(S.RazoriceDebuff) == 5) or TargetUnit:TimeToDie() <= Player:GCD())) then
+    if (S.ColdHeart:IsAvailable() and ((Player:BuffStackP(S.ColdHeartBuff) >= 10 and Target:DebuffStackP(S.RazoriceDebuff) == 5) or Target:TimeToDie() <= Player:GCD())) then
       local ShouldReturn = ColdHeart(); if ShouldReturn then return ShouldReturn; end
     end
     -- frostwyrms_fury,if=buff.pillar_of_frost.remains<=gcd&buff.pillar_of_frost.up
@@ -449,7 +449,7 @@ local function APL()
   if Everyone.TargetIsValid() then
     -- auto_attack
     -- howling_blast,if=!dot.frost_fever.ticking&(!talent.breath_of_sindragosa.enabled|cooldown.breath_of_sindragosa.remains>15)
-    if S.HowlingBlast:IsCastableP() and (not TargetUnit:DebuffP(S.FrostFeverDebuff) and (not S.BreathofSindragosa:IsAvailable() or S.BreathofSindragosa:CooldownRemainsP() > 15)) then
+    if S.HowlingBlast:IsCastableP() and (not Target:DebuffP(S.FrostFeverDebuff) and (not S.BreathofSindragosa:IsAvailable() or S.BreathofSindragosa:CooldownRemainsP() > 15)) then
       if HR.Cast(S.HowlingBlast) then return "howling_blast 474"; end
     end
     -- glacial_advance,if=buff.icy_talons.remains<=gcd&buff.icy_talons.up&spell_targets.glacial_advance>=2&(!talent.breath_of_sindragosa.enabled|cooldown.breath_of_sindragosa.remains>15)
@@ -469,7 +469,7 @@ local function APL()
       return BosPooling();
     end
     -- run_action_list,name=bos_ticking,if=dot.breath_of_sindragosa.ticking
-    if (TargetUnit:DebuffP(S.BreathofSindragosaDebuff)) then
+    if (Target:DebuffP(S.BreathofSindragosaDebuff)) then
       return BosTicking();
     end
     -- run_action_list,name=obliteration,if=buff.pillar_of_frost.up&talent.obliteration.enabled

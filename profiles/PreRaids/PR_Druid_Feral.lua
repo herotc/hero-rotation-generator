@@ -263,7 +263,7 @@ local function APL()
       if HR.CastCycle(S.FerociousBite, 40, function(TargetUnit) return TargetUnit:DebuffP(S.RipDebuff) and TargetUnit:DebuffRemainsP(S.RipDebuff) < 3 and TargetUnit:TimeToDie() > 10 and (TargetUnit:HealthPercentage() < 25 or S.Sabertooth:IsAvailable()) end) then return "ferocious_bite 178" end
     end
     -- regrowth,if=combo_points=5&buff.predatory_swiftness.up&talent.bloodtalons.enabled&buff.bloodtalons.down&(!buff.incarnation.up|dot.rip.remains<8)
-    if S.Regrowth:IsCastableP() and (Player:ComboPoints() == 5 and Player:BuffP(S.PredatorySwiftnessBuff) and S.Bloodtalons:IsAvailable() and Player:BuffDownP(S.BloodtalonsBuff) and (not Player:BuffP(S.IncarnationBuff) or TargetUnit:DebuffRemainsP(S.RipDebuff) < 8)) then
+    if S.Regrowth:IsCastableP() and (Player:ComboPoints() == 5 and Player:BuffP(S.PredatorySwiftnessBuff) and S.Bloodtalons:IsAvailable() and Player:BuffDownP(S.BloodtalonsBuff) and (not Player:BuffP(S.IncarnationBuff) or Target:DebuffRemainsP(S.RipDebuff) < 8)) then
       if HR.Cast(S.Regrowth) then return "regrowth 179"; end
     end
     -- run_action_list,name=st_finishers,if=combo_points>4
@@ -315,11 +315,11 @@ local function APL()
   end
   StGenerators = function()
     -- regrowth,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.bloodtalons.down&combo_points=4&dot.rake.remains<4
-    if S.Regrowth:IsCastableP() and (S.Bloodtalons:IsAvailable() and Player:BuffP(S.PredatorySwiftnessBuff) and Player:BuffDownP(S.BloodtalonsBuff) and Player:ComboPoints() == 4 and TargetUnit:DebuffRemainsP(S.RakeDebuff) < 4) then
+    if S.Regrowth:IsCastableP() and (S.Bloodtalons:IsAvailable() and Player:BuffP(S.PredatorySwiftnessBuff) and Player:BuffDownP(S.BloodtalonsBuff) and Player:ComboPoints() == 4 and Target:DebuffRemainsP(S.RakeDebuff) < 4) then
       if HR.Cast(S.Regrowth) then return "regrowth 264"; end
     end
     -- regrowth,if=talent.bloodtalons.enabled&buff.bloodtalons.down&buff.predatory_swiftness.up&talent.lunar_inspiration.enabled&dot.rake.remains<1
-    if S.Regrowth:IsCastableP() and (S.Bloodtalons:IsAvailable() and Player:BuffDownP(S.BloodtalonsBuff) and Player:BuffP(S.PredatorySwiftnessBuff) and S.LunarInspiration:IsAvailable() and TargetUnit:DebuffRemainsP(S.RakeDebuff) < 1) then
+    if S.Regrowth:IsCastableP() and (S.Bloodtalons:IsAvailable() and Player:BuffDownP(S.BloodtalonsBuff) and Player:BuffP(S.PredatorySwiftnessBuff) and S.LunarInspiration:IsAvailable() and Target:DebuffRemainsP(S.RakeDebuff) < 1) then
       if HR.Cast(S.Regrowth) then return "regrowth 274"; end
     end
     -- brutal_slash,if=spell_targets.brutal_slash>desired_targets
@@ -328,7 +328,7 @@ local function APL()
     end
     -- pool_resource,for_next=1
     -- thrash_cat,if=refreshable&(spell_targets.thrash_cat>2)
-    if S.ThrashCat:IsCastableP() and (TargetUnit:DebuffRefreshableCP(S.ThrashCatDebuff) and (Cache.EnemiesCount[8] > 2)) then
+    if S.ThrashCat:IsCastableP() and (Target:DebuffRefreshableCP(S.ThrashCatDebuff) and (Cache.EnemiesCount[8] > 2)) then
       if S.ThrashCat:IsUsablePPool() then
         if HR.Cast(S.ThrashCat) then return "thrash_cat 289"; end
       else
@@ -359,7 +359,7 @@ local function APL()
     end
     -- pool_resource,for_next=1
     -- thrash_cat,if=refreshable&(variable.use_thrash=2|spell_targets.thrash_cat>1)
-    if S.ThrashCat:IsCastableP() and (TargetUnit:DebuffRefreshableCP(S.ThrashCatDebuff) and (VarUseThrash == 2 or Cache.EnemiesCount[8] > 1)) then
+    if S.ThrashCat:IsCastableP() and (Target:DebuffRefreshableCP(S.ThrashCatDebuff) and (VarUseThrash == 2 or Cache.EnemiesCount[8] > 1)) then
       if S.ThrashCat:IsUsablePPool() then
         if HR.Cast(S.ThrashCat) then return "thrash_cat 382"; end
       else
@@ -367,7 +367,7 @@ local function APL()
       end
     end
     -- thrash_cat,if=refreshable&variable.use_thrash=1&buff.clearcasting.react
-    if S.ThrashCat:IsCastableP() and (TargetUnit:DebuffRefreshableCP(S.ThrashCatDebuff) and VarUseThrash == 1 and bool(Player:BuffStackP(S.ClearcastingBuff))) then
+    if S.ThrashCat:IsCastableP() and (Target:DebuffRefreshableCP(S.ThrashCatDebuff) and VarUseThrash == 1 and bool(Player:BuffStackP(S.ClearcastingBuff))) then
       if HR.Cast(S.ThrashCat) then return "thrash_cat 393"; end
     end
     -- pool_resource,for_next=1
@@ -388,7 +388,7 @@ local function APL()
       if HR.Cast(S.MoonfireCat) then return "moonfire_cat 413"; end
     end
     -- shred,if=dot.rake.remains>(action.shred.cost+action.rake.cost-energy)%energy.regen|buff.clearcasting.react
-    if S.Shred:IsCastableP() and (TargetUnit:DebuffRemainsP(S.RakeDebuff) > (S.Shred:Cost() + S.Rake:Cost() - Player:EnergyPredicted()) / Player:EnergyRegen() or bool(Player:BuffStackP(S.ClearcastingBuff))) then
+    if S.Shred:IsCastableP() and (Target:DebuffRemainsP(S.RakeDebuff) > (S.Shred:Cost() + S.Rake:Cost() - Player:EnergyPredicted()) / Player:EnergyRegen() or bool(Player:BuffStackP(S.ClearcastingBuff))) then
       if HR.Cast(S.Shred) then return "shred 417"; end
     end
   end

@@ -286,24 +286,24 @@ local function APL()
   end
   if Everyone.TargetIsValid() then
     -- potion,if=pet.demonic_tyrant.active|target.time_to_die<30
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (bool(pet.demonic_tyrant.active) or TargetUnit:TimeToDie() < 30) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (bool(pet.demonic_tyrant.active) or Target:TimeToDie() < 30) then
       if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 250"; end
     end
     -- use_items,if=pet.demonic_tyrant.active|target.time_to_die<=15
     -- berserking,if=pet.demonic_tyrant.active|target.time_to_die<=15
-    if S.Berserking:IsCastableP() and HR.CDsON() and (bool(pet.demonic_tyrant.active) or TargetUnit:TimeToDie() <= 15) then
+    if S.Berserking:IsCastableP() and HR.CDsON() and (bool(pet.demonic_tyrant.active) or Target:TimeToDie() <= 15) then
       if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return "berserking 253"; end
     end
     -- blood_fury,if=pet.demonic_tyrant.active|target.time_to_die<=15
-    if S.BloodFury:IsCastableP() and HR.CDsON() and (bool(pet.demonic_tyrant.active) or TargetUnit:TimeToDie() <= 15) then
+    if S.BloodFury:IsCastableP() and HR.CDsON() and (bool(pet.demonic_tyrant.active) or Target:TimeToDie() <= 15) then
       if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return "blood_fury 255"; end
     end
     -- fireblood,if=pet.demonic_tyrant.active|target.time_to_die<=15
-    if S.Fireblood:IsCastableP() and HR.CDsON() and (bool(pet.demonic_tyrant.active) or TargetUnit:TimeToDie() <= 15) then
+    if S.Fireblood:IsCastableP() and HR.CDsON() and (bool(pet.demonic_tyrant.active) or Target:TimeToDie() <= 15) then
       if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return "fireblood 257"; end
     end
     -- doom,if=!ticking&time_to_die>30&spell_targets.implosion<2
-    if S.Doom:IsCastableP() and (not TargetUnit:DebuffP(S.DoomDebuff) and TargetUnit:TimeToDie() > 30 and Cache.EnemiesCount[40] < 2) then
+    if S.Doom:IsCastableP() and (not Target:DebuffP(S.DoomDebuff) and Target:TimeToDie() > 30 and Cache.EnemiesCount[40] < 2) then
       if HR.Cast(S.Doom) then return "doom 259"; end
     end
     -- demonic_strength,if=(buff.wild_imps.stack<6|buff.demonic_power.up)|spell_targets.implosion<2
@@ -339,7 +339,7 @@ local function APL()
       if HR.Cast(S.PowerSiphon) then return "power_siphon 331"; end
     end
     -- doom,if=talent.doom.enabled&refreshable&time_to_die>(dot.doom.remains+30)
-    if S.Doom:IsCastableP() and (S.Doom:IsAvailable() and TargetUnit:DebuffRefreshableCP(S.DoomDebuff) and TargetUnit:TimeToDie() > (TargetUnit:DebuffRemainsP(S.DoomDebuff) + 30)) then
+    if S.Doom:IsCastableP() and (S.Doom:IsAvailable() and Target:DebuffRefreshableCP(S.DoomDebuff) and Target:TimeToDie() > (Target:DebuffRemainsP(S.DoomDebuff) + 30)) then
       if HR.Cast(S.Doom) then return "doom 339"; end
     end
     -- hand_of_guldan,if=soul_shard>=5|(soul_shard>=3&cooldown.call_dreadstalkers.remains>4&(!talent.summon_vilefiend.enabled|cooldown.summon_vilefiend.remains>3))
@@ -351,7 +351,7 @@ local function APL()
       if HR.Cast(S.SoulStrike) then return "soul_strike 365"; end
     end
     -- demonbolt,if=soul_shard<=3&buff.demonic_core.up&((cooldown.summon_demonic_tyrant.remains<10|cooldown.summon_demonic_tyrant.remains>22)|buff.demonic_core.stack>=3|buff.demonic_core.remains<5|time_to_die<25)
-    if S.Demonbolt:IsCastableP() and (Player:SoulShardsP() <= 3 and Player:BuffP(S.DemonicCoreBuff) and ((S.SummonDemonicTyrant:CooldownRemainsP() < 10 or S.SummonDemonicTyrant:CooldownRemainsP() > 22) or Player:BuffStackP(S.DemonicCoreBuff) >= 3 or Player:BuffRemainsP(S.DemonicCoreBuff) < 5 or TargetUnit:TimeToDie() < 25)) then
+    if S.Demonbolt:IsCastableP() and (Player:SoulShardsP() <= 3 and Player:BuffP(S.DemonicCoreBuff) and ((S.SummonDemonicTyrant:CooldownRemainsP() < 10 or S.SummonDemonicTyrant:CooldownRemainsP() > 22) or Player:BuffStackP(S.DemonicCoreBuff) >= 3 or Player:BuffRemainsP(S.DemonicCoreBuff) < 5 or Target:TimeToDie() < 25)) then
       if HR.Cast(S.Demonbolt) then return "demonbolt 369"; end
     end
     -- call_action_list,name=build_a_shard

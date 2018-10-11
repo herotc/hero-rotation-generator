@@ -271,20 +271,21 @@ class Action(Decorable):
         if_condition_tree = self.condition_tree('if')
         targetif_condition_tree = self.condition_tree('target_if')
         if targetif_condition_tree.condition_expression.simc != '':
-            mmax = search('min|max', targetif_condition_tree.condition_expression.simc)
+            mmax = search('target_if=(min|max):', targetif_condition_tree.condition_expression.action.simc)
             if mmax:
+                mmax_mode = mmax.group(1)
                 cycle_cast = ''
                 for idx, x in enumerate(targetif_condition_tree.condition.condition_list):
-                    targetif_condition_tree.condition.condition_list[idx] = x.replace(f'{mmax.group(0)}:','')
+                    targetif_condition_tree.condition.condition_list[idx] = x.replace(f'{mmax_mode}:','')
                 targetif_condition = convert_type(targetif_condition_tree, NUM)
                 self.target.unit_object = Literal('TargetUnit')
                 targetif_condition = convert_type(targetif_condition_tree, NUM)
                 self.range_ = self.player.spell_property(self.execution().object_(), RANGE, self.player.spec_range())
                 if if_condition_tree.condition_expression.simc != '':
                     if_condition = convert_type(if_condition_tree, BOOL)
-                    cycle_cast = f'if HR.CastTargetIf({self.execution().object_().print_lua()}, {str(self.range_)}, "{mmax.group(0)}", function(TargetUnit) return {targetif_condition} end, function(TargetUnit) return {if_condition} end) then return "{self.execution().object_().return_string()}" end'
+                    cycle_cast = f'if HR.CastTargetIf({self.execution().object_().print_lua()}, {str(self.range_)}, "{mmax_mode}", function(TargetUnit) return {targetif_condition} end, function(TargetUnit) return {if_condition} end) then return "{self.execution().object_().return_string()}" end'
                 else:
-                    cycle_cast = f'if HR.CastTargetIf({self.execution().object_().print_lua()}, {str(self.range_)}, "{mmax.group(0)}", function(TargetUnit) return {targetif_condition} end) then return "{self.execution().object_().return_string()}" end'
+                    cycle_cast = f'if HR.CastTargetIf({self.execution().object_().print_lua()}, {str(self.range_)}, "{mmax_mode}", function(TargetUnit) return {targetif_condition} end) then return "{self.execution().object_().return_string()}" end'
                 lua_string += ('\n'
                     f'if {condition.print_lua()} then\n'
                     f'{indent(cycle_cast)}\n'

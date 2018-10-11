@@ -160,14 +160,14 @@ local function APL()
     end
     -- nemesis,target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)
     if S.Nemesis:IsCastableP() then
-      if HR.CastTargetIf(S.Nemesis, 40, "min", function(TargetUnit) return Target:TimeToDie() end, function(TargetUnit) return (Cache.EnemiesCount[40] > 1) and TargetUnit:DebuffDownP(S.NemesisDebuff) and (Cache.EnemiesCount[40] > 1 or 10000000000 > 60) end) then return "nemesis 40" end
+      if HR.CastTargetIf(S.Nemesis, 40, "min", function(TargetUnit) return TargetUnit:TimeToDie() end, function(TargetUnit) return (Cache.EnemiesCount[40] > 1) and TargetUnit:DebuffDownP(S.NemesisDebuff) and (Cache.EnemiesCount[40] > 1 or 10000000000 > 60) end) then return "nemesis 40" end
     end
     -- nemesis,if=!raid_event.adds.exists
     if S.Nemesis:IsCastableP() and (not (Cache.EnemiesCount[40] > 1)) then
       if HR.Cast(S.Nemesis) then return "nemesis 41"; end
     end
     -- potion,if=buff.metamorphosis.remains>25|target.time_to_die<60
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffRemainsP(S.MetamorphosisBuff) > 25 or TargetUnit:TimeToDie() < 60) then
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffRemainsP(S.MetamorphosisBuff) > 25 or Target:TimeToDie() < 60) then
       if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 45"; end
     end
     -- use_item,name=galecallers_boon
@@ -185,11 +185,11 @@ local function APL()
       if HR.Cast(S.DarkSlash) then return "dark_slash 53"; end
     end
     -- annihilation,if=debuff.dark_slash.up
-    if S.Annihilation:IsCastableP() and IsInMeleeRange() and (TargetUnit:DebuffP(S.DarkSlashDebuff)) then
+    if S.Annihilation:IsCastableP() and IsInMeleeRange() and (Target:DebuffP(S.DarkSlashDebuff)) then
       if HR.Cast(S.Annihilation) then return "annihilation 59"; end
     end
     -- chaos_strike,if=debuff.dark_slash.up
-    if S.ChaosStrike:IsCastableP() and IsInMeleeRange() and (TargetUnit:DebuffP(S.DarkSlashDebuff)) then
+    if S.ChaosStrike:IsCastableP() and IsInMeleeRange() and (Target:DebuffP(S.DarkSlashDebuff)) then
       if HR.Cast(S.ChaosStrike) then return "chaos_strike 63"; end
     end
   end
@@ -345,7 +345,7 @@ local function APL()
     end
     -- variable,name=waiting_for_nemesis,value=!(!talent.nemesis.enabled|cooldown.nemesis.ready|cooldown.nemesis.remains>target.time_to_die|cooldown.nemesis.remains>60)
     if (true) then
-      VarWaitingForNemesis = num(not (not S.Nemesis:IsAvailable() or S.Nemesis:CooldownUpP() or S.Nemesis:CooldownRemainsP() > TargetUnit:TimeToDie() or S.Nemesis:CooldownRemainsP() > 60))
+      VarWaitingForNemesis = num(not (not S.Nemesis:IsAvailable() or S.Nemesis:CooldownUpP() or S.Nemesis:CooldownRemainsP() > Target:TimeToDie() or S.Nemesis:CooldownRemainsP() > 60))
     end
     -- variable,name=pooling_for_meta,value=!talent.demonic.enabled&cooldown.metamorphosis.remains<6&fury.deficit>30&(!variable.waiting_for_nemesis|cooldown.nemesis.remains<10)
     if (true) then
@@ -376,7 +376,7 @@ local function APL()
       if HR.Cast(S.PickUpFragment) then return "pick_up_fragment 339"; end
     end
     -- call_action_list,name=dark_slash,if=talent.dark_slash.enabled&(variable.waiting_for_dark_slash|debuff.dark_slash.up)
-    if (S.DarkSlash:IsAvailable() and (bool(VarWaitingForDarkSlash) or TargetUnit:DebuffP(S.DarkSlashDebuff))) then
+    if (S.DarkSlash:IsAvailable() and (bool(VarWaitingForDarkSlash) or Target:DebuffP(S.DarkSlashDebuff))) then
       local ShouldReturn = DarkSlash(); if ShouldReturn then return ShouldReturn; end
     end
     -- run_action_list,name=demonic,if=talent.demonic.enabled

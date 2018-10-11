@@ -172,7 +172,7 @@ local function APL()
     end
     -- marked_for_death,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)
     if S.MarkedForDeath:IsCastableP() then
-      if HR.CastTargetIf(S.MarkedForDeath, 35, "min", function(TargetUnit) return Target:TimeToDie() end, function(TargetUnit) return (Cache.EnemiesCount[35] > 1) and (TargetUnit:TimeToDie() < Player:ComboPointsDeficit() or not bool(stealthed.rogue) and Player:ComboPointsDeficit() >= cp_max_spend - 1) end) then return "marked_for_death 52" end
+      if HR.CastTargetIf(S.MarkedForDeath, 35, "min", function(TargetUnit) return TargetUnit:TimeToDie() end, function(TargetUnit) return (Cache.EnemiesCount[35] > 1) and (TargetUnit:TimeToDie() < Player:ComboPointsDeficit() or not bool(stealthed.rogue) and Player:ComboPointsDeficit() >= cp_max_spend - 1) end) then return "marked_for_death 52" end
     end
     -- marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1
     if S.MarkedForDeath:IsCastableP() and (10000000000 > 30 - raid_event.adds.duration and not bool(stealthed.rogue) and Player:ComboPointsDeficit() >= cp_max_spend - 1) then
@@ -209,11 +209,11 @@ local function APL()
       if HR.Cast(S.BetweentheEyes) then return "between_the_eyes 93"; end
     end
     -- slice_and_dice,if=buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8
-    if S.SliceandDice:IsCastableP() and (Player:BuffRemainsP(S.SliceandDiceBuff) < TargetUnit:TimeToDie() and Player:BuffRemainsP(S.SliceandDiceBuff) < (1 + Player:ComboPoints()) * 1.8) then
+    if S.SliceandDice:IsCastableP() and (Player:BuffRemainsP(S.SliceandDiceBuff) < Target:TimeToDie() and Player:BuffRemainsP(S.SliceandDiceBuff) < (1 + Player:ComboPoints()) * 1.8) then
       if HR.Cast(S.SliceandDice) then return "slice_and_dice 103"; end
     end
     -- roll_the_bones,if=(buff.roll_the_bones.remains<=3|variable.rtb_reroll)&(target.time_to_die>20|buff.roll_the_bones.remains<target.time_to_die)
-    if S.RolltheBones:IsCastableP() and ((Player:BuffRemainsP(S.RolltheBonesBuff) <= 3 or bool(VarRtbReroll)) and (TargetUnit:TimeToDie() > 20 or Player:BuffRemainsP(S.RolltheBonesBuff) < TargetUnit:TimeToDie())) then
+    if S.RolltheBones:IsCastableP() and ((Player:BuffRemainsP(S.RolltheBonesBuff) <= 3 or bool(VarRtbReroll)) and (Target:TimeToDie() > 20 or Player:BuffRemainsP(S.RolltheBonesBuff) < Target:TimeToDie())) then
       if HR.Cast(S.RolltheBones) then return "roll_the_bones 109"; end
     end
     -- between_the_eyes,if=azerite.ace_up_your_sleeve.enabled|azerite.deadshot.enabled
