@@ -483,6 +483,12 @@ class Expression(Decorable):
         """
         return Race.build(self)
 
+    def active_dot(self):
+        """
+        Return the condition when the prefix is active_dot.
+        """
+        return ActiveDot.build(self)
+
     def spell_targets(self):
         """
         Return the condition when the prefix is spell_targets.
@@ -910,6 +916,16 @@ class Race(BuildExpression):
                              quoted=True)]
         super().__init__('')
 
+class ActiveDot(BuildExpression):
+    """
+    Represent the expression for a active_dot. condition.
+    """
+
+    def __init__(self, condition):
+        self.condition = condition
+        self.object_ = condition.condition_list[1]
+        self.method = Method('ActiveDot')
+        super().__init__('')
 
 class SpellTargets(BuildExpression):
     """
