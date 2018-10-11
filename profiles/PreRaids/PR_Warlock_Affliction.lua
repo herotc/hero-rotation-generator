@@ -101,6 +101,14 @@ local function bool(val)
   return val ~= 0
 end
 
+local function TimeToShard()
+  local ActiveAgony = S.Agony:ActiveDot()
+  if ActiveAgony == 0 then
+    return 10000 
+  end
+  return 1 / (0.16 / math.sqrt(ActiveAgony) * (ActiveAgony == 1 and 1.15 or 1) * ActiveAgony / S.Agony:TickTime())
+end
+
 local UnstableAfflictionDebuffs = {
   Spell(233490),
   Spell(233496),
@@ -110,44 +118,34 @@ local UnstableAfflictionDebuffs = {
 };
 
 local function ActiveUAs ()
-  local UAcount = 0
-  for _, v in pairs(UnstableAfflictionDebuffs) do
-    if Target:DebuffRemainsP(v) > 0 then UAcount = UAcount + 1 end
+  local UACount = 0
+  for _, UADebuff in pairs(UnstableAfflictionDebuffs) do
+    if Target:DebuffRemainsP(UADebuff) > 0 then UACount = UACount + 1 end
   end
-  return UAcount
+  return UACount
 end
 
-HL.UnstableAfflictionDebuffsPrev = {
-    [UnstableAfflictionDebuffs[2]] = UnstableAfflictionDebuffs[1],
-    [UnstableAfflictionDebuffs[3]] = UnstableAfflictionDebuffs[2],
-    [UnstableAfflictionDebuffs[4]] = UnstableAfflictionDebuffs[3],
-    [UnstableAfflictionDebuffs[5]] = UnstableAfflictionDebuffs[4]
-  };
-
-local function NbAffected (SpellAffected)
-    local nbaff = 0
-    for Key, Value in pairs(Cache.Enemies[40]) do
-      if Value:DebuffRemainsP(SpellAffected) > 0 then nbaff = nbaff + 1; end
+local function Contagion()
+  local MaximumDuration = 0
+  for _, UADebuff in pairs(UnstableAfflictionDebuffs) do
+    local UARemains = Target:DebuffRemainsP(UADebuff)
+    if UARemains > MaximumDuration then
+      MaximumDuration = UARemains
     end
-    return nbaff;
-end
-
-local function TimeToShard()
-    local agony_count = NbAffected(S.Agony)
-    if agony_count == 0 then
-        return 10000 
-    end
-    return 1 / (0.16 / math.sqrt(agony_count) * (agony_count == 1 and 1.15 or 1) * agony_count / S.Agony:TickTime())
+  end
+  return MaximumDuration
 end
 
 S.ShadowBolt:RegisterInFlight()
 S.SeedofCorruption:RegisterInFlight()
+
 --- ======= ACTION LISTS =======
 local function APL()
   local Precombat, Fillers
   UpdateRanges()
   Everyone.AoEToggleEnemiesUpdate()
   time_to_shard = TimeToShard()
+  contagion = Contagion()
   Precombat = function()
     -- flask
     -- food
@@ -237,7 +235,7 @@ local function APL()
     end
   end
   -- call precombat
-  if not Player:AffectingCombat() and not Player:IsCasting() then
+  if not Player:AffectingCombat() and Everyone.TargetIsValid() and not Player:IsCasting() then
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   if Everyone.TargetIsValid() then

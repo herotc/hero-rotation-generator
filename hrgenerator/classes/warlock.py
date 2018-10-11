@@ -198,8 +198,6 @@ CLASS_FUNCTIONS = {
         COMMON: [
         ],
         AFFLICTION: [
-            'UnstableAfflictionDebuffs',
-            'ActiveUAs',
             'AfflictionPreAplSetup',
         ],
         DEMONOLOGY: [
@@ -239,7 +237,7 @@ def warlock_precombat_skip(fun):
         exec_cast = self.execution().object_().print_cast()
         lua_string += (
             '\n'
-            f'if not Player:AffectingCombat() and not Player:IsCasting() then\n'
+            f'if not Player:AffectingCombat() and Everyone.TargetIsValid() and not Player:IsCasting() then\n'
             f'  {exec_cast}\n'
             f'end')
         return lua_string
@@ -294,6 +292,7 @@ TEMPLATES = {
                 '  UpdateRanges()\n'
                 '  Everyone.AoEToggleEnemiesUpdate()\n'
                 '  time_to_shard = TimeToShard()\n'
+                '  contagion = Contagion()\n'
                 '{action_lists}\n'
                 '{precombat_call}\n'
                 '  if Everyone.TargetIsValid() then\n'

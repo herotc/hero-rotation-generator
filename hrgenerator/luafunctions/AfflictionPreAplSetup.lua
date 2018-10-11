@@ -1,24 +1,36 @@
-HL.UnstableAfflictionDebuffsPrev = {
-    [UnstableAfflictionDebuffs[2]] = UnstableAfflictionDebuffs[1],
-    [UnstableAfflictionDebuffs[3]] = UnstableAfflictionDebuffs[2],
-    [UnstableAfflictionDebuffs[4]] = UnstableAfflictionDebuffs[3],
-    [UnstableAfflictionDebuffs[5]] = UnstableAfflictionDebuffs[4]
-  };
-
-local function NbAffected (SpellAffected)
-    local nbaff = 0
-    for Key, Value in pairs(Cache.Enemies[40]) do
-      if Value:DebuffRemainsP(SpellAffected) > 0 then nbaff = nbaff + 1; end
-    end
-    return nbaff;
+local function TimeToShard()
+  local ActiveAgony = S.Agony:ActiveDot()
+  if ActiveAgony == 0 then
+    return 10000 
+  end
+  return 1 / (0.16 / math.sqrt(ActiveAgony) * (ActiveAgony == 1 and 1.15 or 1) * ActiveAgony / S.Agony:TickTime())
 end
 
-local function TimeToShard()
-    local agony_count = NbAffected(S.Agony)
-    if agony_count == 0 then
-        return 10000 
+local UnstableAfflictionDebuffs = {
+  Spell(233490),
+  Spell(233496),
+  Spell(233497),
+  Spell(233498),
+  Spell(233499)
+};
+
+local function ActiveUAs ()
+  local UACount = 0
+  for _, UADebuff in pairs(UnstableAfflictionDebuffs) do
+    if Target:DebuffRemainsP(UADebuff) > 0 then UACount = UACount + 1 end
+  end
+  return UACount
+end
+
+local function Contagion()
+  local MaximumDuration = 0
+  for _, UADebuff in pairs(UnstableAfflictionDebuffs) do
+    local UARemains = Target:DebuffRemainsP(UADebuff)
+    if UARemains > MaximumDuration then
+      MaximumDuration = UARemains
     end
-    return 1 / (0.16 / math.sqrt(agony_count) * (agony_count == 1 and 1.15 or 1) * agony_count / S.Agony:TickTime())
+  end
+  return MaximumDuration
 end
 
 S.ShadowBolt:RegisterInFlight()
