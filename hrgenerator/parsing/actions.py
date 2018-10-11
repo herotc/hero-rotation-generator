@@ -239,6 +239,7 @@ class Action(Decorable):
                     f'if {condition.print_lua()} then\n'
                     f'{indent(cycle_cast)}\n'
                     f'end')
+        self.target.unit_object = Literal('Target', convert=True)
         return lua_string
 
     def print_lua(self):
@@ -277,6 +278,7 @@ class Action(Decorable):
                     targetif_condition_tree.condition.condition_list[idx] = x.replace(f'{mmax.group(0)}:','')
                 targetif_condition = convert_type(targetif_condition_tree, NUM)
                 self.target.unit_object = Literal('TargetUnit')
+                targetif_condition = convert_type(targetif_condition_tree, NUM)
                 self.range_ = self.player.spell_property(self.execution().object_(), RANGE, self.player.spec_range())
                 if if_condition_tree.condition_expression.simc != '':
                     if_condition = convert_type(if_condition_tree, BOOL)
@@ -287,6 +289,7 @@ class Action(Decorable):
                     f'if {condition.print_lua()} then\n'
                     f'{indent(cycle_cast)}\n'
                     f'end')
+                self.target.unit_object = Literal('Target', convert=True)
                 return lua_string
             else:
                 return self.print_cycle_targets(lua_string, condition, plustargetif=True)
