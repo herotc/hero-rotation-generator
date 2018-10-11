@@ -22,4 +22,4 @@ local function TimeToShard()
 end
 
 S.ShadowBolt:RegisterInFlight()
-S.S.SeedofCorruption:RegisterInFlight()
+S.SeedofCorruption:RegisterInFlight()
