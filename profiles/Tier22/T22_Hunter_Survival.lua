@@ -162,6 +162,10 @@ local function APL()
     end
   end
   Cleave = function()
+    -- variable,name=carve_cdr,op=setif,value=active_enemies,value_else=5,condition=active_enemies<5
+    if  then
+      if HR.CastCycle(VarCarveCdr, 40, function(TargetUnit) return (Cache.EnemiesCount[40] < 5) and (Cache.EnemiesCount[40] < 5) end) then return "carve_cdr 64" end
+    end
     -- a_murder_of_crows
     if S.AMurderofCrows:IsCastableP() then
       if HR.Cast(S.AMurderofCrows) then return "a_murder_of_crows 65"; end

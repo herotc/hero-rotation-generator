@@ -92,7 +92,7 @@ local function APL()
     end
   end
   -- call precombat
-  if not Player:AffectingCombat() and not Player:IsCasting() then
+  if not Player:AffectingCombat() then
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   if Everyone.TargetIsValid() then
