@@ -93,16 +93,16 @@ local function APL()
     -- food
     -- summon_pet
     if S.SummonPet:IsCastableP() then
-      if HR.Cast(S.SummonPet) then return ""; end
+      if HR.Cast(S.SummonPet) then return "summon_pet 3"; end
     end
     -- snapshot_stats
     -- potion
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
-      if HR.CastSuggested(I.ProlongedPower) then return ""; end
+      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 6"; end
     end
     -- aspect_of_the_wild
     if S.AspectoftheWild:IsCastableP() and Player:BuffDownP(S.AspectoftheWildBuff) then
-      if HR.Cast(S.AspectoftheWild) then return ""; end
+      if HR.Cast(S.AspectoftheWild) then return "aspect_of_the_wild 8"; end
     end
   end
   -- call precombat
@@ -114,87 +114,87 @@ local function APL()
     -- use_items
     -- berserking,if=cooldown.bestial_wrath.remains>30
     if S.Berserking:IsCastableP() and HR.CDsON() and (S.BestialWrath:CooldownRemainsP() > 30) then
-      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
+      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return "berserking 15"; end
     end
     -- blood_fury,if=cooldown.bestial_wrath.remains>30
     if S.BloodFury:IsCastableP() and HR.CDsON() and (S.BestialWrath:CooldownRemainsP() > 30) then
-      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
+      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return "blood_fury 19"; end
     end
     -- ancestral_call,if=cooldown.bestial_wrath.remains>30
     if S.AncestralCall:IsCastableP() and HR.CDsON() and (S.BestialWrath:CooldownRemainsP() > 30) then
-      if HR.Cast(S.AncestralCall, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
+      if HR.Cast(S.AncestralCall, Settings.Commons.OffGCDasOffGCD.Racials) then return "ancestral_call 23"; end
     end
     -- fireblood,if=cooldown.bestial_wrath.remains>30
     if S.Fireblood:IsCastableP() and HR.CDsON() and (S.BestialWrath:CooldownRemainsP() > 30) then
-      if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
+      if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return "fireblood 27"; end
     end
     -- lights_judgment
     if S.LightsJudgment:IsCastableP() and HR.CDsON() then
-      if HR.Cast(S.LightsJudgment) then return ""; end
+      if HR.Cast(S.LightsJudgment) then return "lights_judgment 31"; end
     end
     -- potion,if=buff.bestial_wrath.up&buff.aspect_of_the_wild.up
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.BestialWrathBuff) and Player:BuffP(S.AspectoftheWildBuff)) then
-      if HR.CastSuggested(I.ProlongedPower) then return ""; end
+      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 33"; end
     end
     -- barbed_shot,if=full_recharge_time<gcd.max|pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains<=gcd.max
     if S.BarbedShot:IsCastableP() and (S.BarbedShot:FullRechargeTimeP() < Player:GCD() or Pet:BuffP(S.FrenzyBuff) and Pet:BuffRemainsP(S.FrenzyBuff) <= Player:GCD()) then
-      if HR.Cast(S.BarbedShot) then return ""; end
+      if HR.Cast(S.BarbedShot) then return "barbed_shot 39"; end
     end
     -- a_murder_of_crows
     if S.AMurderofCrows:IsCastableP() then
-      if HR.Cast(S.AMurderofCrows) then return ""; end
+      if HR.Cast(S.AMurderofCrows) then return "a_murder_of_crows 49"; end
     end
     -- spitting_cobra
     if S.SpittingCobra:IsCastableP() then
-      if HR.Cast(S.SpittingCobra) then return ""; end
+      if HR.Cast(S.SpittingCobra) then return "spitting_cobra 51"; end
     end
     -- stampede,if=buff.bestial_wrath.up|cooldown.bestial_wrath.remains<gcd|target.time_to_die<15
     if S.Stampede:IsCastableP() and (Player:BuffP(S.BestialWrathBuff) or S.BestialWrath:CooldownRemainsP() < Player:GCD() or Target:TimeToDie() < 15) then
-      if HR.Cast(S.Stampede) then return ""; end
+      if HR.Cast(S.Stampede) then return "stampede 53"; end
     end
     -- aspect_of_the_wild
     if S.AspectoftheWild:IsCastableP() then
-      if HR.Cast(S.AspectoftheWild) then return ""; end
+      if HR.Cast(S.AspectoftheWild) then return "aspect_of_the_wild 59"; end
     end
     -- bestial_wrath,if=!buff.bestial_wrath.up
     if S.BestialWrath:IsCastableP() and (not Player:BuffP(S.BestialWrathBuff)) then
-      if HR.Cast(S.BestialWrath) then return ""; end
+      if HR.Cast(S.BestialWrath) then return "bestial_wrath 61"; end
     end
     -- multishot,if=spell_targets>2&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)
     if S.Multishot:IsCastableP() and (Cache.EnemiesCount[40] > 2 and (Pet:BuffRemainsP(S.BeastCleaveBuff) < Player:GCD() or Pet:BuffDownP(S.BeastCleaveBuff))) then
-      if HR.Cast(S.Multishot) then return ""; end
+      if HR.Cast(S.Multishot) then return "multishot 65"; end
     end
     -- chimaera_shot
     if S.ChimaeraShot:IsCastableP() then
-      if HR.Cast(S.ChimaeraShot) then return ""; end
+      if HR.Cast(S.ChimaeraShot) then return "chimaera_shot 77"; end
     end
     -- kill_command
     if S.KillCommand:IsCastableP() then
-      if HR.Cast(S.KillCommand) then return ""; end
+      if HR.Cast(S.KillCommand) then return "kill_command 79"; end
     end
     -- dire_beast
     if S.DireBeast:IsCastableP() then
-      if HR.Cast(S.DireBeast) then return ""; end
+      if HR.Cast(S.DireBeast) then return "dire_beast 81"; end
     end
     -- barbed_shot,if=pet.cat.buff.frenzy.down&charges_fractional>1.8|target.time_to_die<9
-    if S.BarbedShot:IsCastableP() and (Pet:BuffDownP(S.FrenzyBuff) and S.BarbedShot:ChargesFractional() > 1.8 or Target:TimeToDie() < 9) then
-      if HR.Cast(S.BarbedShot) then return ""; end
+    if S.BarbedShot:IsCastableP() and (Pet:BuffDownP(S.FrenzyBuff) and S.BarbedShot:ChargesFractionalP() > 1.8 or Target:TimeToDie() < 9) then
+      if HR.Cast(S.BarbedShot) then return "barbed_shot 83"; end
     end
     -- barrage,if=active_enemies>1
     if S.Barrage:IsCastableP() and (Cache.EnemiesCount[40] > 1) then
-      if HR.Cast(S.Barrage) then return ""; end
+      if HR.Cast(S.Barrage) then return "barrage 91"; end
     end
     -- multishot,if=spell_targets>1&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)
     if S.Multishot:IsCastableP() and (Cache.EnemiesCount[40] > 1 and (Pet:BuffRemainsP(S.BeastCleaveBuff) < Player:GCD() or Pet:BuffDownP(S.BeastCleaveBuff))) then
-      if HR.Cast(S.Multishot) then return ""; end
+      if HR.Cast(S.Multishot) then return "multishot 99"; end
     end
     -- cobra_shot,if=(active_enemies<2|cooldown.kill_command.remains>focus.time_to_max)&(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd)&cooldown.kill_command.remains>1
     if S.CobraShot:IsCastableP() and ((Cache.EnemiesCount[40] < 2 or S.KillCommand:CooldownRemainsP() > Player:FocusTimeToMaxPredicted()) and (Player:Focus() - S.CobraShot:Cost() + Player:FocusRegen() * (S.KillCommand:CooldownRemainsP() - 1) > S.KillCommand:Cost() or S.KillCommand:CooldownRemainsP() > 1 + Player:GCD()) and S.KillCommand:CooldownRemainsP() > 1) then
-      if HR.Cast(S.CobraShot) then return ""; end
+      if HR.Cast(S.CobraShot) then return "cobra_shot 111"; end
     end
     -- arcane_torrent
     if S.ArcaneTorrent:IsCastableP() and HR.CDsON() then
-      if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
+      if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return "arcane_torrent 135"; end
     end
   end
 end

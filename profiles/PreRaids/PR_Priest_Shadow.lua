@@ -286,7 +286,7 @@ local function APL()
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   if Everyone.TargetIsValid() then
-    -- use_item,slot=trinket1
+    -- use_item,slot=trinket2
     -- potion,if=buff.bloodlust.react|target.time_to_die<=80|target.health.pct<35
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:HasHeroism() or Target:TimeToDie() <= 80 or Target:HealthPercentage() < 35) then
       if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 177"; end

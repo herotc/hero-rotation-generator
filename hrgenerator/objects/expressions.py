@@ -5,6 +5,8 @@ Define the objects representing simc expressions.
 @author: skasch
 """
 
+import warnings
+
 from .lua import LuaExpression, LuaRange, Method, Literal, BuildExpression, LuaComparison
 from .executions import Spell, Item, Potion, Variable
 from .resources import (Rune, AstralPower, HolyPower, Insanity, Pain, Focus,
@@ -250,6 +252,7 @@ class Expression(Decorable):
                 return self.action(to_self=True)
             return getattr(self, self.condition_list[0])()
         except AttributeError:
+            warnings.warn(f'Failed to parse the expression {self.simc}')
             return Literal(self.simc)
 
     def caster(self, spell=None):

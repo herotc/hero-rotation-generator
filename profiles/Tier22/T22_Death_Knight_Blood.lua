@@ -95,77 +95,77 @@ local function APL()
     -- snapshot_stats
     -- potion
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
-      if HR.CastSuggested(I.ProlongedPower) then return ""; end
+      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 4"; end
     end
   end
   Standard = function()
     -- death_strike,if=runic_power.deficit<=10
     if S.DeathStrike:IsUsableP() and (Player:RunicPowerDeficit() <= 10) then
-      if HR.Cast(S.DeathStrike) then return ""; end
+      if HR.Cast(S.DeathStrike) then return "death_strike 6"; end
     end
     -- blooddrinker,if=!buff.dancing_rune_weapon.up
     if S.BloodDrinker:IsCastableP() and (not Player:BuffP(S.DancingRuneWeaponBuff)) then
-      if HR.Cast(S.BloodDrinker, Settings.Blood.GCDasOffGCD.BloodDrinker) then return ""; end
+      if HR.Cast(S.BloodDrinker, Settings.Blood.GCDasOffGCD.BloodDrinker) then return "blooddrinker 8"; end
     end
     -- marrowrend,if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*2)|buff.bone_shield.stack<3)&runic_power.deficit>=20
     if S.Marrowrend:IsCastableP() and ((Player:BuffRemainsP(S.BoneShieldBuff) <= Player:RuneTimeToX(3) or Player:BuffRemainsP(S.BoneShieldBuff) <= (Player:GCD() + num(S.BloodDrinker:CooldownUpP()) * num(S.BloodDrinker:IsAvailable()) * 2) or Player:BuffStackP(S.BoneShieldBuff) < 3) and Player:RunicPowerDeficit() >= 20) then
-      if HR.Cast(S.Marrowrend) then return ""; end
+      if HR.Cast(S.Marrowrend) then return "marrowrend 12"; end
     end
     -- blood_boil,if=charges_fractional>=1.8&(buff.hemostasis.stack<=(5-spell_targets.blood_boil)|spell_targets.blood_boil>2)
-    if S.BloodBoil:IsCastableP() and (S.BloodBoil:ChargesFractional() >= 1.8 and (Player:BuffStackP(S.HemostasisBuff) <= (5 - Cache.EnemiesCount[5]) or Cache.EnemiesCount[5] > 2)) then
-      if HR.Cast(S.BloodBoil) then return ""; end
+    if S.BloodBoil:IsCastableP() and (S.BloodBoil:ChargesFractionalP() >= 1.8 and (Player:BuffStackP(S.HemostasisBuff) <= (5 - Cache.EnemiesCount[5]) or Cache.EnemiesCount[5] > 2)) then
+      if HR.Cast(S.BloodBoil) then return "blood_boil 24"; end
     end
     -- marrowrend,if=buff.bone_shield.stack<5&talent.ossuary.enabled&runic_power.deficit>=15
     if S.Marrowrend:IsCastableP() and (Player:BuffStackP(S.BoneShieldBuff) < 5 and S.Ossuary:IsAvailable() and Player:RunicPowerDeficit() >= 15) then
-      if HR.Cast(S.Marrowrend) then return ""; end
+      if HR.Cast(S.Marrowrend) then return "marrowrend 32"; end
     end
     -- bonestorm,if=runic_power>=100&!buff.dancing_rune_weapon.up
     if S.Bonestorm:IsCastableP() and (Player:RunicPower() >= 100 and not Player:BuffP(S.DancingRuneWeaponBuff)) then
-      if HR.Cast(S.Bonestorm) then return ""; end
+      if HR.Cast(S.Bonestorm) then return "bonestorm 38"; end
     end
     -- death_strike,if=runic_power.deficit<=(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)|target.time_to_die<10
     if S.DeathStrike:IsUsableP() and (Player:RunicPowerDeficit() <= (15 + num(Player:BuffP(S.DancingRuneWeaponBuff)) * 5 + Cache.EnemiesCount[5] * num(S.Heartbreaker:IsAvailable()) * 2) or Target:TimeToDie() < 10) then
-      if HR.Cast(S.DeathStrike) then return ""; end
+      if HR.Cast(S.DeathStrike) then return "death_strike 42"; end
     end
     -- death_and_decay,if=spell_targets.death_and_decay>=3
     if S.DeathandDecay:IsCastableP() and (Cache.EnemiesCount[5] >= 3) then
-      if HR.Cast(S.DeathandDecay) then return ""; end
+      if HR.Cast(S.DeathandDecay) then return "death_and_decay 48"; end
     end
     -- rune_strike,if=(charges_fractional>=1.8|buff.dancing_rune_weapon.up)&rune.time_to_3>=gcd
-    if S.RuneStrike:IsCastableP() and ((S.RuneStrike:ChargesFractional() >= 1.8 or Player:BuffP(S.DancingRuneWeaponBuff)) and Player:RuneTimeToX(3) >= Player:GCD()) then
-      if HR.Cast(S.RuneStrike) then return ""; end
+    if S.RuneStrike:IsCastableP() and ((S.RuneStrike:ChargesFractionalP() >= 1.8 or Player:BuffP(S.DancingRuneWeaponBuff)) and Player:RuneTimeToX(3) >= Player:GCD()) then
+      if HR.Cast(S.RuneStrike) then return "rune_strike 50"; end
     end
     -- heart_strike,if=buff.dancing_rune_weapon.up|rune.time_to_4<gcd
     if S.HeartStrike:IsCastableP() and (Player:BuffP(S.DancingRuneWeaponBuff) or Player:RuneTimeToX(4) < Player:GCD()) then
-      if HR.Cast(S.HeartStrike) then return ""; end
+      if HR.Cast(S.HeartStrike) then return "heart_strike 58"; end
     end
     -- blood_boil,if=buff.dancing_rune_weapon.up
     if S.BloodBoil:IsCastableP() and (Player:BuffP(S.DancingRuneWeaponBuff)) then
-      if HR.Cast(S.BloodBoil) then return ""; end
+      if HR.Cast(S.BloodBoil) then return "blood_boil 62"; end
     end
     -- death_and_decay,if=buff.crimson_scourge.up|talent.rapid_decomposition.enabled|spell_targets.death_and_decay>=2
     if S.DeathandDecay:IsCastableP() and (Player:BuffP(S.CrimsonScourgeBuff) or S.RapidDecomposition:IsAvailable() or Cache.EnemiesCount[5] >= 2) then
-      if HR.Cast(S.DeathandDecay) then return ""; end
+      if HR.Cast(S.DeathandDecay) then return "death_and_decay 66"; end
     end
     -- consumption
     if S.Consumption:IsCastableP() then
-      if HR.Cast(S.Consumption) then return ""; end
+      if HR.Cast(S.Consumption) then return "consumption 72"; end
     end
     -- blood_boil
     if S.BloodBoil:IsCastableP() then
-      if HR.Cast(S.BloodBoil) then return ""; end
+      if HR.Cast(S.BloodBoil) then return "blood_boil 74"; end
     end
     -- heart_strike,if=rune.time_to_3<gcd|buff.bone_shield.stack>6
     if S.HeartStrike:IsCastableP() and (Player:RuneTimeToX(3) < Player:GCD() or Player:BuffStackP(S.BoneShieldBuff) > 6) then
-      if HR.Cast(S.HeartStrike) then return ""; end
+      if HR.Cast(S.HeartStrike) then return "heart_strike 76"; end
     end
     -- rune_strike
     if S.RuneStrike:IsCastableP() then
-      if HR.Cast(S.RuneStrike) then return ""; end
+      if HR.Cast(S.RuneStrike) then return "rune_strike 80"; end
     end
     -- arcane_torrent,if=runic_power.deficit>20
     if S.ArcaneTorrent:IsCastableP() and (Player:RunicPowerDeficit() > 20) then
-      if HR.Cast(S.ArcaneTorrent, Settings.Blood.GCDasOffGCD.ArcaneTorrent) then return ""; end
+      if HR.Cast(S.ArcaneTorrent, Settings.Blood.GCDasOffGCD.ArcaneTorrent) then return "arcane_torrent 82"; end
     end
   end
   -- call precombat
@@ -176,36 +176,36 @@ local function APL()
     -- auto_attack
     -- mind_freeze
     if S.MindFreeze:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled then
-      if HR.CastAnnotated(S.MindFreeze, false, "Interrupt") then return ""; end
+      if HR.CastAnnotated(S.MindFreeze, false, "Interrupt") then return "mind_freeze 86"; end
     end
     -- blood_fury,if=cooldown.dancing_rune_weapon.ready&(!cooldown.blooddrinker.ready|!talent.blooddrinker.enabled)
     if S.BloodFury:IsCastableP() and (S.DancingRuneWeapon:CooldownUpP() and (not S.BloodDrinker:CooldownUpP() or not S.BloodDrinker:IsAvailable())) then
-      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
+      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return "blood_fury 88"; end
     end
     -- berserking
     if S.Berserking:IsCastableP() then
-      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return ""; end
+      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return "berserking 96"; end
     end
     -- use_items,if=cooldown.dancing_rune_weapon.remains>90
     -- use_item,name=razdunks_big_red_button
     if I.RazdunksBigRedButton:IsReady() then
-      if HR.CastSuggested(I.RazdunksBigRedButton) then return ""; end
+      if HR.CastSuggested(I.RazdunksBigRedButton) then return "razdunks_big_red_button 99"; end
     end
     -- use_item,name=merekthas_fang
     if I.MerekthasFang:IsReady() then
-      if HR.CastSuggested(I.MerekthasFang) then return ""; end
+      if HR.CastSuggested(I.MerekthasFang) then return "merekthas_fang 101"; end
     end
     -- potion,if=buff.dancing_rune_weapon.up
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.DancingRuneWeaponBuff)) then
-      if HR.CastSuggested(I.ProlongedPower) then return ""; end
+      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 103"; end
     end
     -- dancing_rune_weapon,if=!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready
     if S.DancingRuneWeapon:IsCastableP() and HR.CDsON() and (not S.BloodDrinker:IsAvailable() or not S.BloodDrinker:CooldownUpP()) then
-      if HR.Cast(S.DancingRuneWeapon, Settings.Blood.OffGCDasOffGCD.DancingRuneWeapon) then return ""; end
+      if HR.Cast(S.DancingRuneWeapon, Settings.Blood.OffGCDasOffGCD.DancingRuneWeapon) then return "dancing_rune_weapon 107"; end
     end
     -- tombstone,if=buff.bone_shield.stack>=7
     if S.Tombstone:IsCastableP() and (Player:BuffStackP(S.BoneShieldBuff) >= 7) then
-      if HR.Cast(S.Tombstone) then return ""; end
+      if HR.Cast(S.Tombstone) then return "tombstone 113"; end
     end
     -- call_action_list,name=standard
     if (true) then
