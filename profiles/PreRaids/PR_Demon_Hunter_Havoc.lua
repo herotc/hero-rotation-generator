@@ -159,178 +159,178 @@ local function APL()
       if HR.Cast(S.Metamorphosis) then return "metamorphosis 18"; end
     end
     -- nemesis,target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)
-    if S.Nemesis:IsCastableP() and (bool(min:target.time_to_die)) and ((Cache.EnemiesCount[40] > 1) and Target:DebuffDownP(S.NemesisDebuff) and (Cache.EnemiesCount[40] > 1 or 10000000000 > 60)) then
-      if HR.Cast(S.Nemesis) then return "nemesis 24"; end
+    if S.Nemesis:IsCastableP() then
+      if HR.CastTargetIf(S.Nemesis, 40, "min", function(TargetUnit) return TargetUnit:TimeToDie() end, function(TargetUnit) return (Cache.EnemiesCount[40] > 1) and TargetUnit:DebuffDownP(S.NemesisDebuff) and (Cache.EnemiesCount[40] > 1 or 10000000000 > 60) end) then return "nemesis 40" end
     end
     -- nemesis,if=!raid_event.adds.exists
     if S.Nemesis:IsCastableP() and (not (Cache.EnemiesCount[40] > 1)) then
-      if HR.Cast(S.Nemesis) then return "nemesis 38"; end
+      if HR.Cast(S.Nemesis) then return "nemesis 41"; end
     end
     -- potion,if=buff.metamorphosis.remains>25|target.time_to_die<60
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffRemainsP(S.MetamorphosisBuff) > 25 or Target:TimeToDie() < 60) then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 42"; end
+      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 45"; end
     end
     -- use_item,name=galecallers_boon
     if I.GalecallersBoon:IsReady() then
-      if HR.CastSuggested(I.GalecallersBoon) then return "galecallers_boon 46"; end
+      if HR.CastSuggested(I.GalecallersBoon) then return "galecallers_boon 49"; end
     end
     -- use_item,name=lustrous_golden_plumage
     if I.LustrousGoldenPlumage:IsReady() then
-      if HR.CastSuggested(I.LustrousGoldenPlumage) then return "lustrous_golden_plumage 48"; end
+      if HR.CastSuggested(I.LustrousGoldenPlumage) then return "lustrous_golden_plumage 51"; end
     end
   end
   DarkSlash = function()
     -- dark_slash,if=fury>=80&(!variable.blade_dance|!cooldown.blade_dance.ready)
     if S.DarkSlash:IsCastableP() and (Player:Fury() >= 80 and (not bool(VarBladeDance) or not S.BladeDance:CooldownUpP())) then
-      if HR.Cast(S.DarkSlash) then return "dark_slash 50"; end
+      if HR.Cast(S.DarkSlash) then return "dark_slash 53"; end
     end
     -- annihilation,if=debuff.dark_slash.up
     if S.Annihilation:IsCastableP() and IsInMeleeRange() and (Target:DebuffP(S.DarkSlashDebuff)) then
-      if HR.Cast(S.Annihilation) then return "annihilation 56"; end
+      if HR.Cast(S.Annihilation) then return "annihilation 59"; end
     end
     -- chaos_strike,if=debuff.dark_slash.up
     if S.ChaosStrike:IsCastableP() and IsInMeleeRange() and (Target:DebuffP(S.DarkSlashDebuff)) then
-      if HR.Cast(S.ChaosStrike) then return "chaos_strike 60"; end
+      if HR.Cast(S.ChaosStrike) then return "chaos_strike 63"; end
     end
   end
   Demonic = function()
     -- fel_barrage,if=active_enemies>desired_targets|raid_event.adds.in>30
     if S.FelBarrage:IsCastableP() and (Cache.EnemiesCount[30] > 1 or 10000000000 > 30) then
-      if HR.Cast(S.FelBarrage) then return "fel_barrage 64"; end
+      if HR.Cast(S.FelBarrage) then return "fel_barrage 67"; end
     end
     -- death_sweep,if=variable.blade_dance
     if S.DeathSweep:IsCastableP() and (bool(VarBladeDance)) then
-      if HR.Cast(S.DeathSweep) then return "death_sweep 72"; end
+      if HR.Cast(S.DeathSweep) then return "death_sweep 75"; end
     end
     -- eye_beam,if=!buff.metamorphosis.extended_by_demonic&(raid_event.adds.up|raid_event.adds.in>25)
     if S.EyeBeam:IsCastableP() and (not IsMetaExtendedByDemonic() and ((Cache.EnemiesCount[20] > 1) or 10000000000 > 25)) then
-      if HR.Cast(S.EyeBeam) then return "eye_beam 76"; end
+      if HR.Cast(S.EyeBeam) then return "eye_beam 79"; end
     end
     -- blade_dance,if=variable.blade_dance&!cooldown.metamorphosis.ready&(cooldown.eye_beam.remains>(5-azerite.revolving_blades.rank*3)|(raid_event.adds.in>cooldown&raid_event.adds.in<25))
     if S.BladeDance:IsCastableP() and (bool(VarBladeDance) and not S.Metamorphosis:CooldownUpP() and (S.EyeBeam:CooldownRemainsP() > (5 - S.RevolvingBlades:AzeriteRank() * 3) or (10000000000 > S.BladeDance:Cooldown() and 10000000000 < 25))) then
-      if HR.Cast(S.BladeDance) then return "blade_dance 82"; end
+      if HR.Cast(S.BladeDance) then return "blade_dance 85"; end
     end
     -- immolation_aura
     if S.ImmolationAura:IsCastableP() then
-      if HR.Cast(S.ImmolationAura) then return "immolation_aura 96"; end
+      if HR.Cast(S.ImmolationAura) then return "immolation_aura 99"; end
     end
     -- felblade,if=fury<40|(buff.metamorphosis.down&fury.deficit>=40)
     if S.Felblade:IsCastableP() and (Player:Fury() < 40 or (Player:BuffDownP(S.MetamorphosisBuff) and Player:FuryDeficit() >= 40)) then
-      if HR.Cast(S.Felblade) then return "felblade 98"; end
+      if HR.Cast(S.Felblade) then return "felblade 101"; end
     end
     -- annihilation,if=(talent.blind_fury.enabled|fury.deficit<30|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance
     if S.Annihilation:IsCastableP() and IsInMeleeRange() and ((S.BlindFury:IsAvailable() or Player:FuryDeficit() < 30 or Player:BuffRemainsP(S.MetamorphosisBuff) < 5) and not bool(VarPoolingForBladeDance)) then
-      if HR.Cast(S.Annihilation) then return "annihilation 102"; end
+      if HR.Cast(S.Annihilation) then return "annihilation 105"; end
     end
     -- chaos_strike,if=(talent.blind_fury.enabled|fury.deficit<30)&!variable.pooling_for_meta&!variable.pooling_for_blade_dance
     if S.ChaosStrike:IsCastableP() and IsInMeleeRange() and ((S.BlindFury:IsAvailable() or Player:FuryDeficit() < 30) and not bool(VarPoolingForMeta) and not bool(VarPoolingForBladeDance)) then
-      if HR.Cast(S.ChaosStrike) then return "chaos_strike 110"; end
+      if HR.Cast(S.ChaosStrike) then return "chaos_strike 113"; end
     end
     -- fel_rush,if=talent.demon_blades.enabled&!cooldown.eye_beam.ready&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
     if S.FelRush:IsCastableP() and (S.DemonBlades:IsAvailable() and not S.EyeBeam:CooldownUpP() and (S.FelRush:ChargesP() == 2 or (10000000000 > 10 and 10000000000 > 10))) then
-      if HR.Cast(S.FelRush) then return "fel_rush 118"; end
+      if HR.Cast(S.FelRush) then return "fel_rush 121"; end
     end
     -- fel_rush,if=!talent.demon_blades.enabled&!cooldown.eye_beam.ready&azerite.unbound_chaos.rank>0
     if S.FelRush:IsCastableP() and (not S.DemonBlades:IsAvailable() and not S.EyeBeam:CooldownUpP() and S.UnboundChaos:AzeriteRank() > 0) then
-      if HR.Cast(S.FelRush) then return "fel_rush 128"; end
+      if HR.Cast(S.FelRush) then return "fel_rush 131"; end
     end
     -- demons_bite
     if S.DemonsBite:IsCastableP() and IsInMeleeRange() then
-      if HR.Cast(S.DemonsBite) then return "demons_bite 136"; end
+      if HR.Cast(S.DemonsBite) then return "demons_bite 139"; end
     end
     -- throw_glaive,if=buff.out_of_range.up
     if S.ThrowGlaive:IsCastableP() and (Player:BuffP(S.OutofRangeBuff)) then
-      if HR.Cast(S.ThrowGlaive) then return "throw_glaive 138"; end
+      if HR.Cast(S.ThrowGlaive) then return "throw_glaive 141"; end
     end
     -- fel_rush,if=movement.distance>15|buff.out_of_range.up
     if S.FelRush:IsCastableP() and (movement.distance > 15 or Player:BuffP(S.OutofRangeBuff)) then
-      if HR.Cast(S.FelRush) then return "fel_rush 142"; end
+      if HR.Cast(S.FelRush) then return "fel_rush 145"; end
     end
     -- vengeful_retreat,if=movement.distance>15
     if S.VengefulRetreat:IsCastableP() and (movement.distance > 15) then
-      if HR.Cast(S.VengefulRetreat) then return "vengeful_retreat 146"; end
+      if HR.Cast(S.VengefulRetreat) then return "vengeful_retreat 149"; end
     end
     -- throw_glaive,if=talent.demon_blades.enabled
     if S.ThrowGlaive:IsCastableP() and (S.DemonBlades:IsAvailable()) then
-      if HR.Cast(S.ThrowGlaive) then return "throw_glaive 148"; end
+      if HR.Cast(S.ThrowGlaive) then return "throw_glaive 151"; end
     end
   end
   Normal = function()
     -- vengeful_retreat,if=talent.momentum.enabled&buff.prepared.down&time>1
     if S.VengefulRetreat:IsCastableP() and (S.Momentum:IsAvailable() and Player:BuffDownP(S.PreparedBuff) and HL.CombatTime() > 1) then
-      if HR.Cast(S.VengefulRetreat) then return "vengeful_retreat 152"; end
+      if HR.Cast(S.VengefulRetreat) then return "vengeful_retreat 155"; end
     end
     -- fel_rush,if=(variable.waiting_for_momentum|talent.fel_mastery.enabled)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
     if S.FelRush:IsCastableP() and ((bool(VarWaitingForMomentum) or S.FelMastery:IsAvailable()) and (S.FelRush:ChargesP() == 2 or (10000000000 > 10 and 10000000000 > 10))) then
-      if HR.Cast(S.FelRush) then return "fel_rush 158"; end
+      if HR.Cast(S.FelRush) then return "fel_rush 161"; end
     end
     -- fel_barrage,if=!variable.waiting_for_momentum&(active_enemies>desired_targets|raid_event.adds.in>30)
     if S.FelBarrage:IsCastableP() and (not bool(VarWaitingForMomentum) and (Cache.EnemiesCount[30] > 1 or 10000000000 > 30)) then
-      if HR.Cast(S.FelBarrage) then return "fel_barrage 168"; end
+      if HR.Cast(S.FelBarrage) then return "fel_barrage 171"; end
     end
     -- death_sweep,if=variable.blade_dance
     if S.DeathSweep:IsCastableP() and (bool(VarBladeDance)) then
-      if HR.Cast(S.DeathSweep) then return "death_sweep 178"; end
+      if HR.Cast(S.DeathSweep) then return "death_sweep 181"; end
     end
     -- immolation_aura
     if S.ImmolationAura:IsCastableP() then
-      if HR.Cast(S.ImmolationAura) then return "immolation_aura 182"; end
+      if HR.Cast(S.ImmolationAura) then return "immolation_aura 185"; end
     end
     -- eye_beam,if=active_enemies>1&(!raid_event.adds.exists|raid_event.adds.up)&!variable.waiting_for_momentum
     if S.EyeBeam:IsCastableP() and (Cache.EnemiesCount[20] > 1 and (not (Cache.EnemiesCount[20] > 1) or (Cache.EnemiesCount[20] > 1)) and not bool(VarWaitingForMomentum)) then
-      if HR.Cast(S.EyeBeam) then return "eye_beam 184"; end
+      if HR.Cast(S.EyeBeam) then return "eye_beam 187"; end
     end
     -- blade_dance,if=variable.blade_dance
     if S.BladeDance:IsCastableP() and (bool(VarBladeDance)) then
-      if HR.Cast(S.BladeDance) then return "blade_dance 198"; end
+      if HR.Cast(S.BladeDance) then return "blade_dance 201"; end
     end
     -- fel_rush,if=!talent.momentum.enabled&!talent.demon_blades.enabled&azerite.unbound_chaos.enabled
     if S.FelRush:IsCastableP() and (not S.Momentum:IsAvailable() and not S.DemonBlades:IsAvailable() and S.UnboundChaos:AzeriteEnabled()) then
-      if HR.Cast(S.FelRush) then return "fel_rush 202"; end
+      if HR.Cast(S.FelRush) then return "fel_rush 205"; end
     end
     -- felblade,if=fury.deficit>=40
     if S.Felblade:IsCastableP() and (Player:FuryDeficit() >= 40) then
-      if HR.Cast(S.Felblade) then return "felblade 210"; end
+      if HR.Cast(S.Felblade) then return "felblade 213"; end
     end
     -- eye_beam,if=!talent.blind_fury.enabled&!variable.waiting_for_dark_slash&raid_event.adds.in>cooldown
     if S.EyeBeam:IsCastableP() and (not S.BlindFury:IsAvailable() and not bool(VarWaitingForDarkSlash) and 10000000000 > S.EyeBeam:Cooldown()) then
-      if HR.Cast(S.EyeBeam) then return "eye_beam 212"; end
+      if HR.Cast(S.EyeBeam) then return "eye_beam 215"; end
     end
     -- annihilation,if=(talent.demon_blades.enabled|!variable.waiting_for_momentum|fury.deficit<30|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance&!variable.waiting_for_dark_slash
     if S.Annihilation:IsCastableP() and IsInMeleeRange() and ((S.DemonBlades:IsAvailable() or not bool(VarWaitingForMomentum) or Player:FuryDeficit() < 30 or Player:BuffRemainsP(S.MetamorphosisBuff) < 5) and not bool(VarPoolingForBladeDance) and not bool(VarWaitingForDarkSlash)) then
-      if HR.Cast(S.Annihilation) then return "annihilation 222"; end
+      if HR.Cast(S.Annihilation) then return "annihilation 225"; end
     end
     -- chaos_strike,if=(talent.demon_blades.enabled|!variable.waiting_for_momentum|fury.deficit<30)&!variable.pooling_for_meta&!variable.pooling_for_blade_dance&!variable.waiting_for_dark_slash
     if S.ChaosStrike:IsCastableP() and IsInMeleeRange() and ((S.DemonBlades:IsAvailable() or not bool(VarWaitingForMomentum) or Player:FuryDeficit() < 30) and not bool(VarPoolingForMeta) and not bool(VarPoolingForBladeDance) and not bool(VarWaitingForDarkSlash)) then
-      if HR.Cast(S.ChaosStrike) then return "chaos_strike 234"; end
+      if HR.Cast(S.ChaosStrike) then return "chaos_strike 237"; end
     end
     -- eye_beam,if=talent.blind_fury.enabled&raid_event.adds.in>cooldown
     if S.EyeBeam:IsCastableP() and (S.BlindFury:IsAvailable() and 10000000000 > S.EyeBeam:Cooldown()) then
-      if HR.Cast(S.EyeBeam) then return "eye_beam 246"; end
+      if HR.Cast(S.EyeBeam) then return "eye_beam 249"; end
     end
     -- demons_bite
     if S.DemonsBite:IsCastableP() and IsInMeleeRange() then
-      if HR.Cast(S.DemonsBite) then return "demons_bite 254"; end
+      if HR.Cast(S.DemonsBite) then return "demons_bite 257"; end
     end
     -- fel_rush,if=!talent.momentum.enabled&raid_event.movement.in>charges*10&talent.demon_blades.enabled
     if S.FelRush:IsCastableP() and (not S.Momentum:IsAvailable() and 10000000000 > S.FelRush:ChargesP() * 10 and S.DemonBlades:IsAvailable()) then
-      if HR.Cast(S.FelRush) then return "fel_rush 256"; end
+      if HR.Cast(S.FelRush) then return "fel_rush 259"; end
     end
     -- felblade,if=movement.distance>15|buff.out_of_range.up
     if S.Felblade:IsCastableP() and (movement.distance > 15 or Player:BuffP(S.OutofRangeBuff)) then
-      if HR.Cast(S.Felblade) then return "felblade 266"; end
+      if HR.Cast(S.Felblade) then return "felblade 269"; end
     end
     -- fel_rush,if=movement.distance>15|(buff.out_of_range.up&!talent.momentum.enabled)
     if S.FelRush:IsCastableP() and (movement.distance > 15 or (Player:BuffP(S.OutofRangeBuff) and not S.Momentum:IsAvailable())) then
-      if HR.Cast(S.FelRush) then return "fel_rush 270"; end
+      if HR.Cast(S.FelRush) then return "fel_rush 273"; end
     end
     -- vengeful_retreat,if=movement.distance>15
     if S.VengefulRetreat:IsCastableP() and (movement.distance > 15) then
-      if HR.Cast(S.VengefulRetreat) then return "vengeful_retreat 276"; end
+      if HR.Cast(S.VengefulRetreat) then return "vengeful_retreat 279"; end
     end
     -- throw_glaive,if=talent.demon_blades.enabled
     if S.ThrowGlaive:IsCastableP() and (S.DemonBlades:IsAvailable()) then
-      if HR.Cast(S.ThrowGlaive) then return "throw_glaive 278"; end
+      if HR.Cast(S.ThrowGlaive) then return "throw_glaive 281"; end
     end
   end
   -- call precombat
@@ -365,7 +365,7 @@ local function APL()
     end
     -- disrupt
     if S.Disrupt:IsCastableP() then
-      if HR.Cast(S.Disrupt) then return "disrupt 332"; end
+      if HR.Cast(S.Disrupt) then return "disrupt 335"; end
     end
     -- call_action_list,name=cooldown,if=gcd.remains=0
     if (Player:GCDRemains() == 0) then
@@ -373,7 +373,7 @@ local function APL()
     end
     -- pick_up_fragment,if=fury.deficit>=35
     if S.PickUpFragment:IsCastableP() and (Player:FuryDeficit() >= 35) then
-      if HR.Cast(S.PickUpFragment) then return "pick_up_fragment 336"; end
+      if HR.Cast(S.PickUpFragment) then return "pick_up_fragment 339"; end
     end
     -- call_action_list,name=dark_slash,if=talent.dark_slash.enabled&(variable.waiting_for_dark_slash|debuff.dark_slash.up)
     if (S.DarkSlash:IsAvailable() and (bool(VarWaitingForDarkSlash) or Target:DebuffP(S.DarkSlashDebuff))) then

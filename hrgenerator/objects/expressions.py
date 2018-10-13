@@ -13,7 +13,7 @@ from .resources import (Rune, AstralPower, HolyPower, Insanity, Pain, Focus,
                         Maelstrom, Energy, ComboPoints, SoulShard,
                         ArcaneCharges, Chi, RunicPower, Fury, Rage, Mana)
 from .units import Pet
-from ..constants import (SPELL, BUFF, DEBUFF, BOOL, PET, BLOODLUST, RANGE,
+from ..constants import (SPELL, BUFF, DEBUFF, BOOL, PET, BLOODLUST, MOVEMENT, RANGE,
                          FALSE, MAX_INT, POTION)
 from ..abstract.decoratormanager import Decorable
 
@@ -329,6 +329,12 @@ class Expression(Decorable):
         """
         return Dot.build(self)
 
+    def active_dot(self):
+        """
+        Return the condition when the prefix is active_dot.
+        """
+        return ActiveDot.build(self)
+
     def prev_gcd(self):
         """
         Return the condition when the prefix is prev_gcd.
@@ -533,6 +539,8 @@ class Expires:
             spell_simc = condition.condition_list[1]
             if spell_simc == BLOODLUST:
                 self.spell = Literal(BLOODLUST)
+            elif spell_simc == MOVEMENT:
+                self.spell = Literal(MOVEMENT)
             elif spell_simc == POTION:
                 self.spell = Spell(condition.parent_action,
                                    condition.player_unit.potion(), spell_type)
@@ -551,6 +559,10 @@ class Expires:
         """
         if self.spell.simc == BLOODLUST:
             self.method = Method('HasHeroism', type_=BOOL)
+            # Required when called from Aura
+            self.args = []
+        elif self.spell.simc == MOVEMENT:
+            self.method = Method('IsMoving', type_=BOOL)
             # Required when called from Aura
             self.args = []
         else:
@@ -717,6 +729,25 @@ class PrevGCD(BuildExpression):
         Return the arguments for the expression prev_gcd.
         """
         self.method = Method('PrevGCDP', type_=BOOL)
+
+class ActiveDot(BuildExpression):
+    """
+    Represent the expression for a active_dot. condition.
+    """
+
+    def __init__(self, condition):
+        self.condition = condition
+        call = 'value'
+        self.object_ = Spell(condition.parent_action,condition.condition_list[1], type_=DEBUFF)
+        self.method = None
+        self.args = []
+        super().__init__(call)
+
+    def value(self):
+        """
+        Return the arguments for the expression active_dot.
+        """
+        self.method = Method('ActiveDot')
 
 
 class PrevOffGCD(BuildExpression):
@@ -906,7 +937,6 @@ class Race(BuildExpression):
         self.args = [Literal(condition.condition_list[1], convert=True,
                              quoted=True)]
         super().__init__('')
-
 
 class SpellTargets(BuildExpression):
     """

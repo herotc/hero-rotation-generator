@@ -171,64 +171,64 @@ local function APL()
       if HR.Cast(S.AdrenalineRush) then return "adrenaline_rush 42"; end
     end
     -- marked_for_death,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)
-    if S.MarkedForDeath:IsCastableP() and (bool(min:target.time_to_die)) and ((Cache.EnemiesCount[35] > 1) and (Target:TimeToDie() < Player:ComboPointsDeficit() or not bool(stealthed.rogue) and Player:ComboPointsDeficit() >= cp_max_spend - 1)) then
-      if HR.Cast(S.MarkedForDeath) then return "marked_for_death 46"; end
+    if S.MarkedForDeath:IsCastableP() then
+      if HR.CastTargetIf(S.MarkedForDeath, 35, "min", function(TargetUnit) return TargetUnit:TimeToDie() end, function(TargetUnit) return (Cache.EnemiesCount[35] > 1) and (TargetUnit:TimeToDie() < Player:ComboPointsDeficit() or not bool(stealthed.rogue) and Player:ComboPointsDeficit() >= cp_max_spend - 1) end) then return "marked_for_death 52" end
     end
     -- marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1
     if S.MarkedForDeath:IsCastableP() and (10000000000 > 30 - raid_event.adds.duration and not bool(stealthed.rogue) and Player:ComboPointsDeficit() >= cp_max_spend - 1) then
-      if HR.Cast(S.MarkedForDeath) then return "marked_for_death 50"; end
+      if HR.Cast(S.MarkedForDeath) then return "marked_for_death 53"; end
     end
     -- blade_flurry,if=spell_targets>=2&!buff.blade_flurry.up&(!raid_event.adds.exists|raid_event.adds.remains>8|raid_event.adds.in>(2-cooldown.blade_flurry.charges_fractional)*25)
     if S.BladeFlurry:IsCastableP() and (Cache.EnemiesCount[8] >= 2 and not Player:BuffP(S.BladeFlurryBuff) and (not (Cache.EnemiesCount[8] > 1) or 0 > 8 or 10000000000 > (2 - S.BladeFlurry:ChargesFractionalP()) * 25)) then
-      if HR.Cast(S.BladeFlurry) then return "blade_flurry 52"; end
+      if HR.Cast(S.BladeFlurry) then return "blade_flurry 55"; end
     end
     -- ghostly_strike,if=variable.blade_flurry_sync&combo_points.deficit>=1+buff.broadside.up
     if S.GhostlyStrike:IsCastableP() and (bool(VarBladeFlurrySync) and Player:ComboPointsDeficit() >= 1 + num(Player:BuffP(S.BroadsideBuff))) then
-      if HR.Cast(S.GhostlyStrike) then return "ghostly_strike 68"; end
+      if HR.Cast(S.GhostlyStrike) then return "ghostly_strike 71"; end
     end
     -- killing_spree,if=variable.blade_flurry_sync&(energy.time_to_max>5|energy<15)
     if S.KillingSpree:IsCastableP() and (bool(VarBladeFlurrySync) and (Player:EnergyTimeToMaxPredicted() > 5 or Player:EnergyPredicted() < 15)) then
-      if HR.Cast(S.KillingSpree) then return "killing_spree 74"; end
+      if HR.Cast(S.KillingSpree) then return "killing_spree 77"; end
     end
     -- blade_rush,if=variable.blade_flurry_sync&energy.time_to_max>1
     if S.BladeRush:IsCastableP() and (bool(VarBladeFlurrySync) and Player:EnergyTimeToMaxPredicted() > 1) then
-      if HR.Cast(S.BladeRush) then return "blade_rush 78"; end
+      if HR.Cast(S.BladeRush) then return "blade_rush 81"; end
     end
     -- vanish,if=!stealthed.all&variable.ambush_condition
     if S.Vanish:IsCastableP() and (not bool(stealthed.all) and bool(VarAmbushCondition)) then
-      if HR.Cast(S.Vanish) then return "vanish 82"; end
+      if HR.Cast(S.Vanish) then return "vanish 85"; end
     end
     -- shadowmeld,if=!stealthed.all&variable.ambush_condition
     if S.Shadowmeld:IsCastableP() and HR.CDsON() and (not bool(stealthed.all) and bool(VarAmbushCondition)) then
-      if HR.Cast(S.Shadowmeld, Settings.Commons.OffGCDasOffGCD.Racials) then return "shadowmeld 86"; end
+      if HR.Cast(S.Shadowmeld, Settings.Commons.OffGCDasOffGCD.Racials) then return "shadowmeld 89"; end
     end
   end
   Finish = function()
     -- between_the_eyes,if=buff.ruthless_precision.up|(azerite.deadshot.enabled|azerite.ace_up_your_sleeve.enabled)&buff.roll_the_bones.up
     if S.BetweentheEyes:IsCastableP() and (Player:BuffP(S.RuthlessPrecisionBuff) or (S.Deadshot:AzeriteEnabled() or S.AceUpYourSleeve:AzeriteEnabled()) and Player:BuffP(S.RolltheBonesBuff)) then
-      if HR.Cast(S.BetweentheEyes) then return "between_the_eyes 90"; end
+      if HR.Cast(S.BetweentheEyes) then return "between_the_eyes 93"; end
     end
     -- slice_and_dice,if=buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8
     if S.SliceandDice:IsCastableP() and (Player:BuffRemainsP(S.SliceandDiceBuff) < Target:TimeToDie() and Player:BuffRemainsP(S.SliceandDiceBuff) < (1 + Player:ComboPoints()) * 1.8) then
-      if HR.Cast(S.SliceandDice) then return "slice_and_dice 100"; end
+      if HR.Cast(S.SliceandDice) then return "slice_and_dice 103"; end
     end
     -- roll_the_bones,if=(buff.roll_the_bones.remains<=3|variable.rtb_reroll)&(target.time_to_die>20|buff.roll_the_bones.remains<target.time_to_die)
     if S.RolltheBones:IsCastableP() and ((Player:BuffRemainsP(S.RolltheBonesBuff) <= 3 or bool(VarRtbReroll)) and (Target:TimeToDie() > 20 or Player:BuffRemainsP(S.RolltheBonesBuff) < Target:TimeToDie())) then
-      if HR.Cast(S.RolltheBones) then return "roll_the_bones 106"; end
+      if HR.Cast(S.RolltheBones) then return "roll_the_bones 109"; end
     end
     -- between_the_eyes,if=azerite.ace_up_your_sleeve.enabled|azerite.deadshot.enabled
     if S.BetweentheEyes:IsCastableP() and (S.AceUpYourSleeve:AzeriteEnabled() or S.Deadshot:AzeriteEnabled()) then
-      if HR.Cast(S.BetweentheEyes) then return "between_the_eyes 114"; end
+      if HR.Cast(S.BetweentheEyes) then return "between_the_eyes 117"; end
     end
     -- dispatch
     if S.Dispatch:IsCastableP() then
-      if HR.Cast(S.Dispatch) then return "dispatch 120"; end
+      if HR.Cast(S.Dispatch) then return "dispatch 123"; end
     end
   end
   Stealth = function()
     -- ambush
     if S.Ambush:IsCastableP() then
-      if HR.Cast(S.Ambush) then return "ambush 122"; end
+      if HR.Cast(S.Ambush) then return "ambush 125"; end
     end
   end
   -- call precombat
@@ -238,7 +238,7 @@ local function APL()
   if Everyone.TargetIsValid() then
     -- stealth
     if S.Stealth:IsCastableP() then
-      if HR.Cast(S.Stealth) then return "stealth 125"; end
+      if HR.Cast(S.Stealth) then return "stealth 128"; end
     end
     -- variable,name=rtb_reroll,value=rtb_buffs<2&(buff.loaded_dice.up|!buff.grand_melee.up&!buff.ruthless_precision.up)
     if (true) then
@@ -282,15 +282,15 @@ local function APL()
     end
     -- arcane_torrent,if=energy.deficit>=15+energy.regen
     if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (Player:EnergyDeficitPredicted() >= 15 + Player:EnergyRegen()) then
-      if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return "arcane_torrent 194"; end
+      if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return "arcane_torrent 197"; end
     end
     -- arcane_pulse
     if S.ArcanePulse:IsCastableP() then
-      if HR.Cast(S.ArcanePulse) then return "arcane_pulse 196"; end
+      if HR.Cast(S.ArcanePulse) then return "arcane_pulse 199"; end
     end
     -- lights_judgment
     if S.LightsJudgment:IsCastableP() and HR.CDsON() then
-      if HR.Cast(S.LightsJudgment) then return "lights_judgment 198"; end
+      if HR.Cast(S.LightsJudgment) then return "lights_judgment 201"; end
     end
   end
 end

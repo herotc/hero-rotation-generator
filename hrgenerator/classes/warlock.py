@@ -71,6 +71,7 @@ SPELL_INFO = {
                                                  BUFF:      205179,
                                                  GCDAOGCD:  True},
             'seed_of_corruption':               {SPELL:     27243,
+                                                 DEBUFF:    27243,
                                                  RANGE:     40},
             'writhe_in_agony':                  {SPELL:     196102},
             'vile_taint':                       {SPELL:     278350,
@@ -78,6 +79,7 @@ SPELL_INFO = {
             'dark_soul':                        {SPELL:     113860,
                                                  GCDAOGCD:  True,
                                                  CD:        True},
+            'dark_soul_misery':                 {SPELL:     113860},
             'deathbolt':                        {SPELL:     264106},
             'summon_darkglare':                 {SPELL:     205180,
                                                  GCDAOGCD:  True,
@@ -88,6 +90,7 @@ SPELL_INFO = {
                                                  GCDAOGCD:  True},
             'summon_pet':                       {SPELL:     691,
                                                  GCDAOGCD:  True},
+            
             'unstable_affliction_1':            {DEBUFF:    233490},
             'unstable_affliction_2':            {DEBUFF:    233496},
             'unstable_affliction_3':            {DEBUFF:    233497},
@@ -95,7 +98,21 @@ SPELL_INFO = {
             'unstable_affliction_5':            {DEBUFF:    233499},
             'drain_life':                       {SPELL:     234153,
                                                  RANGE:     40,
-                                                 CD:        True}
+                                                 CD:        True},
+            'creeping_death':                   {SPELL:     264000},
+            'nightfall':                        {SPELL:     108558,
+                                                 BUFF:      264571},
+            'absolute_corruption':              {SPELL:     196103},
+            'shadow_embrace':                   {SPELL:     32388,
+                                                 DEBUFF:    32390},
+            'cascading_calamity':               {SPELL:     275372,
+                                                 BUFF:      275378},
+            # Azerite
+            'sudden_onset':                     {SPELL:     278721},
+            'inevitable_demise':                {SPELL:     273521,
+                                                 BUFF:      273525},
+            # Placeholders
+            'active_uas':                       {BUFF:      233490}
         },
         DEMONOLOGY: {
             'summon_pet':                       {SPELL:     30146},
@@ -181,8 +198,6 @@ CLASS_FUNCTIONS = {
         COMMON: [
         ],
         AFFLICTION: [
-            'UnstableAfflictionDebuffs',
-            'ActiveUAs',
             'AfflictionPreAplSetup',
         ],
         DEMONOLOGY: [
@@ -222,7 +237,7 @@ def warlock_precombat_skip(fun):
         exec_cast = self.execution().object_().print_cast()
         lua_string += (
             '\n'
-            f'if not Player:AffectingCombat() and not Player:IsCasting() then\n'
+            f'if not Player:AffectingCombat() and Everyone.TargetIsValid() and not Player:IsCasting() then\n'
             f'  {exec_cast}\n'
             f'end')
         return lua_string
@@ -277,6 +292,7 @@ TEMPLATES = {
                 '  UpdateRanges()\n'
                 '  Everyone.AoEToggleEnemiesUpdate()\n'
                 '  time_to_shard = TimeToShard()\n'
+                '  contagion = Contagion()\n'
                 '{action_lists}\n'
                 '{precombat_call}\n'
                 '  if Everyone.TargetIsValid() then\n'

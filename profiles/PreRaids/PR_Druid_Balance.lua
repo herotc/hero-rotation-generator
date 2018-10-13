@@ -237,60 +237,60 @@ local function APL()
       if HR.Cast(S.ForceofNature) then return "force_of_nature 124"; end
     end
     -- sunfire,target_if=refreshable,if=astral_power.deficit>=7&target.time_to_die>5.4&(!buff.celestial_alignment.up&!buff.incarnation.up|!variable.az_streak|!prev_gcd.1.sunfire)&(movement.distance>0|raid_event.movement.in>remains|remains<=execute_time*2)
-    if S.Sunfire:IsCastableP() and (Target:DebuffRefreshableCP(S.SunfireDebuff)) and (Player:AstralPowerDeficit() >= 7 and Target:TimeToDie() > 5.4 and (not Player:BuffP(S.CelestialAlignmentBuff) and not Player:BuffP(S.IncarnationBuff) or not bool(VarAzStreak) or not Player:PrevGCDP(1, S.Sunfire)) and (movement.distance > 0 or 10000000000 > Target:DebuffRemainsP(S.SunfireDebuff) or Target:DebuffRemainsP(S.SunfireDebuff) <= S.Sunfire:ExecuteTime() * 2)) then
-      if HR.Cast(S.Sunfire) then return "sunfire 134"; end
+    if S.Sunfire:IsCastableP() then
+      if HR.CastCycle(S.Sunfire, 40, function(TargetUnit) return (TargetUnit:DebuffRefreshableCP(S.SunfireDebuff)) and (Player:AstralPowerDeficit() >= 7 and TargetUnit:TimeToDie() > 5.4 and (not Player:BuffP(S.CelestialAlignmentBuff) and not Player:BuffP(S.IncarnationBuff) or not bool(VarAzStreak) or not Player:PrevGCDP(1, S.Sunfire)) and (movement.distance > 0 or 10000000000 > TargetUnit:DebuffRemainsP(S.SunfireDebuff) or TargetUnit:DebuffRemainsP(S.SunfireDebuff) <= S.Sunfire:ExecuteTime() * 2)) end) then return "sunfire 170" end
     end
     -- moonfire,target_if=refreshable,if=astral_power.deficit>=7&target.time_to_die>6.6&(!buff.celestial_alignment.up&!buff.incarnation.up|!variable.az_streak|!prev_gcd.1.moonfire)&(movement.distance>0|raid_event.movement.in>remains|remains<=execute_time*2)
-    if S.Moonfire:IsCastableP() and (Target:DebuffRefreshableCP(S.MoonfireDebuff)) and (Player:AstralPowerDeficit() >= 7 and Target:TimeToDie() > 6.6 and (not Player:BuffP(S.CelestialAlignmentBuff) and not Player:BuffP(S.IncarnationBuff) or not bool(VarAzStreak) or not Player:PrevGCDP(1, S.Moonfire)) and (movement.distance > 0 or 10000000000 > Target:DebuffRemainsP(S.MoonfireDebuff) or Target:DebuffRemainsP(S.MoonfireDebuff) <= S.Moonfire:ExecuteTime() * 2)) then
-      if HR.Cast(S.Moonfire) then return "moonfire 168"; end
+    if S.Moonfire:IsCastableP() then
+      if HR.CastCycle(S.Moonfire, 40, function(TargetUnit) return (TargetUnit:DebuffRefreshableCP(S.MoonfireDebuff)) and (Player:AstralPowerDeficit() >= 7 and TargetUnit:TimeToDie() > 6.6 and (not Player:BuffP(S.CelestialAlignmentBuff) and not Player:BuffP(S.IncarnationBuff) or not bool(VarAzStreak) or not Player:PrevGCDP(1, S.Moonfire)) and (movement.distance > 0 or 10000000000 > TargetUnit:DebuffRemainsP(S.MoonfireDebuff) or TargetUnit:DebuffRemainsP(S.MoonfireDebuff) <= S.Moonfire:ExecuteTime() * 2)) end) then return "moonfire 207" end
     end
     -- stellar_flare,target_if=refreshable,if=astral_power.deficit>=12&target.time_to_die>7.2&(!buff.celestial_alignment.up&!buff.incarnation.up|!variable.az_streak|!prev_gcd.1.stellar_flare)
-    if S.StellarFlare:IsCastableP() and (Target:DebuffRefreshableCP(S.StellarFlareDebuff)) and (Player:AstralPowerDeficit() >= 12 and Target:TimeToDie() > 7.2 and (not Player:BuffP(S.CelestialAlignmentBuff) and not Player:BuffP(S.IncarnationBuff) or not bool(VarAzStreak) or not Player:PrevGCDP(1, S.StellarFlare))) then
-      if HR.Cast(S.StellarFlare) then return "stellar_flare 202"; end
+    if S.StellarFlare:IsCastableP() then
+      if HR.CastCycle(S.StellarFlare, 40, function(TargetUnit) return (TargetUnit:DebuffRefreshableCP(S.StellarFlareDebuff)) and (Player:AstralPowerDeficit() >= 12 and TargetUnit:TimeToDie() > 7.2 and (not Player:BuffP(S.CelestialAlignmentBuff) and not Player:BuffP(S.IncarnationBuff) or not bool(VarAzStreak) or not Player:PrevGCDP(1, S.StellarFlare))) end) then return "stellar_flare 226" end
     end
     -- lunar_strike,if=astral_power.deficit>=16&(buff.lunar_empowerment.stack=3|(spell_targets<3&astral_power>=40&(buff.lunar_empowerment.stack=2&buff.solar_empowerment.stack=2)))&!(spell_targets.moonfire>=2&variable.az_potm=3&active_enemies=2)
     if S.LunarStrike:IsCastableP() and (Player:AstralPowerDeficit() >= 16 and (Player:BuffStackP(S.LunarEmpowermentBuff) == 3 or (Cache.EnemiesCount[40] < 3 and FutureAstralPower() >= 40 and (Player:BuffStackP(S.LunarEmpowermentBuff) == 2 and Player:BuffStackP(S.SolarEmpowermentBuff) == 2))) and not (Cache.EnemiesCount[40] >= 2 and VarAzPotm == 3 and Cache.EnemiesCount[40] == 2)) then
-      if HR.Cast(S.LunarStrike) then return "lunar_strike 218"; end
+      if HR.Cast(S.LunarStrike) then return "lunar_strike 227"; end
     end
     -- solar_wrath,if=astral_power.deficit>=12&(buff.solar_empowerment.stack=3|(variable.az_sb>1&spell_targets.starfall<3&astral_power>=32&!buff.sunblaze.up))&!(spell_targets.moonfire>=2&active_enemies<=4&variable.az_potm=3)|(variable.az_streak&(buff.celestial_alignment.up|buff.incarnation.up)&!prev_gcd.1.solar_wrath&astral_power.deficit>=12)
     if S.SolarWrath:IsCastableP() and (Player:AstralPowerDeficit() >= 12 and (Player:BuffStackP(S.SolarEmpowermentBuff) == 3 or (VarAzSb > 1 and Cache.EnemiesCount[40] < 3 and FutureAstralPower() >= 32 and not Player:BuffP(S.SunblazeBuff))) and not (Cache.EnemiesCount[40] >= 2 and Cache.EnemiesCount[40] <= 4 and VarAzPotm == 3) or (bool(VarAzStreak) and (Player:BuffP(S.CelestialAlignmentBuff) or Player:BuffP(S.IncarnationBuff)) and not Player:PrevGCDP(1, S.SolarWrath) and Player:AstralPowerDeficit() >= 12)) then
-      if HR.Cast(S.SolarWrath) then return "solar_wrath 240"; end
+      if HR.Cast(S.SolarWrath) then return "solar_wrath 249"; end
     end
     -- starsurge,if=(spell_targets.starfall<3&(!buff.starlord.up|buff.starlord.remains>=4)|execute_time*(astral_power%40)>target.time_to_die)&(!buff.celestial_alignment.up&!buff.incarnation.up|variable.az_streak<2|!prev_gcd.1.starsurge)&(raid_event.movement.in>(buff.lunar_empowerment.stack*action.lunar_strike.execute_time+buff.solar_empowerment.stack*action.solar_wrath.execute_time)|(astral_power+buff.lunar_empowerment.stack*12+buff.solar_empowerment.stack*8)>=96)
     if S.Starsurge:IsCastableP() and ((Cache.EnemiesCount[40] < 3 and (not Player:BuffP(S.StarlordBuff) or Player:BuffRemainsP(S.StarlordBuff) >= 4) or S.Starsurge:ExecuteTime() * (FutureAstralPower() / 40) > Target:TimeToDie()) and (not Player:BuffP(S.CelestialAlignmentBuff) and not Player:BuffP(S.IncarnationBuff) or VarAzStreak < 2 or not Player:PrevGCDP(1, S.Starsurge)) and (10000000000 > (Player:BuffStackP(S.LunarEmpowermentBuff) * S.LunarStrike:ExecuteTime() + Player:BuffStackP(S.SolarEmpowermentBuff) * S.SolarWrath:ExecuteTime()) or (FutureAstralPower() + Player:BuffStackP(S.LunarEmpowermentBuff) * 12 + Player:BuffStackP(S.SolarEmpowermentBuff) * 8) >= 96)) then
-      if HR.Cast(S.Starsurge) then return "starsurge 264"; end
+      if HR.Cast(S.Starsurge) then return "starsurge 273"; end
     end
     -- starfall,if=spell_targets.starfall>=3&(!buff.starlord.up|buff.starlord.remains>=4)
     if S.Starfall:IsCastableP() and (Cache.EnemiesCount[40] >= 3 and (not Player:BuffP(S.StarlordBuff) or Player:BuffRemainsP(S.StarlordBuff) >= 4)) then
-      if HR.Cast(S.Starfall) then return "starfall 298"; end
+      if HR.Cast(S.Starfall) then return "starfall 307"; end
     end
     -- new_moon,if=astral_power.deficit>10+execute_time%1.5
     if S.NewMoon:IsCastableP() and (Player:AstralPowerDeficit() > 10 + S.NewMoon:ExecuteTime() / 1.5) then
-      if HR.Cast(S.NewMoon) then return "new_moon 304"; end
+      if HR.Cast(S.NewMoon) then return "new_moon 313"; end
     end
     -- half_moon,if=astral_power.deficit>20+execute_time%1.5
     if S.HalfMoon:IsCastableP() and (Player:AstralPowerDeficit() > 20 + S.HalfMoon:ExecuteTime() / 1.5) then
-      if HR.Cast(S.HalfMoon) then return "half_moon 310"; end
+      if HR.Cast(S.HalfMoon) then return "half_moon 319"; end
     end
     -- full_moon,if=astral_power.deficit>40+execute_time%1.5
     if S.FullMoon:IsCastableP() and (Player:AstralPowerDeficit() > 40 + S.FullMoon:ExecuteTime() / 1.5) then
-      if HR.Cast(S.FullMoon) then return "full_moon 316"; end
+      if HR.Cast(S.FullMoon) then return "full_moon 325"; end
     end
     -- lunar_strike,if=((buff.warrior_of_elune.up|buff.lunar_empowerment.up|spell_targets>=3&!buff.solar_empowerment.up)&(!buff.celestial_alignment.up&!buff.incarnation.up|variable.az_streak<2|!prev_gcd.1.lunar_strike)|(variable.az_ds&!buff.dawning_sun.up))&!(spell_targets.moonfire>=2&active_enemies<=4&(variable.az_potm=3|variable.az_potm=2&active_enemies=2))
     if S.LunarStrike:IsCastableP() and (((Player:BuffP(S.WarriorofEluneBuff) or Player:BuffP(S.LunarEmpowermentBuff) or Cache.EnemiesCount[40] >= 3 and not Player:BuffP(S.SolarEmpowermentBuff)) and (not Player:BuffP(S.CelestialAlignmentBuff) and not Player:BuffP(S.IncarnationBuff) or VarAzStreak < 2 or not Player:PrevGCDP(1, S.LunarStrike)) or (bool(VarAzDs) and not Player:BuffP(S.DawningSunBuff))) and not (Cache.EnemiesCount[40] >= 2 and Cache.EnemiesCount[40] <= 4 and (VarAzPotm == 3 or VarAzPotm == 2 and Cache.EnemiesCount[40] == 2))) then
-      if HR.Cast(S.LunarStrike) then return "lunar_strike 322"; end
+      if HR.Cast(S.LunarStrike) then return "lunar_strike 331"; end
     end
     -- solar_wrath,if=(!buff.celestial_alignment.up&!buff.incarnation.up|variable.az_streak<2|!prev_gcd.1.solar_wrath)&!(spell_targets.moonfire>=2&active_enemies<=4&(variable.az_potm=3|variable.az_potm=2&active_enemies=2))
     if S.SolarWrath:IsCastableP() and ((not Player:BuffP(S.CelestialAlignmentBuff) and not Player:BuffP(S.IncarnationBuff) or VarAzStreak < 2 or not Player:PrevGCDP(1, S.SolarWrath)) and not (Cache.EnemiesCount[40] >= 2 and Cache.EnemiesCount[40] <= 4 and (VarAzPotm == 3 or VarAzPotm == 2 and Cache.EnemiesCount[40] == 2))) then
-      if HR.Cast(S.SolarWrath) then return "solar_wrath 364"; end
+      if HR.Cast(S.SolarWrath) then return "solar_wrath 373"; end
     end
     -- sunfire,if=(!buff.celestial_alignment.up&!buff.incarnation.up|!variable.az_streak|!prev_gcd.1.sunfire)&!(variable.az_potm>=2&spell_targets.moonfire>=2)
     if S.Sunfire:IsCastableP() and ((not Player:BuffP(S.CelestialAlignmentBuff) and not Player:BuffP(S.IncarnationBuff) or not bool(VarAzStreak) or not Player:PrevGCDP(1, S.Sunfire)) and not (VarAzPotm >= 2 and Cache.EnemiesCount[40] >= 2)) then
-      if HR.Cast(S.Sunfire) then return "sunfire 390"; end
+      if HR.Cast(S.Sunfire) then return "sunfire 399"; end
     end
     -- moonfire
     if S.Moonfire:IsCastableP() then
-      if HR.Cast(S.Moonfire) then return "moonfire 402"; end
+      if HR.Cast(S.Moonfire) then return "moonfire 411"; end
     end
   end
 end
