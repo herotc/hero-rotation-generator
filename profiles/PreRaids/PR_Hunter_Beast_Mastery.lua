@@ -66,7 +66,6 @@ local Settings = {
   BeastMastery = HR.GUISettings.APL.Hunter.BeastMastery
 };
 
--- Variables
 
 local EnemyRanges = {40}
 local function UpdateRanges()

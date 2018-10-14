@@ -74,6 +74,11 @@ local Settings = {
 local VarDsCastable = 0;
 local VarHow = 0;
 
+HL:RegisterForEvent(function()
+  VarDsCastable = 0
+  VarHow = 0
+end, "PLAYER_REGEN_ENABLED")
+
 local EnemyRanges = {30, 8, 5}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do

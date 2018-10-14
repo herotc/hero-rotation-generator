@@ -74,7 +74,6 @@ local Settings = {
   Destruction = HR.GUISettings.APL.Warlock.Destruction
 };
 
--- Variables
 
 local EnemyRanges = {40, 35, 5}
 local function UpdateRanges()

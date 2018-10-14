@@ -76,7 +76,6 @@ local Settings = {
   Windwalker = HR.GUISettings.APL.Monk.Windwalker
 };
 
--- Variables
 
 local EnemyRanges = {8}
 local function UpdateRanges()

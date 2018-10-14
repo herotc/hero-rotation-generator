@@ -75,7 +75,6 @@ local Settings = {
   Fire = HR.GUISettings.APL.Mage.Fire
 };
 
--- Variables
 
 local EnemyRanges = {40}
 local function UpdateRanges()

@@ -90,6 +90,12 @@ local VarUseThrash = 0;
 local VarDelayedTfOpener = 0;
 local VarOpenerDone = 0;
 
+HL:RegisterForEvent(function()
+  VarUseThrash = 0
+  VarDelayedTfOpener = 0
+  VarOpenerDone = 0
+end, "PLAYER_REGEN_ENABLED")
+
 local EnemyRanges = {8}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do

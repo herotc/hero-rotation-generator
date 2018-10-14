@@ -55,7 +55,6 @@ local Settings = {
   Holy = HR.GUISettings.APL.Priest.Holy
 };
 
--- Variables
 
 local EnemyRanges = {40, 5}
 local function UpdateRanges()

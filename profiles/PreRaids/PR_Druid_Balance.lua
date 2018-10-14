@@ -93,6 +93,13 @@ local VarAzDs = 0;
 local VarAzSb = 0;
 local VarAzPotm = 0;
 
+HL:RegisterForEvent(function()
+  VarAzStreak = 0
+  VarAzDs = 0
+  VarAzSb = 0
+  VarAzPotm = 0
+end, "PLAYER_REGEN_ENABLED")
+
 local EnemyRanges = {40}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do

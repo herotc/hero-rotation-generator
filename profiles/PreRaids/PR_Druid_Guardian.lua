@@ -70,7 +70,6 @@ local Settings = {
   Guardian = HR.GUISettings.APL.Druid.Guardian
 };
 
--- Variables
 
 local EnemyRanges = {40}
 local function UpdateRanges()

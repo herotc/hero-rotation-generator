@@ -73,7 +73,6 @@ local Settings = {
   Brewmaster = HR.GUISettings.APL.Monk.Brewmaster
 };
 
--- Variables
 
 local EnemyRanges = {8}
 local function UpdateRanges()

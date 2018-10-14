@@ -86,6 +86,11 @@ local Settings = {
 local VarUseSeed = 0;
 local VarPadding = 0;
 
+HL:RegisterForEvent(function()
+  VarUseSeed = 0
+  VarPadding = 0
+end, "PLAYER_REGEN_ENABLED")
+
 local EnemyRanges = {40, 5}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do

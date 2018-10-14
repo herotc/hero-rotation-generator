@@ -77,7 +77,6 @@ local Settings = {
   Frost = HR.GUISettings.APL.Mage.Frost
 };
 
--- Variables
 
 local EnemyRanges = {35}
 local function UpdateRanges()

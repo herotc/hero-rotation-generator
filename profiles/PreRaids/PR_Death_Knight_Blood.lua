@@ -65,7 +65,6 @@ local Settings = {
   Blood = HR.GUISettings.APL.DeathKnight.Blood
 };
 
--- Variables
 
 local EnemyRanges = {5}
 local function UpdateRanges()

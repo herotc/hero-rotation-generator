@@ -86,6 +86,12 @@ local VarBladeFlurrySync = 0;
 local VarAmbushCondition = 0;
 local VarRtbReroll = 0;
 
+HL:RegisterForEvent(function()
+  VarBladeFlurrySync = 0
+  VarAmbushCondition = 0
+  VarRtbReroll = 0
+end, "PLAYER_REGEN_ENABLED")
+
 local EnemyRanges = {35, 8}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do

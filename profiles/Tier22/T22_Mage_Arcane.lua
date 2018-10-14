@@ -84,6 +84,12 @@ local VarConserveMana = 0;
 local VarTotalBurns = 0;
 local VarAverageBurnLength = 0;
 
+HL:RegisterForEvent(function()
+  VarConserveMana = 0
+  VarTotalBurns = 0
+  VarAverageBurnLength = 0
+end, "PLAYER_REGEN_ENABLED")
+
 local EnemyRanges = {40, 10}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do

@@ -69,7 +69,6 @@ local Settings = {
   Fury = HR.GUISettings.APL.Warrior.Fury
 };
 
--- Variables
 
 local EnemyRanges = {8}
 local function UpdateRanges()

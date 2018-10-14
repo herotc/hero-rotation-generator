@@ -58,7 +58,6 @@ local Settings = {
   Vengeance = HR.GUISettings.APL.DemonHunter.Vengeance
 };
 
--- Variables
 
 local EnemyRanges = {}
 local function UpdateRanges()

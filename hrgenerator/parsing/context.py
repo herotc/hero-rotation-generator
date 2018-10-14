@@ -141,9 +141,15 @@ class Context(Decorable):
         """
         Print the variables object in lua context.
         """
-        lua_variables = '-- Variables\n'
-        for var in self.variables.values():
-            lua_variables += f'local {var.lua_name()} = {var.default};\n'
+        lua_variables = ''
+        if len(self.variables) > 0:
+            lua_variables = '-- Variables\n'
+            for var in self.variables.values():
+                lua_variables += f'local {var.lua_name()} = {var.default};\n'
+            lua_variables += f'\nHL:RegisterForEvent(function()\n'
+            for var in self.variables.values():
+                lua_variables += f'  {var.lua_name()} = {var.default}\n'
+            lua_variables += f'end, "PLAYER_REGEN_ENABLED")\n'
         return lua_variables
 
     def print_custom_code(self):

@@ -73,7 +73,6 @@ local Settings = {
   Demonology = HR.GUISettings.APL.Warlock.Demonology
 };
 
--- Variables
 
 local EnemyRanges = {40}
 local function UpdateRanges()

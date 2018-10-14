@@ -81,7 +81,6 @@ local Settings = {
   Arms = HR.GUISettings.APL.Warrior.Arms
 };
 
--- Variables
 
 local EnemyRanges = {8}
 local function UpdateRanges()

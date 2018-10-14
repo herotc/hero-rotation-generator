@@ -57,7 +57,6 @@ local Settings = {
   Protection = HR.GUISettings.APL.Paladin.Protection
 };
 
--- Variables
 
 local EnemyRanges = {30}
 local function UpdateRanges()

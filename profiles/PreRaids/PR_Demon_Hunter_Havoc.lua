@@ -84,6 +84,15 @@ local VarPoolingForBladeDance = 0;
 local VarWaitingForMomentum = 0;
 local VarWaitingForDarkSlash = 0;
 
+HL:RegisterForEvent(function()
+  VarPoolingForMeta = 0
+  VarWaitingForNemesis = 0
+  VarBladeDance = 0
+  VarPoolingForBladeDance = 0
+  VarWaitingForMomentum = 0
+  VarWaitingForDarkSlash = 0
+end, "PLAYER_REGEN_ENABLED")
+
 local EnemyRanges = {40, 30, 20, 8}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do

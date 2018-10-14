@@ -72,7 +72,6 @@ local Settings = {
   Elemental = HR.GUISettings.APL.Shaman.Elemental
 };
 
--- Variables
 
 local EnemyRanges = {40}
 local function UpdateRanges()

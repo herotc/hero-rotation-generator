@@ -74,7 +74,6 @@ local Settings = {
   Marksmanship = HR.GUISettings.APL.Hunter.Marksmanship
 };
 
--- Variables
 
 local EnemyRanges = {40}
 local function UpdateRanges()

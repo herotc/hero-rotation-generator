@@ -92,6 +92,15 @@ local VarFurycheck45 = 0;
 local VarOcpool60 = 0;
 local VarOcpool80 = 0;
 
+HL:RegisterForEvent(function()
+  VarFurycheck25 = 0
+  VarOcpool70 = 0
+  VarFurycheck35 = 0
+  VarFurycheck45 = 0
+  VarOcpool60 = 0
+  VarOcpool80 = 0
+end, "PLAYER_REGEN_ENABLED")
+
 local EnemyRanges = {8}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do

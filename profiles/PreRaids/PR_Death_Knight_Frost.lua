@@ -75,7 +75,6 @@ local Settings = {
   Frost = HR.GUISettings.APL.DeathKnight.Frost
 };
 
--- Variables
 
 local EnemyRanges = {30, 10, 8}
 local function UpdateRanges()

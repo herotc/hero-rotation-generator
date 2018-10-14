@@ -89,6 +89,11 @@ local Settings = {
 local VarStealthThreshold = 0;
 local VarShdThreshold = 0;
 
+HL:RegisterForEvent(function()
+  VarStealthThreshold = 0
+  VarShdThreshold = 0
+end, "PLAYER_REGEN_ENABLED")
+
 local EnemyRanges = {15, 10}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do

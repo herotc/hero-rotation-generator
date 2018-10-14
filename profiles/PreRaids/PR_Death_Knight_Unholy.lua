@@ -73,6 +73,10 @@ local Settings = {
 -- Variables
 local VarPoolingForGargoyle = 0;
 
+HL:RegisterForEvent(function()
+  VarPoolingForGargoyle = 0
+end, "PLAYER_REGEN_ENABLED")
+
 local EnemyRanges = {30, 5}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do
