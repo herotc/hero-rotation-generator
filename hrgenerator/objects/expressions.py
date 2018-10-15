@@ -252,7 +252,11 @@ class Expression(Decorable):
                 return self.action(to_self=True)
             return getattr(self, self.condition_list[0])()
         except AttributeError:
-            warnings.warn(f'Failed to parse the expression {self.simc}')
+            try:
+                float(self.simc)
+            except ValueError:
+                if self.simc not in '':
+                    warnings.warn(f'Failed to parse the expression {self.simc} in {self.player_unit.apl.profile_name} (line {self.parent_action.simc})')
             return Literal(self.simc)
 
     def caster(self, spell=None):
