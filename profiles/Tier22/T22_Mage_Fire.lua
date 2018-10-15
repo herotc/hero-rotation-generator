@@ -344,18 +344,17 @@ local function APL()
   end
   if Everyone.TargetIsValid() then
     -- counterspell,if=target.debuff.casting.react
-    -- time_warp,if=time=0&buff.bloodlust.down
     -- mirror_image,if=buff.combustion.down
     if S.MirrorImage:IsCastableP() and (Player:BuffDownP(S.CombustionBuff)) then
-      if HR.Cast(S.MirrorImage) then return "mirror_image 392"; end
+      if HR.Cast(S.MirrorImage) then return "mirror_image 391"; end
     end
     -- rune_of_power,if=firestarter.active&action.rune_of_power.charges=2|cooldown.combustion.remains>40&buff.combustion.down&!talent.kindling.enabled|target.time_to_die<11|talent.kindling.enabled&(charges_fractional>1.8|time<40)&cooldown.combustion.remains>40
     if S.RuneofPower:IsCastableP() and (bool(S.Firestarter:ActiveStatus()) and S.RuneofPower:ChargesP() == 2 or S.Combustion:CooldownRemainsP() > 40 and Player:BuffDownP(S.CombustionBuff) and not S.Kindling:IsAvailable() or Target:TimeToDie() < 11 or S.Kindling:IsAvailable() and (S.RuneofPower:ChargesFractionalP() > 1.8 or HL.CombatTime() < 40) and S.Combustion:CooldownRemainsP() > 40) then
-      if HR.Cast(S.RuneofPower, Settings.Fire.GCDasOffGCD.RuneofPower) then return "rune_of_power 396"; end
+      if HR.Cast(S.RuneofPower, Settings.Fire.GCDasOffGCD.RuneofPower) then return "rune_of_power 395"; end
     end
     -- rune_of_power,if=buff.pyroclasm.react&(cooldown.combustion.remains>40|action.rune_of_power.charges>1)
     if S.RuneofPower:IsCastableP() and (bool(Player:BuffStackP(S.PyroclasmBuff)) and (S.Combustion:CooldownRemainsP() > 40 or S.RuneofPower:ChargesP() > 1)) then
-      if HR.Cast(S.RuneofPower, Settings.Fire.GCDasOffGCD.RuneofPower) then return "rune_of_power 420"; end
+      if HR.Cast(S.RuneofPower, Settings.Fire.GCDasOffGCD.RuneofPower) then return "rune_of_power 419"; end
     end
     -- call_action_list,name=combustion_phase,if=cooldown.combustion.remains<=action.rune_of_power.cast_time+(!talent.kindling.enabled*gcd)&(!talent.firestarter.enabled|!firestarter.active|active_enemies>=4|active_enemies>=2&talent.flame_patch.enabled)|buff.combustion.up
     if HR.CDsON() and (S.Combustion:CooldownRemainsP() <= S.RuneofPower:CastTime() + (num(not S.Kindling:IsAvailable()) * Player:GCD()) and (not S.Firestarter:IsAvailable() or not bool(S.Firestarter:ActiveStatus()) or Cache.EnemiesCount[40] >= 4 or Cache.EnemiesCount[40] >= 2 and S.FlamePatch:IsAvailable()) or Player:BuffP(S.CombustionBuff)) then

@@ -2,13 +2,13 @@ hunter="T22_Hunter_Survival"
 source=default
 spec=survival
 level=120
-race=pandaren
+race=troll
 role=attack
 position=back
-talents=1101031
+talents=1101021
 
 # Default consumables
-potion=bursting_blood
+potion=battle_potion_of_agility
 flask=currents
 food=bountiful_captains_feast
 augmentation=battle_scarred
@@ -34,17 +34,40 @@ actions.precombat+=/harpoon
 actions=auto_attack
 actions+=/use_items
 actions+=/call_action_list,name=cds
-actions+=/call_action_list,name=wfi_st,if=active_enemies<2&talent.wildfire_infusion.enabled
-actions+=/call_action_list,name=st,if=active_enemies<2&!talent.wildfire_infusion.enabled
+actions+=/call_action_list,name=bopAP,if=active_enemies<3&talent.birds_of_prey.enabled&talent.alpha_predator.enabled
+actions+=/call_action_list,name=bopVV,if=active_enemies<3&talent.birds_of_prey.enabled&talent.vipers_venom.enabled
+actions+=/call_action_list,name=mb_ap_wfi_st,if=active_enemies<3&talent.wildfire_infusion.enabled&talent.alpha_predator.enabled&talent.mongoose_bite.enabled
+actions+=/call_action_list,name=wfi_st,if=active_enemies<3&talent.wildfire_infusion.enabled
+actions+=/call_action_list,name=st,if=active_enemies<2
 actions+=/call_action_list,name=cleave,if=active_enemies>1
 actions+=/arcane_torrent
 
-actions.cds=berserking,if=cooldown.coordinated_assault.remains>30
-actions.cds+=/blood_fury,if=cooldown.coordinated_assault.remains>30
+actions.bopAP=mongoose_bite,if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<gcd|buff.blur_of_talons.remains<gcd)
+actions.bopAP+=/coordinated_assault
+actions.bopAP+=/kill_command,if=full_recharge_time<1.5*gcd&focus+cast_regen<focus.max
+actions.bopAP+=/serpent_sting,if=!dot.serpent_sting.ticking&!buff.coordinated_assault.up
+actions.bopAP+=/wildfire_bomb,if=focus+cast_regen<focus.max&(full_recharge_time<1.5*gcd|!dot.wildfire_bomb.ticking&!buff.coordinated_assault.up)
+actions.bopAP+=/kill_command,if=focus+cast_regen<focus.max&(buff.mongoose_fury.stack<4|focus<action.mongoose_bite.cost)
+actions.bopAP+=/mongoose_bite,if=buff.mongoose_fury.up|focus>55
+actions.bopAP+=/serpent_sting,if=refreshable&!buff.coordinated_assault.up
+actions.bopAP+=/wildfire_bomb
+
+actions.bopVV=mongoose_bite,if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<gcd|buff.blur_of_talons.remains<gcd)
+actions.bopVV+=/serpent_sting,if=buff.vipers_venom.up&buff.vipers_venom.remains<1*gcd
+actions.bopVV+=/kill_command,if=focus+cast_regen<focus.max
+actions.bopVV+=/wildfire_bomb,if=focus+cast_regen<focus.max&(full_recharge_time<gcd|dot.wildfire_bomb.refreshable&buff.mongoose_fury.down|dot.wildfire_bomb.refreshable&full_recharge_time<4.5*gcd)
+actions.bopVV+=/serpent_sting,if=buff.vipers_venom.up&dot.serpent_sting.remains<4*gcd
+actions.bopVV+=/coordinated_assault
+actions.bopVV+=/mongoose_bite,if=buff.mongoose_fury.up|focus>60
+actions.bopVV+=/serpent_sting,if=dot.serpent_sting.refreshable&!buff.coordinated_assault.up
+actions.bopVV+=/wildfire_bomb,if=dot.wildfire_bomb.refreshable
+
+actions.cds=blood_fury,if=cooldown.coordinated_assault.remains>30
 actions.cds+=/ancestral_call,if=cooldown.coordinated_assault.remains>30
 actions.cds+=/fireblood,if=cooldown.coordinated_assault.remains>30
 actions.cds+=/lights_judgment
-actions.cds+=/potion,if=buff.coordinated_assault.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)
+actions.cds+=/berserking,if=cooldown.coordinated_assault.remains>60|time_to_die<11
+actions.cds+=/potion,if=buff.coordinated_assault.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)|time_to_die<26
 actions.cds+=/aspect_of_the_eagle,if=target.distance>=6
 
 actions.cleave=variable,name=carve_cdr,op=setif,value=active_enemies,value_else=5,condition=active_enemies<5
@@ -52,6 +75,7 @@ actions.cleave+=/a_murder_of_crows
 actions.cleave+=/coordinated_assault
 actions.cleave+=/carve,if=dot.shrapnel_bomb.ticking
 actions.cleave+=/wildfire_bomb,if=!talent.guerrilla_tactics.enabled|full_recharge_time<gcd
+actions.cleave+=/mongoose_bite,target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack=10
 actions.cleave+=/chakrams
 actions.cleave+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max
 actions.cleave+=/butchery,if=full_recharge_time<gcd|!talent.wildfire_infusion.enabled|dot.shrapnel_bomb.ticking&dot.internal_bleeding.stack<3
@@ -67,14 +91,28 @@ actions.cleave+=/serpent_sting,target_if=min:remains,if=refreshable&buff.tip_of_
 actions.cleave+=/mongoose_bite,target_if=max:debuff.latent_poison.stack
 actions.cleave+=/raptor_strike,target_if=max:debuff.latent_poison.stack
 
+actions.mb_ap_wfi_st=serpent_sting,if=!dot.serpent_sting.ticking
+actions.mb_ap_wfi_st+=/wildfire_bomb,if=full_recharge_time<gcd|(focus+cast_regen<focus.max)&(next_wi_bomb.volatile&dot.serpent_sting.ticking&dot.serpent_sting.refreshable|next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*3)
+actions.mb_ap_wfi_st+=/coordinated_assault
+actions.mb_ap_wfi_st+=/a_murder_of_crows
+actions.mb_ap_wfi_st+=/steel_trap
+# To simulate usage for Mongoose Bite or Raptor Strike during Aspect of the Eagle, copy each occurrence of the action and append _eagle to the action name.
+actions.mb_ap_wfi_st+=/mongoose_bite,if=buff.mongoose_fury.remains&next_wi_bomb.pheromone
+actions.mb_ap_wfi_st+=/kill_command,if=focus+cast_regen<focus.max&(buff.mongoose_fury.stack<5|focus<action.mongoose_bite.cost)
+actions.mb_ap_wfi_st+=/wildfire_bomb,if=next_wi_bomb.shrapnel&focus>60&dot.serpent_sting.remains>3*gcd
+actions.mb_ap_wfi_st+=/serpent_sting,if=buff.vipers_venom.up|refreshable&(!talent.mongoose_bite.enabled|!talent.vipers_venom.enabled|next_wi_bomb.volatile&!dot.shrapnel_bomb.ticking|azerite.latent_poison.enabled|azerite.venomous_fangs.enabled)
+actions.mb_ap_wfi_st+=/mongoose_bite,if=buff.mongoose_fury.up|focus>60|dot.shrapnel_bomb.ticking
+actions.mb_ap_wfi_st+=/serpent_sting,if=refreshable
+actions.mb_ap_wfi_st+=/wildfire_bomb,if=next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel&focus>50
+
 actions.st=a_murder_of_crows
 actions.st+=/coordinated_assault
-actions.st+=/wildfire_bomb,if=full_recharge_time<gcd
-actions.st+=/serpent_sting,if=refreshable&buff.mongoose_fury.stack=5
+actions.st+=/wildfire_bomb,if=full_recharge_time<gcd&talent.alpha_predator.enabled
+actions.st+=/serpent_sting,if=refreshable&buff.mongoose_fury.stack=5&talent.alpha_predator.enabled
 # To simulate usage for Mongoose Bite or Raptor Strike during Aspect of the Eagle, copy each occurrence of the action and append _eagle to the action name.
-actions.st+=/mongoose_bite,if=buff.mongoose_fury.stack=5
-actions.st+=/raptor_strike,if=talent.birds_of_prey.enabled&buff.coordinated_assault.up&(buff.coordinated_assault.remains<gcd|buff.blur_of_talons.remains<gcd)
-actions.st+=/mongoose_bite,if=talent.birds_of_prey.enabled&buff.coordinated_assault.up&(buff.coordinated_assault.remains<gcd|buff.blur_of_talons.remains<gcd)
+actions.st+=/mongoose_bite,if=buff.mongoose_fury.stack=5&talent.alpha_predator.enabled
+actions.st+=/raptor_strike,if=talent.birds_of_prey.enabled&buff.coordinated_assault.up&(buff.coordinated_assault.remains<gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd)
+actions.st+=/mongoose_bite,if=talent.birds_of_prey.enabled&buff.coordinated_assault.up&(buff.coordinated_assault.remains<gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd)
 actions.st+=/kill_command,if=focus+cast_regen<focus.max&buff.tip_of_the_spear.stack<3
 actions.st+=/chakrams
 actions.st+=/steel_trap
@@ -104,28 +142,28 @@ actions.wfi_st+=/raptor_strike
 actions.wfi_st+=/serpent_sting,if=refreshable
 actions.wfi_st+=/wildfire_bomb,if=next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel&focus>50
 
-head=coif_of_the_court_spider,id=159358,bonus_id=1557/4819/4775/4786,azerite_powers=3/163/30/85/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=
-shoulders=amalgamated_abomination_spaulders,id=159385,bonus_id=1557/4819/4775/4786,azerite_powers=3/372/30/84/13
+head=crest_of_the_undying_visionary,id=160630,bonus_id=4824/1507/4775,azerite_powers=483/30/44/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
+shoulders=flamesterilized_spaulders,id=160632,bonus_id=4824/1507/4786/4775,azerite_powers=371/31/15/13
 back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
-chest=cthraxxi_generals_hauberk,id=160725,bonus_id=4824/1507/4775,azerite_powers=3/163/462/85/13
+chest=chainvest_of_assured_quality,id=160627,bonus_id=4824/1507/4775,azerite_powers=372/22/469/13
 wrists=rubywrought_sparkguards,id=160629,bonus_id=4800/1507
 hands=oblivion_crushers,id=160721,bonus_id=4800/1507
 waist=titanspark_energy_girdle,id=160633,bonus_id=4800/1507
 legs=blighted_anima_greaves,id=160716,bonus_id=4800/1507
 feet=fused_monstrosity_stompers,id=160628,bonus_id=4800/1507
-finger1=band_of_certain_annihilation,id=160646,bonus_id=4800/1507,enchant=pact_of_haste
+finger1=seal_of_questionable_loyalties,id=158314,bonus_id=1542/4779,enchant=pact_of_haste
 finger2=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_haste
 trinket1=galecallers_boon,id=159614,bonus_id=1542/4779
 trinket2=frenetic_corpuscle,id=160648,bonus_id=4800/1507
 main_hand=voidbinder,id=160688,bonus_id=4800/1507,enchant=quick_navigation
 
 # Gear Summary
-# gear_ilvl=385.27
+# gear_ilvl=384.27
 # gear_agility=4346
-# gear_stamina=7207
-# gear_crit_rating=820
-# gear_haste_rating=1280
-# gear_mastery_rating=553
+# gear_stamina=7161
+# gear_crit_rating=947
+# gear_haste_rating=1324
+# gear_mastery_rating=356
 # gear_versatility_rating=351
 # gear_armor=2738

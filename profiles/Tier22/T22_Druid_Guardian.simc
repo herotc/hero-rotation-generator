@@ -8,7 +8,7 @@ position=front
 talents=1111123
 
 # Default consumables
-potion=old_war
+potion=potion_of_bursting_blood
 flask=flask_of_the_currents
 food=bountiful_captains_feast
 augmentation=battle_scarred
@@ -32,6 +32,7 @@ actions.precombat+=/potion
 actions=auto_attack
 actions+=/call_action_list,name=cooldowns
 actions+=/maul,if=rage.deficit<10&active_enemies<4
+actions+=/ironfur,if=cost=0|(rage>cost&azerite.layered_mane.enabled&active_enemies>2)
 actions+=/pulverize,target_if=dot.thrash_bear.stack=dot.thrash_bear.max_stacks
 actions+=/moonfire,target_if=dot.moonfire.refreshable&active_enemies<2
 actions+=/incarnation
@@ -41,6 +42,8 @@ actions+=/mangle,if=dot.thrash_bear.ticking
 actions+=/moonfire,target_if=buff.galactic_guardian.up&active_enemies<2
 actions+=/thrash
 actions+=/maul
+# Fill with Moonfire with PotMx2
+actions+=/moonfire,if=azerite.power_of_the_moon.rank>1&active_enemies=1
 actions+=/swipe
 
 actions.cooldowns=potion
@@ -55,11 +58,11 @@ actions.cooldowns+=/lunar_beam,if=buff.bear_form.up
 actions.cooldowns+=/bristling_fur,if=buff.bear_form.up
 actions.cooldowns+=/use_items
 
-head=irontide_captains_hat,id=155888,bonus_id=1557/4819/4775/4786,azerite_powers=11/479/30/85/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=
-shoulders=shoulders_of_the_sanguine_monstrosity,id=159323,bonus_id=1557/4819/4775/4786,azerite_powers=11/480/18/15/13
+head=irontide_captains_hat,id=155888,bonus_id=1557/4819/4775/4786,azerite_powers=479/30/85/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
+shoulders=shoulders_of_the_sanguine_monstrosity,id=159323,bonus_id=1557/4819/4775/4786,azerite_powers=480/18/15/13
 back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
-chest=cephalohide_jacket,id=159314,bonus_id=1557/4819/4775/4786,azerite_powers=11/479/18/85/13
+chest=cephalohide_jacket,id=159314,bonus_id=1557/4819/4775/4786,azerite_powers=479/18/85/13
 wrists=wristwraps_of_coursing_miasma,id=160621,bonus_id=4800/1507
 hands=gloves_of_descending_madness,id=160618,bonus_id=4800/1507
 waist=replicated_chitin_cord,id=160717,bonus_id=4800/1507

@@ -21,19 +21,19 @@ local HR     = HeroRotation
 -- Spells
 if not Spell.Paladin then Spell.Paladin = {} end
 Spell.Paladin.Protection = {
-  Fireblood                             = Spell(265221),
+  LightsJudgment                        = Spell(255647),
   AvengingWrathBuff                     = Spell(31884),
-  Seraphim                              = Spell(152262),
-  ShieldoftheRighteous                  = Spell(53600),
   AvengingWrath                         = Spell(31884),
   SeraphimBuff                          = Spell(152262),
+  Seraphim                              = Spell(152262),
+  Fireblood                             = Spell(265221),
+  ShieldoftheRighteous                  = Spell(53600),
+  BastionofLight                        = Spell(204035),
   AvengersValorBuff                     = Spell(),
-  AvengerShield                         = Spell(),
-  LightsJudgment                        = Spell(255647),
-  AvengersShield                        = Spell(31935),
+  Consecration                          = Spell(26573),
   Judgment                              = Spell(20271),
   CrusadersJudgment                     = Spell(),
-  Consecration                          = Spell(26573),
+  AvengersShield                        = Spell(31935),
   BlessedHammer                         = Spell(204019),
   HammeroftheRighteous                  = Spell(53595)
 };
@@ -42,7 +42,9 @@ local S = Spell.Paladin.Protection;
 -- Items
 if not Item.Paladin then Item.Paladin = {} end
 Item.Paladin.Protection = {
-  ProlongedPower                   = Item(142117)
+  ProlongedPower                   = Item(142117),
+  MerekthasFang                    = Item(),
+  RazdunksBigRedButton             = Item()
 };
 local I = Item.Paladin.Protection;
 
@@ -58,7 +60,7 @@ local Settings = {
 };
 
 
-local EnemyRanges = {30}
+local EnemyRanges = {}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do
     HL.GetEnemies(i);
@@ -75,7 +77,7 @@ end
 
 --- ======= ACTION LISTS =======
 local function APL()
-  local Precombat
+  local Precombat, Cooldowns
   UpdateRanges()
   Everyone.AoEToggleEnemiesUpdate()
   Precombat = function()
@@ -87,6 +89,49 @@ local function APL()
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 4"; end
     end
+    -- lights_judgment
+    if S.LightsJudgment:IsCastableP() and HR.CDsON() then
+      if HR.Cast(S.LightsJudgment) then return "lights_judgment 6"; end
+    end
+    -- avenging_wrath
+    if S.AvengingWrath:IsCastableP() and Player:BuffDownP(S.AvengingWrathBuff) then
+      if HR.Cast(S.AvengingWrath) then return "avenging_wrath 8"; end
+    end
+    -- seraphim
+    if S.Seraphim:IsCastableP() and Player:BuffDownP(S.SeraphimBuff) then
+      if HR.Cast(S.Seraphim) then return "seraphim 12"; end
+    end
+  end
+  Cooldowns = function()
+    -- fireblood,if=buff.avenging_wrath.up
+    if S.Fireblood:IsCastableP() and HR.CDsON() and (Player:BuffP(S.AvengingWrathBuff)) then
+      if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return "fireblood 16"; end
+    end
+    -- seraphim,if=cooldown.shield_of_the_righteous.charges_fractional>=2
+    if S.Seraphim:IsCastableP() and (S.ShieldoftheRighteous:ChargesFractionalP() >= 2) then
+      if HR.Cast(S.Seraphim) then return "seraphim 20"; end
+    end
+    -- avenging_wrath,if=buff.seraphim.up|cooldown.seraphim.remains<2|!talent.seraphim.enabled
+    if S.AvengingWrath:IsCastableP() and (Player:BuffP(S.SeraphimBuff) or S.Seraphim:CooldownRemainsP() < 2 or not S.Seraphim:IsAvailable()) then
+      if HR.Cast(S.AvengingWrath) then return "avenging_wrath 24"; end
+    end
+    -- bastion_of_light,if=cooldown.shield_of_the_righteous.charges_fractional<=0.5
+    if S.BastionofLight:IsCastableP() and (S.ShieldoftheRighteous:ChargesFractionalP() <= 0.5) then
+      if HR.Cast(S.BastionofLight) then return "bastion_of_light 32"; end
+    end
+    -- potion,if=buff.avenging_wrath.up
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.AvengingWrathBuff)) then
+      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 36"; end
+    end
+    -- use_items,if=buff.seraphim.up|!talent.seraphim.enabled
+    -- use_item,name=merekthas_fang,if=!buff.avenging_wrath.up&(buff.seraphim.up|!talent.seraphim.enabled)
+    if I.MerekthasFang:IsReady() and (not Player:BuffP(S.AvengingWrathBuff) and (Player:BuffP(S.SeraphimBuff) or not S.Seraphim:IsAvailable())) then
+      if HR.CastSuggested(I.MerekthasFang) then return "merekthas_fang 41"; end
+    end
+    -- use_item,name=razdunks_big_red_button
+    if I.RazdunksBigRedButton:IsReady() then
+      if HR.CastSuggested(I.RazdunksBigRedButton) then return "razdunks_big_red_button 49"; end
+    end
   end
   -- call precombat
   if not Player:AffectingCombat() then
@@ -94,82 +139,57 @@ local function APL()
   end
   if Everyone.TargetIsValid() then
     -- auto_attack
-    -- fireblood,if=buff.avenging_wrath.up
-    if S.Fireblood:IsCastableP() and HR.CDsON() and (Player:BuffP(S.AvengingWrathBuff)) then
-      if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return "fireblood 8"; end
-    end
-    -- seraphim,if=cooldown.shield_of_the_righteous.charges_fractional>=2
-    if S.Seraphim:IsCastableP() and (S.ShieldoftheRighteous:ChargesFractionalP() >= 2) then
-      if HR.Cast(S.Seraphim) then return "seraphim 12"; end
-    end
-    -- avenging_wrath,if=buff.seraphim.up|cooldown.seraphim.remains<2|!talent.seraphim.enabled
-    if S.AvengingWrath:IsCastableP() and (Player:BuffP(S.SeraphimBuff) or S.Seraphim:CooldownRemainsP() < 2 or not S.Seraphim:IsAvailable()) then
-      if HR.Cast(S.AvengingWrath) then return "avenging_wrath 16"; end
-    end
-    -- potion,if=buff.avenging_wrath.up
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.AvengingWrathBuff)) then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 24"; end
+    -- call_action_list,name=cooldowns
+    if (true) then
+      local ShouldReturn = Cooldowns(); if ShouldReturn then return ShouldReturn; end
     end
     -- shield_of_the_righteous,if=(buff.avengers_valor.up&cooldown.shield_of_the_righteous.charges_fractional>=2.5)&(cooldown.seraphim.remains>gcd|!talent.seraphim.enabled)
     if S.ShieldoftheRighteous:IsCastableP() and ((Player:BuffP(S.AvengersValorBuff) and S.ShieldoftheRighteous:ChargesFractionalP() >= 2.5) and (S.Seraphim:CooldownRemainsP() > Player:GCD() or not S.Seraphim:IsAvailable())) then
-      if HR.Cast(S.ShieldoftheRighteous) then return "shield_of_the_righteous 28"; end
-    end
-    -- shield_of_the_righteous,if=(cooldown.shield_of_the_righteous.charges_fractional=3&cooldown.avenger_shield.remains>(2*gcd))
-    if S.ShieldoftheRighteous:IsCastableP() and ((S.ShieldoftheRighteous:ChargesFractionalP() == 3 and S.AvengerShield:CooldownRemainsP() > (2 * Player:GCD()))) then
-      if HR.Cast(S.ShieldoftheRighteous) then return "shield_of_the_righteous 38"; end
+      if HR.Cast(S.ShieldoftheRighteous) then return "shield_of_the_righteous 55"; end
     end
     -- shield_of_the_righteous,if=(buff.avenging_wrath.up&!talent.seraphim.enabled)|buff.seraphim.up&buff.avengers_valor.up
     if S.ShieldoftheRighteous:IsCastableP() and ((Player:BuffP(S.AvengingWrathBuff) and not S.Seraphim:IsAvailable()) or Player:BuffP(S.SeraphimBuff) and Player:BuffP(S.AvengersValorBuff)) then
-      if HR.Cast(S.ShieldoftheRighteous) then return "shield_of_the_righteous 44"; end
+      if HR.Cast(S.ShieldoftheRighteous) then return "shield_of_the_righteous 65"; end
     end
     -- shield_of_the_righteous,if=(buff.avenging_wrath.up&buff.avenging_wrath.remains<4&!talent.seraphim.enabled)|(buff.seraphim.remains<4&buff.seraphim.up)
     if S.ShieldoftheRighteous:IsCastableP() and ((Player:BuffP(S.AvengingWrathBuff) and Player:BuffRemainsP(S.AvengingWrathBuff) < 4 and not S.Seraphim:IsAvailable()) or (Player:BuffRemainsP(S.SeraphimBuff) < 4 and Player:BuffP(S.SeraphimBuff))) then
-      if HR.Cast(S.ShieldoftheRighteous) then return "shield_of_the_righteous 54"; end
+      if HR.Cast(S.ShieldoftheRighteous) then return "shield_of_the_righteous 75"; end
     end
-    -- use_items,if=buff.seraphim.up|!talent.seraphim.enabled
     -- lights_judgment,if=buff.seraphim.up&buff.seraphim.remains<3
     if S.LightsJudgment:IsCastableP() and HR.CDsON() and (Player:BuffP(S.SeraphimBuff) and Player:BuffRemainsP(S.SeraphimBuff) < 3) then
-      if HR.Cast(S.LightsJudgment) then return "lights_judgment 67"; end
+      if HR.Cast(S.LightsJudgment) then return "lights_judgment 87"; end
     end
-    -- avengers_shield,if=((cooldown.shield_of_the_righteous.charges_fractional>2.5&!buff.avengers_valor.up)|active_enemies>=2)&cooldown_react
-    if S.AvengersShield:IsCastableP() and (((S.ShieldoftheRighteous:ChargesFractionalP() > 2.5 and not Player:BuffP(S.AvengersValorBuff)) or Cache.EnemiesCount[30] >= 2) and S.AvengersShield:CooldownUpP()) then
-      if HR.Cast(S.AvengersShield) then return "avengers_shield 73"; end
+    -- consecration,if=!consecration.up
+    if S.Consecration:IsCastableP() and (not bool(consecration.up)) then
+      if HR.Cast(S.Consecration) then return "consecration 93"; end
     end
     -- judgment,if=(cooldown.judgment.remains<gcd&cooldown.judgment.charges_fractional>1&cooldown_react)|!talent.crusaders_judgment.enabled
     if S.Judgment:IsCastableP() and ((S.Judgment:CooldownRemainsP() < Player:GCD() and S.Judgment:ChargesFractionalP() > 1 and S.Judgment:CooldownUpP()) or not S.CrusadersJudgment:IsAvailable()) then
-      if HR.Cast(S.Judgment) then return "judgment 89"; end
+      if HR.Cast(S.Judgment) then return "judgment 95"; end
     end
     -- avengers_shield,,if=cooldown_react
     if S.AvengersShield:IsCastableP() and (S.AvengersShield:CooldownUpP()) then
-      if HR.Cast(S.AvengersShield) then return "avengers_shield 101"; end
-    end
-    -- consecration,if=(cooldown.judgment.remains<=gcd&!talent.crusaders_judgment.enabled)|cooldown.avenger_shield.remains<=gcd&consecration.remains<gcd
-    if S.Consecration:IsCastableP() and ((S.Judgment:CooldownRemainsP() <= Player:GCD() and not S.CrusadersJudgment:IsAvailable()) or S.AvengerShield:CooldownRemainsP() <= Player:GCD() and consecration.remains < Player:GCD()) then
-      if HR.Cast(S.Consecration) then return "consecration 107"; end
-    end
-    -- consecration,if=!talent.crusaders_judgment.enabled&consecration.remains<(cooldown.judgment.remains+cooldown.avengers_shield.remains)&consecration.remains<3*gcd
-    if S.Consecration:IsCastableP() and (not S.CrusadersJudgment:IsAvailable() and consecration.remains < (S.Judgment:CooldownRemainsP() + S.AvengersShield:CooldownRemainsP()) and consecration.remains < 3 * Player:GCD()) then
-      if HR.Cast(S.Consecration) then return "consecration 115"; end
+      if HR.Cast(S.AvengersShield) then return "avengers_shield 107"; end
     end
     -- judgment,if=cooldown_react|!talent.crusaders_judgment.enabled
     if S.Judgment:IsCastableP() and (S.Judgment:CooldownUpP() or not S.CrusadersJudgment:IsAvailable()) then
-      if HR.Cast(S.Judgment) then return "judgment 123"; end
+      if HR.Cast(S.Judgment) then return "judgment 113"; end
     end
     -- lights_judgment,if=!talent.seraphim.enabled|buff.seraphim.up
     if S.LightsJudgment:IsCastableP() and HR.CDsON() and (not S.Seraphim:IsAvailable() or Player:BuffP(S.SeraphimBuff)) then
-      if HR.Cast(S.LightsJudgment) then return "lights_judgment 131"; end
+      if HR.Cast(S.LightsJudgment) then return "lights_judgment 121"; end
     end
-    -- blessed_hammer
+    -- blessed_hammer,strikes=2
     if S.BlessedHammer:IsCastableP() then
-      if HR.Cast(S.BlessedHammer) then return "blessed_hammer 137"; end
+      if HR.Cast(S.BlessedHammer) then return "blessed_hammer 127"; end
     end
     -- hammer_of_the_righteous
     if S.HammeroftheRighteous:IsCastableP() then
-      if HR.Cast(S.HammeroftheRighteous) then return "hammer_of_the_righteous 139"; end
+      if HR.Cast(S.HammeroftheRighteous) then return "hammer_of_the_righteous 129"; end
     end
     -- consecration
     if S.Consecration:IsCastableP() then
-      if HR.Cast(S.Consecration) then return "consecration 141"; end
+      if HR.Cast(S.Consecration) then return "consecration 131"; end
     end
   end
 end

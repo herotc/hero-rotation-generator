@@ -33,6 +33,9 @@ Spell.Druid.Guardian = {
   LunarBeam                             = Spell(204066),
   BristlingFur                          = Spell(155835),
   Maul                                  = Spell(6807),
+  Ironfur                               = Spell(192081),
+  IronfurBuff                           = Spell(192081),
+  LayeredMane                           = Spell(),
   Pulverize                             = Spell(80313),
   ThrashBearDebuff                      = Spell(192090),
   Moonfire                              = Spell(8921),
@@ -44,7 +47,8 @@ Spell.Druid.Guardian = {
   SwipeCat                              = Spell(106785),
   SwipeBear                             = Spell(213771),
   Mangle                                = Spell(33917),
-  GalacticGuardianBuff                  = Spell(213708)
+  GalacticGuardianBuff                  = Spell(213708),
+  PoweroftheMoon                        = Spell(273367)
 };
 local S = Spell.Druid.Guardian;
 
@@ -174,45 +178,53 @@ local function APL()
     if S.Maul:IsCastableP() and (Player:RageDeficit() < 10 and Cache.EnemiesCount[40] < 4) then
       if HR.Cast(S.Maul) then return "maul 39"; end
     end
+    -- ironfur,if=cost=0|(rage>cost&azerite.layered_mane.enabled&active_enemies>2)
+    if S.Ironfur:IsCastableP() and (S.Ironfur:Cost() == 0 or (Player:Rage() > S.Ironfur:Cost() and S.LayeredMane:AzeriteEnabled() and Cache.EnemiesCount[40] > 2)) then
+      if HR.Cast(S.Ironfur) then return "ironfur 47"; end
+    end
     -- pulverize,target_if=dot.thrash_bear.stack=dot.thrash_bear.max_stacks
     if S.Pulverize:IsCastableP() then
-      if HR.CastCycle(S.Pulverize, 40, function(TargetUnit) return TargetUnit:DebuffStackP(S.ThrashBearDebuff) == dot.thrash_bear.max_stacks end) then return "pulverize 55" end
+      if HR.CastCycle(S.Pulverize, 40, function(TargetUnit) return TargetUnit:DebuffStackP(S.ThrashBearDebuff) == dot.thrash_bear.max_stacks end) then return "pulverize 79" end
     end
     -- moonfire,target_if=dot.moonfire.refreshable&active_enemies<2
     if S.Moonfire:IsCastableP() then
-      if HR.CastCycle(S.Moonfire, 40, function(TargetUnit) return TargetUnit:DebuffRefreshableCP(S.MoonfireDebuff) and Cache.EnemiesCount[40] < 2 end) then return "moonfire 70" end
+      if HR.CastCycle(S.Moonfire, 40, function(TargetUnit) return TargetUnit:DebuffRefreshableCP(S.MoonfireDebuff) and Cache.EnemiesCount[40] < 2 end) then return "moonfire 94" end
     end
     -- incarnation
     if S.Incarnation:IsCastableP() then
-      if HR.Cast(S.Incarnation) then return "incarnation 71"; end
+      if HR.Cast(S.Incarnation) then return "incarnation 95"; end
     end
     -- thrash,if=(buff.incarnation.down&active_enemies>1)|(buff.incarnation.up&active_enemies>4)
     if Thrash():IsCastableP() and ((Player:BuffDownP(S.IncarnationBuff) and Cache.EnemiesCount[40] > 1) or (Player:BuffP(S.IncarnationBuff) and Cache.EnemiesCount[40] > 4)) then
-      if HR.Cast(Thrash()) then return "thrash 73"; end
+      if HR.Cast(Thrash()) then return "thrash 97"; end
     end
     -- swipe,if=buff.incarnation.down&active_enemies>4
     if Swipe():IsCastableP() and (Player:BuffDownP(S.IncarnationBuff) and Cache.EnemiesCount[40] > 4) then
-      if HR.Cast(Swipe()) then return "swipe 91"; end
+      if HR.Cast(Swipe()) then return "swipe 115"; end
     end
     -- mangle,if=dot.thrash_bear.ticking
     if S.Mangle:IsCastableP() and (Target:DebuffP(S.ThrashBearDebuff)) then
-      if HR.Cast(S.Mangle) then return "mangle 101"; end
+      if HR.Cast(S.Mangle) then return "mangle 125"; end
     end
     -- moonfire,target_if=buff.galactic_guardian.up&active_enemies<2
     if S.Moonfire:IsCastableP() then
-      if HR.CastCycle(S.Moonfire, 40, function(TargetUnit) return Player:BuffP(S.GalacticGuardianBuff) and Cache.EnemiesCount[40] < 2 end) then return "moonfire 119" end
+      if HR.CastCycle(S.Moonfire, 40, function(TargetUnit) return Player:BuffP(S.GalacticGuardianBuff) and Cache.EnemiesCount[40] < 2 end) then return "moonfire 143" end
     end
     -- thrash
     if Thrash():IsCastableP() then
-      if HR.Cast(Thrash()) then return "thrash 120"; end
+      if HR.Cast(Thrash()) then return "thrash 144"; end
     end
     -- maul
     if S.Maul:IsCastableP() then
-      if HR.Cast(S.Maul) then return "maul 122"; end
+      if HR.Cast(S.Maul) then return "maul 146"; end
+    end
+    -- moonfire,if=azerite.power_of_the_moon.rank>1&active_enemies=1
+    if S.Moonfire:IsCastableP() and (S.PoweroftheMoon:AzeriteRank() > 1 and Cache.EnemiesCount[40] == 1) then
+      if HR.Cast(S.Moonfire) then return "moonfire 148"; end
     end
     -- swipe
     if Swipe():IsCastableP() then
-      if HR.Cast(Swipe()) then return "swipe 124"; end
+      if HR.Cast(Swipe()) then return "swipe 160"; end
     end
   end
 end

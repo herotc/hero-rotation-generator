@@ -38,7 +38,6 @@ Spell.DeathKnight.Blood = {
   RapidDecomposition                    = Spell(194662),
   Consumption                           = Spell(205223),
   ArcaneTorrent                         = Spell(50613),
-  MindFreeze                            = Spell(47528),
   BloodFury                             = Spell(20572),
   DancingRuneWeapon                     = Spell(49028),
   Berserking                            = Spell(26297),
@@ -173,38 +172,34 @@ local function APL()
   end
   if Everyone.TargetIsValid() then
     -- auto_attack
-    -- mind_freeze
-    if S.MindFreeze:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled then
-      if HR.CastAnnotated(S.MindFreeze, false, "Interrupt") then return "mind_freeze 86"; end
-    end
     -- blood_fury,if=cooldown.dancing_rune_weapon.ready&(!cooldown.blooddrinker.ready|!talent.blooddrinker.enabled)
     if S.BloodFury:IsCastableP() and (S.DancingRuneWeapon:CooldownUpP() and (not S.BloodDrinker:CooldownUpP() or not S.BloodDrinker:IsAvailable())) then
-      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return "blood_fury 88"; end
+      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return "blood_fury 86"; end
     end
     -- berserking
     if S.Berserking:IsCastableP() then
-      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return "berserking 96"; end
+      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return "berserking 94"; end
     end
     -- use_items,if=cooldown.dancing_rune_weapon.remains>90
     -- use_item,name=razdunks_big_red_button
     if I.RazdunksBigRedButton:IsReady() then
-      if HR.CastSuggested(I.RazdunksBigRedButton) then return "razdunks_big_red_button 99"; end
+      if HR.CastSuggested(I.RazdunksBigRedButton) then return "razdunks_big_red_button 97"; end
     end
     -- use_item,name=merekthas_fang
     if I.MerekthasFang:IsReady() then
-      if HR.CastSuggested(I.MerekthasFang) then return "merekthas_fang 101"; end
+      if HR.CastSuggested(I.MerekthasFang) then return "merekthas_fang 99"; end
     end
     -- potion,if=buff.dancing_rune_weapon.up
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.DancingRuneWeaponBuff)) then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 103"; end
+      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 101"; end
     end
     -- dancing_rune_weapon,if=!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready
     if S.DancingRuneWeapon:IsCastableP() and HR.CDsON() and (not S.BloodDrinker:IsAvailable() or not S.BloodDrinker:CooldownUpP()) then
-      if HR.Cast(S.DancingRuneWeapon, Settings.Blood.OffGCDasOffGCD.DancingRuneWeapon) then return "dancing_rune_weapon 107"; end
+      if HR.Cast(S.DancingRuneWeapon, Settings.Blood.OffGCDasOffGCD.DancingRuneWeapon) then return "dancing_rune_weapon 105"; end
     end
     -- tombstone,if=buff.bone_shield.stack>=7
     if S.Tombstone:IsCastableP() and (Player:BuffStackP(S.BoneShieldBuff) >= 7) then
-      if HR.Cast(S.Tombstone) then return "tombstone 113"; end
+      if HR.Cast(S.Tombstone) then return "tombstone 111"; end
     end
     -- call_action_list,name=standard
     if (true) then

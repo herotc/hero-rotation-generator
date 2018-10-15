@@ -388,29 +388,29 @@ local function APL()
     if (Cache.EnemiesCount[5] >= 3 and S.Inferno:IsAvailable()) then
       return Inf();
     end
+    -- cataclysm
+    if S.Cataclysm:IsCastableP() then
+      if HR.Cast(S.Cataclysm) then return "cataclysm 520"; end
+    end
     -- immolate,cycle_targets=1,if=!debuff.havoc.remains&(refreshable|talent.internal_combustion.enabled&action.chaos_bolt.in_flight&remains-action.chaos_bolt.travel_time-5<duration*0.3)
     if S.Immolate:IsCastableP() then
-      if HR.CastCycle(S.Immolate, 40, function(TargetUnit) return not bool(TargetUnit:DebuffRemainsP(S.HavocDebuff)) and (TargetUnit:DebuffRefreshableCP(S.ImmolateDebuff) or S.InternalCombustion:IsAvailable() and S.ChaosBolt:InFlight() and TargetUnit:DebuffRemainsP(S.ImmolateDebuff) - S.ChaosBolt:TravelTime() - 5 < S.ImmolateDebuff:BaseDuration() * 0.3) end) then return "immolate 554" end
+      if HR.CastCycle(S.Immolate, 40, function(TargetUnit) return not bool(TargetUnit:DebuffRemainsP(S.HavocDebuff)) and (TargetUnit:DebuffRefreshableCP(S.ImmolateDebuff) or S.InternalCombustion:IsAvailable() and S.ChaosBolt:InFlight() and TargetUnit:DebuffRemainsP(S.ImmolateDebuff) - S.ChaosBolt:TravelTime() - 5 < S.ImmolateDebuff:BaseDuration() * 0.3) end) then return "immolate 556" end
     end
     -- call_action_list,name=cds
     if HR.CDsON() then
       local ShouldReturn = Cds(); if ShouldReturn then return ShouldReturn; end
     end
+    -- channel_demonfire
+    if S.ChannelDemonfire:IsCastableP() then
+      if HR.Cast(S.ChannelDemonfire) then return "channel_demonfire 559"; end
+    end
     -- havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10
     if S.Havoc:IsCastableP() then
-      if HR.CastCycle(S.Havoc, 40, function(TargetUnit) return not (target == sim.target) and TargetUnit:TimeToDie() > 10 end) then return "havoc 561" end
+      if HR.CastCycle(S.Havoc, 40, function(TargetUnit) return not (target == sim.target) and TargetUnit:TimeToDie() > 10 end) then return "havoc 565" end
     end
     -- havoc,if=active_enemies>1
     if S.Havoc:IsCastableP() and (Cache.EnemiesCount[40] > 1) then
-      if HR.Cast(S.Havoc) then return "havoc 562"; end
-    end
-    -- channel_demonfire
-    if S.ChannelDemonfire:IsCastableP() then
-      if HR.Cast(S.ChannelDemonfire) then return "channel_demonfire 572"; end
-    end
-    -- cataclysm
-    if S.Cataclysm:IsCastableP() then
-      if HR.Cast(S.Cataclysm) then return "cataclysm 574"; end
+      if HR.Cast(S.Havoc) then return "havoc 566"; end
     end
     -- soul_fire,cycle_targets=1,if=!debuff.havoc.remains
     if S.SoulFire:IsCastableP() then
