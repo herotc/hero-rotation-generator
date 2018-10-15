@@ -245,63 +245,59 @@ local function APL()
     if S.AimedShot:IsCastableP() and (Player:BuffP(S.LethalShotsBuff)) then
       if HR.Cast(S.AimedShot) then return "aimed_shot 178"; end
     end
-    -- steady_shot,if=buff.lethal_shots.down
-    if S.SteadyShot:IsCastableP() and (Player:BuffDownP(S.LethalShotsBuff)) then
-      if HR.Cast(S.SteadyShot) then return "steady_shot 182"; end
-    end
     -- arcane_shot,if=buff.precise_shots.up
     if S.ArcaneShot:IsCastableP() and (Player:BuffP(S.PreciseShotsBuff)) then
-      if HR.Cast(S.ArcaneShot) then return "arcane_shot 186"; end
+      if HR.Cast(S.ArcaneShot) then return "arcane_shot 182"; end
     end
     -- serpent_sting,if=refreshable
     if S.SerpentSting:IsCastableP() and (Target:DebuffRefreshableCP(S.SerpentStingDebuff)) then
-      if HR.Cast(S.SerpentSting) then return "serpent_sting 190"; end
+      if HR.Cast(S.SerpentSting) then return "serpent_sting 186"; end
     end
     -- steady_shot
     if S.SteadyShot:IsCastableP() then
-      if HR.Cast(S.SteadyShot) then return "steady_shot 198"; end
+      if HR.Cast(S.SteadyShot) then return "steady_shot 194"; end
     end
   end
   Trickshots = function()
     -- barrage
     if S.Barrage:IsCastableP() then
-      if HR.Cast(S.Barrage) then return "barrage 200"; end
+      if HR.Cast(S.Barrage) then return "barrage 196"; end
     end
     -- explosive_shot
     if S.ExplosiveShot:IsCastableP() then
-      if HR.Cast(S.ExplosiveShot) then return "explosive_shot 202"; end
+      if HR.Cast(S.ExplosiveShot) then return "explosive_shot 198"; end
     end
     -- rapid_fire,if=buff.trick_shots.up&!talent.barrage.enabled
     if S.RapidFire:IsCastableP() and (Player:BuffP(S.TrickShotsBuff) and not S.Barrage:IsAvailable()) then
-      if HR.Cast(S.RapidFire) then return "rapid_fire 204"; end
+      if HR.Cast(S.RapidFire) then return "rapid_fire 200"; end
     end
     -- aimed_shot,if=buff.trick_shots.up&buff.precise_shots.down&buff.double_tap.down&(!talent.lethal_shots.enabled|buff.lethal_shots.up|focus>60)
     if S.AimedShot:IsCastableP() and (Player:BuffP(S.TrickShotsBuff) and Player:BuffDownP(S.PreciseShotsBuff) and Player:BuffDownP(S.DoubleTapBuff) and (not S.LethalShots:IsAvailable() or Player:BuffP(S.LethalShotsBuff) or Player:Focus() > 60)) then
-      if HR.Cast(S.AimedShot) then return "aimed_shot 210"; end
+      if HR.Cast(S.AimedShot) then return "aimed_shot 206"; end
     end
     -- rapid_fire,if=buff.trick_shots.up
     if S.RapidFire:IsCastableP() and (Player:BuffP(S.TrickShotsBuff)) then
-      if HR.Cast(S.RapidFire) then return "rapid_fire 222"; end
+      if HR.Cast(S.RapidFire) then return "rapid_fire 218"; end
     end
     -- multishot,if=buff.trick_shots.down|(buff.precise_shots.up|buff.lethal_shots.up)&(!talent.barrage.enabled&buff.steady_focus.down&focus>45|focus>70)
     if S.Multishot:IsCastableP() and (Player:BuffDownP(S.TrickShotsBuff) or (Player:BuffP(S.PreciseShotsBuff) or Player:BuffP(S.LethalShotsBuff)) and (not S.Barrage:IsAvailable() and Player:BuffDownP(S.SteadyFocusBuff) and Player:Focus() > 45 or Player:Focus() > 70)) then
-      if HR.Cast(S.Multishot) then return "multishot 226"; end
+      if HR.Cast(S.Multishot) then return "multishot 222"; end
     end
     -- piercing_shot
     if S.PiercingShot:IsCastableP() then
-      if HR.Cast(S.PiercingShot) then return "piercing_shot 238"; end
+      if HR.Cast(S.PiercingShot) then return "piercing_shot 234"; end
     end
     -- a_murder_of_crows
     if S.AMurderofCrows:IsCastableP() then
-      if HR.Cast(S.AMurderofCrows) then return "a_murder_of_crows 240"; end
+      if HR.Cast(S.AMurderofCrows) then return "a_murder_of_crows 236"; end
     end
     -- serpent_sting,if=refreshable
     if S.SerpentSting:IsCastableP() and (Target:DebuffRefreshableCP(S.SerpentStingDebuff)) then
-      if HR.Cast(S.SerpentSting) then return "serpent_sting 242"; end
+      if HR.Cast(S.SerpentSting) then return "serpent_sting 238"; end
     end
     -- steady_shot,if=focus+cast_regen<focus.max|(talent.lethal_shots.enabled&buff.lethal_shots.down)
     if S.SteadyShot:IsCastableP() and (Player:Focus() + Player:FocusCastRegen(S.SteadyShot:ExecuteTime()) < Player:FocusMax() or (S.LethalShots:IsAvailable() and Player:BuffDownP(S.LethalShotsBuff))) then
-      if HR.Cast(S.SteadyShot) then return "steady_shot 250"; end
+      if HR.Cast(S.SteadyShot) then return "steady_shot 246"; end
     end
   end
   -- call precombat

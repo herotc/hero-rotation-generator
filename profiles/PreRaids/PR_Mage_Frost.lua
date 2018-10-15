@@ -238,33 +238,37 @@ local function APL()
     if S.IceNova:IsCastableP() and (S.IceNova:CooldownUpP() and Target:DebuffP(S.WintersChillDebuff)) then
       if HR.Cast(S.IceNova) then return "ice_nova 117"; end
     end
-    -- flurry,if=!talent.glacial_spike.enabled&(prev_gcd.1.ebonbolt|buff.brain_freeze.react&prev_gcd.1.frostbolt)
-    if S.Flurry:IsCastableP() and (not S.GlacialSpike:IsAvailable() and (Player:PrevGCDP(1, S.Ebonbolt) or bool(Player:BuffStackP(S.BrainFreezeBuff)) and Player:PrevGCDP(1, S.Frostbolt))) then
+    -- flurry,if=talent.ebonbolt.enabled&prev_gcd.1.ebonbolt&(!talent.glacial_spike.enabled|buff.icicles.stack<4|buff.brain_freeze.react)
+    if S.Flurry:IsCastableP() and (S.Ebonbolt:IsAvailable() and Player:PrevGCDP(1, S.Ebonbolt) and (not S.GlacialSpike:IsAvailable() or Player:BuffStackP(S.IciclesBuff) < 4 or bool(Player:BuffStackP(S.BrainFreezeBuff)))) then
       if HR.Cast(S.Flurry) then return "flurry 123"; end
     end
-    -- flurry,if=talent.glacial_spike.enabled&buff.brain_freeze.react&(prev_gcd.1.frostbolt&buff.icicles.stack<4|prev_gcd.1.glacial_spike|prev_gcd.1.ebonbolt)
-    if S.Flurry:IsCastableP() and (S.GlacialSpike:IsAvailable() and bool(Player:BuffStackP(S.BrainFreezeBuff)) and (Player:PrevGCDP(1, S.Frostbolt) and Player:BuffStackP(S.IciclesBuff) < 4 or Player:PrevGCDP(1, S.GlacialSpike) or Player:PrevGCDP(1, S.Ebonbolt))) then
-      if HR.Cast(S.Flurry) then return "flurry 133"; end
+    -- flurry,if=talent.glacial_spike.enabled&prev_gcd.1.glacial_spike&buff.brain_freeze.react
+    if S.Flurry:IsCastableP() and (S.GlacialSpike:IsAvailable() and Player:PrevGCDP(1, S.GlacialSpike) and bool(Player:BuffStackP(S.BrainFreezeBuff))) then
+      if HR.Cast(S.Flurry) then return "flurry 135"; end
+    end
+    -- flurry,if=prev_gcd.1.frostbolt&buff.brain_freeze.react&(!talent.glacial_spike.enabled|buff.icicles.stack<4)
+    if S.Flurry:IsCastableP() and (Player:PrevGCDP(1, S.Frostbolt) and bool(Player:BuffStackP(S.BrainFreezeBuff)) and (not S.GlacialSpike:IsAvailable() or Player:BuffStackP(S.IciclesBuff) < 4)) then
+      if HR.Cast(S.Flurry) then return "flurry 143"; end
     end
     -- frozen_orb
     if S.FrozenOrb:IsCastableP() then
-      if HR.Cast(S.FrozenOrb) then return "frozen_orb 147"; end
+      if HR.Cast(S.FrozenOrb) then return "frozen_orb 153"; end
     end
     -- blizzard,if=active_enemies>2|active_enemies>1&cast_time=0&buff.fingers_of_frost.react<2
     if S.Blizzard:IsCastableP() and (Cache.EnemiesCount[35] > 2 or Cache.EnemiesCount[35] > 1 and S.Blizzard:CastTime() == 0 and Player:BuffStackP(S.FingersofFrostBuff) < 2) then
-      if HR.Cast(S.Blizzard) then return "blizzard 149"; end
+      if HR.Cast(S.Blizzard) then return "blizzard 155"; end
     end
     -- ice_lance,if=buff.fingers_of_frost.react
     if S.IceLance:IsCastableP() and (bool(Player:BuffStackP(S.FingersofFrostBuff))) then
-      if HR.Cast(S.IceLance) then return "ice_lance 169"; end
+      if HR.Cast(S.IceLance) then return "ice_lance 175"; end
     end
     -- comet_storm
     if S.CometStorm:IsCastableP() then
-      if HR.Cast(S.CometStorm) then return "comet_storm 173"; end
+      if HR.Cast(S.CometStorm) then return "comet_storm 179"; end
     end
-    -- ebonbolt,if=!talent.glacial_spike.enabled|buff.icicles.stack=5&!buff.brain_freeze.react
-    if S.Ebonbolt:IsCastableP() and (not S.GlacialSpike:IsAvailable() or Player:BuffStackP(S.IciclesBuff) == 5 and not bool(Player:BuffStackP(S.BrainFreezeBuff))) then
-      if HR.Cast(S.Ebonbolt) then return "ebonbolt 175"; end
+    -- ebonbolt
+    if S.Ebonbolt:IsCastableP() then
+      if HR.Cast(S.Ebonbolt) then return "ebonbolt 181"; end
     end
     -- ray_of_frost,if=!action.frozen_orb.in_flight&ground_aoe.frozen_orb.remains=0
     if S.RayofFrost:IsCastableP() and (not S.FrozenOrb:InFlight() and Player:FrozenOrbGroundAoeRemains() == 0) then
