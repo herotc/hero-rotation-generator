@@ -32,6 +32,7 @@ DEFAULT_POTION = {
 
 DEFAULT_RANGE = {
     DRUID: {
+        FERAL:  8
     },
 }
 
@@ -54,7 +55,8 @@ SPELL_INFO = {
                                                  DEBUFF:    106830,
                                                  RANGE:     8},
             'moonfire_cat':                     {SPELL:     155625,
-                                                 DEBUFF:    155625},
+                                                 DEBUFF:    155625,
+                                                 RANGE:     40},
             'ferocious_bite':                   {SPELL:     22568},
             'ferocious_bite_max_energy':        {SPELL:     22568},
             'rake':                             {SPELL:     1822,
