@@ -57,12 +57,12 @@ Spell.Druid.Feral = {
   PoolResource                          = Spell(9999000010),
   SavageRoarBuff                        = Spell(52610),
   Maim                                  = Spell(22570),
-  IronJawsBuff                          = Spell(),
+  IronJawsBuff                          = Spell(276026),
   FerociousBiteMaxEnergy                = Spell(22568),
   BrutalSlash                           = Spell(202028),
   ThrashCat                             = Spell(106830),
   ThrashCatDebuff                       = Spell(106830),
-  WildFleshrending                      = Spell(),
+  WildFleshrending                      = Spell(279527),
   ClearcastingBuff                      = Spell(135700),
   SwipeCat                              = Spell(106785)
 };

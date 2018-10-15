@@ -86,6 +86,8 @@ SPELL_INFO = {
             'fiery_red_maimers':                {BUFF:      236757},
             # Azerite
             'power_of_the_moon':                {SPELL:     273367},
+            'wild_fleshrending':                {SPELL:     279527},
+            'iron_jaws':                        {BUFF:      276026},
         },
         BALANCE: {
             'moonkin_form':                     {SPELL:     24858},
