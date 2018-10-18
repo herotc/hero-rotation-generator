@@ -48,6 +48,9 @@ SPELL_INFO = {
             'tiger_palm':                       {SPELL:     100780},
             # Legendaries
             'the_emperors_capacitor':           {BUFF:      235054},
+            # Azerite
+            'swift_roundhouse':                 {SPELL:     277669,
+                                                 BUFF:      278710},
         },
         BREWMASTER: {
             'black_ox_brew':                    {SPELL:     115399,
@@ -94,7 +97,7 @@ SPELL_INFO = {
                                                  BUFF:      152173,
                                                  CD:        True,
                                                  OGCDAOGCD: True},
-            'spinning_crane_kick':              {SPELL:     107270,
+            'spinning_crane_kick':              {SPELL:     101546,
                                                  RANGE:     8},
             'storm_earth_and_fire':             {SPELL:     137639,
                                                  BUFF:      137639,
@@ -106,7 +109,16 @@ SPELL_INFO = {
                                                  CD:        True},
             'touch_of_karma':                   {SPELL:     122470,
                                                  OGCDAOGCD: True},
+            'rushing_jade_wind':                {SPELL:     261715,
+                                                 BUFF:      261715,
+                                                 RANGE:     8},
             'whirling_dragon_punch':            {SPELL:     152175},
+            'fist_of_the_white_tiger':          {SPELL:     261947},
+            'mark_of_the_crane':                {DEBUFF:    228287},
+            'hit_combo':                        {SPELL:     196741},
+            'flying_serpent_kick':              {SPELL:     101545},
+            'bok_proc':                         {BUFF:      116768},
+            'good_karma':                       {SPELL:     280195},
         },
     },
 }
@@ -116,6 +128,7 @@ ITEM_INFO = {
     'drinking_horn_cover':              137097,
     'hidden_masters_forbidden_touch':   137057,
     'the_emperors_capacitor':           144239,
+    'lustrous_golden_plumage':          159617,
 }
 
 CLASS_FUNCTIONS = {

@@ -61,7 +61,7 @@ if not Item.DemonHunter then Item.DemonHunter = {} end
 Item.DemonHunter.Havoc = {
   ProlongedPower                   = Item(142117),
   GalecallersBoon                  = Item(),
-  LustrousGoldenPlumage            = Item()
+  LustrousGoldenPlumage            = Item(159617)
 };
 local I = Item.DemonHunter.Havoc;
 

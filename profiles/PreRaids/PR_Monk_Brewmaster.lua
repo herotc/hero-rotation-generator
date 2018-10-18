@@ -58,7 +58,7 @@ local S = Spell.Monk.Brewmaster;
 if not Item.Monk then Item.Monk = {} end
 Item.Monk.Brewmaster = {
   ProlongedPower                   = Item(142117),
-  LustrousGoldenPlumage            = Item()
+  LustrousGoldenPlumage            = Item(159617)
 };
 local I = Item.Monk.Brewmaster;
 

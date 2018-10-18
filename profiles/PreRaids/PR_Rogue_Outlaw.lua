@@ -66,7 +66,7 @@ local S = Spell.Rogue.Outlaw;
 if not Item.Rogue then Item.Rogue = {} end
 Item.Rogue.Outlaw = {
   ProlongedPower                   = Item(142117),
-  LustrousGoldenPlumage            = Item()
+  LustrousGoldenPlumage            = Item(159617)
 };
 local I = Item.Rogue.Outlaw;
 
