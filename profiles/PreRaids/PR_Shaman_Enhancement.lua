@@ -117,6 +117,10 @@ local function bool(val)
   return val ~= 0
 end
 
+
+local function EvaluateCycleStormstrike174(TargetUnit)
+  return S.LightningConduit:AzeriteEnabled() and not TargetUnit:DebuffP(S.LightningConduitDebuff) and Cache.EnemiesCount[8] > 1 and (Player:BuffP(S.StormbringerBuff) or (bool(VarOcpool70) and bool(VarFurycheck35)))
+end
 --- ======= ACTION LISTS =======
 local function APL()
   local Precombat, Asc, Buffs, Cds, Core, Filler, Opener
@@ -227,71 +231,71 @@ local function APL()
     end
     -- stormstrike,cycle_targets=1,if=azerite.lightning_conduit.enabled&!debuff.lightning_conduit.up&active_enemies>1&(buff.stormbringer.up|(variable.OCPool70&variable.furyCheck35))
     if S.Stormstrike:IsCastableP() then
-      if HR.CastCycle(S.Stormstrike, 8, function(TargetUnit) return S.LightningConduit:AzeriteEnabled() and not TargetUnit:DebuffP(S.LightningConduitDebuff) and Cache.EnemiesCount[8] > 1 and (Player:BuffP(S.StormbringerBuff) or (bool(VarOcpool70) and bool(VarFurycheck35))) end) then return "stormstrike 190" end
+      if HR.CastCycle(S.Stormstrike, 8, EvaluateCycleStormstrike174) then return "stormstrike 192" end
     end
     -- stormstrike,if=buff.stormbringer.up|(buff.gathering_storms.up&variable.OCPool70&variable.furyCheck35)
     if S.Stormstrike:IsCastableP() and (Player:BuffP(S.StormbringerBuff) or (Player:BuffP(S.GatheringStormsBuff) and bool(VarOcpool70) and bool(VarFurycheck35))) then
-      if HR.Cast(S.Stormstrike) then return "stormstrike 191"; end
+      if HR.Cast(S.Stormstrike) then return "stormstrike 193"; end
     end
     -- crash_lightning,if=active_enemies>=3&variable.furyCheck25
     if S.CrashLightning:IsCastableP() and (Cache.EnemiesCount[8] >= 3 and bool(VarFurycheck25)) then
-      if HR.Cast(S.CrashLightning) then return "crash_lightning 201"; end
+      if HR.Cast(S.CrashLightning) then return "crash_lightning 203"; end
     end
     -- lightning_bolt,if=talent.overcharge.enabled&active_enemies=1&variable.furyCheck45&maelstrom>=40
     if S.LightningBolt:IsCastableP() and (S.Overcharge:IsAvailable() and Cache.EnemiesCount[8] == 1 and bool(VarFurycheck45) and Player:Maelstrom() >= 40) then
-      if HR.Cast(S.LightningBolt) then return "lightning_bolt 213"; end
+      if HR.Cast(S.LightningBolt) then return "lightning_bolt 215"; end
     end
     -- stormstrike,if=variable.OCPool70&variable.furyCheck35
     if S.Stormstrike:IsCastableP() and (bool(VarOcpool70) and bool(VarFurycheck35)) then
-      if HR.Cast(S.Stormstrike) then return "stormstrike 225"; end
+      if HR.Cast(S.Stormstrike) then return "stormstrike 227"; end
     end
     -- sundering
     if S.Sundering:IsCastableP() then
-      if HR.Cast(S.Sundering) then return "sundering 231"; end
+      if HR.Cast(S.Sundering) then return "sundering 233"; end
     end
     -- crash_lightning,if=talent.forceful_winds.enabled&active_enemies>1&variable.furyCheck25
     if S.CrashLightning:IsCastableP() and (S.ForcefulWinds:IsAvailable() and Cache.EnemiesCount[8] > 1 and bool(VarFurycheck25)) then
-      if HR.Cast(S.CrashLightning) then return "crash_lightning 233"; end
+      if HR.Cast(S.CrashLightning) then return "crash_lightning 235"; end
     end
     -- flametongue,if=talent.searing_assault.enabled
     if S.Flametongue:IsCastableP() and (S.SearingAssault:IsAvailable()) then
-      if HR.Cast(S.Flametongue) then return "flametongue 247"; end
+      if HR.Cast(S.Flametongue) then return "flametongue 249"; end
     end
     -- lava_lash,if=talent.hot_hand.enabled&buff.hot_hand.react
     if S.LavaLash:IsCastableP() and (S.HotHand:IsAvailable() and bool(Player:BuffStackP(S.HotHandBuff))) then
-      if HR.Cast(S.LavaLash) then return "lava_lash 251"; end
+      if HR.Cast(S.LavaLash) then return "lava_lash 253"; end
     end
     -- crash_lightning,if=active_enemies>1&variable.furyCheck25
     if S.CrashLightning:IsCastableP() and (Cache.EnemiesCount[8] > 1 and bool(VarFurycheck25)) then
-      if HR.Cast(S.CrashLightning) then return "crash_lightning 257"; end
+      if HR.Cast(S.CrashLightning) then return "crash_lightning 259"; end
     end
   end
   Filler = function()
     -- rockbiter,if=maelstrom<70&!buff.strength_of_earth.up
     if S.Rockbiter:IsCastableP() and (Player:Maelstrom() < 70 and not Player:BuffP(S.StrengthofEarthBuff)) then
-      if HR.Cast(S.Rockbiter) then return "rockbiter 269"; end
+      if HR.Cast(S.Rockbiter) then return "rockbiter 271"; end
     end
     -- crash_lightning,if=talent.crashing_storm.enabled&variable.OCPool60
     if S.CrashLightning:IsCastableP() and (S.CrashingStorm:IsAvailable() and bool(VarOcpool60)) then
-      if HR.Cast(S.CrashLightning) then return "crash_lightning 273"; end
+      if HR.Cast(S.CrashLightning) then return "crash_lightning 275"; end
     end
     -- lava_lash,if=variable.OCPool80&variable.furyCheck45
     if S.LavaLash:IsCastableP() and (bool(VarOcpool80) and bool(VarFurycheck45)) then
-      if HR.Cast(S.LavaLash) then return "lava_lash 279"; end
+      if HR.Cast(S.LavaLash) then return "lava_lash 281"; end
     end
     -- rockbiter
     if S.Rockbiter:IsCastableP() then
-      if HR.Cast(S.Rockbiter) then return "rockbiter 285"; end
+      if HR.Cast(S.Rockbiter) then return "rockbiter 287"; end
     end
     -- flametongue
     if S.Flametongue:IsCastableP() then
-      if HR.Cast(S.Flametongue) then return "flametongue 287"; end
+      if HR.Cast(S.Flametongue) then return "flametongue 289"; end
     end
   end
   Opener = function()
     -- rockbiter,if=maelstrom<15&time<gcd
     if S.Rockbiter:IsCastableP() and (Player:Maelstrom() < 15 and HL.CombatTime() < Player:GCD()) then
-      if HR.Cast(S.Rockbiter) then return "rockbiter 289"; end
+      if HR.Cast(S.Rockbiter) then return "rockbiter 291"; end
     end
   end
   -- call precombat
@@ -301,7 +305,7 @@ local function APL()
   if Everyone.TargetIsValid() then
     -- wind_shear
     if S.WindShear:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled then
-      if HR.CastAnnotated(S.WindShear, false, "Interrupt") then return "wind_shear 292"; end
+      if HR.CastAnnotated(S.WindShear, false, "Interrupt") then return "wind_shear 294"; end
     end
     -- variable,name=furyCheck45,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>45))
     if (true) then

@@ -222,24 +222,37 @@ class Action(Decorable):
         cycle_cast = ''
         self.target.unit_object = Literal('TargetUnit')
         self.range_ = self.player.spell_property(self.execution().object_(), RANGE, self.player.spec_range())
+        cycle_evaluate_name = f'EvaluateCycle{Literal(self.execution().object_().simc, convert=True).lua_name()}{str(self.execution().object_().cid)}'
+        cycle_evaluate_function = ''
         if plustargetif:
             if_condition_tree = self.condition_tree('if')
             targetif_condition_tree = self.condition_tree('target_if')
             targetif_condition = convert_type(targetif_condition_tree, BOOL)
             if if_condition_tree.condition_expression.simc != '':
                 if_condition = convert_type(if_condition_tree, BOOL)
-                cycle_cast = f'if HR.CastCycle({self.execution().object_().print_lua()}, {str(self.range_)}, function(TargetUnit) return ({targetif_condition}) and ({if_condition}) end) then return "{self.execution().object_().return_string()}" end'
+                cycle_evaluate_function = ('\n'
+                                        f'local function {cycle_evaluate_name}(TargetUnit)\n'
+                                        f'  return ({targetif_condition}) and ({if_condition})\n'
+                                        'end')
             else:
-                cycle_cast = f'if HR.CastCycle({self.execution().object_().print_lua()}, {str(self.range_)}, function(TargetUnit) return {targetif_condition} end) then return "{self.execution().object_().return_string()}" end'
+                cycle_evaluate_function = ('\n'
+                                        f'local function {cycle_evaluate_name}(TargetUnit)\n'
+                                        f'  return {targetif_condition}\n'
+                                        'end')
         else:
             if_condition_tree = self.condition_tree('if')
             if_condition = convert_type(if_condition_tree, BOOL)
-            cycle_cast = f'if HR.CastCycle({self.execution().object_().print_lua()}, {str(self.range_)}, function(TargetUnit) return {if_condition} end) then return "{self.execution().object_().return_string()}" end'
+            cycle_evaluate_function = ('\n'
+                                    f'local function {cycle_evaluate_name}(TargetUnit)\n'
+                                    f'  return {if_condition}\n'
+                                    'end')
+        cycle_cast = f'if HR.CastCycle({self.execution().object_().print_lua()}, {str(self.range_)}, {cycle_evaluate_name}) then return "{self.execution().object_().return_string()}" end'
         lua_string += ('\n'
                     f'if {condition.print_lua()} then\n'
                     f'{indent(cycle_cast)}\n'
                     f'end')
         self.target.unit_object = Literal('Target', convert=True)
+        self.context.add_code(cycle_evaluate_function)
         return lua_string
 
     def print_lua(self):
@@ -275,17 +288,29 @@ class Action(Decorable):
             if mmax:
                 mmax_mode = mmax.group(1)
                 cycle_cast = ''
+                targetif_filter_evaluate_name = f'EvaluateTargetIfFilter{Literal(self.execution().object_().simc, convert=True).lua_name()}{str(self.execution().object_().cid)}'
                 for idx, x in enumerate(targetif_condition_tree.condition.condition_list):
                     targetif_condition_tree.condition.condition_list[idx] = x.replace(f'{mmax_mode}:','')
                 targetif_condition = convert_type(targetif_condition_tree, NUM)
                 self.target.unit_object = Literal('TargetUnit')
                 targetif_condition = convert_type(targetif_condition_tree, NUM)
+                targetif_filter_evaluate_function = ('\n'
+                                                f'local function {targetif_filter_evaluate_name}(TargetUnit)\n'
+                                                f'  return {targetif_condition}\n'
+                                                'end')
+                self.context.add_code(targetif_filter_evaluate_function)
                 self.range_ = self.player.spell_property(self.execution().object_(), RANGE, self.player.spec_range())
                 if if_condition_tree.condition_expression.simc != '':
                     if_condition = convert_type(if_condition_tree, BOOL)
-                    cycle_cast = f'if HR.CastTargetIf({self.execution().object_().print_lua()}, {str(self.range_)}, "{mmax_mode}", function(TargetUnit) return {targetif_condition} end, function(TargetUnit) return {if_condition} end) then return "{self.execution().object_().return_string()}" end'
+                    targetif_evaluate_name = f'EvaluateTargetIf{Literal(self.execution().object_().simc, convert=True).lua_name()}{str(self.execution().object_().cid)}'
+                    targetif_evaluate_function = ('\n'
+                                                    f'local function {targetif_evaluate_name}(TargetUnit)\n'
+                                                    f'  return {if_condition}\n'
+                                                    'end')
+                    self.context.add_code(targetif_evaluate_function)
+                    cycle_cast = f'if HR.CastTargetIf({self.execution().object_().print_lua()}, {str(self.range_)}, "{mmax_mode}", {targetif_filter_evaluate_name}, {targetif_evaluate_name}) then return "{self.execution().object_().return_string()}" end'
                 else:
-                    cycle_cast = f'if HR.CastTargetIf({self.execution().object_().print_lua()}, {str(self.range_)}, "{mmax_mode}", function(TargetUnit) return {targetif_condition} end) then return "{self.execution().object_().return_string()}" end'
+                    cycle_cast = f'if HR.CastTargetIf({self.execution().object_().print_lua()}, {str(self.range_)}, "{mmax_mode}", {targetif_filter_evaluate_name}) then return "{self.execution().object_().return_string()}" end'
                 lua_string += ('\n'
                     f'if {condition.print_lua()} then\n'
                     f'{indent(cycle_cast)}\n'
