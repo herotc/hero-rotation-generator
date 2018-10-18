@@ -77,6 +77,8 @@ SPELL_INFO = {
             'judgment':                         {SPELL:     20271,
                                                  RANGE:     30},
             'hammer_of_the_righteous':          {SPELL:     53595},
+            'consecration':                     {SPELL:     26573,
+                                                 BUFF:      188370},
         },
         RETRIBUTION: {
             'crusade':                          {SPELL:     231895,
