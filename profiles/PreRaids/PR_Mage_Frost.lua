@@ -85,6 +85,8 @@ local function UpdateRanges()
   end
 end
 
+S.FrozenOrb:RegisterInFlight()
+
 local function num(val)
   if val then return 1 else return 0 end
 end
@@ -95,6 +97,7 @@ end
 
 S.FrozenOrb.EffectID = 84721
 S.FrozenOrb:RegisterInFlight()
+S.Frostbolt:RegisterInFlight()
 --- ======= ACTION LISTS =======
 local function APL()
   local Precombat, Aoe, Cooldowns, Movement, Single, TalentRop

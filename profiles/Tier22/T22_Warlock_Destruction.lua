@@ -82,6 +82,8 @@ local function UpdateRanges()
   end
 end
 
+S.ChaosBolt:RegisterInFlight()
+
 local function num(val)
   if val then return 1 else return 0 end
 end

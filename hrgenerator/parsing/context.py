@@ -52,6 +52,7 @@ class Context(Decorable):
         self.spells = {}
         self.items = {}
         self.variables = {}
+        self.inflight = {}
         self.ranges = []
         self.custom_code = [self.NUM_FUNCTION, self.BOOL_FUNCTION]
         self.player = None
@@ -76,6 +77,13 @@ class Context(Decorable):
         """
         if variable.simc not in self.variables:
             self.variables[variable.simc] = variable
+
+    def add_inflight(self, spell):
+        """
+        Add an inflight registration to the context.
+        """
+        if spell.simc not in self.inflight:
+            self.inflight[spell.simc] = spell
 
     def add_range(self, range_):
         """
@@ -152,6 +160,15 @@ class Context(Decorable):
             lua_variables += f'end, "PLAYER_REGEN_ENABLED")\n'
         return lua_variables
 
+    def print_inflight(self):
+        """
+        Print the inflight registrations.
+        """
+        lua_inflight = ''
+        for spell in self.inflight.values():
+            lua_inflight += f'S.{spell.lua_name()}:RegisterInFlight()\n'
+        return lua_inflight
+
     def print_custom_code(self):
         """
         Print the custom code.
@@ -201,4 +218,5 @@ class Context(Decorable):
             f'{self.print_settings()}\n'
             f'{self.print_variables()}\n'
             f'{self.print_ranges()}\n'
+            f'{self.print_inflight()}\n'
             f'{self.print_custom_code()}{newline}')

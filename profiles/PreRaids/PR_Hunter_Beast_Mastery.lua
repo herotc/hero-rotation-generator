@@ -74,6 +74,7 @@ local function UpdateRanges()
   end
 end
 
+
 local function num(val)
   if val then return 1 else return 0 end
 end

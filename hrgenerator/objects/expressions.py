@@ -164,6 +164,7 @@ class ActionExpression(BuildExpression):
         Return the arguments for the expression action.spell.in_flight.
         """
         self.method = Method('InFlight', type_=BOOL)
+        self.object_.action.context.add_inflight(self.object_)
 
     def max_charges(self):
         """
