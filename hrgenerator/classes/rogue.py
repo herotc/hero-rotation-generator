@@ -221,6 +221,15 @@ def rogue_master_assassin_remains(fun):
 
     return master_assassin_remains
 
+def rogue_rtb_buffs(fun):
+
+    from ..objects.lua import Method, LuaExpression
+
+    def rtb_buffs(self):
+        return LuaExpression(None, Method('RtB_Buffs'))
+
+    return rtb_buffs
+
 DECORATORS = {
     ROGUE: [
         {
@@ -247,6 +256,11 @@ DECORATORS = {
             'class_name': 'Expression',
             'method': 'master_assassin_remains',
             'decorator': rogue_master_assassin_remains,
+        },  
+        {
+            'class_name': 'Expression',
+            'method': 'rtb_buffs',
+            'decorator': rogue_rtb_buffs,
         },  
     ]
 }
