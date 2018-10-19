@@ -120,7 +120,7 @@ local function EvaluateTargetIfFilterMarkedForDeath97(TargetUnit)
 end
 
 local function EvaluateTargetIfMarkedForDeath102(TargetUnit)
-  return (Cache.EnemiesCount[15] > 1) and (TargetUnit:TimeToDie() < Player:ComboPointsDeficit() or not bool(stealthed.all) and Player:ComboPointsDeficit() >= cp_max_spend)
+  return (Cache.EnemiesCount[15] > 1) and (TargetUnit:TimeToDie() < Player:ComboPointsDeficit() or not Player:IsStealthedP(true, true) and Player:ComboPointsDeficit() >= Rogue.CPMaxSpend())
 end
 
 local function EvaluateCycleNightblade181(TargetUnit)
@@ -217,15 +217,15 @@ local function APL()
       if HR.CastTargetIf(S.MarkedForDeath, 15, "min", EvaluateTargetIfFilterMarkedForDeath97, EvaluateTargetIfMarkedForDeath102) then return "marked_for_death 104" end
     end
     -- marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration&!stealthed.all&combo_points.deficit>=cp_max_spend
-    if S.MarkedForDeath:IsCastableP() and (10000000000 > 30 - raid_event.adds.duration and not bool(stealthed.all) and Player:ComboPointsDeficit() >= cp_max_spend) then
+    if S.MarkedForDeath:IsCastableP() and (10000000000 > 30 - raid_event.adds.duration and not Player:IsStealthedP(true, true) and Player:ComboPointsDeficit() >= Rogue.CPMaxSpend()) then
       if HR.Cast(S.MarkedForDeath) then return "marked_for_death 105"; end
     end
     -- shadow_blades,if=combo_points.deficit>=2+stealthed.all
-    if S.ShadowBlades:IsCastableP() and (Player:ComboPointsDeficit() >= 2 + stealthed.all) then
+    if S.ShadowBlades:IsCastableP() and (Player:ComboPointsDeficit() >= 2 + num(Player:IsStealthedP(true, true))) then
       if HR.Cast(S.ShadowBlades) then return "shadow_blades 107"; end
     end
     -- shuriken_tornado,if=spell_targets>=3&!talent.shadow_focus.enabled&dot.nightblade.ticking&!stealthed.all&cooldown.symbols_of_death.up&cooldown.shadow_dance.charges>=1
-    if S.ShurikenTornado:IsCastableP() and (Cache.EnemiesCount[15] >= 3 and not S.ShadowFocus:IsAvailable() and Target:DebuffP(S.NightbladeDebuff) and not bool(stealthed.all) and S.SymbolsofDeath:CooldownUpP() and S.ShadowDance:ChargesP() >= 1) then
+    if S.ShurikenTornado:IsCastableP() and (Cache.EnemiesCount[15] >= 3 and not S.ShadowFocus:IsAvailable() and Target:DebuffP(S.NightbladeDebuff) and not Player:IsStealthedP(true, true) and S.SymbolsofDeath:CooldownUpP() and S.ShadowDance:ChargesP() >= 1) then
       if HR.Cast(S.ShurikenTornado) then return "shuriken_tornado 109"; end
     end
     -- shuriken_tornado,if=spell_targets>=3&talent.shadow_focus.enabled&dot.nightblade.ticking&buff.symbols_of_death.up
@@ -233,7 +233,7 @@ local function APL()
       if HR.Cast(S.ShurikenTornado) then return "shuriken_tornado 125"; end
     end
     -- shadow_dance,if=!stealthed.all&target.time_to_die<=5+talent.subterfuge.enabled
-    if S.ShadowDance:IsCastableP() and (not bool(stealthed.all) and Target:TimeToDie() <= 5 + num(S.Subterfuge:IsAvailable())) then
+    if S.ShadowDance:IsCastableP() and (not Player:IsStealthedP(true, true) and Target:TimeToDie() <= 5 + num(S.Subterfuge:IsAvailable())) then
       if HR.Cast(S.ShadowDance) then return "shadow_dance 139"; end
     end
   end
@@ -338,7 +338,7 @@ local function APL()
       local ShouldReturn = Cds(); if ShouldReturn then return ShouldReturn; end
     end
     -- run_action_list,name=stealthed,if=stealthed.all
-    if (bool(stealthed.all)) then
+    if (Player:IsStealthedP(true, true)) then
       return Stealthed();
     end
     -- nightblade,if=target.time_to_die>6&remains<gcd.max&combo_points>=4-(time<10)*2

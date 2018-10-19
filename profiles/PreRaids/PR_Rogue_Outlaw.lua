@@ -113,7 +113,7 @@ local function EvaluateTargetIfFilterMarkedForDeath51(TargetUnit)
 end
 
 local function EvaluateTargetIfMarkedForDeath56(TargetUnit)
-  return (Cache.EnemiesCount[35] > 1) and (TargetUnit:TimeToDie() < Player:ComboPointsDeficit() or not bool(stealthed.rogue) and Player:ComboPointsDeficit() >= cp_max_spend - 1)
+  return (Cache.EnemiesCount[35] > 1) and (TargetUnit:TimeToDie() < Player:ComboPointsDeficit() or not Player:IsStealthedP(true, false) and Player:ComboPointsDeficit() >= Rogue.CPMaxSpend() - 1)
 end
 --- ======= ACTION LISTS =======
 local function APL()
@@ -194,7 +194,7 @@ local function APL()
       if HR.CastTargetIf(S.MarkedForDeath, 35, "min", EvaluateTargetIfFilterMarkedForDeath51, EvaluateTargetIfMarkedForDeath56) then return "marked_for_death 58" end
     end
     -- marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1
-    if S.MarkedForDeath:IsCastableP() and (10000000000 > 30 - raid_event.adds.duration and not bool(stealthed.rogue) and Player:ComboPointsDeficit() >= cp_max_spend - 1) then
+    if S.MarkedForDeath:IsCastableP() and (10000000000 > 30 - raid_event.adds.duration and not Player:IsStealthedP(true, false) and Player:ComboPointsDeficit() >= Rogue.CPMaxSpend() - 1) then
       if HR.Cast(S.MarkedForDeath) then return "marked_for_death 59"; end
     end
     -- blade_flurry,if=spell_targets>=2&!buff.blade_flurry.up&(!raid_event.adds.exists|raid_event.adds.remains>8|raid_event.adds.in>(2-cooldown.blade_flurry.charges_fractional)*25)
@@ -214,11 +214,11 @@ local function APL()
       if HR.Cast(S.BladeRush) then return "blade_rush 87"; end
     end
     -- vanish,if=!stealthed.all&variable.ambush_condition
-    if S.Vanish:IsCastableP() and (not bool(stealthed.all) and bool(VarAmbushCondition)) then
+    if S.Vanish:IsCastableP() and (not Player:IsStealthedP(true, true) and bool(VarAmbushCondition)) then
       if HR.Cast(S.Vanish) then return "vanish 91"; end
     end
     -- shadowmeld,if=!stealthed.all&variable.ambush_condition
-    if S.Shadowmeld:IsCastableP() and HR.CDsON() and (not bool(stealthed.all) and bool(VarAmbushCondition)) then
+    if S.Shadowmeld:IsCastableP() and HR.CDsON() and (not Player:IsStealthedP(true, true) and bool(VarAmbushCondition)) then
       if HR.Cast(S.Shadowmeld, Settings.Commons.OffGCDasOffGCD.Racials) then return "shadowmeld 95"; end
     end
   end
@@ -284,7 +284,7 @@ local function APL()
       VarBladeFlurrySync = num(Cache.EnemiesCount[8] < 2 and 10000000000 > 20 or Player:BuffP(S.BladeFlurryBuff))
     end
     -- call_action_list,name=stealth,if=stealthed.all
-    if (bool(stealthed.all)) then
+    if (Player:IsStealthedP(true, true)) then
       local ShouldReturn = Stealth(); if ShouldReturn then return ShouldReturn; end
     end
     -- call_action_list,name=cds
@@ -292,7 +292,7 @@ local function APL()
       local ShouldReturn = Cds(); if ShouldReturn then return ShouldReturn; end
     end
     -- call_action_list,name=finish,if=combo_points>=cp_max_spend-(buff.broadside.up+buff.opportunity.up)*(talent.quick_draw.enabled&(!talent.marked_for_death.enabled|cooldown.marked_for_death.remains>1))
-    if (Player:ComboPoints() >= cp_max_spend - (num(Player:BuffP(S.BroadsideBuff)) + num(Player:BuffP(S.OpportunityBuff))) * num((S.QuickDraw:IsAvailable() and (not S.MarkedForDeath:IsAvailable() or S.MarkedForDeath:CooldownRemainsP() > 1)))) then
+    if (Player:ComboPoints() >= Rogue.CPMaxSpend() - (num(Player:BuffP(S.BroadsideBuff)) + num(Player:BuffP(S.OpportunityBuff))) * num((S.QuickDraw:IsAvailable() and (not S.MarkedForDeath:IsAvailable() or S.MarkedForDeath:CooldownRemainsP() > 1)))) then
       local ShouldReturn = Finish(); if ShouldReturn then return ShouldReturn; end
     end
     -- call_action_list,name=build

@@ -169,3 +169,70 @@ CLASS_FUNCTIONS = {
         ],
     },
 }
+
+def rogue_stealthed(fun):
+
+    from ..objects.lua import Literal, Method, LuaExpression
+    from ..constants import BOOL
+
+    def stealthed(self):
+        if (self.condition_list[1] in 'all'):
+            self.args = [Literal('true'), Literal('true')]
+        elif (self.condition_list[1] in 'rogue'):
+            self.args = [Literal('true'), Literal('false')]
+        return LuaExpression(self.player_unit, Method('IsStealthedP', type_=BOOL), args=self.args)
+
+    return stealthed
+
+def rogue_cp_max_spend(fun):
+
+    from ..objects.lua import Literal
+
+    def cp_max_spend(self):
+        return Literal('Rogue.CPMaxSpend()')
+
+    return cp_max_spend
+
+def rogue_poisoned_bleeds(fun):
+    
+    from ..objects.lua import Literal
+
+    def poisoned_bleeds(self):
+        return Literal('Rogue.PoisonedBleeds()')
+
+    return poisoned_bleeds
+
+def rogue_exsanguinated(fun):
+
+    from ..objects.lua import Literal, Method, LuaExpression
+    from ..constants import BOOL
+
+    def exsanguinated(self):
+        return LuaExpression(None, Method('HL.Exsanguinated'), args=[self.target_unit, Literal(self.parent_action.execution().execution, convert=True, quoted=True)], type_=BOOL)
+
+    return exsanguinated
+
+DECORATORS = {
+    ROGUE: [
+        {
+            'class_name': 'Expression',
+            'method': 'stealthed',
+            'decorator': rogue_stealthed,
+        },
+        {
+            'class_name': 'Expression',
+            'method': 'cp_max_spend',
+            'decorator': rogue_cp_max_spend,
+        },     
+        {
+            'class_name': 'Expression',
+            'method': 'poisoned_bleeds',
+            'decorator': rogue_poisoned_bleeds,
+        },    
+        {
+            'class_name': 'Expression',
+            'method': 'exsanguinated',
+            'decorator': rogue_exsanguinated,
+        },  
+    ]
+}
