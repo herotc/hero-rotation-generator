@@ -126,22 +126,22 @@ local function EvaluateCycleMutilate194(TargetUnit)
 end
 
 local function EvaluateCycleGarrote223(TargetUnit)
-  return (not S.Subterfuge:IsAvailable() or not (S.Vanish:CooldownUpP() and S.Vendetta:CooldownRemainsP() <= 4)) and Player:ComboPointsDeficit() >= 1 and TargetUnit:DebuffRefreshableCP(S.GarroteDebuff) and (pmultiplier <= 1 or TargetUnit:DebuffRemainsP(S.GarroteDebuff) <= S.GarroteDebuff:TickTime() and Cache.EnemiesCount[10] >= 3 + num(S.ShroudedSuffocation:AzeriteEnabled())) and (not HL.Exsanguinated(TargetUnit, "Garrote") or TargetUnit:DebuffRemainsP(S.GarroteDebuff) <= S.GarroteDebuff:TickTime() * 2 and Cache.EnemiesCount[10] >= 3 + num(S.ShroudedSuffocation:AzeriteEnabled())) and (TargetUnit:TimeToDie() - TargetUnit:DebuffRemainsP(S.GarroteDebuff) > 4 and Cache.EnemiesCount[10] <= 1 or TargetUnit:TimeToDie() - TargetUnit:DebuffRemainsP(S.GarroteDebuff) > 12)
+  return (not S.Subterfuge:IsAvailable() or not (S.Vanish:CooldownUpP() and S.Vendetta:CooldownRemainsP() <= 4)) and Player:ComboPointsDeficit() >= 1 and TargetUnit:DebuffRefreshableCP(S.GarroteDebuff) and (TargetUnit:PMultiplier(S.Garrote) <= 1 or TargetUnit:DebuffRemainsP(S.GarroteDebuff) <= S.GarroteDebuff:TickTime() and Cache.EnemiesCount[10] >= 3 + num(S.ShroudedSuffocation:AzeriteEnabled())) and (not HL.Exsanguinated(TargetUnit, "Garrote") or TargetUnit:DebuffRemainsP(S.GarroteDebuff) <= S.GarroteDebuff:TickTime() * 2 and Cache.EnemiesCount[10] >= 3 + num(S.ShroudedSuffocation:AzeriteEnabled())) and (TargetUnit:TimeToDie() - TargetUnit:DebuffRemainsP(S.GarroteDebuff) > 4 and Cache.EnemiesCount[10] <= 1 or TargetUnit:TimeToDie() - TargetUnit:DebuffRemainsP(S.GarroteDebuff) > 12)
 end
 
-local function EvaluateCycleRupture306(TargetUnit)
-  return Player:ComboPoints() >= 4 and TargetUnit:DebuffRefreshableCP(S.RuptureDebuff) and (pmultiplier <= 1 or TargetUnit:DebuffRemainsP(S.RuptureDebuff) <= S.RuptureDebuff:TickTime() and Cache.EnemiesCount[10] >= 3 + num(S.ShroudedSuffocation:AzeriteEnabled())) and (not HL.Exsanguinated(TargetUnit, "Rupture") or TargetUnit:DebuffRemainsP(S.RuptureDebuff) <= S.RuptureDebuff:TickTime() * 2 and Cache.EnemiesCount[10] >= 3 + num(S.ShroudedSuffocation:AzeriteEnabled())) and TargetUnit:TimeToDie() - TargetUnit:DebuffRemainsP(S.RuptureDebuff) > 4
+local function EvaluateCycleRupture314(TargetUnit)
+  return Player:ComboPoints() >= 4 and TargetUnit:DebuffRefreshableCP(S.RuptureDebuff) and (TargetUnit:PMultiplier(S.Rupture) <= 1 or TargetUnit:DebuffRemainsP(S.RuptureDebuff) <= S.RuptureDebuff:TickTime() and Cache.EnemiesCount[10] >= 3 + num(S.ShroudedSuffocation:AzeriteEnabled())) and (not HL.Exsanguinated(TargetUnit, "Rupture") or TargetUnit:DebuffRemainsP(S.RuptureDebuff) <= S.RuptureDebuff:TickTime() * 2 and Cache.EnemiesCount[10] >= 3 + num(S.ShroudedSuffocation:AzeriteEnabled())) and TargetUnit:TimeToDie() - TargetUnit:DebuffRemainsP(S.RuptureDebuff) > 4
 end
 
-local function EvaluateCycleGarrote379(TargetUnit)
+local function EvaluateCycleGarrote395(TargetUnit)
   return S.Subterfuge:IsAvailable() and TargetUnit:DebuffRefreshableCP(S.GarroteDebuff) and TargetUnit:TimeToDie() - TargetUnit:DebuffRemainsP(S.GarroteDebuff) > 2
 end
 
-local function EvaluateCycleGarrote400(TargetUnit)
-  return S.Subterfuge:IsAvailable() and TargetUnit:DebuffRemainsP(S.GarroteDebuff) <= 10 and pmultiplier <= 1 and TargetUnit:TimeToDie() - TargetUnit:DebuffRemainsP(S.GarroteDebuff) > 2
+local function EvaluateCycleGarrote416(TargetUnit)
+  return S.Subterfuge:IsAvailable() and TargetUnit:DebuffRemainsP(S.GarroteDebuff) <= 10 and TargetUnit:PMultiplier(S.Garrote) <= 1 and TargetUnit:TimeToDie() - TargetUnit:DebuffRemainsP(S.GarroteDebuff) > 2
 end
 
-local function EvaluateCycleGarrote429(TargetUnit)
+local function EvaluateCycleGarrote453(TargetUnit)
   return S.Subterfuge:IsAvailable() and S.ShroudedSuffocation:AzeriteEnabled() and TargetUnit:TimeToDie() > TargetUnit:DebuffRemainsP(S.GarroteDebuff)
 end
 --- ======= ACTION LISTS =======
@@ -279,49 +279,49 @@ local function APL()
     -- pool_resource,for_next=1
     -- garrote,cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(target.time_to_die-remains>4&spell_targets.fan_of_knives<=1|target.time_to_die-remains>12)
     if S.Garrote:IsCastableP() then
-      if HR.CastCycle(S.Garrote, 15, EvaluateCycleGarrote223) then return "garrote 277" end
+      if HR.CastCycle(S.Garrote, 15, EvaluateCycleGarrote223) then return "garrote 285" end
     end
     -- crimson_tempest,if=spell_targets>=2&remains<2+(spell_targets>=5)&combo_points>=4
     if S.CrimsonTempest:IsCastableP() and (Cache.EnemiesCount[15] >= 2 and Player:BuffRemainsP(S.CrimsonTempestBuff) < 2 + num((Cache.EnemiesCount[15] >= 5)) and Player:ComboPoints() >= 4) then
-      if HR.Cast(S.CrimsonTempest) then return "crimson_tempest 278"; end
+      if HR.Cast(S.CrimsonTempest) then return "crimson_tempest 286"; end
     end
     -- rupture,cycle_targets=1,if=combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&target.time_to_die-remains>4
     if S.Rupture:IsCastableP() then
-      if HR.CastCycle(S.Rupture, 5, EvaluateCycleRupture306) then return "rupture 348" end
+      if HR.CastCycle(S.Rupture, 5, EvaluateCycleRupture314) then return "rupture 364" end
     end
   end
   Stealthed = function()
     -- rupture,if=combo_points>=4&(talent.nightstalker.enabled|talent.subterfuge.enabled&talent.exsanguinate.enabled&cooldown.exsanguinate.remains<=2&variable.single_target|!ticking)&target.time_to_die-remains>6
     if S.Rupture:IsCastableP() and (Player:ComboPoints() >= 4 and (S.Nightstalker:IsAvailable() or S.Subterfuge:IsAvailable() and S.Exsanguinate:IsAvailable() and S.Exsanguinate:CooldownRemainsP() <= 2 and bool(VarSingleTarget) or not Target:DebuffP(S.RuptureDebuff)) and Target:TimeToDie() - Target:DebuffRemainsP(S.RuptureDebuff) > 6) then
-      if HR.Cast(S.Rupture) then return "rupture 349"; end
+      if HR.Cast(S.Rupture) then return "rupture 365"; end
     end
     -- envenom,if=combo_points>=cp_max_spend
     if S.Envenom:IsCastableP() and (Player:ComboPoints() >= Rogue.CPMaxSpend()) then
-      if HR.Cast(S.Envenom) then return "envenom 373"; end
+      if HR.Cast(S.Envenom) then return "envenom 389"; end
     end
     -- garrote,cycle_targets=1,if=talent.subterfuge.enabled&refreshable&target.time_to_die-remains>2
     if S.Garrote:IsCastableP() then
-      if HR.CastCycle(S.Garrote, 15, EvaluateCycleGarrote379) then return "garrote 395" end
+      if HR.CastCycle(S.Garrote, 15, EvaluateCycleGarrote395) then return "garrote 411" end
     end
     -- garrote,cycle_targets=1,if=talent.subterfuge.enabled&remains<=10&pmultiplier<=1&target.time_to_die-remains>2
     if S.Garrote:IsCastableP() then
-      if HR.CastCycle(S.Garrote, 15, EvaluateCycleGarrote400) then return "garrote 416" end
+      if HR.CastCycle(S.Garrote, 15, EvaluateCycleGarrote416) then return "garrote 440" end
     end
     -- rupture,if=talent.subterfuge.enabled&azerite.shrouded_suffocation.enabled&!dot.rupture.ticking
     if S.Rupture:IsCastableP() and (S.Subterfuge:IsAvailable() and S.ShroudedSuffocation:AzeriteEnabled() and not Target:DebuffP(S.RuptureDebuff)) then
-      if HR.Cast(S.Rupture) then return "rupture 417"; end
+      if HR.Cast(S.Rupture) then return "rupture 441"; end
     end
     -- garrote,cycle_targets=1,if=talent.subterfuge.enabled&azerite.shrouded_suffocation.enabled&target.time_to_die>remains
     if S.Garrote:IsCastableP() then
-      if HR.CastCycle(S.Garrote, 15, EvaluateCycleGarrote429) then return "garrote 441" end
+      if HR.CastCycle(S.Garrote, 15, EvaluateCycleGarrote453) then return "garrote 465" end
     end
     -- pool_resource,for_next=1
     -- garrote,if=talent.subterfuge.enabled&talent.exsanguinate.enabled&cooldown.exsanguinate.remains<1&prev_gcd.1.rupture&dot.rupture.remains>5+4*cp_max_spend
     if S.Garrote:IsCastableP() and (S.Subterfuge:IsAvailable() and S.Exsanguinate:IsAvailable() and S.Exsanguinate:CooldownRemainsP() < 1 and Player:PrevGCDP(1, S.Rupture) and Target:DebuffRemainsP(S.RuptureDebuff) > 5 + 4 * Rogue.CPMaxSpend()) then
       if S.Garrote:IsUsablePPool() then
-        if HR.Cast(S.Garrote) then return "garrote 443"; end
+        if HR.Cast(S.Garrote) then return "garrote 467"; end
       else
-        if HR.Cast(S.PoolResource) then return "pool_resource 444"; end
+        if HR.Cast(S.PoolResource) then return "pool_resource 468"; end
       end
     end
   end
@@ -332,7 +332,7 @@ local function APL()
   if Everyone.TargetIsValid() then
     -- stealth
     if S.Stealth:IsCastableP() then
-      if HR.Cast(S.Stealth) then return "stealth 457"; end
+      if HR.Cast(S.Stealth) then return "stealth 481"; end
     end
     -- variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*7%(2*spell_haste)
     if (true) then
@@ -360,15 +360,15 @@ local function APL()
     end
     -- arcane_torrent,if=energy.deficit>=15+variable.energy_regen_combined
     if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (Player:EnergyDeficitPredicted() >= 15 + VarEnergyRegenCombined) then
-      if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return "arcane_torrent 471"; end
+      if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return "arcane_torrent 495"; end
     end
     -- arcane_pulse
     if S.ArcanePulse:IsCastableP() then
-      if HR.Cast(S.ArcanePulse) then return "arcane_pulse 475"; end
+      if HR.Cast(S.ArcanePulse) then return "arcane_pulse 499"; end
     end
     -- lights_judgment
     if S.LightsJudgment:IsCastableP() and HR.CDsON() then
-      if HR.Cast(S.LightsJudgment) then return "lights_judgment 477"; end
+      if HR.Cast(S.LightsJudgment) then return "lights_judgment 501"; end
     end
   end
 end

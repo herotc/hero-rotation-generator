@@ -35,6 +35,7 @@ class ActionExpression(BuildExpression):
         'ticking',
         'ticks_remain',
         'refreshable',
+        'pmultiplier',
     ]
 
     def __init__(self, condition, to_self=False):
