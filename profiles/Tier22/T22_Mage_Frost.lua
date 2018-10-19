@@ -95,6 +95,7 @@ end
 
 S.FrozenOrb.EffectID = 84721
 S.FrozenOrb:RegisterInFlight()
+S.Frostbolt:RegisterInFlight()
 --- ======= ACTION LISTS =======
 local function APL()
   local Precombat, Aoe, Cooldowns, Movement, Single, TalentRop
