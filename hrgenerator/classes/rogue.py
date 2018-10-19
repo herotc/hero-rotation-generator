@@ -212,6 +212,15 @@ def rogue_exsanguinated(fun):
 
     return exsanguinated
 
+def rogue_master_assassin_remains(fun):
+
+    from ..objects.lua import Method, LuaExpression
+
+    def master_assassin_remains(self):
+        return LuaExpression(None, Method('MasterAssassinRemains'))
+
+    return master_assassin_remains
+
 DECORATORS = {
     ROGUE: [
         {
@@ -233,6 +242,11 @@ DECORATORS = {
             'class_name': 'Expression',
             'method': 'exsanguinated',
             'decorator': rogue_exsanguinated,
+        },  
+        {
+            'class_name': 'Expression',
+            'method': 'master_assassin_remains',
+            'decorator': rogue_master_assassin_remains,
         },  
     ]
 }

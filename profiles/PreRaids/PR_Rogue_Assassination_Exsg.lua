@@ -225,7 +225,7 @@ local function APL()
       if HR.Cast(S.Vanish) then return "vanish 107"; end
     end
     -- vanish,if=talent.master_assassin.enabled&!stealthed.all&master_assassin_remains<=0&!dot.rupture.refreshable
-    if S.Vanish:IsCastableP() and (S.MasterAssassin:IsAvailable() and not Player:IsStealthedP(true, true) and master_assassin_remains <= 0 and not Target:DebuffRefreshableCP(S.RuptureDebuff)) then
+    if S.Vanish:IsCastableP() and (S.MasterAssassin:IsAvailable() and not Player:IsStealthedP(true, true) and MasterAssassinRemains() <= 0 and not Target:DebuffRefreshableCP(S.RuptureDebuff)) then
       if HR.Cast(S.Vanish) then return "vanish 119"; end
     end
     -- exsanguinate,if=dot.rupture.remains>4+4*cp_max_spend&!dot.garrote.refreshable
