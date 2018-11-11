@@ -318,55 +318,55 @@ local function APL()
     if S.RuneofPower:IsCastableP() and (Player:ArcaneChargesP() == Player:ArcaneChargesMax() and (S.RuneofPower:FullRechargeTimeP() <= S.RuneofPower:ExecuteTime() or S.RuneofPower:FullRechargeTimeP() <= S.ArcanePower:CooldownRemainsP() or Target:TimeToDie() <= S.ArcanePower:CooldownRemainsP())) then
       if HR.Cast(S.RuneofPower, Settings.Arcane.GCDasOffGCD.RuneofPower) then return "rune_of_power 245"; end
     end
-    -- arcane_missiles,if=mana.pct<=95&buff.clearcasting.react,chain=1
-    if S.ArcaneMissiles:IsCastableP() and (Player:ManaPercentageP() <= 95 and bool(Player:BuffStackP(S.ClearcastingBuff))) then
+    -- arcane_missiles,if=mana.pct<=95&buff.clearcasting.react&active_enemies<3,chain=1
+    if S.ArcaneMissiles:IsCastableP() and (Player:ManaPercentageP() <= 95 and bool(Player:BuffStackP(S.ClearcastingBuff)) and Cache.EnemiesCount[40] < 3) then
       if HR.Cast(S.ArcaneMissiles) then return "arcane_missiles 273"; end
     end
     -- arcane_barrage,if=((buff.arcane_charge.stack=buff.arcane_charge.max_stack)&((mana.pct<=variable.conserve_mana)|(cooldown.arcane_power.remains>cooldown.rune_of_power.full_recharge_time&mana.pct<=variable.conserve_mana+25))|(talent.arcane_orb.enabled&cooldown.arcane_orb.remains<=gcd&cooldown.arcane_power.remains>10))|mana.pct<=(variable.conserve_mana-10)
     if S.ArcaneBarrage:IsCastableP() and (((Player:ArcaneChargesP() == Player:ArcaneChargesMax()) and ((Player:ManaPercentageP() <= VarConserveMana) or (S.ArcanePower:CooldownRemainsP() > S.RuneofPower:FullRechargeTimeP() and Player:ManaPercentageP() <= VarConserveMana + 25)) or (S.ArcaneOrb:IsAvailable() and S.ArcaneOrb:CooldownRemainsP() <= Player:GCD() and S.ArcanePower:CooldownRemainsP() > 10)) or Player:ManaPercentageP() <= (VarConserveMana - 10)) then
-      if HR.Cast(S.ArcaneBarrage) then return "arcane_barrage 277"; end
+      if HR.Cast(S.ArcaneBarrage) then return "arcane_barrage 283"; end
     end
     -- supernova,if=mana.pct<=95
     if S.Supernova:IsCastableP() and (Player:ManaPercentageP() <= 95) then
-      if HR.Cast(S.Supernova) then return "supernova 299"; end
+      if HR.Cast(S.Supernova) then return "supernova 305"; end
     end
     -- arcane_explosion,if=active_enemies>=3&(mana.pct>=variable.conserve_mana|buff.arcane_charge.stack=3)
     if S.ArcaneExplosion:IsReadyP() and (Cache.EnemiesCount[10] >= 3 and (Player:ManaPercentageP() >= VarConserveMana or Player:ArcaneChargesP() == 3)) then
-      if HR.Cast(S.ArcaneExplosion) then return "arcane_explosion 301"; end
+      if HR.Cast(S.ArcaneExplosion) then return "arcane_explosion 307"; end
     end
     -- arcane_blast
     if S.ArcaneBlast:IsReadyP() then
-      if HR.Cast(S.ArcaneBlast) then return "arcane_blast 313"; end
+      if HR.Cast(S.ArcaneBlast) then return "arcane_blast 319"; end
     end
     -- arcane_barrage
     if S.ArcaneBarrage:IsCastableP() then
-      if HR.Cast(S.ArcaneBarrage) then return "arcane_barrage 315"; end
+      if HR.Cast(S.ArcaneBarrage) then return "arcane_barrage 321"; end
     end
   end
   Movement = function()
     -- shimmer,if=movement.distance>=10
     if S.Shimmer:IsCastableP() and (movement.distance >= 10) then
-      if HR.Cast(S.Shimmer) then return "shimmer 317"; end
+      if HR.Cast(S.Shimmer) then return "shimmer 323"; end
     end
     -- blink,if=movement.distance>=10
     if S.Blink:IsCastableP() and (movement.distance >= 10) then
-      if HR.Cast(S.Blink) then return "blink 319"; end
+      if HR.Cast(S.Blink) then return "blink 325"; end
     end
     -- presence_of_mind
     if S.PresenceofMind:IsCastableP() and HR.CDsON() then
-      if HR.Cast(S.PresenceofMind, Settings.Arcane.OffGCDasOffGCD.PresenceofMind) then return "presence_of_mind 321"; end
+      if HR.Cast(S.PresenceofMind, Settings.Arcane.OffGCDasOffGCD.PresenceofMind) then return "presence_of_mind 327"; end
     end
     -- arcane_missiles
     if S.ArcaneMissiles:IsCastableP() then
-      if HR.Cast(S.ArcaneMissiles) then return "arcane_missiles 323"; end
+      if HR.Cast(S.ArcaneMissiles) then return "arcane_missiles 329"; end
     end
     -- arcane_orb
     if S.ArcaneOrb:IsCastableP() then
-      if HR.Cast(S.ArcaneOrb) then return "arcane_orb 325"; end
+      if HR.Cast(S.ArcaneOrb) then return "arcane_orb 331"; end
     end
     -- supernova
     if S.Supernova:IsCastableP() then
-      if HR.Cast(S.Supernova) then return "supernova 327"; end
+      if HR.Cast(S.Supernova) then return "supernova 333"; end
     end
   end
   -- call precombat

@@ -161,8 +161,8 @@ local function APL()
     end
   end
   Cds = function()
-    -- potion,if=buff.bloodlust.react|target.time_to_die<=60|buff.adrenaline_rush.up
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:HasHeroism() or Target:TimeToDie() <= 60 or Player:BuffP(S.AdrenalineRushBuff)) then
+    -- potion,if=buff.bloodlust.react|buff.adrenaline_rush.up
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:HasHeroism() or Player:BuffP(S.AdrenalineRushBuff)) then
       if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 30"; end
     end
     -- blood_fury
@@ -227,23 +227,23 @@ local function APL()
     if S.SliceandDice:IsCastableP() and (Player:BuffRemainsP(S.SliceandDiceBuff) < Target:TimeToDie() and Player:BuffRemainsP(S.SliceandDiceBuff) < (1 + Player:ComboPoints()) * 1.8) then
       if HR.Cast(S.SliceandDice) then return "slice_and_dice 107"; end
     end
-    -- roll_the_bones,if=(buff.roll_the_bones.remains<=3|variable.rtb_reroll)&(target.time_to_die>20|buff.roll_the_bones.remains<target.time_to_die)
-    if S.RolltheBones:IsCastableP() and ((Player:BuffRemainsP(S.RolltheBonesBuff) <= 3 or bool(VarRtbReroll)) and (Target:TimeToDie() > 20 or Player:BuffRemainsP(S.RolltheBonesBuff) < Target:TimeToDie())) then
+    -- roll_the_bones,if=buff.roll_the_bones.remains<=3|variable.rtb_reroll
+    if S.RolltheBones:IsCastableP() and (Player:BuffRemainsP(S.RolltheBonesBuff) <= 3 or bool(VarRtbReroll)) then
       if HR.Cast(S.RolltheBones) then return "roll_the_bones 113"; end
     end
     -- between_the_eyes,if=azerite.ace_up_your_sleeve.enabled|azerite.deadshot.enabled
     if S.BetweentheEyes:IsCastableP() and (S.AceUpYourSleeve:AzeriteEnabled() or S.Deadshot:AzeriteEnabled()) then
-      if HR.Cast(S.BetweentheEyes) then return "between_the_eyes 121"; end
+      if HR.Cast(S.BetweentheEyes) then return "between_the_eyes 119"; end
     end
     -- dispatch
     if S.Dispatch:IsCastableP() then
-      if HR.Cast(S.Dispatch) then return "dispatch 127"; end
+      if HR.Cast(S.Dispatch) then return "dispatch 125"; end
     end
   end
   Stealth = function()
     -- ambush
     if S.Ambush:IsCastableP() then
-      if HR.Cast(S.Ambush) then return "ambush 129"; end
+      if HR.Cast(S.Ambush) then return "ambush 127"; end
     end
   end
   -- call precombat
@@ -253,7 +253,7 @@ local function APL()
   if Everyone.TargetIsValid() then
     -- stealth
     if S.Stealth:IsCastableP() then
-      if HR.Cast(S.Stealth) then return "stealth 132"; end
+      if HR.Cast(S.Stealth) then return "stealth 130"; end
     end
     -- variable,name=rtb_reroll,value=rtb_buffs<2&(buff.loaded_dice.up|!buff.grand_melee.up&!buff.ruthless_precision.up)
     if (true) then
@@ -297,15 +297,15 @@ local function APL()
     end
     -- arcane_torrent,if=energy.deficit>=15+energy.regen
     if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (Player:EnergyDeficitPredicted() >= 15 + Player:EnergyRegen()) then
-      if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return "arcane_torrent 201"; end
+      if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return "arcane_torrent 199"; end
     end
     -- arcane_pulse
     if S.ArcanePulse:IsCastableP() then
-      if HR.Cast(S.ArcanePulse) then return "arcane_pulse 203"; end
+      if HR.Cast(S.ArcanePulse) then return "arcane_pulse 201"; end
     end
     -- lights_judgment
     if S.LightsJudgment:IsCastableP() and HR.CDsON() then
-      if HR.Cast(S.LightsJudgment) then return "lights_judgment 205"; end
+      if HR.Cast(S.LightsJudgment) then return "lights_judgment 203"; end
     end
   end
 end

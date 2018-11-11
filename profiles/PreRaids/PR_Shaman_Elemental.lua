@@ -43,6 +43,7 @@ Spell.Shaman.Elemental = {
   LightningBolt                         = Spell(188196),
   ExposedElementsDebuff                 = Spell(269808),
   EarthShock                            = Spell(8042),
+  WindGustBuff                          = Spell(),
   ResonanceTotemBuff                    = Spell(202192),
   Icefury                               = Spell(210714),
   IcefuryBuff                           = Spell(210714),
@@ -98,11 +99,11 @@ local function EvaluateCycleFlameShock71(TargetUnit)
   return TargetUnit:DebuffRefreshableCP(S.FlameShockDebuff)
 end
 
-local function EvaluateCycleFlameShock184(TargetUnit)
+local function EvaluateCycleFlameShock190(TargetUnit)
   return TargetUnit:DebuffRefreshableCP(S.FlameShockDebuff)
 end
 
-local function EvaluateCycleFlameShock241(TargetUnit)
+local function EvaluateCycleFlameShock247(TargetUnit)
   return TargetUnit:DebuffRefreshableCP(S.FlameShockDebuff)
 end
 --- ======= ACTION LISTS =======
@@ -219,49 +220,53 @@ local function APL()
     if S.EarthShock:IsCastableP() and (S.MasteroftheElements:IsAvailable() and (Player:BuffP(S.MasteroftheElementsBuff) or Player:Maelstrom() >= 92) or not S.MasteroftheElements:IsAvailable()) then
       if HR.Cast(S.EarthShock) then return "earth_shock 164"; end
     end
+    -- lightning_bolt,if=buff.wind_gust.stack>=14&!buff.lava_surge.up
+    if S.LightningBolt:IsCastableP() and (Player:BuffStackP(S.WindGustBuff) >= 14 and not Player:BuffP(S.LavaSurgeBuff)) then
+      if HR.Cast(S.LightningBolt) then return "lightning_bolt 172"; end
+    end
     -- lava_burst,if=cooldown_react|buff.ascendance.up
     if S.LavaBurst:IsCastableP() and (S.LavaBurst:CooldownUpP() or Player:BuffP(S.AscendanceBuff)) then
-      if HR.Cast(S.LavaBurst) then return "lava_burst 172"; end
+      if HR.Cast(S.LavaBurst) then return "lava_burst 178"; end
     end
     -- flame_shock,target_if=refreshable
     if S.FlameShock:IsCastableP() then
-      if HR.CastCycle(S.FlameShock, 40, EvaluateCycleFlameShock184) then return "flame_shock 192" end
+      if HR.CastCycle(S.FlameShock, 40, EvaluateCycleFlameShock190) then return "flame_shock 198" end
     end
     -- totem_mastery,if=talent.totem_mastery.enabled&(buff.resonance_totem.remains<6|(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&cooldown.ascendance.remains<15))
     if S.TotemMastery:IsCastableP() and (S.TotemMastery:IsAvailable() and (Player:BuffRemainsP(S.ResonanceTotemBuff) < 6 or (Player:BuffRemainsP(S.ResonanceTotemBuff) < (S.AscendanceBuff:BaseDuration() + S.Ascendance:CooldownRemainsP()) and S.Ascendance:CooldownRemainsP() < 15))) then
-      if HR.Cast(S.TotemMastery) then return "totem_mastery 193"; end
+      if HR.Cast(S.TotemMastery) then return "totem_mastery 199"; end
     end
     -- frost_shock,if=talent.icefury.enabled&buff.icefury.up
     if S.FrostShock:IsCastableP() and (S.Icefury:IsAvailable() and Player:BuffP(S.IcefuryBuff)) then
-      if HR.Cast(S.FrostShock) then return "frost_shock 207"; end
+      if HR.Cast(S.FrostShock) then return "frost_shock 213"; end
     end
     -- icefury,if=talent.icefury.enabled
     if S.Icefury:IsCastableP() and (S.Icefury:IsAvailable()) then
-      if HR.Cast(S.Icefury) then return "icefury 213"; end
+      if HR.Cast(S.Icefury) then return "icefury 219"; end
     end
     -- lava_beam,if=talent.ascendance.enabled&active_enemies>1&spell_targets.lava_beam>1
     if S.LavaBeam:IsCastableP() and (S.Ascendance:IsAvailable() and Cache.EnemiesCount[40] > 1 and Cache.EnemiesCount[40] > 1) then
-      if HR.Cast(S.LavaBeam) then return "lava_beam 217"; end
+      if HR.Cast(S.LavaBeam) then return "lava_beam 223"; end
     end
     -- chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1
     if S.ChainLightning:IsCastableP() and (Cache.EnemiesCount[40] > 1 and Cache.EnemiesCount[40] > 1) then
-      if HR.Cast(S.ChainLightning) then return "chain_lightning 227"; end
+      if HR.Cast(S.ChainLightning) then return "chain_lightning 233"; end
     end
     -- lightning_bolt
     if S.LightningBolt:IsCastableP() then
-      if HR.Cast(S.LightningBolt) then return "lightning_bolt 235"; end
+      if HR.Cast(S.LightningBolt) then return "lightning_bolt 241"; end
     end
     -- flame_shock,moving=1,target_if=refreshable
     if S.FlameShock:IsCastableP() and Player:IsMoving() then
-      if HR.CastCycle(S.FlameShock, 40, EvaluateCycleFlameShock241) then return "flame_shock 249" end
+      if HR.CastCycle(S.FlameShock, 40, EvaluateCycleFlameShock247) then return "flame_shock 255" end
     end
     -- flame_shock,moving=1,if=movement.distance>6
     if S.FlameShock:IsCastableP() and Player:IsMoving() and (movement.distance > 6) then
-      if HR.Cast(S.FlameShock) then return "flame_shock 250"; end
+      if HR.Cast(S.FlameShock) then return "flame_shock 256"; end
     end
     -- frost_shock,moving=1
     if S.FrostShock:IsCastableP() and Player:IsMoving() then
-      if HR.Cast(S.FrostShock) then return "frost_shock 252"; end
+      if HR.Cast(S.FrostShock) then return "frost_shock 258"; end
     end
   end
   -- call precombat
@@ -272,41 +277,41 @@ local function APL()
     -- bloodlust,if=azerite.ancestral_resonance.enabled
     -- potion
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 256"; end
+      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 262"; end
     end
     -- wind_shear
     if S.WindShear:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled then
-      if HR.CastAnnotated(S.WindShear, false, "Interrupt") then return "wind_shear 258"; end
+      if HR.CastAnnotated(S.WindShear, false, "Interrupt") then return "wind_shear 264"; end
     end
     -- totem_mastery,if=talent.totem_mastery.enabled&buff.resonance_totem.remains<2
     if S.TotemMastery:IsCastableP() and (S.TotemMastery:IsAvailable() and Player:BuffRemainsP(S.ResonanceTotemBuff) < 2) then
-      if HR.Cast(S.TotemMastery) then return "totem_mastery 260"; end
+      if HR.Cast(S.TotemMastery) then return "totem_mastery 266"; end
     end
     -- fire_elemental,if=!talent.storm_elemental.enabled
     if S.FireElemental:IsCastableP() and HR.CDsON() and (not S.StormElemental:IsAvailable()) then
-      if HR.Cast(S.FireElemental, Settings.Elemental.GCDasOffGCD.FireElemental) then return "fire_elemental 266"; end
+      if HR.Cast(S.FireElemental, Settings.Elemental.GCDasOffGCD.FireElemental) then return "fire_elemental 272"; end
     end
     -- storm_elemental,if=talent.storm_elemental.enabled
     if S.StormElemental:IsCastableP() and HR.CDsON() and (S.StormElemental:IsAvailable()) then
-      if HR.Cast(S.StormElemental, Settings.Elemental.GCDasOffGCD.StormElemental) then return "storm_elemental 270"; end
+      if HR.Cast(S.StormElemental, Settings.Elemental.GCDasOffGCD.StormElemental) then return "storm_elemental 276"; end
     end
     -- earth_elemental,if=cooldown.fire_elemental.remains<120&!talent.storm_elemental.enabled|cooldown.storm_elemental.remains<120&talent.storm_elemental.enabled
     -- use_items
     -- blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
     if S.BloodFury:IsCastableP() and HR.CDsON() and (not S.Ascendance:IsAvailable() or Player:BuffP(S.AscendanceBuff) or S.Ascendance:CooldownRemainsP() > 50) then
-      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return "blood_fury 276"; end
+      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return "blood_fury 282"; end
     end
     -- berserking,if=!talent.ascendance.enabled|buff.ascendance.up
     if S.Berserking:IsCastableP() and HR.CDsON() and (not S.Ascendance:IsAvailable() or Player:BuffP(S.AscendanceBuff)) then
-      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return "berserking 284"; end
+      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return "berserking 290"; end
     end
     -- fireblood,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
     if S.Fireblood:IsCastableP() and HR.CDsON() and (not S.Ascendance:IsAvailable() or Player:BuffP(S.AscendanceBuff) or S.Ascendance:CooldownRemainsP() > 50) then
-      if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return "fireblood 290"; end
+      if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return "fireblood 296"; end
     end
     -- ancestral_call,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
     if S.AncestralCall:IsCastableP() and HR.CDsON() and (not S.Ascendance:IsAvailable() or Player:BuffP(S.AscendanceBuff) or S.Ascendance:CooldownRemainsP() > 50) then
-      if HR.Cast(S.AncestralCall, Settings.Commons.OffGCDasOffGCD.Racials) then return "ancestral_call 298"; end
+      if HR.Cast(S.AncestralCall, Settings.Commons.OffGCDasOffGCD.Racials) then return "ancestral_call 304"; end
     end
     -- run_action_list,name=aoe,if=active_enemies>2&(spell_targets.chain_lightning>2|spell_targets.lava_beam>2)
     if (Cache.EnemiesCount[40] > 2 and (Cache.EnemiesCount[40] > 2 or Cache.EnemiesCount[40] > 2)) then

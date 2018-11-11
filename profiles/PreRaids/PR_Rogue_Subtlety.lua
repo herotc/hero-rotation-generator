@@ -33,7 +33,6 @@ Spell.Rogue.Subtlety = {
   SharpenedBladesBuff                   = Spell(),
   SharpenedBlades                       = Spell(),
   ShurikenStorm                         = Spell(197835),
-  TheDreadlordsDeceitBuff               = Spell(208692),
   Gloomblade                            = Spell(200758),
   Backstab                              = Spell(53),
   SymbolsofDeathBuff                    = Spell(212283),
@@ -91,10 +90,12 @@ local Settings = {
 };
 
 -- Variables
+local VarUsePriorityRotation = 0;
 local VarShdThreshold = 0;
 local VarStealthThreshold = 0;
 
 HL:RegisterForEvent(function()
+  VarUsePriorityRotation = 0
   VarShdThreshold = 0
   VarStealthThreshold = 0
 end, "PLAYER_REGEN_ENABLED")
@@ -116,19 +117,19 @@ local function bool(val)
 end
 
 
-local function EvaluateTargetIfFilterMarkedForDeath97(TargetUnit)
+local function EvaluateTargetIfFilterMarkedForDeath95(TargetUnit)
   return TargetUnit:TimeToDie()
 end
 
-local function EvaluateTargetIfMarkedForDeath102(TargetUnit)
+local function EvaluateTargetIfMarkedForDeath100(TargetUnit)
   return (Cache.EnemiesCount[15] > 1) and (TargetUnit:TimeToDie() < Player:ComboPointsDeficit() or not Player:IsStealthedP(true, true) and Player:ComboPointsDeficit() >= Rogue.CPMaxSpend())
 end
 
-local function EvaluateCycleNightblade181(TargetUnit)
-  return Cache.EnemiesCount[10] >= 2 and (S.SecretTechnique:IsAvailable() or S.NightsVengeance:AzeriteEnabled() or Cache.EnemiesCount[10] <= 5) and not Player:BuffP(S.ShadowDanceBuff) and TargetUnit:TimeToDie() >= (5 + (2 * Player:ComboPoints())) and TargetUnit:DebuffRefreshableCP(S.NightbladeDebuff)
+local function EvaluateCycleNightblade183(TargetUnit)
+  return not bool(VarUsePriorityRotation) and Cache.EnemiesCount[10] >= 2 and (S.SecretTechnique:IsAvailable() or S.NightsVengeance:AzeriteEnabled() or Cache.EnemiesCount[10] <= 5) and not Player:BuffP(S.ShadowDanceBuff) and TargetUnit:TimeToDie() >= (5 + (2 * Player:ComboPoints())) and TargetUnit:DebuffRefreshableCP(S.NightbladeDebuff)
 end
 
-local function EvaluateCycleShadowstrike290(TargetUnit)
+local function EvaluateCycleShadowstrike302(TargetUnit)
   return S.SecretTechnique:IsAvailable() and S.FindWeakness:IsAvailable() and TargetUnit:DebuffRemainsP(S.FindWeaknessDebuff) < 1 and Cache.EnemiesCount[10] == 2 and TargetUnit:TimeToDie() - remains > 6
 end
 --- ======= ACTION LISTS =======
@@ -163,109 +164,109 @@ local function APL()
     if S.ShurikenToss:IsCastableP() and (not S.Nightstalker:IsAvailable() and (not S.DarkShadow:IsAvailable() or S.SymbolsofDeath:CooldownRemainsP() > 10) and Player:BuffStackP(S.SharpenedBladesBuff) >= 29 and Cache.EnemiesCount[10] <= (3 * S.SharpenedBlades:AzeriteRank())) then
       if HR.Cast(S.ShurikenToss) then return "shuriken_toss 16"; end
     end
-    -- shuriken_storm,if=spell_targets>=2|buff.the_dreadlords_deceit.stack>=29
-    if S.ShurikenStorm:IsCastableP() and (Cache.EnemiesCount[10] >= 2 or Player:BuffStackP(S.TheDreadlordsDeceitBuff) >= 29) then
+    -- shuriken_storm,if=spell_targets>=2
+    if S.ShurikenStorm:IsCastableP() and (Cache.EnemiesCount[10] >= 2) then
       if HR.Cast(S.ShurikenStorm) then return "shuriken_storm 28"; end
     end
     -- gloomblade
     if S.Gloomblade:IsCastableP() then
-      if HR.Cast(S.Gloomblade) then return "gloomblade 38"; end
+      if HR.Cast(S.Gloomblade) then return "gloomblade 36"; end
     end
     -- backstab
     if S.Backstab:IsCastableP() then
-      if HR.Cast(S.Backstab) then return "backstab 40"; end
+      if HR.Cast(S.Backstab) then return "backstab 38"; end
     end
   end
   Cds = function()
-    -- potion,if=buff.bloodlust.react|target.time_to_die<=60|buff.symbols_of_death.up&(buff.shadow_blades.up|cooldown.shadow_blades.remains<=10)
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:HasHeroism() or Target:TimeToDie() <= 60 or Player:BuffP(S.SymbolsofDeathBuff) and (Player:BuffP(S.ShadowBladesBuff) or S.ShadowBlades:CooldownRemainsP() <= 10)) then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 42"; end
+    -- potion,if=buff.bloodlust.react|buff.symbols_of_death.up&(buff.shadow_blades.up|cooldown.shadow_blades.remains<=10)
+    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:HasHeroism() or Player:BuffP(S.SymbolsofDeathBuff) and (Player:BuffP(S.ShadowBladesBuff) or S.ShadowBlades:CooldownRemainsP() <= 10)) then
+      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 40"; end
     end
     -- use_item,name=galecallers_boon,if=buff.symbols_of_death.up|target.time_to_die<20
     if I.GalecallersBoon:IsReady() and (Player:BuffP(S.SymbolsofDeathBuff) or Target:TimeToDie() < 20) then
-      if HR.CastSuggested(I.GalecallersBoon) then return "galecallers_boon 50"; end
+      if HR.CastSuggested(I.GalecallersBoon) then return "galecallers_boon 48"; end
     end
     -- blood_fury,if=buff.symbols_of_death.up
     if S.BloodFury:IsCastableP() and HR.CDsON() and (Player:BuffP(S.SymbolsofDeathBuff)) then
-      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return "blood_fury 54"; end
+      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return "blood_fury 52"; end
     end
     -- berserking,if=buff.symbols_of_death.up
     if S.Berserking:IsCastableP() and HR.CDsON() and (Player:BuffP(S.SymbolsofDeathBuff)) then
-      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return "berserking 58"; end
+      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return "berserking 56"; end
     end
     -- fireblood,if=buff.symbols_of_death.up
     if S.Fireblood:IsCastableP() and HR.CDsON() and (Player:BuffP(S.SymbolsofDeathBuff)) then
-      if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return "fireblood 62"; end
+      if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return "fireblood 60"; end
     end
     -- ancestral_call,if=buff.symbols_of_death.up
     if S.AncestralCall:IsCastableP() and HR.CDsON() and (Player:BuffP(S.SymbolsofDeathBuff)) then
-      if HR.Cast(S.AncestralCall, Settings.Commons.OffGCDasOffGCD.Racials) then return "ancestral_call 66"; end
+      if HR.Cast(S.AncestralCall, Settings.Commons.OffGCDasOffGCD.Racials) then return "ancestral_call 64"; end
     end
     -- shadow_dance,use_off_gcd=1,if=!buff.shadow_dance.up&buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5
     if S.ShadowDance:IsCastableP() and (not Player:BuffP(S.ShadowDanceBuff) and Player:BuffP(S.ShurikenTornadoBuff) and Player:BuffRemainsP(S.ShurikenTornadoBuff) <= 3.5) then
-      if HR.Cast(S.ShadowDance) then return "shadow_dance 70"; end
+      if HR.Cast(S.ShadowDance) then return "shadow_dance 68"; end
     end
     -- symbols_of_death,use_off_gcd=1,if=buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5
     if S.SymbolsofDeath:IsCastableP() and (Player:BuffP(S.ShurikenTornadoBuff) and Player:BuffRemainsP(S.ShurikenTornadoBuff) <= 3.5) then
-      if HR.Cast(S.SymbolsofDeath) then return "symbols_of_death 78"; end
+      if HR.Cast(S.SymbolsofDeath) then return "symbols_of_death 76"; end
     end
     -- symbols_of_death,if=dot.nightblade.ticking&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|spell_targets.shuriken_storm<3|!cooldown.shuriken_tornado.up)
     if S.SymbolsofDeath:IsCastableP() and (Target:DebuffP(S.NightbladeDebuff) and (not S.ShurikenTornado:IsAvailable() or S.ShadowFocus:IsAvailable() or Cache.EnemiesCount[10] < 3 or not S.ShurikenTornado:CooldownUpP())) then
-      if HR.Cast(S.SymbolsofDeath) then return "symbols_of_death 84"; end
+      if HR.Cast(S.SymbolsofDeath) then return "symbols_of_death 82"; end
     end
     -- marked_for_death,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.all&combo_points.deficit>=cp_max_spend)
     if S.MarkedForDeath:IsCastableP() then
-      if HR.CastTargetIf(S.MarkedForDeath, 15, "min", EvaluateTargetIfFilterMarkedForDeath97, EvaluateTargetIfMarkedForDeath102) then return "marked_for_death 104" end
+      if HR.CastTargetIf(S.MarkedForDeath, 15, "min", EvaluateTargetIfFilterMarkedForDeath95, EvaluateTargetIfMarkedForDeath100) then return "marked_for_death 102" end
     end
     -- marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration&!stealthed.all&combo_points.deficit>=cp_max_spend
     if S.MarkedForDeath:IsCastableP() and (10000000000 > 30 - raid_event.adds.duration and not Player:IsStealthedP(true, true) and Player:ComboPointsDeficit() >= Rogue.CPMaxSpend()) then
-      if HR.Cast(S.MarkedForDeath) then return "marked_for_death 105"; end
+      if HR.Cast(S.MarkedForDeath) then return "marked_for_death 103"; end
     end
     -- shadow_blades,if=combo_points.deficit>=2+stealthed.all
     if S.ShadowBlades:IsCastableP() and (Player:ComboPointsDeficit() >= 2 + num(Player:IsStealthedP(true, true))) then
-      if HR.Cast(S.ShadowBlades) then return "shadow_blades 107"; end
+      if HR.Cast(S.ShadowBlades) then return "shadow_blades 105"; end
     end
     -- shuriken_tornado,if=spell_targets>=3&!talent.shadow_focus.enabled&dot.nightblade.ticking&!stealthed.all&cooldown.symbols_of_death.up&cooldown.shadow_dance.charges>=1
     if S.ShurikenTornado:IsCastableP() and (Cache.EnemiesCount[15] >= 3 and not S.ShadowFocus:IsAvailable() and Target:DebuffP(S.NightbladeDebuff) and not Player:IsStealthedP(true, true) and S.SymbolsofDeath:CooldownUpP() and S.ShadowDance:ChargesP() >= 1) then
-      if HR.Cast(S.ShurikenTornado) then return "shuriken_tornado 109"; end
+      if HR.Cast(S.ShurikenTornado) then return "shuriken_tornado 107"; end
     end
     -- shuriken_tornado,if=spell_targets>=3&talent.shadow_focus.enabled&dot.nightblade.ticking&buff.symbols_of_death.up
     if S.ShurikenTornado:IsCastableP() and (Cache.EnemiesCount[15] >= 3 and S.ShadowFocus:IsAvailable() and Target:DebuffP(S.NightbladeDebuff) and Player:BuffP(S.SymbolsofDeathBuff)) then
-      if HR.Cast(S.ShurikenTornado) then return "shuriken_tornado 125"; end
+      if HR.Cast(S.ShurikenTornado) then return "shuriken_tornado 123"; end
     end
-    -- shadow_dance,if=!stealthed.all&target.time_to_die<=5+talent.subterfuge.enabled
-    if S.ShadowDance:IsCastableP() and (not Player:IsStealthedP(true, true) and Target:TimeToDie() <= 5 + num(S.Subterfuge:IsAvailable())) then
-      if HR.Cast(S.ShadowDance) then return "shadow_dance 139"; end
+    -- shadow_dance,if=!buff.shadow_dance.up&target.time_to_die<=5+talent.subterfuge.enabled&!raid_event.adds.up
+    if S.ShadowDance:IsCastableP() and (not Player:BuffP(S.ShadowDanceBuff) and Target:TimeToDie() <= 5 + num(S.Subterfuge:IsAvailable()) and not (Cache.EnemiesCount[15] > 1)) then
+      if HR.Cast(S.ShadowDance) then return "shadow_dance 137"; end
     end
   end
   Finish = function()
     -- eviscerate,if=talent.shadow_focus.enabled&buff.nights_vengeance.up&spell_targets.shuriken_storm>=2+3*talent.secret_technique.enabled
     if S.Eviscerate:IsCastableP() and (S.ShadowFocus:IsAvailable() and Player:BuffP(S.NightsVengeanceBuff) and Cache.EnemiesCount[10] >= 2 + 3 * num(S.SecretTechnique:IsAvailable())) then
-      if HR.Cast(S.Eviscerate) then return "eviscerate 143"; end
+      if HR.Cast(S.Eviscerate) then return "eviscerate 145"; end
     end
     -- nightblade,if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&remains<tick_time*2&(spell_targets.shuriken_storm<4|!buff.symbols_of_death.up)
     if S.Nightblade:IsCastableP() and ((not S.DarkShadow:IsAvailable() or not Player:BuffP(S.ShadowDanceBuff)) and Target:TimeToDie() - Target:DebuffRemainsP(S.NightbladeDebuff) > 6 and Target:DebuffRemainsP(S.NightbladeDebuff) < S.NightbladeDebuff:TickTime() * 2 and (Cache.EnemiesCount[10] < 4 or not Player:BuffP(S.SymbolsofDeathBuff))) then
-      if HR.Cast(S.Nightblade) then return "nightblade 151"; end
+      if HR.Cast(S.Nightblade) then return "nightblade 153"; end
     end
-    -- nightblade,cycle_targets=1,if=spell_targets.shuriken_storm>=2&(talent.secret_technique.enabled|azerite.nights_vengeance.enabled|spell_targets.shuriken_storm<=5)&!buff.shadow_dance.up&target.time_to_die>=(5+(2*combo_points))&refreshable
+    -- nightblade,cycle_targets=1,if=!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&(talent.secret_technique.enabled|azerite.nights_vengeance.enabled|spell_targets.shuriken_storm<=5)&!buff.shadow_dance.up&target.time_to_die>=(5+(2*combo_points))&refreshable
     if S.Nightblade:IsCastableP() then
-      if HR.CastCycle(S.Nightblade, 15, EvaluateCycleNightblade181) then return "nightblade 195" end
+      if HR.CastCycle(S.Nightblade, 15, EvaluateCycleNightblade183) then return "nightblade 199" end
     end
     -- nightblade,if=remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5&target.time_to_die-remains>cooldown.symbols_of_death.remains+5
     if S.Nightblade:IsCastableP() and (Target:DebuffRemainsP(S.NightbladeDebuff) < S.SymbolsofDeath:CooldownRemainsP() + 10 and S.SymbolsofDeath:CooldownRemainsP() <= 5 and Target:TimeToDie() - Target:DebuffRemainsP(S.NightbladeDebuff) > S.SymbolsofDeath:CooldownRemainsP() + 5) then
-      if HR.Cast(S.Nightblade) then return "nightblade 196"; end
+      if HR.Cast(S.Nightblade) then return "nightblade 200"; end
     end
     -- secret_technique,if=buff.symbols_of_death.up&(!talent.dark_shadow.enabled|buff.shadow_dance.up)
     if S.SecretTechnique:IsCastableP() and (Player:BuffP(S.SymbolsofDeathBuff) and (not S.DarkShadow:IsAvailable() or Player:BuffP(S.ShadowDanceBuff))) then
-      if HR.Cast(S.SecretTechnique) then return "secret_technique 216"; end
+      if HR.Cast(S.SecretTechnique) then return "secret_technique 220"; end
     end
     -- secret_technique,if=spell_targets.shuriken_storm>=2+talent.dark_shadow.enabled+talent.nightstalker.enabled
     if S.SecretTechnique:IsCastableP() and (Cache.EnemiesCount[10] >= 2 + num(S.DarkShadow:IsAvailable()) + num(S.Nightstalker:IsAvailable())) then
-      if HR.Cast(S.SecretTechnique) then return "secret_technique 224"; end
+      if HR.Cast(S.SecretTechnique) then return "secret_technique 228"; end
     end
     -- eviscerate
     if S.Eviscerate:IsCastableP() then
-      if HR.Cast(S.Eviscerate) then return "eviscerate 230"; end
+      if HR.Cast(S.Eviscerate) then return "eviscerate 234"; end
     end
   end
   StealthCds = function()
@@ -275,30 +276,30 @@ local function APL()
     end
     -- vanish,if=!variable.shd_threshold&debuff.find_weakness.remains<1&combo_points.deficit>1
     if S.Vanish:IsCastableP() and (not bool(VarShdThreshold) and Target:DebuffRemainsP(S.FindWeaknessDebuff) < 1 and Player:ComboPointsDeficit() > 1) then
-      if HR.Cast(S.Vanish) then return "vanish 236"; end
+      if HR.Cast(S.Vanish) then return "vanish 240"; end
     end
     -- pool_resource,for_next=1,extra_amount=40
     -- shadowmeld,if=energy>=40&energy.deficit>=10&!variable.shd_threshold&debuff.find_weakness.remains<1&combo_points.deficit>1
     if S.Shadowmeld:IsCastableP() and HR.CDsON() and (Player:EnergyPredicted() >= 40 and Player:EnergyDeficitPredicted() >= 10 and not bool(VarShdThreshold) and Target:DebuffRemainsP(S.FindWeaknessDebuff) < 1 and Player:ComboPointsDeficit() > 1) then
       if S.Shadowmeld:IsUsablePPool(40) then
-        if HR.Cast(S.Shadowmeld, Settings.Commons.OffGCDasOffGCD.Racials) then return "shadowmeld 243"; end
+        if HR.Cast(S.Shadowmeld, Settings.Commons.OffGCDasOffGCD.Racials) then return "shadowmeld 247"; end
       else
-        if HR.Cast(S.PoolResource) then return "pool_resource 244"; end
+        if HR.Cast(S.PoolResource) then return "pool_resource 248"; end
       end
     end
-    -- shadow_dance,if=(!talent.dark_shadow.enabled|dot.nightblade.remains>=5+talent.subterfuge.enabled)&(variable.shd_threshold|buff.symbols_of_death.remains>=1.2|spell_targets.shuriken_storm>=4&cooldown.symbols_of_death.remains>10)
-    if S.ShadowDance:IsCastableP() and ((not S.DarkShadow:IsAvailable() or Target:DebuffRemainsP(S.NightbladeDebuff) >= 5 + num(S.Subterfuge:IsAvailable())) and (bool(VarShdThreshold) or Player:BuffRemainsP(S.SymbolsofDeathBuff) >= 1.2 or Cache.EnemiesCount[10] >= 4 and S.SymbolsofDeath:CooldownRemainsP() > 10)) then
-      if HR.Cast(S.ShadowDance) then return "shadow_dance 250"; end
+    -- shadow_dance,if=(!talent.dark_shadow.enabled|dot.nightblade.remains>=5+talent.subterfuge.enabled)&(!talent.nightstalker.enabled&!talent.dark_shadow.enabled|!variable.use_priority_rotation|combo_points.deficit<=1)&(variable.shd_threshold|buff.symbols_of_death.remains>=1.2|spell_targets.shuriken_storm>=4&cooldown.symbols_of_death.remains>10)
+    if S.ShadowDance:IsCastableP() and ((not S.DarkShadow:IsAvailable() or Target:DebuffRemainsP(S.NightbladeDebuff) >= 5 + num(S.Subterfuge:IsAvailable())) and (not S.Nightstalker:IsAvailable() and not S.DarkShadow:IsAvailable() or not bool(VarUsePriorityRotation) or Player:ComboPointsDeficit() <= 1) and (bool(VarShdThreshold) or Player:BuffRemainsP(S.SymbolsofDeathBuff) >= 1.2 or Cache.EnemiesCount[10] >= 4 and S.SymbolsofDeath:CooldownRemainsP() > 10)) then
+      if HR.Cast(S.ShadowDance) then return "shadow_dance 254"; end
     end
-    -- shadow_dance,if=target.time_to_die<cooldown.symbols_of_death.remains
-    if S.ShadowDance:IsCastableP() and (Target:TimeToDie() < S.SymbolsofDeath:CooldownRemainsP()) then
-      if HR.Cast(S.ShadowDance) then return "shadow_dance 264"; end
+    -- shadow_dance,if=target.time_to_die<cooldown.symbols_of_death.remains&!raid_event.adds.up
+    if S.ShadowDance:IsCastableP() and (Target:TimeToDie() < S.SymbolsofDeath:CooldownRemainsP() and not (Cache.EnemiesCount[15] > 1)) then
+      if HR.Cast(S.ShadowDance) then return "shadow_dance 274"; end
     end
   end
   Stealthed = function()
     -- shadowstrike,if=buff.stealth.up
     if S.Shadowstrike:IsCastableP() and (Player:BuffP(S.StealthBuff)) then
-      if HR.Cast(S.Shadowstrike) then return "shadowstrike 268"; end
+      if HR.Cast(S.Shadowstrike) then return "shadowstrike 280"; end
     end
     -- call_action_list,name=finish,if=combo_points.deficit<=1-(talent.deeper_stratagem.enabled&buff.vanish.up)
     if (Player:ComboPointsDeficit() <= 1 - num((S.DeeperStratagem:IsAvailable() and Player:BuffP(S.VanishBuff)))) then
@@ -306,23 +307,23 @@ local function APL()
     end
     -- shuriken_toss,if=buff.sharpened_blades.stack>=29&(!talent.find_weakness.enabled|debuff.find_weakness.up)
     if S.ShurikenToss:IsCastableP() and (Player:BuffStackP(S.SharpenedBladesBuff) >= 29 and (not S.FindWeakness:IsAvailable() or Target:DebuffP(S.FindWeaknessDebuff))) then
-      if HR.Cast(S.ShurikenToss) then return "shuriken_toss 278"; end
+      if HR.Cast(S.ShurikenToss) then return "shuriken_toss 290"; end
     end
     -- shadowstrike,cycle_targets=1,if=talent.secret_technique.enabled&talent.find_weakness.enabled&debuff.find_weakness.remains<1&spell_targets.shuriken_storm=2&target.time_to_die-remains>6
     if S.Shadowstrike:IsCastableP() then
-      if HR.CastCycle(S.Shadowstrike, 15, EvaluateCycleShadowstrike290) then return "shadowstrike 302" end
+      if HR.CastCycle(S.Shadowstrike, 15, EvaluateCycleShadowstrike302) then return "shadowstrike 314" end
     end
     -- shadowstrike,if=!talent.deeper_stratagem.enabled&azerite.blade_in_the_shadows.rank=3&spell_targets.shuriken_storm=3
     if S.Shadowstrike:IsCastableP() and (not S.DeeperStratagem:IsAvailable() and S.BladeIntheShadows:AzeriteRank() == 3 and Cache.EnemiesCount[10] == 3) then
-      if HR.Cast(S.Shadowstrike) then return "shadowstrike 303"; end
+      if HR.Cast(S.Shadowstrike) then return "shadowstrike 315"; end
     end
     -- shuriken_storm,if=spell_targets>=3
     if S.ShurikenStorm:IsCastableP() and (Cache.EnemiesCount[10] >= 3) then
-      if HR.Cast(S.ShurikenStorm) then return "shuriken_storm 309"; end
+      if HR.Cast(S.ShurikenStorm) then return "shuriken_storm 321"; end
     end
     -- shadowstrike
     if S.Shadowstrike:IsCastableP() then
-      if HR.Cast(S.Shadowstrike) then return "shadowstrike 317"; end
+      if HR.Cast(S.Shadowstrike) then return "shadowstrike 329"; end
     end
   end
   -- call precombat
@@ -332,7 +333,7 @@ local function APL()
   if Everyone.TargetIsValid() then
     -- stealth
     if S.Stealth:IsCastableP() then
-      if HR.Cast(S.Stealth) then return "stealth 320"; end
+      if HR.Cast(S.Stealth) then return "stealth 332"; end
     end
     -- call_action_list,name=cds
     if (true) then
@@ -344,7 +345,15 @@ local function APL()
     end
     -- nightblade,if=target.time_to_die>6&remains<gcd.max&combo_points>=4-(time<10)*2
     if S.Nightblade:IsCastableP() and (Target:TimeToDie() > 6 and Target:DebuffRemainsP(S.NightbladeDebuff) < Player:GCD() and Player:ComboPoints() >= 4 - num((HL.CombatTime() < 10)) * 2) then
-      if HR.Cast(S.Nightblade) then return "nightblade 326"; end
+      if HR.Cast(S.Nightblade) then return "nightblade 338"; end
+    end
+    -- variable,name=use_priority_rotation,value=priority_rotation&spell_targets.shuriken_storm>=2
+    if (true) then
+      VarUsePriorityRotation = num(bool(priority_rotation) and Cache.EnemiesCount[10] >= 2)
+    end
+    -- call_action_list,name=stealth_cds,if=variable.use_priority_rotation
+    if (bool(VarUsePriorityRotation)) then
+      local ShouldReturn = StealthCds(); if ShouldReturn then return ShouldReturn; end
     end
     -- variable,name=stealth_threshold,value=25+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+talent.shadow_focus.enabled*20+talent.alacrity.enabled*10+15*(spell_targets.shuriken_storm>=3)
     if (true) then
@@ -358,8 +367,8 @@ local function APL()
     if (Player:EnergyDeficitPredicted() <= VarStealthThreshold and S.DarkShadow:IsAvailable() and S.SecretTechnique:IsAvailable() and S.SecretTechnique:CooldownUpP()) then
       local ShouldReturn = StealthCds(); if ShouldReturn then return ShouldReturn; end
     end
-    -- call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&talent.dark_shadow.enabled&!talent.secret_technique.enabled&spell_targets.shuriken_storm>=2&(!talent.shuriken_tornado.enabled|!cooldown.shuriken_tornado.up)
-    if (Player:EnergyDeficitPredicted() <= VarStealthThreshold and S.DarkShadow:IsAvailable() and not S.SecretTechnique:IsAvailable() and Cache.EnemiesCount[10] >= 2 and (not S.ShurikenTornado:IsAvailable() or not S.ShurikenTornado:CooldownUpP())) then
+    -- call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&talent.dark_shadow.enabled&spell_targets.shuriken_storm>=2&(!talent.shuriken_tornado.enabled|!cooldown.shuriken_tornado.up)
+    if (Player:EnergyDeficitPredicted() <= VarStealthThreshold and S.DarkShadow:IsAvailable() and Cache.EnemiesCount[10] >= 2 and (not S.ShurikenTornado:IsAvailable() or not S.ShurikenTornado:CooldownUpP())) then
       local ShouldReturn = StealthCds(); if ShouldReturn then return ShouldReturn; end
     end
     -- call_action_list,name=finish,if=combo_points.deficit<=1|target.time_to_die<=1&combo_points>=3
@@ -376,15 +385,15 @@ local function APL()
     end
     -- arcane_torrent,if=energy.deficit>=15+energy.regen
     if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (Player:EnergyDeficitPredicted() >= 15 + Player:EnergyRegen()) then
-      if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return "arcane_torrent 378"; end
+      if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return "arcane_torrent 394"; end
     end
     -- arcane_pulse
     if S.ArcanePulse:IsCastableP() then
-      if HR.Cast(S.ArcanePulse) then return "arcane_pulse 380"; end
+      if HR.Cast(S.ArcanePulse) then return "arcane_pulse 396"; end
     end
     -- lights_judgment
     if S.LightsJudgment:IsCastableP() and HR.CDsON() then
-      if HR.Cast(S.LightsJudgment) then return "lights_judgment 382"; end
+      if HR.Cast(S.LightsJudgment) then return "lights_judgment 398"; end
     end
   end
 end
