@@ -6,7 +6,8 @@ Hunter specific constants and functions.
 """
 
 from ..constants import (COMMON, SPELL, BUFF, DEBUFF,
-                         PET, INTERRUPT, RANGE, BOOL)
+                         PET, INTERRUPT, RANGE, BOOL,
+                         GCDAOGCD, CD, READY, OPENER)
 
 HUNTER = 'hunter'
 BEAST_MASTERY = 'beast_mastery'
@@ -120,23 +121,33 @@ SPELL_INFO = {
         },
         SURVIVAL: {
             'aspect_of_the_eagle':          {SPELL:     186289,
-                                             BUFF:      186289},
+                                             BUFF:      186289,
+                                             GCDAOGCD:  True,
+                                             CD:        True},
             'carve':                        {SPELL:     187708,
                                              RANGE:     8},
             'flanking_strike':              {SPELL:     269751},
-            'harpoon':                      {SPELL:     190925},
+            'harpoon':                      {SPELL:     190925,
+                                             GCDAOGCD:  True,
+                                             OPENER:    True},
             'mongoose_bite':                {SPELL:     259387},
             'mongoose_fury':                {BUFF:      259388},
-            'raptor_strike':                {SPELL:     186270},
+            'raptor_strike':                {SPELL:     186270,
+                                             READY:     True},
             'a_murder_of_crows':            {SPELL:     131894},
-            'butchery':                     {SPELL:     212436},
+            'butchery':                     {SPELL:     212436,
+                                             GCDAOGCD:  True},
             'serpent_sting':                {SPELL:     259491,
                                              DEBUFF:    259491},
             'steel_trap':                   {SPELL:     162488,
-                                             DEBUFF:    162487},
-            'summon_pet':                   {SPELL:     883},
+                                             DEBUFF:    162487,
+                                             OPENER:    True},
+            'summon_pet':                   {SPELL:     883,
+                                             GCDAOGCD:  True},
             'coordinated_assault':          {SPELL:     266779,
-                                             BUFF:      266779},
+                                             BUFF:      266779,
+                                             GCDAOGCD:  True,
+                                             CD:        True},
             'shrapnel_bomb':                {DEBUFF:    270339},
             'wildfire_bomb':                {SPELL:     259495,
                                              DEBUFF:    269747},
@@ -152,7 +163,7 @@ SPELL_INFO = {
                                              BUFF:      260286},
             'birds_of_prey':                {SPELL:     260331},
             'alpha_predator':               {SPELL:     269737}, 
-            'bloodseeker':                  {DEBUFF:    259277},                                                      
+            'bloodseeker':                  {DEBUFF:    259277},
         },
     },
 }
@@ -180,6 +191,7 @@ CLASS_FUNCTIONS = {
             'TargetDebuffP',
         ],
         SURVIVAL: [
+            'SurvivalPreAPLSetup',
         ],
     },
 }
@@ -247,6 +259,37 @@ def marksmanship_debuff_ready(fun):
 
     return ready
 
+def survival_next_wi_bomb(fun):
+
+    from ..objects.lua import Literal
+
+    def next_wi_bomb(self):
+        call = self.simc
+        if (self.condition_list[1] in 'shrapnel'):
+            call = 'S.ShrapnelBomb:IsLearned()'
+        elif (self.condition_list[1] in 'pheromone'):
+            call = 'S.PheromoneBomb:IsLearned()'
+        elif (self.condition_list[1] in 'volatile'):
+            call = 'S.VolatileBomb:IsLearned()'
+        return Literal(call, type_=BOOL)
+
+    return next_wi_bomb
+
+def survival_bloodseeker(fun):
+
+    from ..objects.executions import Spell
+    from ..objects.lua import Literal, Method, LuaExpression
+
+    def bloodseeker(self):
+        if (self.condition_list[1] in 'remains'):
+            object_ = self.target_unit
+            method = Method('DebuffRemainsP')
+            args = [Spell(self.parent_action, 'bloodseeker', type_=DEBUFF)]
+            return LuaExpression(object_, method, args)
+        return Literal(self.simc)
+
+    return bloodseeker
+
 DECORATORS = {
     HUNTER: [
         {
@@ -264,5 +307,32 @@ DECORATORS = {
             'method': 'ready',
             'decorator': marksmanship_debuff_ready,
         },
+        {
+            'class_name': 'Expression',
+            'method': 'next_wi_bomb',
+            'decorator': survival_next_wi_bomb,
+        },
+        {
+            'class_name': 'Expression',
+            'method': 'bloodseeker',
+            'decorator': survival_bloodseeker,
+        },
     ],
+}
+
+TEMPLATES = {
+    HUNTER+SURVIVAL:    ('{context}'
+                        '--- ======= ACTION LISTS =======\n'
+                        'local function {function_name}()\n'
+                        '{action_list_names}\n'
+                        '  UpdateRanges()\n'
+                        '  Everyone.AoEToggleEnemiesUpdate()\n'
+                        '  S.WildfireBomb = CurrentWildfireInfusion()\n'
+                        '{action_lists}\n'
+                        '{precombat_call}\n'
+                        '  if Everyone.TargetIsValid() then\n'
+                        '{main_actions}\n'
+                        '  end\n'
+                        'end\n'
+                        '\n{set_apl}')
 }
