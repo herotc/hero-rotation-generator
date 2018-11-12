@@ -59,8 +59,10 @@ SPELL_INFO = {
             # Azerite
             'up_close_and_personal':        {SPELL:     278533},
             'wilderness_survival':          {SPELL:     278532},
-            'blur_of_talons':               {SPELL:     277653}, # ADD BUFF ID
-            'latent_poison':                {SPELL:     273283}, # ADD DEBUFF ID
+            'blur_of_talons':               {SPELL:     277653,
+                                             BUFF:      277969}, # CHECK BUFF ID
+            'latent_poison':                {SPELL:     273283,
+                                             DEBUFF:    273286}, # CHECK DEBUFF ID
             'venomous_fangs':               {SPELL:     274590},
         },
         BEAST_MASTERY: {
@@ -149,7 +151,8 @@ SPELL_INFO = {
             'tip_of_the_spear':             {SPELL:     260285,
                                              BUFF:      260286},
             'birds_of_prey':                {SPELL:     260331},
-            'alpha_predator':               {SPELL:     269737},                                                       
+            'alpha_predator':               {SPELL:     269737}, 
+            'bloodseeker':                  {DEBUFF:    259277},                                                      
         },
     },
 }
