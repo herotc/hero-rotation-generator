@@ -7,7 +7,7 @@ Hunter specific constants and functions.
 
 from ..constants import (COMMON, SPELL, BUFF, DEBUFF,
                          PET, INTERRUPT, RANGE, BOOL,
-                         GCDAOGCD, CD, READY, OPENER)
+                         GCDAOGCD, OGCDAOGCD, CD, READY, OPENER)
 
 HUNTER = 'hunter'
 BEAST_MASTERY = 'beast_mastery'
@@ -32,6 +32,7 @@ DEFAULT_POTION = {
 
 DEFAULT_RANGE = {
     HUNTER: {
+        SURVIVAL: 8,
     },
 }
 
@@ -122,15 +123,17 @@ SPELL_INFO = {
         SURVIVAL: {
             'aspect_of_the_eagle':          {SPELL:     186289,
                                              BUFF:      186289,
-                                             GCDAOGCD:  True,
+                                             OGCDAOGCD:  True,
                                              CD:        True},
             'carve':                        {SPELL:     187708,
-                                             RANGE:     8},
+                                             RANGE:     8,
+                                             READY:     True},
             'flanking_strike':              {SPELL:     269751},
             'harpoon':                      {SPELL:     190925,
                                              GCDAOGCD:  True,
                                              OPENER:    True},
-            'mongoose_bite':                {SPELL:     259387},
+            'mongoose_bite':                {SPELL:     259387,
+                                             READY:     True},
             'mongoose_fury':                {BUFF:      259388},
             'raptor_strike':                {SPELL:     186270,
                                              READY:     True},
@@ -138,7 +141,8 @@ SPELL_INFO = {
             'butchery':                     {SPELL:     212436,
                                              GCDAOGCD:  True},
             'serpent_sting':                {SPELL:     259491,
-                                             DEBUFF:    259491},
+                                             DEBUFF:    259491,
+                                             READY:     True},
             'steel_trap':                   {SPELL:     162488,
                                              DEBUFF:    162487,
                                              OPENER:    True},
@@ -328,6 +332,8 @@ TEMPLATES = {
                         '  UpdateRanges()\n'
                         '  Everyone.AoEToggleEnemiesUpdate()\n'
                         '  S.WildfireBomb = CurrentWildfireInfusion()\n'
+                        '  S.RaptorStrike = CurrentRaptorStrike()\n'
+                        '  S.MongooseBite = CurrentMongooseBite()\n'
                         '{action_lists}\n'
                         '{precombat_call}\n'
                         '  if Everyone.TargetIsValid() then\n'

@@ -94,7 +94,7 @@ HL:RegisterForEvent(function()
   VarCarveCdr = 0
 end, "PLAYER_REGEN_ENABLED")
 
-local EnemyRanges = {40}
+local EnemyRanges = {8}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do
     HL.GetEnemies(i);
@@ -110,10 +110,16 @@ local function bool(val)
   return val ~= 0
 end
 
-S.ShrapnelBomb = Spell(270335)
-S.PheromoneBomb = Spell(270323)
-S.VolatileBomb = Spell(271045)
-S.WildfireBombNormal = Spell(259495)
+S.WildfireBombNormal  = Spell(259495)
+S.ShrapnelBomb        = Spell(270335)
+S.PheromoneBomb       = Spell(270323)
+S.VolatileBomb        = Spell(271045)
+
+local WildfireInfusions = {
+  S.ShrapnelBomb,
+  S.PheromoneBomb,
+  S.VolatileBomb,
+}
 
 local function CurrentWildfireInfusion ()
   if S.WildfireInfusion:IsAvailable() then
@@ -124,8 +130,21 @@ local function CurrentWildfireInfusion ()
   return S.WildfireBombNormal
 end
 
+S.RaptorStrikeNormal  = Spell(186270)
+S.RaptorStrikeEagle   = Spell(265189)
+S.MongooseBiteNormal  = Spell(259387)
+S.MongooseBiteEagle   = Spell(265888)
+
+local function CurrentRaptorStrike ()
+  return S.RaptorStrikeEagle:IsLearned() and S.RaptorStrikeEagle or S.RaptorStrikeNormal
+end
+
+local function CurrentMongooseBite ()
+  return S.MongooseBiteEagle:IsLearned() and S.MongooseBiteEagle or S.MongooseBiteNormal
+end
+
 local function EvaluateCycleCarveCdr62(TargetUnit)
-  return (Cache.EnemiesCount[40] < 5) and (Cache.EnemiesCount[40] < 5)
+  return (Cache.EnemiesCount[8] < 5) and (Cache.EnemiesCount[8] < 5)
 end
 
 local function EvaluateTargetIfFilterMongooseBite98(TargetUnit)
@@ -173,6 +192,8 @@ local function APL()
   UpdateRanges()
   Everyone.AoEToggleEnemiesUpdate()
   S.WildfireBomb = CurrentWildfireInfusion()
+  S.RaptorStrike = CurrentRaptorStrike()
+  S.MongooseBite = CurrentMongooseBite()
   Precombat = function()
     -- flask
     -- augmentation
@@ -222,13 +243,13 @@ local function APL()
     end
     -- aspect_of_the_eagle,if=target.distance>=6
     if S.AspectoftheEagle:IsCastableP() and HR.CDsON() and (target.distance >= 6) then
-      if HR.Cast(S.AspectoftheEagle, Settings.Survival.GCDasOffGCD.AspectoftheEagle) then return "aspect_of_the_eagle 50"; end
+      if HR.Cast(S.AspectoftheEagle, Settings.Survival.OffGCDasOffGCD.AspectoftheEagle) then return "aspect_of_the_eagle 50"; end
     end
   end
   Cleave = function()
     -- variable,name=carve_cdr,op=setif,value=active_enemies,value_else=5,condition=active_enemies<5
     if  then
-      if HR.CastCycle(VarCarveCdr, 40, EvaluateCycleCarveCdr62) then return "carve_cdr 76" end
+      if HR.CastCycle(VarCarveCdr, 8, EvaluateCycleCarveCdr62) then return "carve_cdr 76" end
     end
     -- a_murder_of_crows
     if S.AMurderofCrows:IsCastableP() then
@@ -239,7 +260,7 @@ local function APL()
       if HR.Cast(S.CoordinatedAssault, Settings.Survival.GCDasOffGCD.CoordinatedAssault) then return "coordinated_assault 79"; end
     end
     -- carve,if=dot.shrapnel_bomb.ticking
-    if S.Carve:IsCastableP() and (Target:DebuffP(S.ShrapnelBombDebuff)) then
+    if S.Carve:IsReadyP() and (Target:DebuffP(S.ShrapnelBombDebuff)) then
       if HR.Cast(S.Carve) then return "carve 81"; end
     end
     -- wildfire_bomb,if=!talent.guerrilla_tactics.enabled|full_recharge_time<gcd
@@ -247,8 +268,8 @@ local function APL()
       if HR.Cast(S.WildfireBomb) then return "wildfire_bomb 85"; end
     end
     -- mongoose_bite,target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack=10
-    if S.MongooseBite:IsCastableP() then
-      if HR.CastTargetIf(S.MongooseBite, 40, "max", EvaluateTargetIfFilterMongooseBite98, EvaluateTargetIfMongooseBite107) then return "mongoose_bite 109" end
+    if S.MongooseBite:IsReadyP() then
+      if HR.CastTargetIf(S.MongooseBite, 8, "max", EvaluateTargetIfFilterMongooseBite98, EvaluateTargetIfMongooseBite107) then return "mongoose_bite 109" end
     end
     -- chakrams
     if S.Chakrams:IsCastableP() then
@@ -256,14 +277,14 @@ local function APL()
     end
     -- kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max
     if S.KillCommand:IsCastableP() then
-      if HR.CastTargetIf(S.KillCommand, 40, "min", EvaluateTargetIfFilterKillCommand115, EvaluateTargetIfKillCommand128) then return "kill_command 130" end
+      if HR.CastTargetIf(S.KillCommand, 8, "min", EvaluateTargetIfFilterKillCommand115, EvaluateTargetIfKillCommand128) then return "kill_command 130" end
     end
     -- butchery,if=full_recharge_time<gcd|!talent.wildfire_infusion.enabled|dot.shrapnel_bomb.ticking&dot.internal_bleeding.stack<3
     if S.Butchery:IsCastableP() and (S.Butchery:FullRechargeTimeP() < Player:GCD() or not S.WildfireInfusion:IsAvailable() or Target:DebuffP(S.ShrapnelBombDebuff) and Target:DebuffStackP(S.InternalBleedingDebuff) < 3) then
       if HR.Cast(S.Butchery, Settings.Survival.GCDasOffGCD.Butchery) then return "butchery 131"; end
     end
     -- carve,if=talent.guerrilla_tactics.enabled
-    if S.Carve:IsCastableP() and (S.GuerrillaTactics:IsAvailable()) then
+    if S.Carve:IsReadyP() and (S.GuerrillaTactics:IsAvailable()) then
       if HR.Cast(S.Carve) then return "carve 143"; end
     end
     -- flanking_strike,if=focus+cast_regen<focus.max
@@ -275,11 +296,11 @@ local function APL()
       if HR.Cast(S.WildfireBomb) then return "wildfire_bomb 155"; end
     end
     -- serpent_sting,target_if=min:remains,if=buff.vipers_venom.up
-    if S.SerpentSting:IsCastableP() then
-      if HR.CastTargetIf(S.SerpentSting, 40, "min", EvaluateTargetIfFilterSerpentSting164, EvaluateTargetIfSerpentSting181) then return "serpent_sting 183" end
+    if S.SerpentSting:IsReadyP() then
+      if HR.CastTargetIf(S.SerpentSting, 8, "min", EvaluateTargetIfFilterSerpentSting164, EvaluateTargetIfSerpentSting181) then return "serpent_sting 183" end
     end
     -- carve,if=cooldown.wildfire_bomb.remains>variable.carve_cdr%2
-    if S.Carve:IsCastableP() and (S.WildfireBomb:CooldownRemainsP() > VarCarveCdr / 2) then
+    if S.Carve:IsReadyP() and (S.WildfireBomb:CooldownRemainsP() > VarCarveCdr / 2) then
       if HR.Cast(S.Carve) then return "carve 184"; end
     end
     -- steel_trap
@@ -291,21 +312,21 @@ local function APL()
       if HR.Cast(S.Harpoon, Settings.Survival.GCDasOffGCD.Harpoon) then return "harpoon 192"; end
     end
     -- serpent_sting,target_if=min:remains,if=refreshable&buff.tip_of_the_spear.stack<3
-    if S.SerpentSting:IsCastableP() then
-      if HR.CastTargetIf(S.SerpentSting, 40, "min", EvaluateTargetIfFilterSerpentSting199, EvaluateTargetIfSerpentSting222) then return "serpent_sting 224" end
+    if S.SerpentSting:IsReadyP() then
+      if HR.CastTargetIf(S.SerpentSting, 8, "min", EvaluateTargetIfFilterSerpentSting199, EvaluateTargetIfSerpentSting222) then return "serpent_sting 224" end
     end
     -- mongoose_bite,target_if=max:debuff.latent_poison.stack
-    if S.MongooseBite:IsCastableP() then
-      if HR.CastTargetIf(S.MongooseBite, 40, "max", EvaluateTargetIfFilterMongooseBite228) then return "mongoose_bite 235" end
+    if S.MongooseBite:IsReadyP() then
+      if HR.CastTargetIf(S.MongooseBite, 8, "max", EvaluateTargetIfFilterMongooseBite228) then return "mongoose_bite 235" end
     end
     -- raptor_strike,target_if=max:debuff.latent_poison.stack
     if S.RaptorStrike:IsReadyP() then
-      if HR.CastTargetIf(S.RaptorStrike, 40, "max", EvaluateTargetIfFilterRaptorStrike239) then return "raptor_strike 246" end
+      if HR.CastTargetIf(S.RaptorStrike, 8, "max", EvaluateTargetIfFilterRaptorStrike239) then return "raptor_strike 246" end
     end
   end
   MbApWfiSt = function()
     -- serpent_sting,if=!dot.serpent_sting.ticking
-    if S.SerpentSting:IsCastableP() and (not Target:DebuffP(S.SerpentStingDebuff)) then
+    if S.SerpentSting:IsReadyP() and (not Target:DebuffP(S.SerpentStingDebuff)) then
       if HR.Cast(S.SerpentSting) then return "serpent_sting 247"; end
     end
     -- wildfire_bomb,if=full_recharge_time<gcd|(focus+cast_regen<focus.max)&(next_wi_bomb.volatile&dot.serpent_sting.ticking&dot.serpent_sting.refreshable|next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*3)
@@ -325,7 +346,7 @@ local function APL()
       if HR.Cast(S.SteelTrap) then return "steel_trap 291"; end
     end
     -- mongoose_bite,if=buff.mongoose_fury.remains&next_wi_bomb.pheromone
-    if S.MongooseBite:IsCastableP() and (bool(Player:BuffRemainsP(S.MongooseFuryBuff)) and S.PheromoneBomb:IsLearned()) then
+    if S.MongooseBite:IsReadyP() and (bool(Player:BuffRemainsP(S.MongooseFuryBuff)) and S.PheromoneBomb:IsLearned()) then
       if HR.Cast(S.MongooseBite) then return "mongoose_bite 293"; end
     end
     -- kill_command,if=focus+cast_regen<focus.max&(buff.mongoose_fury.stack<5|focus<action.mongoose_bite.cost)
@@ -337,15 +358,15 @@ local function APL()
       if HR.Cast(S.WildfireBomb) then return "wildfire_bomb 311"; end
     end
     -- serpent_sting,if=buff.vipers_venom.up|refreshable&(!talent.mongoose_bite.enabled|!talent.vipers_venom.enabled|next_wi_bomb.volatile&!dot.shrapnel_bomb.ticking|azerite.latent_poison.enabled|azerite.venomous_fangs.enabled)
-    if S.SerpentSting:IsCastableP() and (Player:BuffP(S.VipersVenomBuff) or Target:DebuffRefreshableCP(S.SerpentStingDebuff) and (not S.MongooseBite:IsAvailable() or not S.VipersVenom:IsAvailable() or S.VolatileBomb:IsLearned() and not Target:DebuffP(S.ShrapnelBombDebuff) or S.LatentPoison:AzeriteEnabled() or S.VenomousFangs:AzeriteEnabled())) then
+    if S.SerpentSting:IsReadyP() and (Player:BuffP(S.VipersVenomBuff) or Target:DebuffRefreshableCP(S.SerpentStingDebuff) and (not S.MongooseBite:IsAvailable() or not S.VipersVenom:IsAvailable() or S.VolatileBomb:IsLearned() and not Target:DebuffP(S.ShrapnelBombDebuff) or S.LatentPoison:AzeriteEnabled() or S.VenomousFangs:AzeriteEnabled())) then
       if HR.Cast(S.SerpentSting) then return "serpent_sting 315"; end
     end
     -- mongoose_bite,if=buff.mongoose_fury.up|focus>60|dot.shrapnel_bomb.ticking
-    if S.MongooseBite:IsCastableP() and (Player:BuffP(S.MongooseFuryBuff) or Player:Focus() > 60 or Target:DebuffP(S.ShrapnelBombDebuff)) then
+    if S.MongooseBite:IsReadyP() and (Player:BuffP(S.MongooseFuryBuff) or Player:Focus() > 60 or Target:DebuffP(S.ShrapnelBombDebuff)) then
       if HR.Cast(S.MongooseBite) then return "mongoose_bite 335"; end
     end
     -- serpent_sting,if=refreshable
-    if S.SerpentSting:IsCastableP() and (Target:DebuffRefreshableCP(S.SerpentStingDebuff)) then
+    if S.SerpentSting:IsReadyP() and (Target:DebuffRefreshableCP(S.SerpentStingDebuff)) then
       if HR.Cast(S.SerpentSting) then return "serpent_sting 341"; end
     end
     -- wildfire_bomb,if=next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel&focus>50
@@ -359,7 +380,7 @@ local function APL()
       if HR.Cast(S.AMurderofCrows) then return "a_murder_of_crows 353"; end
     end
     -- mongoose_bite,if=talent.birds_of_prey.enabled&buff.coordinated_assault.up&(buff.coordinated_assault.remains<gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd)
-    if S.MongooseBite:IsCastableP() and (S.BirdsofPrey:IsAvailable() and Player:BuffP(S.CoordinatedAssaultBuff) and (Player:BuffRemainsP(S.CoordinatedAssaultBuff) < Player:GCD() or Player:BuffP(S.BlurofTalonsBuff) and Player:BuffRemainsP(S.BlurofTalonsBuff) < Player:GCD())) then
+    if S.MongooseBite:IsReadyP() and (S.BirdsofPrey:IsAvailable() and Player:BuffP(S.CoordinatedAssaultBuff) and (Player:BuffRemainsP(S.CoordinatedAssaultBuff) < Player:GCD() or Player:BuffP(S.BlurofTalonsBuff) and Player:BuffRemainsP(S.BlurofTalonsBuff) < Player:GCD())) then
       if HR.Cast(S.MongooseBite) then return "mongoose_bite 355"; end
     end
     -- raptor_strike,if=talent.birds_of_prey.enabled&buff.coordinated_assault.up&(buff.coordinated_assault.remains<gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd)
@@ -367,7 +388,7 @@ local function APL()
       if HR.Cast(S.RaptorStrike) then return "raptor_strike 367"; end
     end
     -- serpent_sting,if=buff.vipers_venom.up&buff.vipers_venom.remains<gcd
-    if S.SerpentSting:IsCastableP() and (Player:BuffP(S.VipersVenomBuff) and Player:BuffRemainsP(S.VipersVenomBuff) < Player:GCD()) then
+    if S.SerpentSting:IsReadyP() and (Player:BuffP(S.VipersVenomBuff) and Player:BuffRemainsP(S.VipersVenomBuff) < Player:GCD()) then
       if HR.Cast(S.SerpentSting) then return "serpent_sting 379"; end
     end
     -- kill_command,if=focus+cast_regen<focus.max&(!talent.alpha_predator.enabled|full_recharge_time<gcd)
@@ -379,7 +400,7 @@ local function APL()
       if HR.Cast(S.WildfireBomb) then return "wildfire_bomb 399"; end
     end
     -- serpent_sting,if=buff.vipers_venom.up&dot.serpent_sting.remains<4*gcd|!talent.vipers_venom.enabled&!dot.serpent_sting.ticking&!buff.coordinated_assault.up|refreshable&(azerite.latent_poison.enabled|azerite.venomous_fangs.enabled)
-    if S.SerpentSting:IsCastableP() and (Player:BuffP(S.VipersVenomBuff) and Target:DebuffRemainsP(S.SerpentStingDebuff) < 4 * Player:GCD() or not S.VipersVenom:IsAvailable() and not Target:DebuffP(S.SerpentStingDebuff) and not Player:BuffP(S.CoordinatedAssaultBuff) or Target:DebuffRefreshableCP(S.SerpentStingDebuff) and (S.LatentPoison:AzeriteEnabled() or S.VenomousFangs:AzeriteEnabled())) then
+    if S.SerpentSting:IsReadyP() and (Player:BuffP(S.VipersVenomBuff) and Target:DebuffRemainsP(S.SerpentStingDebuff) < 4 * Player:GCD() or not S.VipersVenom:IsAvailable() and not Target:DebuffP(S.SerpentStingDebuff) and not Player:BuffP(S.CoordinatedAssaultBuff) or Target:DebuffRefreshableCP(S.SerpentStingDebuff) and (S.LatentPoison:AzeriteEnabled() or S.VenomousFangs:AzeriteEnabled())) then
       if HR.Cast(S.SerpentSting) then return "serpent_sting 425"; end
     end
     -- steel_trap
@@ -407,7 +428,7 @@ local function APL()
       if HR.Cast(S.KillCommand) then return "kill_command 467"; end
     end
     -- mongoose_bite,if=buff.mongoose_fury.up|focus>60
-    if S.MongooseBite:IsCastableP() and (Player:BuffP(S.MongooseFuryBuff) or Player:Focus() > 60) then
+    if S.MongooseBite:IsReadyP() and (Player:BuffP(S.MongooseFuryBuff) or Player:Focus() > 60) then
       if HR.Cast(S.MongooseBite) then return "mongoose_bite 481"; end
     end
     -- raptor_strike
@@ -415,7 +436,7 @@ local function APL()
       if HR.Cast(S.RaptorStrike) then return "raptor_strike 485"; end
     end
     -- serpent_sting,if=dot.serpent_sting.refreshable&!buff.coordinated_assault.up
-    if S.SerpentSting:IsCastableP() and (Target:DebuffRefreshableCP(S.SerpentStingDebuff) and not Player:BuffP(S.CoordinatedAssaultBuff)) then
+    if S.SerpentSting:IsReadyP() and (Target:DebuffRefreshableCP(S.SerpentStingDebuff) and not Player:BuffP(S.CoordinatedAssaultBuff)) then
       if HR.Cast(S.SerpentSting) then return "serpent_sting 487"; end
     end
     -- wildfire_bomb,if=dot.wildfire_bomb.refreshable
@@ -433,7 +454,7 @@ local function APL()
       if HR.Cast(S.CoordinatedAssault, Settings.Survival.GCDasOffGCD.CoordinatedAssault) then return "coordinated_assault 499"; end
     end
     -- mongoose_bite,if=azerite.wilderness_survival.enabled&next_wi_bomb.volatile&dot.serpent_sting.remains>2.1*gcd&dot.serpent_sting.remains<3.5*gcd&cooldown.wildfire_bomb.remains>2.5*gcd
-    if S.MongooseBite:IsCastableP() and (S.WildernessSurvival:AzeriteEnabled() and S.VolatileBomb:IsLearned() and Target:DebuffRemainsP(S.SerpentStingDebuff) > 2.1 * Player:GCD() and Target:DebuffRemainsP(S.SerpentStingDebuff) < 3.5 * Player:GCD() and S.WildfireBomb:CooldownRemainsP() > 2.5 * Player:GCD()) then
+    if S.MongooseBite:IsReadyP() and (S.WildernessSurvival:AzeriteEnabled() and S.VolatileBomb:IsLearned() and Target:DebuffRemainsP(S.SerpentStingDebuff) > 2.1 * Player:GCD() and Target:DebuffRemainsP(S.SerpentStingDebuff) < 3.5 * Player:GCD() and S.WildfireBomb:CooldownRemainsP() > 2.5 * Player:GCD()) then
       if HR.Cast(S.MongooseBite) then return "mongoose_bite 501"; end
     end
     -- wildfire_bomb,if=full_recharge_time<gcd|(focus+cast_regen<focus.max)&(next_wi_bomb.volatile&dot.serpent_sting.ticking&dot.serpent_sting.refreshable|next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*3)
@@ -461,7 +482,7 @@ local function APL()
       if HR.Cast(S.FlankingStrike) then return "flanking_strike 583"; end
     end
     -- serpent_sting,if=buff.vipers_venom.up|refreshable&(!talent.mongoose_bite.enabled|!talent.vipers_venom.enabled|next_wi_bomb.volatile&!dot.shrapnel_bomb.ticking|azerite.latent_poison.enabled|azerite.venomous_fangs.enabled|buff.mongoose_fury.stack=5)
-    if S.SerpentSting:IsCastableP() and (Player:BuffP(S.VipersVenomBuff) or Target:DebuffRefreshableCP(S.SerpentStingDebuff) and (not S.MongooseBite:IsAvailable() or not S.VipersVenom:IsAvailable() or S.VolatileBomb:IsLearned() and not Target:DebuffP(S.ShrapnelBombDebuff) or S.LatentPoison:AzeriteEnabled() or S.VenomousFangs:AzeriteEnabled() or Player:BuffStackP(S.MongooseFuryBuff) == 5)) then
+    if S.SerpentSting:IsReadyP() and (Player:BuffP(S.VipersVenomBuff) or Target:DebuffRefreshableCP(S.SerpentStingDebuff) and (not S.MongooseBite:IsAvailable() or not S.VipersVenom:IsAvailable() or S.VolatileBomb:IsLearned() and not Target:DebuffP(S.ShrapnelBombDebuff) or S.LatentPoison:AzeriteEnabled() or S.VenomousFangs:AzeriteEnabled() or Player:BuffStackP(S.MongooseFuryBuff) == 5)) then
       if HR.Cast(S.SerpentSting) then return "serpent_sting 591"; end
     end
     -- harpoon,if=talent.terms_of_engagement.enabled|azerite.up_close_and_personal.enabled
@@ -469,7 +490,7 @@ local function APL()
       if HR.Cast(S.Harpoon, Settings.Survival.GCDasOffGCD.Harpoon) then return "harpoon 613"; end
     end
     -- mongoose_bite,if=buff.mongoose_fury.up|focus>60|dot.shrapnel_bomb.ticking
-    if S.MongooseBite:IsCastableP() and (Player:BuffP(S.MongooseFuryBuff) or Player:Focus() > 60 or Target:DebuffP(S.ShrapnelBombDebuff)) then
+    if S.MongooseBite:IsReadyP() and (Player:BuffP(S.MongooseFuryBuff) or Player:Focus() > 60 or Target:DebuffP(S.ShrapnelBombDebuff)) then
       if HR.Cast(S.MongooseBite) then return "mongoose_bite 619"; end
     end
     -- raptor_strike
@@ -477,7 +498,7 @@ local function APL()
       if HR.Cast(S.RaptorStrike) then return "raptor_strike 625"; end
     end
     -- serpent_sting,if=refreshable
-    if S.SerpentSting:IsCastableP() and (Target:DebuffRefreshableCP(S.SerpentStingDebuff)) then
+    if S.SerpentSting:IsReadyP() and (Target:DebuffRefreshableCP(S.SerpentStingDebuff)) then
       if HR.Cast(S.SerpentSting) then return "serpent_sting 627"; end
     end
     -- wildfire_bomb,if=next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel&focus>50
@@ -497,19 +518,19 @@ local function APL()
       local ShouldReturn = Cds(); if ShouldReturn then return ShouldReturn; end
     end
     -- call_action_list,name=mb_ap_wfi_st,if=active_enemies<3&talent.wildfire_infusion.enabled&talent.alpha_predator.enabled&talent.mongoose_bite.enabled
-    if (Cache.EnemiesCount[40] < 3 and S.WildfireInfusion:IsAvailable() and S.AlphaPredator:IsAvailable() and S.MongooseBite:IsAvailable()) then
+    if (Cache.EnemiesCount[8] < 3 and S.WildfireInfusion:IsAvailable() and S.AlphaPredator:IsAvailable() and S.MongooseBite:IsAvailable()) then
       local ShouldReturn = MbApWfiSt(); if ShouldReturn then return ShouldReturn; end
     end
     -- call_action_list,name=wfi_st,if=active_enemies<3&talent.wildfire_infusion.enabled
-    if (Cache.EnemiesCount[40] < 3 and S.WildfireInfusion:IsAvailable()) then
+    if (Cache.EnemiesCount[8] < 3 and S.WildfireInfusion:IsAvailable()) then
       local ShouldReturn = WfiSt(); if ShouldReturn then return ShouldReturn; end
     end
     -- call_action_list,name=st,if=active_enemies<2
-    if (Cache.EnemiesCount[40] < 2) then
+    if (Cache.EnemiesCount[8] < 2) then
       local ShouldReturn = St(); if ShouldReturn then return ShouldReturn; end
     end
     -- call_action_list,name=cleave,if=active_enemies>1
-    if (Cache.EnemiesCount[40] > 1) then
+    if (Cache.EnemiesCount[8] > 1) then
       local ShouldReturn = Cleave(); if ShouldReturn then return ShouldReturn; end
     end
     -- arcane_torrent
