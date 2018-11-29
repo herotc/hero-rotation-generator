@@ -194,16 +194,16 @@ local function APL()
     if S.Barrage:IsCastableP() and (Cache.EnemiesCount[40] > 1) then
       if HR.Cast(S.Barrage) then return "barrage 94"; end
     end
-    -- arcane_shot,if=buff.precise_shots.up&(cooldown.aimed_shot.full_recharge_time<gcd*buff.precise_shots.stack+action.aimed_shot.cast_time|buff.lethal_shots.up)
-    if S.ArcaneShot:IsCastableP() and (Player:BuffP(S.PreciseShotsBuff) and (S.AimedShot:FullRechargeTimeP() < Player:GCD() * Player:BuffStackP(S.PreciseShotsBuff) + S.AimedShot:CastTime() or Player:BuffP(S.LethalShotsBuff))) then
+    -- arcane_shot,if=buff.precise_shots.up&(cooldown.aimed_shot.full_recharge_time<gcd*buff.precise_shots.stack+action.aimed_shot.cast_time|buff.lethal_shots.react)
+    if S.ArcaneShot:IsCastableP() and (Player:BuffP(S.PreciseShotsBuff) and (S.AimedShot:FullRechargeTimeP() < Player:GCD() * Player:BuffStackP(S.PreciseShotsBuff) + S.AimedShot:CastTime() or bool(Player:BuffStackP(S.LethalShotsBuff)))) then
       if HR.Cast(S.ArcaneShot) then return "arcane_shot 102"; end
     end
-    -- rapid_fire,if=(!talent.lethal_shots.enabled|buff.lethal_shots.up)&azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1
-    if S.RapidFire:IsCastableP() and ((not S.LethalShots:IsAvailable() or Player:BuffP(S.LethalShotsBuff)) and S.FocusedFire:AzeriteEnabled() or S.IntheRhythm:AzeriteRank() > 1) then
+    -- rapid_fire,if=(!talent.lethal_shots.enabled|buff.lethal_shots.react)&azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1
+    if S.RapidFire:IsCastableP() and ((not S.LethalShots:IsAvailable() or bool(Player:BuffStackP(S.LethalShotsBuff))) and S.FocusedFire:AzeriteEnabled() or S.IntheRhythm:AzeriteRank() > 1) then
       if HR.Cast(S.RapidFire) then return "rapid_fire 116"; end
     end
-    -- aimed_shot,if=buff.precise_shots.down&(buff.double_tap.down&full_recharge_time<cast_time+gcd|buff.lethal_shots.up)
-    if S.AimedShot:IsCastableP() and (Player:BuffDownP(S.PreciseShotsBuff) and (Player:BuffDownP(S.DoubleTapBuff) and S.AimedShot:FullRechargeTimeP() < S.AimedShot:CastTime() + Player:GCD() or Player:BuffP(S.LethalShotsBuff))) then
+    -- aimed_shot,if=buff.precise_shots.down&(buff.double_tap.down&full_recharge_time<cast_time+gcd|buff.lethal_shots.react)
+    if S.AimedShot:IsCastableP() and (Player:BuffDownP(S.PreciseShotsBuff) and (Player:BuffDownP(S.DoubleTapBuff) and S.AimedShot:FullRechargeTimeP() < S.AimedShot:CastTime() + Player:GCD() or bool(Player:BuffStackP(S.LethalShotsBuff)))) then
       if HR.Cast(S.AimedShot) then return "aimed_shot 126"; end
     end
     -- rapid_fire,if=!talent.lethal_shots.enabled|buff.lethal_shots.up
@@ -244,12 +244,12 @@ local function APL()
     if S.AMurderofCrows:IsCastableP() and (Player:BuffDownP(S.SteadyFocusBuff) or Target:TimeToDie() < 16) then
       if HR.Cast(S.AMurderofCrows) then return "a_murder_of_crows 192"; end
     end
-    -- aimed_shot,if=buff.lethal_shots.up|target.time_to_die<3|debuff.steady_aim.stack=5&(buff.lock_and_load.up|full_recharge_time<cast_time)
-    if S.AimedShot:IsCastableP() and (Player:BuffP(S.LethalShotsBuff) or Target:TimeToDie() < 3 or Target:DebuffStackP(S.SteadyAimDebuff) == 5 and (Player:BuffP(S.LockandLoadBuff) or S.AimedShot:FullRechargeTimeP() < S.AimedShot:CastTime())) then
+    -- aimed_shot,if=buff.lethal_shots.react|target.time_to_die<3|debuff.steady_aim.stack=5&(buff.lock_and_load.react|full_recharge_time<cast_time)
+    if S.AimedShot:IsCastableP() and (bool(Player:BuffStackP(S.LethalShotsBuff)) or Target:TimeToDie() < 3 or Target:DebuffStackP(S.SteadyAimDebuff) == 5 and (bool(Player:BuffStackP(S.LockandLoadBuff)) or S.AimedShot:FullRechargeTimeP() < S.AimedShot:CastTime())) then
       if HR.Cast(S.AimedShot) then return "aimed_shot 196"; end
     end
-    -- arcane_shot,if=buff.precise_shots.up&(buff.lethal_shots.up|target.health.pct>20&target.health.pct<80)
-    if S.ArcaneShot:IsCastableP() and (Player:BuffP(S.PreciseShotsBuff) and (Player:BuffP(S.LethalShotsBuff) or Target:HealthPercentage() > 20 and Target:HealthPercentage() < 80)) then
+    -- arcane_shot,if=buff.precise_shots.up&(buff.lethal_shots.react|target.health.pct>20&target.health.pct<80)
+    if S.ArcaneShot:IsCastableP() and (Player:BuffP(S.PreciseShotsBuff) and (bool(Player:BuffStackP(S.LethalShotsBuff)) or Target:HealthPercentage() > 20 and Target:HealthPercentage() < 80)) then
       if HR.Cast(S.ArcaneShot) then return "arcane_shot 212"; end
     end
     -- serpent_sting,if=refreshable
@@ -282,8 +282,8 @@ local function APL()
     if S.RapidFire:IsCastableP() and (Player:BuffP(S.TrickShotsBuff)) then
       if HR.Cast(S.RapidFire) then return "rapid_fire 250"; end
     end
-    -- multishot,if=buff.trick_shots.down|(buff.precise_shots.up|buff.lethal_shots.up)&(!talent.barrage.enabled&buff.steady_focus.down&focus>45|focus>70)
-    if S.Multishot:IsCastableP() and (Player:BuffDownP(S.TrickShotsBuff) or (Player:BuffP(S.PreciseShotsBuff) or Player:BuffP(S.LethalShotsBuff)) and (not S.Barrage:IsAvailable() and Player:BuffDownP(S.SteadyFocusBuff) and Player:Focus() > 45 or Player:Focus() > 70)) then
+    -- multishot,if=buff.trick_shots.down|(buff.precise_shots.up|buff.lethal_shots.react)&(!talent.barrage.enabled&buff.steady_focus.down&focus>45|focus>70)
+    if S.Multishot:IsCastableP() and (Player:BuffDownP(S.TrickShotsBuff) or (Player:BuffP(S.PreciseShotsBuff) or bool(Player:BuffStackP(S.LethalShotsBuff))) and (not S.Barrage:IsAvailable() and Player:BuffDownP(S.SteadyFocusBuff) and Player:Focus() > 45 or Player:Focus() > 70)) then
       if HR.Cast(S.Multishot) then return "multishot 254"; end
     end
     -- piercing_shot

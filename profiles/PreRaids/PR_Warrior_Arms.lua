@@ -135,16 +135,16 @@ local function APL()
       if HR.Cast(S.ColossusSmash) then return "colossus_smash 22"; end
     end
     -- warbreaker,if=debuff.colossus_smash.down
-    if S.Warbreaker:IsCastableP() and (Target:DebuffDownP(S.ColossusSmashDebuff)) then
-      if HR.Cast(S.Warbreaker) then return "warbreaker 26"; end
+    if S.Warbreaker:IsCastableP() and HR.CDsON() and (Target:DebuffDownP(S.ColossusSmashDebuff)) then
+      if HR.Cast(S.Warbreaker, Settings.Arms.GCDasOffGCD.Warbreaker) then return "warbreaker 26"; end
     end
     -- deadly_calm
     if S.DeadlyCalm:IsCastableP() then
       if HR.Cast(S.DeadlyCalm) then return "deadly_calm 30"; end
     end
     -- bladestorm,if=rage<30&!buff.deadly_calm.up
-    if S.Bladestorm:IsCastableP() and (Player:Rage() < 30 and not Player:BuffP(S.DeadlyCalmBuff)) then
-      if HR.Cast(S.Bladestorm) then return "bladestorm 32"; end
+    if S.Bladestorm:IsCastableP() and HR.CDsON() and (Player:Rage() < 30 and not Player:BuffP(S.DeadlyCalmBuff)) then
+      if HR.Cast(S.Bladestorm, Settings.Arms.GCDasOffGCD.Bladestorm) then return "bladestorm 32"; end
     end
     -- cleave,if=spell_targets.whirlwind>2
     if S.Cleave:IsReadyP() and (Cache.EnemiesCount[8] > 2) then
@@ -185,12 +185,12 @@ local function APL()
       if HR.Cast(S.ColossusSmash) then return "colossus_smash 70"; end
     end
     -- warbreaker,if=debuff.colossus_smash.down
-    if S.Warbreaker:IsCastableP() and (Target:DebuffDownP(S.ColossusSmashDebuff)) then
-      if HR.Cast(S.Warbreaker) then return "warbreaker 74"; end
+    if S.Warbreaker:IsCastableP() and HR.CDsON() and (Target:DebuffDownP(S.ColossusSmashDebuff)) then
+      if HR.Cast(S.Warbreaker, Settings.Arms.GCDasOffGCD.Warbreaker) then return "warbreaker 74"; end
     end
     -- bladestorm,if=buff.sweeping_strikes.down&(!talent.deadly_calm.enabled|buff.deadly_calm.down)&((debuff.colossus_smash.remains>4.5&!azerite.test_of_might.enabled)|buff.test_of_might.up)
-    if S.Bladestorm:IsCastableP() and (Player:BuffDownP(S.SweepingStrikesBuff) and (not S.DeadlyCalm:IsAvailable() or Player:BuffDownP(S.DeadlyCalmBuff)) and ((Target:DebuffRemainsP(S.ColossusSmashDebuff) > 4.5 and not S.TestofMight:AzeriteEnabled()) or Player:BuffP(S.TestofMightBuff))) then
-      if HR.Cast(S.Bladestorm) then return "bladestorm 78"; end
+    if S.Bladestorm:IsCastableP() and HR.CDsON() and (Player:BuffDownP(S.SweepingStrikesBuff) and (not S.DeadlyCalm:IsAvailable() or Player:BuffDownP(S.DeadlyCalmBuff)) and ((Target:DebuffRemainsP(S.ColossusSmashDebuff) > 4.5 and not S.TestofMight:AzeriteEnabled()) or Player:BuffP(S.TestofMightBuff))) then
+      if HR.Cast(S.Bladestorm, Settings.Arms.GCDasOffGCD.Bladestorm) then return "bladestorm 78"; end
     end
     -- deadly_calm
     if S.DeadlyCalm:IsCastableP() then
@@ -247,12 +247,12 @@ local function APL()
       if HR.Cast(S.ColossusSmash) then return "colossus_smash 188"; end
     end
     -- warbreaker,if=raid_event.adds.up|raid_event.adds.in>40|(raid_event.adds.in>20&talent.anger_management.enabled)
-    if S.Warbreaker:IsCastableP() and ((Cache.EnemiesCount[8] > 1) or 10000000000 > 40 or (10000000000 > 20 and S.AngerManagement:IsAvailable())) then
-      if HR.Cast(S.Warbreaker) then return "warbreaker 194"; end
+    if S.Warbreaker:IsCastableP() and HR.CDsON() and ((Cache.EnemiesCount[8] > 1) or 10000000000 > 40 or (10000000000 > 20 and S.AngerManagement:IsAvailable())) then
+      if HR.Cast(S.Warbreaker, Settings.Arms.GCDasOffGCD.Warbreaker) then return "warbreaker 194"; end
     end
     -- bladestorm,if=(debuff.colossus_smash.up&raid_event.adds.in>target.time_to_die)|raid_event.adds.up&((debuff.colossus_smash.remains>4.5&!azerite.test_of_might.enabled)|buff.test_of_might.up)
-    if S.Bladestorm:IsCastableP() and ((Target:DebuffP(S.ColossusSmashDebuff) and 10000000000 > Target:TimeToDie()) or (Cache.EnemiesCount[8] > 1) and ((Target:DebuffRemainsP(S.ColossusSmashDebuff) > 4.5 and not S.TestofMight:AzeriteEnabled()) or Player:BuffP(S.TestofMightBuff))) then
-      if HR.Cast(S.Bladestorm) then return "bladestorm 200"; end
+    if S.Bladestorm:IsCastableP() and HR.CDsON() and ((Target:DebuffP(S.ColossusSmashDebuff) and 10000000000 > Target:TimeToDie()) or (Cache.EnemiesCount[8] > 1) and ((Target:DebuffRemainsP(S.ColossusSmashDebuff) > 4.5 and not S.TestofMight:AzeriteEnabled()) or Player:BuffP(S.TestofMightBuff))) then
+      if HR.Cast(S.Bladestorm, Settings.Arms.GCDasOffGCD.Bladestorm) then return "bladestorm 200"; end
     end
     -- overpower,if=!raid_event.adds.up|(raid_event.adds.up&azerite.seismic_wave.enabled)
     if S.Overpower:IsCastableP() and (not (Cache.EnemiesCount[8] > 1) or ((Cache.EnemiesCount[8] > 1) and S.SeismicWave:AzeriteEnabled())) then
@@ -305,8 +305,8 @@ local function APL()
       if HR.Cast(S.ColossusSmash) then return "colossus_smash 288"; end
     end
     -- warbreaker,if=debuff.colossus_smash.down
-    if S.Warbreaker:IsCastableP() and (Target:DebuffDownP(S.ColossusSmashDebuff)) then
-      if HR.Cast(S.Warbreaker) then return "warbreaker 292"; end
+    if S.Warbreaker:IsCastableP() and HR.CDsON() and (Target:DebuffDownP(S.ColossusSmashDebuff)) then
+      if HR.Cast(S.Warbreaker, Settings.Arms.GCDasOffGCD.Warbreaker) then return "warbreaker 292"; end
     end
     -- deadly_calm
     if S.DeadlyCalm:IsCastableP() then
@@ -317,8 +317,8 @@ local function APL()
       if HR.Cast(S.Execute) then return "execute 298"; end
     end
     -- bladestorm,if=cooldown.mortal_strike.remains&(!talent.deadly_calm.enabled|buff.deadly_calm.down)&((debuff.colossus_smash.up&!azerite.test_of_might.enabled)|buff.test_of_might.up)
-    if S.Bladestorm:IsCastableP() and (bool(S.MortalStrike:CooldownRemainsP()) and (not S.DeadlyCalm:IsAvailable() or Player:BuffDownP(S.DeadlyCalmBuff)) and ((Target:DebuffP(S.ColossusSmashDebuff) and not S.TestofMight:AzeriteEnabled()) or Player:BuffP(S.TestofMightBuff))) then
-      if HR.Cast(S.Bladestorm) then return "bladestorm 302"; end
+    if S.Bladestorm:IsCastableP() and HR.CDsON() and (bool(S.MortalStrike:CooldownRemainsP()) and (not S.DeadlyCalm:IsAvailable() or Player:BuffDownP(S.DeadlyCalmBuff)) and ((Target:DebuffP(S.ColossusSmashDebuff) and not S.TestofMight:AzeriteEnabled()) or Player:BuffP(S.TestofMightBuff))) then
+      if HR.Cast(S.Bladestorm, Settings.Arms.GCDasOffGCD.Bladestorm) then return "bladestorm 302"; end
     end
     -- cleave,if=spell_targets.whirlwind>2
     if S.Cleave:IsReadyP() and (Cache.EnemiesCount[8] > 2) then

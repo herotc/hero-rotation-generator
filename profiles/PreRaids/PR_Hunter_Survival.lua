@@ -168,7 +168,7 @@ local function EvaluateTargetIfFilterSerpentSting164(TargetUnit)
 end
 
 local function EvaluateTargetIfSerpentSting181(TargetUnit)
-  return Player:BuffP(S.VipersVenomBuff)
+  return bool(Player:BuffStackP(S.VipersVenomBuff))
 end
 
 local function EvaluateTargetIfFilterSerpentSting199(TargetUnit)
@@ -295,7 +295,7 @@ local function APL()
     if S.WildfireBomb:IsCastableP() and (Target:DebuffRefreshableCP(S.WildfireBombDebuff) or S.WildfireInfusion:IsAvailable()) then
       if HR.Cast(S.WildfireBomb) then return "wildfire_bomb 155"; end
     end
-    -- serpent_sting,target_if=min:remains,if=buff.vipers_venom.up
+    -- serpent_sting,target_if=min:remains,if=buff.vipers_venom.react
     if S.SerpentSting:IsReadyP() then
       if HR.CastTargetIf(S.SerpentSting, 8, "min", EvaluateTargetIfFilterSerpentSting164, EvaluateTargetIfSerpentSting181) then return "serpent_sting 183" end
     end
@@ -357,8 +357,8 @@ local function APL()
     if S.WildfireBomb:IsCastableP() and (S.ShrapnelBomb:IsLearned() and Player:Focus() > 60 and Target:DebuffRemainsP(S.SerpentStingDebuff) > 3 * Player:GCD()) then
       if HR.Cast(S.WildfireBomb) then return "wildfire_bomb 311"; end
     end
-    -- serpent_sting,if=buff.vipers_venom.up|refreshable&(!talent.mongoose_bite.enabled|!talent.vipers_venom.enabled|next_wi_bomb.volatile&!dot.shrapnel_bomb.ticking|azerite.latent_poison.enabled|azerite.venomous_fangs.enabled)
-    if S.SerpentSting:IsReadyP() and (Player:BuffP(S.VipersVenomBuff) or Target:DebuffRefreshableCP(S.SerpentStingDebuff) and (not S.MongooseBite:IsAvailable() or not S.VipersVenom:IsAvailable() or S.VolatileBomb:IsLearned() and not Target:DebuffP(S.ShrapnelBombDebuff) or S.LatentPoison:AzeriteEnabled() or S.VenomousFangs:AzeriteEnabled())) then
+    -- serpent_sting,if=buff.vipers_venom.react|refreshable&(!talent.mongoose_bite.enabled|!talent.vipers_venom.enabled|next_wi_bomb.volatile&!dot.shrapnel_bomb.ticking|azerite.latent_poison.enabled|azerite.venomous_fangs.enabled)
+    if S.SerpentSting:IsReadyP() and (bool(Player:BuffStackP(S.VipersVenomBuff)) or Target:DebuffRefreshableCP(S.SerpentStingDebuff) and (not S.MongooseBite:IsAvailable() or not S.VipersVenom:IsAvailable() or S.VolatileBomb:IsLearned() and not Target:DebuffP(S.ShrapnelBombDebuff) or S.LatentPoison:AzeriteEnabled() or S.VenomousFangs:AzeriteEnabled())) then
       if HR.Cast(S.SerpentSting) then return "serpent_sting 315"; end
     end
     -- mongoose_bite,if=buff.mongoose_fury.up|focus>60|dot.shrapnel_bomb.ticking
@@ -387,8 +387,8 @@ local function APL()
     if S.RaptorStrike:IsReadyP() and (S.BirdsofPrey:IsAvailable() and Player:BuffP(S.CoordinatedAssaultBuff) and (Player:BuffRemainsP(S.CoordinatedAssaultBuff) < Player:GCD() or Player:BuffP(S.BlurofTalonsBuff) and Player:BuffRemainsP(S.BlurofTalonsBuff) < Player:GCD())) then
       if HR.Cast(S.RaptorStrike) then return "raptor_strike 367"; end
     end
-    -- serpent_sting,if=buff.vipers_venom.up&buff.vipers_venom.remains<gcd
-    if S.SerpentSting:IsReadyP() and (Player:BuffP(S.VipersVenomBuff) and Player:BuffRemainsP(S.VipersVenomBuff) < Player:GCD()) then
+    -- serpent_sting,if=buff.vipers_venom.react&buff.vipers_venom.remains<gcd
+    if S.SerpentSting:IsReadyP() and (bool(Player:BuffStackP(S.VipersVenomBuff)) and Player:BuffRemainsP(S.VipersVenomBuff) < Player:GCD()) then
       if HR.Cast(S.SerpentSting) then return "serpent_sting 379"; end
     end
     -- kill_command,if=focus+cast_regen<focus.max&(!talent.alpha_predator.enabled|full_recharge_time<gcd)
@@ -399,8 +399,8 @@ local function APL()
     if S.WildfireBomb:IsCastableP() and (Player:Focus() + Player:FocusCastRegen(S.WildfireBomb:ExecuteTime()) < Player:FocusMax() and (S.WildfireBomb:FullRechargeTimeP() < Player:GCD() or not Target:DebuffP(S.WildfireBombDebuff) and (Player:BuffDownP(S.MongooseFuryBuff) or S.WildfireBomb:FullRechargeTimeP() < 4.5 * Player:GCD()))) then
       if HR.Cast(S.WildfireBomb) then return "wildfire_bomb 399"; end
     end
-    -- serpent_sting,if=buff.vipers_venom.up&dot.serpent_sting.remains<4*gcd|!talent.vipers_venom.enabled&!dot.serpent_sting.ticking&!buff.coordinated_assault.up|refreshable&(azerite.latent_poison.enabled|azerite.venomous_fangs.enabled)
-    if S.SerpentSting:IsReadyP() and (Player:BuffP(S.VipersVenomBuff) and Target:DebuffRemainsP(S.SerpentStingDebuff) < 4 * Player:GCD() or not S.VipersVenom:IsAvailable() and not Target:DebuffP(S.SerpentStingDebuff) and not Player:BuffP(S.CoordinatedAssaultBuff) or Target:DebuffRefreshableCP(S.SerpentStingDebuff) and (S.LatentPoison:AzeriteEnabled() or S.VenomousFangs:AzeriteEnabled())) then
+    -- serpent_sting,if=buff.vipers_venom.react&dot.serpent_sting.remains<4*gcd|!talent.vipers_venom.enabled&!dot.serpent_sting.ticking&!buff.coordinated_assault.up|refreshable&(azerite.latent_poison.enabled|azerite.venomous_fangs.enabled)
+    if S.SerpentSting:IsReadyP() and (bool(Player:BuffStackP(S.VipersVenomBuff)) and Target:DebuffRemainsP(S.SerpentStingDebuff) < 4 * Player:GCD() or not S.VipersVenom:IsAvailable() and not Target:DebuffP(S.SerpentStingDebuff) and not Player:BuffP(S.CoordinatedAssaultBuff) or Target:DebuffRefreshableCP(S.SerpentStingDebuff) and (S.LatentPoison:AzeriteEnabled() or S.VenomousFangs:AzeriteEnabled())) then
       if HR.Cast(S.SerpentSting) then return "serpent_sting 425"; end
     end
     -- steel_trap
@@ -481,8 +481,8 @@ local function APL()
     if S.FlankingStrike:IsCastableP() and (Player:Focus() + Player:FocusCastRegen(S.FlankingStrike:ExecuteTime()) < Player:FocusMax()) then
       if HR.Cast(S.FlankingStrike) then return "flanking_strike 583"; end
     end
-    -- serpent_sting,if=buff.vipers_venom.up|refreshable&(!talent.mongoose_bite.enabled|!talent.vipers_venom.enabled|next_wi_bomb.volatile&!dot.shrapnel_bomb.ticking|azerite.latent_poison.enabled|azerite.venomous_fangs.enabled|buff.mongoose_fury.stack=5)
-    if S.SerpentSting:IsReadyP() and (Player:BuffP(S.VipersVenomBuff) or Target:DebuffRefreshableCP(S.SerpentStingDebuff) and (not S.MongooseBite:IsAvailable() or not S.VipersVenom:IsAvailable() or S.VolatileBomb:IsLearned() and not Target:DebuffP(S.ShrapnelBombDebuff) or S.LatentPoison:AzeriteEnabled() or S.VenomousFangs:AzeriteEnabled() or Player:BuffStackP(S.MongooseFuryBuff) == 5)) then
+    -- serpent_sting,if=buff.vipers_venom.react|refreshable&(!talent.mongoose_bite.enabled|!talent.vipers_venom.enabled|next_wi_bomb.volatile&!dot.shrapnel_bomb.ticking|azerite.latent_poison.enabled|azerite.venomous_fangs.enabled|buff.mongoose_fury.stack=5)
+    if S.SerpentSting:IsReadyP() and (bool(Player:BuffStackP(S.VipersVenomBuff)) or Target:DebuffRefreshableCP(S.SerpentStingDebuff) and (not S.MongooseBite:IsAvailable() or not S.VipersVenom:IsAvailable() or S.VolatileBomb:IsLearned() and not Target:DebuffP(S.ShrapnelBombDebuff) or S.LatentPoison:AzeriteEnabled() or S.VenomousFangs:AzeriteEnabled() or Player:BuffStackP(S.MongooseFuryBuff) == 5)) then
       if HR.Cast(S.SerpentSting) then return "serpent_sting 591"; end
     end
     -- harpoon,if=talent.terms_of_engagement.enabled|azerite.up_close_and_personal.enabled

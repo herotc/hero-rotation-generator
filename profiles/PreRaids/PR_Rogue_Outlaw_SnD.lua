@@ -267,8 +267,8 @@ local function APL()
     if (S.SnakeEyes:AzeriteEnabled()) then
       VarRtbReroll = num(RtB_Buffs() < 2 or (S.SnakeEyes:AzeriteRank() == 3 and RtB_Buffs() < 5))
     end
-    -- variable,name=rtb_reroll,op=reset,if=azerite.snake_eyes.rank>=2&buff.snake_eyes.stack>=2-buff.broadside.up
-    if (S.SnakeEyes:AzeriteRank() >= 2 and Player:BuffStackP(S.SnakeEyesBuff) >= 2 - num(Player:BuffP(S.BroadsideBuff))) then
+    -- variable,name=rtb_reroll,op=reset,if=azerite.snake_eyes.enabled&buff.snake_eyes.stack>=2-buff.broadside.up
+    if (S.SnakeEyes:AzeriteEnabled() and Player:BuffStackP(S.SnakeEyesBuff) >= 2 - num(Player:BuffP(S.BroadsideBuff))) then
       VarRtbReroll = 0
     end
     -- variable,name=ambush_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&cooldown.ghostly_strike.remains<1)+buff.broadside.up&energy>60&!buff.skull_and_crossbones.up

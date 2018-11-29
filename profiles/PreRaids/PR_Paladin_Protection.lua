@@ -168,7 +168,7 @@ local function APL()
     if S.Judgment:IsCastableP() and ((S.Judgment:CooldownRemainsP() < Player:GCD() and S.Judgment:ChargesFractionalP() > 1 and S.Judgment:CooldownUpP()) or not S.CrusadersJudgment:IsAvailable()) then
       if HR.Cast(S.Judgment) then return "judgment 95"; end
     end
-    -- avengers_shield,,if=cooldown_react
+    -- avengers_shield,if=cooldown_react
     if S.AvengersShield:IsCastableP() and (S.AvengersShield:CooldownUpP()) then
       if HR.Cast(S.AvengersShield) then return "avengers_shield 107"; end
     end
