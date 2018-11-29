@@ -127,8 +127,8 @@ local function APL()
       if HR.Cast(S.Skullsplitter) then return "skullsplitter 6"; end
     end
     -- ravager,if=!buff.deadly_calm.up&(cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown.warbreaker.remains<2))
-    if S.Ravager:IsCastableP() and (not Player:BuffP(S.DeadlyCalmBuff) and (S.ColossusSmash:CooldownRemainsP() < 2 or (S.Warbreaker:IsAvailable() and S.Warbreaker:CooldownRemainsP() < 2))) then
-      if HR.Cast(S.Ravager) then return "ravager 12"; end
+    if S.Ravager:IsCastableP() and HR.CDsON() and (not Player:BuffP(S.DeadlyCalmBuff) and (S.ColossusSmash:CooldownRemainsP() < 2 or (S.Warbreaker:IsAvailable() and S.Warbreaker:CooldownRemainsP() < 2))) then
+      if HR.Cast(S.Ravager, Settings.Arms.GCDasOffGCD.Ravager) then return "ravager 12"; end
     end
     -- colossus_smash,if=debuff.colossus_smash.down
     if S.ColossusSmash:IsCastableP() and (Target:DebuffDownP(S.ColossusSmashDebuff)) then
@@ -177,8 +177,8 @@ local function APL()
       if HR.Cast(S.Skullsplitter) then return "skullsplitter 58"; end
     end
     -- ravager,if=(!talent.warbreaker.enabled|cooldown.warbreaker.remains<2)
-    if S.Ravager:IsCastableP() and ((not S.Warbreaker:IsAvailable() or S.Warbreaker:CooldownRemainsP() < 2)) then
-      if HR.Cast(S.Ravager) then return "ravager 64"; end
+    if S.Ravager:IsCastableP() and HR.CDsON() and ((not S.Warbreaker:IsAvailable() or S.Warbreaker:CooldownRemainsP() < 2)) then
+      if HR.Cast(S.Ravager, Settings.Arms.GCDasOffGCD.Ravager) then return "ravager 64"; end
     end
     -- colossus_smash,if=debuff.colossus_smash.down
     if S.ColossusSmash:IsCastableP() and (Target:DebuffDownP(S.ColossusSmashDebuff)) then
@@ -239,8 +239,8 @@ local function APL()
       if HR.Cast(S.DeadlyCalm) then return "deadly_calm 164"; end
     end
     -- ravager,if=(raid_event.adds.up|raid_event.adds.in>target.time_to_die)&(cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown.warbreaker.remains<2))
-    if S.Ravager:IsCastableP() and (((Cache.EnemiesCount[8] > 1) or 10000000000 > Target:TimeToDie()) and (S.ColossusSmash:CooldownRemainsP() < 2 or (S.Warbreaker:IsAvailable() and S.Warbreaker:CooldownRemainsP() < 2))) then
-      if HR.Cast(S.Ravager) then return "ravager 178"; end
+    if S.Ravager:IsCastableP() and HR.CDsON() and (((Cache.EnemiesCount[8] > 1) or 10000000000 > Target:TimeToDie()) and (S.ColossusSmash:CooldownRemainsP() < 2 or (S.Warbreaker:IsAvailable() and S.Warbreaker:CooldownRemainsP() < 2))) then
+      if HR.Cast(S.Ravager, Settings.Arms.GCDasOffGCD.Ravager) then return "ravager 178"; end
     end
     -- colossus_smash,if=raid_event.adds.up|raid_event.adds.in>40|(raid_event.adds.in>20&talent.anger_management.enabled)
     if S.ColossusSmash:IsCastableP() and ((Cache.EnemiesCount[8] > 1) or 10000000000 > 40 or (10000000000 > 20 and S.AngerManagement:IsAvailable())) then
@@ -297,8 +297,8 @@ local function APL()
       if HR.Cast(S.Skullsplitter) then return "skullsplitter 272"; end
     end
     -- ravager,if=!buff.deadly_calm.up&(cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown.warbreaker.remains<2))
-    if S.Ravager:IsCastableP() and (not Player:BuffP(S.DeadlyCalmBuff) and (S.ColossusSmash:CooldownRemainsP() < 2 or (S.Warbreaker:IsAvailable() and S.Warbreaker:CooldownRemainsP() < 2))) then
-      if HR.Cast(S.Ravager) then return "ravager 278"; end
+    if S.Ravager:IsCastableP() and HR.CDsON() and (not Player:BuffP(S.DeadlyCalmBuff) and (S.ColossusSmash:CooldownRemainsP() < 2 or (S.Warbreaker:IsAvailable() and S.Warbreaker:CooldownRemainsP() < 2))) then
+      if HR.Cast(S.Ravager, Settings.Arms.GCDasOffGCD.Ravager) then return "ravager 278"; end
     end
     -- colossus_smash,if=debuff.colossus_smash.down
     if S.ColossusSmash:IsCastableP() and (Target:DebuffDownP(S.ColossusSmashDebuff)) then
