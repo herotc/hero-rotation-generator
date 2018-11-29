@@ -1,9 +1,3 @@
-local function InitVars()
-  VarConserveMana = 0;
-  VarTotalBurns = 0;
-  VarAverageBurnLength = 0;
-end
-
 Player.ArcaneBurnPhase = {}
 local BurnPhase = Player.ArcaneBurnPhase
 
@@ -15,8 +9,10 @@ end
 BurnPhase:Reset()
 
 function BurnPhase:Start()
-  self.state = true
-  self.last_start = HL.GetTime()
+  if Player:AffectingCombat() then
+    self.state = true
+    self.last_start = HL.GetTime()
+  end
 end
 
 function BurnPhase:Stop()
@@ -25,16 +21,12 @@ function BurnPhase:Stop()
 end
 
 function BurnPhase:On()
-  return self.state
+  return self.state or (not Player:AffectingCombat() and Player:IsCasting() and ((S.ArcanePower:CooldownRemainsP() == 0 and S.Evocation:CooldownRemainsP() <= VarAverageBurnLength and (Player:ArcaneChargesP() == Player:ArcaneChargesMax() or (S.ChargedUp:IsAvailable() and S.ChargedUp:CooldownRemainsP() == 0)))))
 end
 
 function BurnPhase:Duration()
   return self.state and (HL.GetTime() - self.last_start) or 0
 end
-
-HL:RegisterForEvent(function()
-  InitVars()
-end, "PLAYER_REGEN_ENABLED")
 
 HL:RegisterForEvent(function()
   BurnPhase:Reset()
