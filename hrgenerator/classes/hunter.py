@@ -123,7 +123,7 @@ SPELL_INFO = {
         SURVIVAL: {
             'aspect_of_the_eagle':          {SPELL:     186289,
                                              BUFF:      186289,
-                                             OGCDAOGCD:  True,
+                                             OGCDAOGCD: True,
                                              CD:        True},
             'carve':                        {SPELL:     187708,
                                              RANGE:     8,
