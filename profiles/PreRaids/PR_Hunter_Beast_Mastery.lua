@@ -102,11 +102,11 @@ local function APL()
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
       if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 6"; end
     end
-    -- aspect_of_the_wild,precast_time=2,if=!azerite.primal_instincts.enabled
+    -- aspect_of_the_wild,precast_time=1.1,if=!azerite.primal_instincts.enabled
     if S.AspectoftheWild:IsCastableP() and Player:BuffDownP(S.AspectoftheWildBuff) and (not S.PrimalInstincts:AzeriteEnabled()) then
       if HR.Cast(S.AspectoftheWild) then return "aspect_of_the_wild 8"; end
     end
-    -- bestial_wrath,precast_time=2,if=azerite.primal_instincts.enabled
+    -- bestial_wrath,precast_time=1.5,if=azerite.primal_instincts.enabled
     if S.BestialWrath:IsCastableP() and Player:BuffDownP(S.BestialWrathBuff) and (S.PrimalInstincts:AzeriteEnabled()) then
       if HR.Cast(S.BestialWrath) then return "bestial_wrath 14"; end
     end

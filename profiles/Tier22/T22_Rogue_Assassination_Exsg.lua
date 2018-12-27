@@ -44,9 +44,8 @@ Spell.Rogue.Assassination = {
   ToxicBlade                            = Spell(245388),
   Envenom                               = Spell(32645),
   ToxicBladeDebuff                      = Spell(245389),
-  PoisonedKnife                         = Spell(),
-  SharpenedBladesBuff                   = Spell(),
   FanofKnives                           = Spell(51723),
+  EchoingBlades                         = Spell(),
   HiddenBladesBuff                      = Spell(),
   DoubleDose                            = Spell(),
   DeadlyPoisonDotDebuff                 = Spell(177918),
@@ -252,9 +251,9 @@ local function APL()
     if (true) then
       VarUseFiller = num(Player:ComboPointsDeficit() > 1 or Player:EnergyDeficitPredicted() <= 25 + VarEnergyRegenCombined or not bool(VarSingleTarget))
     end
-    -- poisoned_knife,if=variable.use_filler&buff.sharpened_blades.stack>=29
-    if S.PoisonedKnife:IsCastableP() and (bool(VarUseFiller) and Player:BuffStackP(S.SharpenedBladesBuff) >= 29) then
-      if HR.Cast(S.PoisonedKnife) then return "poisoned_knife 173"; end
+    -- fan_of_knives,if=variable.use_filler&azerite.echoing_blades.enabled&spell_targets.fan_of_knives>=2
+    if S.FanofKnives:IsCastableP() and (bool(VarUseFiller) and S.EchoingBlades:AzeriteEnabled() and Cache.EnemiesCount[10] >= 2) then
+      if HR.Cast(S.FanofKnives) then return "fan_of_knives 173"; end
     end
     -- fan_of_knives,if=variable.use_filler&(buff.hidden_blades.stack>=19|spell_targets.fan_of_knives>=4+(azerite.double_dose.rank>2)+stealthed.rogue)
     if S.FanofKnives:IsCastableP() and (bool(VarUseFiller) and (Player:BuffStackP(S.HiddenBladesBuff) >= 19 or Cache.EnemiesCount[10] >= 4 + num((S.DoubleDose:AzeriteRank() > 2)) + num(Player:IsStealthedP(true, false)))) then

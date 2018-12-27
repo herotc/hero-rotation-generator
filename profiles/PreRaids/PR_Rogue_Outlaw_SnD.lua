@@ -263,12 +263,12 @@ local function APL()
     if (S.Deadshot:AzeriteEnabled() or S.AceUpYourSleeve:AzeriteEnabled()) then
       VarRtbReroll = num(RtB_Buffs() < 2 and (Player:BuffP(S.LoadedDiceBuff) or Player:BuffRemainsP(S.RuthlessPrecisionBuff) <= S.BetweentheEyes:CooldownRemainsP()))
     end
-    -- variable,name=rtb_reroll,op=set,if=azerite.snake_eyes.enabled,value=rtb_buffs<2|(azerite.snake_eyes.rank=3&rtb_buffs<5)
-    if (S.SnakeEyes:AzeriteEnabled()) then
-      VarRtbReroll = num(RtB_Buffs() < 2 or (S.SnakeEyes:AzeriteRank() == 3 and RtB_Buffs() < 5))
+    -- variable,name=rtb_reroll,op=set,if=azerite.snake_eyes.rank>=2,value=rtb_buffs<2
+    if (S.SnakeEyes:AzeriteRank() >= 2) then
+      VarRtbReroll = num(RtB_Buffs() < 2)
     end
-    -- variable,name=rtb_reroll,op=reset,if=azerite.snake_eyes.enabled&buff.snake_eyes.stack>=2-buff.broadside.up
-    if (S.SnakeEyes:AzeriteEnabled() and Player:BuffStackP(S.SnakeEyesBuff) >= 2 - num(Player:BuffP(S.BroadsideBuff))) then
+    -- variable,name=rtb_reroll,op=reset,if=azerite.snake_eyes.rank>=2&buff.snake_eyes.stack>=2-buff.broadside.up
+    if (S.SnakeEyes:AzeriteRank() >= 2 and Player:BuffStackP(S.SnakeEyesBuff) >= 2 - num(Player:BuffP(S.BroadsideBuff))) then
       VarRtbReroll = 0
     end
     -- variable,name=ambush_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&cooldown.ghostly_strike.remains<1)+buff.broadside.up&energy>60&!buff.skull_and_crossbones.up
@@ -297,15 +297,15 @@ local function APL()
     end
     -- arcane_torrent,if=energy.deficit>=15+energy.regen
     if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (Player:EnergyDeficitPredicted() >= 15 + Player:EnergyRegen()) then
-      if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return "arcane_torrent 199"; end
+      if HR.Cast(S.ArcaneTorrent, Settings.Commons.OffGCDasOffGCD.Racials) then return "arcane_torrent 197"; end
     end
     -- arcane_pulse
     if S.ArcanePulse:IsCastableP() then
-      if HR.Cast(S.ArcanePulse) then return "arcane_pulse 201"; end
+      if HR.Cast(S.ArcanePulse) then return "arcane_pulse 199"; end
     end
     -- lights_judgment
     if S.LightsJudgment:IsCastableP() and HR.CDsON() then
-      if HR.Cast(S.LightsJudgment) then return "lights_judgment 203"; end
+      if HR.Cast(S.LightsJudgment) then return "lights_judgment 201"; end
     end
   end
 end

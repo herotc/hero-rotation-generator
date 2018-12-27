@@ -5,7 +5,7 @@ level=120
 race=troll
 role=attack
 position=back
-talents=3201033
+talents=1101032
 
 # Default consumables
 potion=battle_potion_of_agility
@@ -40,23 +40,16 @@ actions+=/auto_attack
 actions+=/use_items
 actions+=/call_action_list,name=opener
 actions+=/call_action_list,name=asc,if=buff.ascendance.up
-actions+=/call_action_list,name=buffs
+actions+=/call_action_list,name=priority_buffs
+actions+=/call_action_list,name=maintenance,if=active_enemies<3
 actions+=/call_action_list,name=cds
 actions+=/call_action_list,name=core
+actions+=/call_action_list,name=maintenance,if=active_enemies>=3
 actions+=/call_action_list,name=filler
 
 actions.asc=crash_lightning,if=!buff.crash_lightning.up&active_enemies>1&variable.furyCheck25
 actions.asc+=/rockbiter,if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7
 actions.asc+=/windstrike
-
-actions.buffs=crash_lightning,if=!buff.crash_lightning.up&active_enemies>1&variable.furyCheck25
-actions.buffs+=/rockbiter,if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7
-actions.buffs+=/fury_of_air,if=!ticking&maelstrom>=20
-actions.buffs+=/flametongue,if=!buff.flametongue.up
-actions.buffs+=/frostbrand,if=talent.hailstorm.enabled&!buff.frostbrand.up&variable.furyCheck25
-actions.buffs+=/flametongue,if=buff.flametongue.remains<4.8+gcd
-actions.buffs+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8+gcd&variable.furyCheck25
-actions.buffs+=/totem_mastery,if=buff.resonance_totem.remains<2
 
 # Cast Bloodlust manually if the Azerite Trait Ancestral Resonance is present.
 actions.cds=bloodlust,if=azerite.ancestral_resonance.enabled
@@ -71,9 +64,12 @@ actions.cds+=/earth_elemental
 
 actions.core=earthen_spike,if=variable.furyCheck25
 actions.core+=/sundering,if=active_enemies>=3
+actions.core+=/stormstrike,cycle_targets=1,if=azerite.lightning_conduit.enabled&!debuff.lightning_conduit.up&active_enemies>1&(buff.stormbringer.up|(variable.OCPool70&variable.furyCheck35))
+actions.core+=/lava_lash,if=azerite.primal_primer.rank>=2&debuff.primal_primer.stack=10
 actions.core+=/stormstrike,if=buff.stormbringer.up|(buff.gathering_storms.up&variable.OCPool70&variable.furyCheck35)
 actions.core+=/crash_lightning,if=active_enemies>=3&variable.furyCheck25
 actions.core+=/lightning_bolt,if=talent.overcharge.enabled&active_enemies=1&variable.furyCheck45&maelstrom>=40
+actions.core+=/lava_lash,if=azerite.primal_primer.rank>=2&debuff.primal_primer.stack>7
 actions.core+=/stormstrike,if=variable.OCPool70&variable.furyCheck35
 actions.core+=/sundering
 actions.core+=/crash_lightning,if=talent.forceful_winds.enabled&active_enemies>1&variable.furyCheck25
@@ -87,13 +83,27 @@ actions.filler+=/lava_lash,if=variable.OCPool80&variable.furyCheck45
 actions.filler+=/rockbiter
 actions.filler+=/flametongue
 
+actions.maintenance=flametongue,if=!buff.flametongue.up
+actions.maintenance+=/frostbrand,if=talent.hailstorm.enabled&!buff.frostbrand.up&variable.furyCheck25
+actions.maintenance+=/flametongue,if=buff.flametongue.remains<4.8+gcd
+actions.maintenance+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8+gcd&variable.furyCheck25
+
 actions.opener=rockbiter,if=maelstrom<15&time<gcd
 
-head=crest_of_the_undying_visionary,id=160630,bonus_id=4824/1507/4775,azerite_powers=416/30/13
+actions.priority_buffs=crash_lightning,if=!buff.crash_lightning.up&active_enemies>1&variable.furyCheck25
+actions.priority_buffs+=/rockbiter,if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7
+actions.priority_buffs+=/fury_of_air,if=!ticking&maelstrom>=20
+actions.priority_buffs+=/flametongue,if=talent.hot_hand.enabled&!buff.flametongue.up
+actions.priority_buffs+=/frostbrand,if=talent.hailstorm.enabled&!buff.frostbrand.up&variable.furyCheck25&(active_enemies<3|(azerite.natural_harmony.enabled&buff.natural_harmony_frost.remains<=2*gcd))
+actions.priority_buffs+=/flametongue,if=talent.hot_hand.enabled&buff.flametongue.remains<4.8+gcd
+actions.priority_buffs+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8+gcd&variable.furyCheck25&(active_enemies<3|(azerite.natural_harmony.enabled&buff.natural_harmony_frost.remains<=2*gcd))
+actions.priority_buffs+=/totem_mastery,if=buff.resonance_totem.remains<=2*gcd
+
+head=crest_of_the_undying_visionary,id=160630,bonus_id=4824/1507/4775,azerite_powers=483/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
-shoulders=spaulders_of_coagulated_viscera,id=160731,bonus_id=4824/1507/4775,azerite_powers=485/22/13
+shoulders=spaulders_of_coagulated_viscera,id=160731,bonus_id=4824/1507/4775,azerite_powers=179/22/13
 back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
-chest=cthraxxi_generals_hauberk,id=160725,bonus_id=4824/1507/4775,azerite_powers=485/461/13
+chest=chainvest_of_assured_quality,id=160627,bonus_id=4824/1507/4775,azerite_powers=447/31/13
 wrists=rubywrought_sparkguards,id=160629,bonus_id=4800/1507
 hands=oblivion_crushers,id=160721,bonus_id=4800/1507
 waist=titanspark_energy_girdle,id=160633,bonus_id=4800/1507
@@ -104,7 +114,7 @@ finger2=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_haste
 trinket1=construct_overcharger,id=160652,bonus_id=4800/1507
 trinket2=frenetic_corpuscle,id=160648,bonus_id=4800/1507
 main_hand=mothers_twin_gaze,id=160682,bonus_id=4800/1507,enchant=quick_navigation
-off_hand=mothers_twin_gaze,id=160682,bonus_id=4800/1507,enchant=deadly_navigation
+off_hand=mothers_twin_gaze,id=160682,bonus_id=4800/1507,enchant=masterful_navigation
 
 # Gear Summary
 # gear_ilvl=386.19
@@ -114,4 +124,4 @@ off_hand=mothers_twin_gaze,id=160682,bonus_id=4800/1507,enchant=deadly_navigatio
 # gear_haste_rating=1313
 # gear_mastery_rating=553
 # gear_versatility_rating=211
-# gear_armor=2738
+# gear_armor=2757

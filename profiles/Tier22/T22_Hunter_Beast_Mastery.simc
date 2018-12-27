@@ -27,8 +27,10 @@ actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
-actions.precombat+=/aspect_of_the_wild,precast_time=2,if=!azerite.primal_instincts.enabled
-actions.precombat+=/bestial_wrath,precast_time=2,if=azerite.primal_instincts.enabled
+# Adjusts the duration and cooldown of Aspect of the Wild and Primal Instincts by the duration of an unhasted GCD when they're used precombat. As AotW has a 1.3s GCD and affects itself this is 1.1s.
+actions.precombat+=/aspect_of_the_wild,precast_time=1.1,if=!azerite.primal_instincts.enabled
+# Adjusts the duration and cooldown of Bestial Wrath and Haze of Rage by the duration of an unhasted GCD when they're used precombat.
+actions.precombat+=/bestial_wrath,precast_time=1.5,if=azerite.primal_instincts.enabled
 
 # Executed every time the actor is available.
 actions=auto_shot
@@ -60,9 +62,9 @@ actions+=/arcane_torrent
 
 head=crest_of_the_undying_visionary,id=160630,bonus_id=4824/1507/4775,azerite_powers=366/30/44/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
-shoulders=flamesterilized_spaulders,id=160632,bonus_id=4824/1507/4775,azerite_powers=483/31/15/13
+shoulders=flamesterilized_spaulders,id=160632,bonus_id=4824/1507/4775,azerite_powers=365/31/15/13
 back=plasmaspattered_greatcloak,id=160644,bonus_id=4800/1507
-chest=cthraxxi_generals_hauberk,id=160725,bonus_id=4824/1507/4775,azerite_powers=161/21/85/13
+chest=cthraxxi_generals_hauberk,id=160725,bonus_id=4824/1507/4775,azerite_powers=485/21/85/13
 wrists=rubywrought_sparkguards,id=160629,bonus_id=4800/1507
 hands=oblivion_crushers,id=160721,bonus_id=4800/1507
 waist=titanspark_energy_girdle,id=160633,bonus_id=4800/1507
@@ -82,4 +84,4 @@ main_hand=bow_of_virulent_infection,id=160678,bonus_id=4800/1507,enchant=incendi
 # gear_haste_rating=1083
 # gear_mastery_rating=676
 # gear_versatility_rating=211
-# gear_armor=2738
+# gear_armor=2757

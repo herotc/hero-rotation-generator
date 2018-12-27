@@ -28,18 +28,20 @@ Spell.Priest.Shadow = {
   VoidEruption                          = Spell(228260),
   DarkAscension                         = Spell(280711),
   VoidformBuff                          = Spell(194249),
+  MindSear                              = Spell(48045),
+  HarvestedThoughtsBuff                 = Spell(),
   VoidBolt                              = Spell(205448),
   DarkVoid                              = Spell(263346),
   ShadowWordPainDebuff                  = Spell(589),
   SurrenderToMadness                    = Spell(193223),
   Mindbender                            = Spell(200174),
   ShadowCrash                           = Spell(205385),
-  MindSear                              = Spell(48045),
-  ShadowWordPain                        = Spell(589),
-  ShadowWordDeath                       = Spell(32379),
-  Misery                                = Spell(238558),
   VampiricTouch                         = Spell(34914),
   VampiricTouchDebuff                   = Spell(34914),
+  ThoughtHarvester                      = Spell(),
+  Misery                                = Spell(238558),
+  ShadowWordPain                        = Spell(589),
+  ShadowWordDeath                       = Spell(32379),
   VoidTorrent                           = Spell(263165),
   MindFlay                              = Spell(15407),
   Berserking                            = Spell(26297)
@@ -94,23 +96,31 @@ local function ExecuteRange ()
 	return 20;
 end
 
-local function EvaluateCycleShadowWordDeath58(TargetUnit)
+local function EvaluateCycleVampiricTouch50(TargetUnit)
+  return (TargetUnit:DebuffRefreshableCP(S.VampiricTouchDebuff)) and ((TargetUnit:TimeToDie() > 6) and S.ThoughtHarvester:AzeriteRank() > 0)
+end
+
+local function EvaluateCycleVampiricTouch65(TargetUnit)
+  return (TargetUnit:DebuffRefreshableCP(S.ShadowWordPainDebuff)) and ((S.Misery:IsAvailable() and TargetUnit:TimeToDie() > 4) and S.ThoughtHarvester:AzeriteRank() > 0)
+end
+
+local function EvaluateCycleShadowWordDeath94(TargetUnit)
   return TargetUnit:TimeToDie() < 3 or Player:BuffDownP(S.VoidformBuff)
 end
 
-local function EvaluateCycleShadowWordPain79(TargetUnit)
+local function EvaluateCycleShadowWordPain115(TargetUnit)
   return (TargetUnit:DebuffRefreshableCP(S.ShadowWordPainDebuff) and TargetUnit:TimeToDie() > 4) and (not S.Misery:IsAvailable() and not S.DarkVoid:IsAvailable())
 end
 
-local function EvaluateCycleVampiricTouch96(TargetUnit)
+local function EvaluateCycleVampiricTouch132(TargetUnit)
   return (TargetUnit:DebuffRefreshableCP(S.VampiricTouchDebuff)) and ((TargetUnit:TimeToDie() > 6))
 end
 
-local function EvaluateCycleVampiricTouch109(TargetUnit)
+local function EvaluateCycleVampiricTouch145(TargetUnit)
   return (TargetUnit:DebuffRefreshableCP(S.ShadowWordPainDebuff)) and ((S.Misery:IsAvailable() and TargetUnit:TimeToDie() > 4))
 end
 
-local function EvaluateCycleMindSear124(TargetUnit)
+local function EvaluateCycleMindSear160(TargetUnit)
   return Cache.EnemiesCount[40] > 2
 end
 --- ======= ACTION LISTS =======
@@ -149,161 +159,177 @@ local function APL()
     if S.DarkAscension:IsReadyP() and (Player:BuffDownP(S.VoidformBuff)) then
       if HR.Cast(S.DarkAscension) then return "dark_ascension 18"; end
     end
+    -- mind_sear,if=buff.harvested_thoughts.up
+    if S.MindSear:IsCastableP() and (Player:BuffP(S.HarvestedThoughtsBuff)) then
+      if HR.Cast(S.MindSear) then return "mind_sear 22"; end
+    end
     -- void_bolt,if=talent.dark_void.enabled&dot.shadow_word_pain.remains>travel_time
     if S.VoidBolt:IsReadyP() and (S.DarkVoid:IsAvailable() and Target:DebuffRemainsP(S.ShadowWordPainDebuff) > S.VoidBolt:TravelTime()) then
-      if HR.Cast(S.VoidBolt) then return "void_bolt 22"; end
+      if HR.Cast(S.VoidBolt) then return "void_bolt 26"; end
     end
-    -- surrender_to_madness,if=buff.voidform.stack>=(15+buff.bloodlust.up)
-    if S.SurrenderToMadness:IsReadyP() and (Player:BuffStackP(S.VoidformBuff) >= (15 + num(Player:HasHeroism()))) then
-      if HR.Cast(S.SurrenderToMadness) then return "surrender_to_madness 32"; end
+    -- surrender_to_madness,if=buff.voidform.stack>10+(10*buff.bloodlust.up)
+    if S.SurrenderToMadness:IsReadyP() and (Player:BuffStackP(S.VoidformBuff) > 10 + (10 * num(Player:HasHeroism()))) then
+      if HR.Cast(S.SurrenderToMadness) then return "surrender_to_madness 36"; end
     end
     -- dark_void,if=raid_event.adds.in>10
     if S.DarkVoid:IsReadyP() and (10000000000 > 10) then
-      if HR.Cast(S.DarkVoid) then return "dark_void 36"; end
+      if HR.Cast(S.DarkVoid) then return "dark_void 40"; end
     end
     -- mindbender
     if S.Mindbender:IsReadyP() then
-      if HR.Cast(S.Mindbender) then return "mindbender 38"; end
+      if HR.Cast(S.Mindbender) then return "mindbender 42"; end
     end
     -- shadow_crash,if=raid_event.adds.in>5&raid_event.adds.duration<20
     if S.ShadowCrash:IsReadyP() and (10000000000 > 5 and raid_event.adds.duration < 20) then
-      if HR.Cast(S.ShadowCrash) then return "shadow_crash 40"; end
+      if HR.Cast(S.ShadowCrash) then return "shadow_crash 44"; end
+    end
+    -- vampiric_touch,target_if=refreshable,if=(target.time_to_die>6)&azerite.thought_harvester.rank>0
+    if S.VampiricTouch:IsCastableP() then
+      if HR.CastCycle(S.VampiricTouch, 40, EvaluateCycleVampiricTouch50) then return "vampiric_touch 60" end
+    end
+    -- vampiric_touch,target_if=dot.shadow_word_pain.refreshable,if=(talent.misery.enabled&target.time_to_die>4)&azerite.thought_harvester.rank>0
+    if S.VampiricTouch:IsCastableP() then
+      if HR.CastCycle(S.VampiricTouch, 40, EvaluateCycleVampiricTouch65) then return "vampiric_touch 73" end
     end
     -- mind_sear,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(cooldown.void_bolt.up|cooldown.mind_blast.up)
     if S.MindSear:IsCastableP() then
-      if HR.Cast(S.MindSear) then return "mind_sear 42"; end
+      if HR.Cast(S.MindSear) then return "mind_sear 74"; end
     end
     -- shadow_word_pain
     if S.ShadowWordPain:IsCastableP() then
-      if HR.Cast(S.ShadowWordPain) then return "shadow_word_pain 44"; end
+      if HR.Cast(S.ShadowWordPain) then return "shadow_word_pain 76"; end
     end
   end
   Cleave = function()
     -- void_eruption
     if S.VoidEruption:IsReadyP() then
-      if HR.Cast(S.VoidEruption) then return "void_eruption 46"; end
+      if HR.Cast(S.VoidEruption) then return "void_eruption 78"; end
     end
     -- dark_ascension,if=buff.voidform.down
     if S.DarkAscension:IsReadyP() and (Player:BuffDownP(S.VoidformBuff)) then
-      if HR.Cast(S.DarkAscension) then return "dark_ascension 48"; end
+      if HR.Cast(S.DarkAscension) then return "dark_ascension 80"; end
+    end
+    -- mind_sear,if=buff.harvested_thoughts.up
+    if S.MindSear:IsCastableP() and (Player:BuffP(S.HarvestedThoughtsBuff)) then
+      if HR.Cast(S.MindSear) then return "mind_sear 84"; end
     end
     -- void_bolt
     if S.VoidBolt:IsReadyP() then
-      if HR.Cast(S.VoidBolt) then return "void_bolt 52"; end
+      if HR.Cast(S.VoidBolt) then return "void_bolt 88"; end
     end
     -- shadow_word_death,target_if=target.time_to_die<3|buff.voidform.down
     if S.ShadowWordDeath:IsReadyP() then
-      if HR.CastCycle(S.ShadowWordDeath, 40, EvaluateCycleShadowWordDeath58) then return "shadow_word_death 62" end
+      if HR.CastCycle(S.ShadowWordDeath, 40, EvaluateCycleShadowWordDeath94) then return "shadow_word_death 98" end
     end
-    -- surrender_to_madness,if=buff.voidform.stack>=(15+buff.bloodlust.up)
-    if S.SurrenderToMadness:IsReadyP() and (Player:BuffStackP(S.VoidformBuff) >= (15 + num(Player:HasHeroism()))) then
-      if HR.Cast(S.SurrenderToMadness) then return "surrender_to_madness 63"; end
+    -- surrender_to_madness,if=buff.voidform.stack>10+(10*buff.bloodlust.up)
+    if S.SurrenderToMadness:IsReadyP() and (Player:BuffStackP(S.VoidformBuff) > 10 + (10 * num(Player:HasHeroism()))) then
+      if HR.Cast(S.SurrenderToMadness) then return "surrender_to_madness 99"; end
     end
     -- dark_void,if=raid_event.adds.in>10
     if S.DarkVoid:IsReadyP() and (10000000000 > 10) then
-      if HR.Cast(S.DarkVoid) then return "dark_void 67"; end
+      if HR.Cast(S.DarkVoid) then return "dark_void 103"; end
     end
     -- mindbender
     if S.Mindbender:IsReadyP() then
-      if HR.Cast(S.Mindbender) then return "mindbender 69"; end
+      if HR.Cast(S.Mindbender) then return "mindbender 105"; end
     end
     -- mind_blast
     if S.MindBlast:IsReadyP() then
-      if HR.Cast(S.MindBlast) then return "mind_blast 71"; end
+      if HR.Cast(S.MindBlast) then return "mind_blast 107"; end
     end
     -- shadow_crash,if=(raid_event.adds.in>5&raid_event.adds.duration<2)|raid_event.adds.duration>2
     if S.ShadowCrash:IsReadyP() and ((10000000000 > 5 and raid_event.adds.duration < 2) or raid_event.adds.duration > 2) then
-      if HR.Cast(S.ShadowCrash) then return "shadow_crash 73"; end
+      if HR.Cast(S.ShadowCrash) then return "shadow_crash 109"; end
     end
     -- shadow_word_pain,target_if=refreshable&target.time_to_die>4,if=!talent.misery.enabled&!talent.dark_void.enabled
     if S.ShadowWordPain:IsCastableP() then
-      if HR.CastCycle(S.ShadowWordPain, 40, EvaluateCycleShadowWordPain79) then return "shadow_word_pain 91" end
+      if HR.CastCycle(S.ShadowWordPain, 40, EvaluateCycleShadowWordPain115) then return "shadow_word_pain 127" end
     end
     -- vampiric_touch,target_if=refreshable,if=(target.time_to_die>6)
     if S.VampiricTouch:IsCastableP() then
-      if HR.CastCycle(S.VampiricTouch, 40, EvaluateCycleVampiricTouch96) then return "vampiric_touch 104" end
+      if HR.CastCycle(S.VampiricTouch, 40, EvaluateCycleVampiricTouch132) then return "vampiric_touch 140" end
     end
     -- vampiric_touch,target_if=dot.shadow_word_pain.refreshable,if=(talent.misery.enabled&target.time_to_die>4)
     if S.VampiricTouch:IsCastableP() then
-      if HR.CastCycle(S.VampiricTouch, 40, EvaluateCycleVampiricTouch109) then return "vampiric_touch 115" end
+      if HR.CastCycle(S.VampiricTouch, 40, EvaluateCycleVampiricTouch145) then return "vampiric_touch 151" end
     end
     -- void_torrent,if=buff.voidform.up
     if S.VoidTorrent:IsReadyP() and (Player:BuffP(S.VoidformBuff)) then
-      if HR.Cast(S.VoidTorrent) then return "void_torrent 116"; end
+      if HR.Cast(S.VoidTorrent) then return "void_torrent 152"; end
     end
     -- mind_sear,target_if=spell_targets.mind_sear>2,chain=1,interrupt=1
     if S.MindSear:IsCastableP() then
-      if HR.CastCycle(S.MindSear, 40, EvaluateCycleMindSear124) then return "mind_sear 126" end
+      if HR.CastCycle(S.MindSear, 40, EvaluateCycleMindSear160) then return "mind_sear 162" end
     end
     -- mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(cooldown.void_bolt.up|cooldown.mind_blast.up)
     if S.MindFlay:IsCastableP() then
-      if HR.Cast(S.MindFlay) then return "mind_flay 127"; end
+      if HR.Cast(S.MindFlay) then return "mind_flay 163"; end
     end
     -- shadow_word_pain
     if S.ShadowWordPain:IsCastableP() then
-      if HR.Cast(S.ShadowWordPain) then return "shadow_word_pain 129"; end
+      if HR.Cast(S.ShadowWordPain) then return "shadow_word_pain 165"; end
     end
   end
   Single = function()
     -- void_eruption
     if S.VoidEruption:IsReadyP() then
-      if HR.Cast(S.VoidEruption) then return "void_eruption 131"; end
+      if HR.Cast(S.VoidEruption) then return "void_eruption 167"; end
     end
     -- dark_ascension,if=buff.voidform.down
     if S.DarkAscension:IsReadyP() and (Player:BuffDownP(S.VoidformBuff)) then
-      if HR.Cast(S.DarkAscension) then return "dark_ascension 133"; end
+      if HR.Cast(S.DarkAscension) then return "dark_ascension 169"; end
     end
     -- void_bolt
     if S.VoidBolt:IsReadyP() then
-      if HR.Cast(S.VoidBolt) then return "void_bolt 137"; end
+      if HR.Cast(S.VoidBolt) then return "void_bolt 173"; end
     end
     -- shadow_word_death,if=target.time_to_die<3|cooldown.shadow_word_death.charges=2|(cooldown.shadow_word_death.charges=1&cooldown.shadow_word_death.remains<gcd.max)
     if S.ShadowWordDeath:IsReadyP() and (Target:TimeToDie() < 3 or S.ShadowWordDeath:ChargesP() == 2 or (S.ShadowWordDeath:ChargesP() == 1 and S.ShadowWordDeath:CooldownRemainsP() < Player:GCD())) then
-      if HR.Cast(S.ShadowWordDeath) then return "shadow_word_death 139"; end
+      if HR.Cast(S.ShadowWordDeath) then return "shadow_word_death 175"; end
     end
-    -- surrender_to_madness,if=buff.voidform.stack>=(15+buff.bloodlust.up)&target.time_to_die>200|target.time_to_die<75
-    if S.SurrenderToMadness:IsReadyP() and (Player:BuffStackP(S.VoidformBuff) >= (15 + num(Player:HasHeroism())) and Target:TimeToDie() > 200 or Target:TimeToDie() < 75) then
-      if HR.Cast(S.SurrenderToMadness) then return "surrender_to_madness 147"; end
+    -- surrender_to_madness,if=buff.voidform.stack>10+(10*buff.bloodlust.up)
+    if S.SurrenderToMadness:IsReadyP() and (Player:BuffStackP(S.VoidformBuff) > 10 + (10 * num(Player:HasHeroism()))) then
+      if HR.Cast(S.SurrenderToMadness) then return "surrender_to_madness 183"; end
     end
     -- dark_void,if=raid_event.adds.in>10
     if S.DarkVoid:IsReadyP() and (10000000000 > 10) then
-      if HR.Cast(S.DarkVoid) then return "dark_void 151"; end
+      if HR.Cast(S.DarkVoid) then return "dark_void 187"; end
     end
     -- mindbender
     if S.Mindbender:IsReadyP() then
-      if HR.Cast(S.Mindbender) then return "mindbender 153"; end
+      if HR.Cast(S.Mindbender) then return "mindbender 189"; end
     end
     -- shadow_word_death,if=!buff.voidform.up|(cooldown.shadow_word_death.charges=2&buff.voidform.stack<15)
     if S.ShadowWordDeath:IsReadyP() and (not Player:BuffP(S.VoidformBuff) or (S.ShadowWordDeath:ChargesP() == 2 and Player:BuffStackP(S.VoidformBuff) < 15)) then
-      if HR.Cast(S.ShadowWordDeath) then return "shadow_word_death 155"; end
+      if HR.Cast(S.ShadowWordDeath) then return "shadow_word_death 191"; end
     end
     -- shadow_crash,if=raid_event.adds.in>5&raid_event.adds.duration<20
     if S.ShadowCrash:IsReadyP() and (10000000000 > 5 and raid_event.adds.duration < 20) then
-      if HR.Cast(S.ShadowCrash) then return "shadow_crash 163"; end
+      if HR.Cast(S.ShadowCrash) then return "shadow_crash 199"; end
     end
     -- mind_blast,if=variable.dots_up
     if S.MindBlast:IsReadyP() and (bool(VarDotsUp)) then
-      if HR.Cast(S.MindBlast) then return "mind_blast 165"; end
+      if HR.Cast(S.MindBlast) then return "mind_blast 201"; end
     end
     -- void_torrent,if=dot.shadow_word_pain.remains>4&dot.vampiric_touch.remains>4&buff.voidform.up
     if S.VoidTorrent:IsReadyP() and (Target:DebuffRemainsP(S.ShadowWordPainDebuff) > 4 and Target:DebuffRemainsP(S.VampiricTouchDebuff) > 4 and Player:BuffP(S.VoidformBuff)) then
-      if HR.Cast(S.VoidTorrent) then return "void_torrent 169"; end
+      if HR.Cast(S.VoidTorrent) then return "void_torrent 205"; end
     end
     -- shadow_word_pain,if=refreshable&target.time_to_die>4&!talent.misery.enabled&!talent.dark_void.enabled
     if S.ShadowWordPain:IsCastableP() and (Target:DebuffRefreshableCP(S.ShadowWordPainDebuff) and Target:TimeToDie() > 4 and not S.Misery:IsAvailable() and not S.DarkVoid:IsAvailable()) then
-      if HR.Cast(S.ShadowWordPain) then return "shadow_word_pain 177"; end
+      if HR.Cast(S.ShadowWordPain) then return "shadow_word_pain 213"; end
     end
     -- vampiric_touch,if=refreshable&target.time_to_die>6|(talent.misery.enabled&dot.shadow_word_pain.refreshable)
     if S.VampiricTouch:IsCastableP() and (Target:DebuffRefreshableCP(S.VampiricTouchDebuff) and Target:TimeToDie() > 6 or (S.Misery:IsAvailable() and Target:DebuffRefreshableCP(S.ShadowWordPainDebuff))) then
-      if HR.Cast(S.VampiricTouch) then return "vampiric_touch 189"; end
+      if HR.Cast(S.VampiricTouch) then return "vampiric_touch 225"; end
     end
     -- mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(cooldown.void_bolt.up|cooldown.mind_blast.up)
     if S.MindFlay:IsCastableP() then
-      if HR.Cast(S.MindFlay) then return "mind_flay 201"; end
+      if HR.Cast(S.MindFlay) then return "mind_flay 237"; end
     end
     -- shadow_word_pain
     if S.ShadowWordPain:IsCastableP() then
-      if HR.Cast(S.ShadowWordPain) then return "shadow_word_pain 203"; end
+      if HR.Cast(S.ShadowWordPain) then return "shadow_word_pain 239"; end
     end
   end
   -- call precombat
@@ -314,7 +340,7 @@ local function APL()
     -- use_item,slot=trinket2
     -- potion,if=buff.bloodlust.react|target.time_to_die<=80|target.health.pct<35
     if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:HasHeroism() or Target:TimeToDie() <= 80 or Target:HealthPercentage() < 35) then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 206"; end
+      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 242"; end
     end
     -- variable,name=dots_up,op=set,value=dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking
     if (true) then
@@ -322,7 +348,7 @@ local function APL()
     end
     -- berserking
     if S.Berserking:IsCastableP() and HR.CDsON() then
-      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return "berserking 214"; end
+      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return "berserking 250"; end
     end
     -- run_action_list,name=aoe,if=spell_targets.mind_sear>(5+1*talent.misery.enabled)
     if (Cache.EnemiesCount[40] > (5 + 1 * num(S.Misery:IsAvailable()))) then
