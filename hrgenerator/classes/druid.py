@@ -185,6 +185,9 @@ SPELL_INFO = {
             'apex_predator':                    {BUFF:      252752},
             'feral_frenzy':                     {SPELL:     274837},
             'moment_of_clarity':                {SPELL:     236068},
+            'scent_of_blood':                   {SPELL:     285564,
+                                                 BUFF:      285646},
+            'primal_wrath':                     {SPELL:     285381},
         },
         GUARDIAN:   {
             'moonkin_form':                     {SPELL:     197625},
