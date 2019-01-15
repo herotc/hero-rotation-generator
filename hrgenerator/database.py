@@ -97,10 +97,12 @@ for class_ in CLASSES:
         pass
 
 ITEM_INFO = {
-    'prolonged_power':          142117,
-    'old_war':                  127844,
-    'deadly_grace':             127843,
-    'battle_potion_of_agility': 163223,
+    'prolonged_power':              142117,
+    'old_war':                      127844,
+    'deadly_grace':                 127843,
+    'battle_potion_of_intellect':   163222,
+    'battle_potion_of_agility':     163223,
+    'battle_potion_of_strength':    163224,
 }
 for class_ in CLASSES:
     ITEM_INFO.update(class_.ITEM_INFO)
