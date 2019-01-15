@@ -24,9 +24,9 @@ CLASS_SPECS = {
 
 DEFAULT_POTION = {
     HUNTER: {
-        BEAST_MASTERY:  'prolonged_power',
-        MARKSMANSHIP:   'prolonged_power',
-        SURVIVAL:       'prolonged_power',
+        BEAST_MASTERY:  'battle_potion_of_agility',
+        MARKSMANSHIP:   'battle_potion_of_agility',
+        SURVIVAL:       'battle_potion_of_agility',
     }
 }
 

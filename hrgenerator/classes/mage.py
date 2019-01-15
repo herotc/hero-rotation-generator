@@ -22,9 +22,9 @@ CLASS_SPECS = {
 
 DEFAULT_POTION = {
     MAGE: {
-        ARCANE: 'deadly_grace',
-        FIRE:   'prolonged_power',
-        FROST:  'prolonged_power',
+        ARCANE: 'battle_potion_of_intellect',
+        FIRE:   'battle_potion_of_intellect',
+        FROST:  'battle_potion_of_intellect',
     }
 }
 

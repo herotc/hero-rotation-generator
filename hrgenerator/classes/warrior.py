@@ -5,7 +5,7 @@ Warrior specific constants and functions.
 @author: skasch
 """
 
-from ..constants import COMMON, SPELL, BUFF, DEBUFF, RANGE, CD, GCDAOGCD, READY
+from ..constants import COMMON, SPELL, BUFF, DEBUFF, RANGE, CD, GCDAOGCD, READY, OGCDAOGCD
 
 WARRIOR = 'warrior'
 ARMS = 'arms'
@@ -22,8 +22,8 @@ CLASS_SPECS = {
 
 DEFAULT_POTION = {
     WARRIOR: {
-        ARMS: 'prolonged_power',
-        FURY: 'old_war',
+        ARMS: 'battle_potion_of_strength',
+        FURY: 'battle_potion_of_strength',
     }
 }
 
@@ -95,7 +95,8 @@ SPELL_INFO = {
                                                      BUFF:      7384},
             'dauntless':                            {SPELL:     202297},
             'deadly_calm':                          {SPELL:     262228,
-                                                     BUFF:      262228},
+                                                     BUFF:      262228,
+                                                     OGCDAOGCD: True},
             'anger_management':                     {SPELL:     152278},
             'slam':                                 {SPELL:     1464,
                                                      READY:     True},
