@@ -51,6 +51,7 @@ Spell.Hunter.Marksmanship = {
   PreciseShotsBuff                      = Spell(),
   IntheRhythm                           = Spell(),
   PiercingShot                          = Spell(198670),
+  SteadyFocus                           = Spell(),
   SteadyShot                            = Spell(),
   TrickShotsBuff                        = Spell(),
   Multishot                             = Spell(2643)
@@ -205,71 +206,75 @@ local function APL()
     if S.SerpentSting:IsCastableP() and (Target:DebuffRefreshableCP(S.SerpentStingDebuff) and not S.SerpentSting:InFlight()) then
       if HR.Cast(S.SerpentSting) then return "serpent_sting 138"; end
     end
-    -- arcane_shot,if=buff.master_marksman.up&focus+cast_regen<focus.max
-    if S.ArcaneShot:IsCastableP() and (Player:BuffP(S.MasterMarksmanBuff) and Player:Focus() + Player:FocusCastRegen(S.ArcaneShot:ExecuteTime()) < Player:FocusMax()) then
-      if HR.Cast(S.ArcaneShot) then return "arcane_shot 152"; end
+    -- rapid_fire,if=focus<50&(buff.bloodlust.up&buff.trueshot.up|buff.trueshot.down)
+    if S.RapidFire:IsCastableP() and (Player:Focus() < 50 and (Player:HasHeroism() and Player:BuffP(S.TrueshotBuff) or Player:BuffDownP(S.TrueshotBuff))) then
+      if HR.Cast(S.RapidFire) then return "rapid_fire 152"; end
     end
-    -- aimed_shot,if=buff.precise_shots.down|cooldown.aimed_shot.full_recharge_time<action.aimed_shot.cast_time|buff.bloodlust.up&buff.trueshot.up
-    if S.AimedShot:IsCastableP() and (Player:BuffDownP(S.PreciseShotsBuff) or S.AimedShot:FullRechargeTimeP() < S.AimedShot:CastTime() or Player:HasHeroism() and Player:BuffP(S.TrueshotBuff)) then
-      if HR.Cast(S.AimedShot) then return "aimed_shot 162"; end
+    -- arcane_shot,if=buff.master_marksman.up&buff.trueshot.up&focus+cast_regen<focus.max
+    if S.ArcaneShot:IsCastableP() and (Player:BuffP(S.MasterMarksmanBuff) and Player:BuffP(S.TrueshotBuff) and Player:Focus() + Player:FocusCastRegen(S.ArcaneShot:ExecuteTime()) < Player:FocusMax()) then
+      if HR.Cast(S.ArcaneShot) then return "arcane_shot 158"; end
     end
-    -- rapid_fire,if=focus+cast_regen<focus.max|azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1|azerite.surging_shots.enabled|talent.streamline.enabled|buff.trueshot.up
-    if S.RapidFire:IsCastableP() and (Player:Focus() + Player:FocusCastRegen(S.RapidFire:ExecuteTime()) < Player:FocusMax() or S.FocusedFire:AzeriteEnabled() or S.IntheRhythm:AzeriteRank() > 1 or S.SurgingShots:AzeriteEnabled() or S.Streamline:IsAvailable() or Player:BuffP(S.TrueshotBuff)) then
-      if HR.Cast(S.RapidFire) then return "rapid_fire 174"; end
+    -- aimed_shot,if=buff.precise_shots.down|cooldown.aimed_shot.full_recharge_time<action.aimed_shot.cast_time|buff.trueshot.up
+    if S.AimedShot:IsCastableP() and (Player:BuffDownP(S.PreciseShotsBuff) or S.AimedShot:FullRechargeTimeP() < S.AimedShot:CastTime() or Player:BuffP(S.TrueshotBuff)) then
+      if HR.Cast(S.AimedShot) then return "aimed_shot 170"; end
+    end
+    -- rapid_fire,if=focus+cast_regen<focus.max|azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1|azerite.surging_shots.enabled|talent.streamline.enabled
+    if S.RapidFire:IsCastableP() and (Player:Focus() + Player:FocusCastRegen(S.RapidFire:ExecuteTime()) < Player:FocusMax() or S.FocusedFire:AzeriteEnabled() or S.IntheRhythm:AzeriteRank() > 1 or S.SurgingShots:AzeriteEnabled() or S.Streamline:IsAvailable()) then
+      if HR.Cast(S.RapidFire) then return "rapid_fire 182"; end
     end
     -- piercing_shot
     if S.PiercingShot:IsCastableP() then
-      if HR.Cast(S.PiercingShot) then return "piercing_shot 192"; end
+      if HR.Cast(S.PiercingShot) then return "piercing_shot 198"; end
     end
-    -- arcane_shot,if=focus>60|buff.precise_shots.up
-    if S.ArcaneShot:IsCastableP() and (Player:Focus() > 60 or Player:BuffP(S.PreciseShotsBuff)) then
-      if HR.Cast(S.ArcaneShot) then return "arcane_shot 194"; end
+    -- arcane_shot,if=focus>60&!talent.steady_focus.enabled|buff.precise_shots.up&buff.trueshot.down|focus>85
+    if S.ArcaneShot:IsCastableP() and (Player:Focus() > 60 and not S.SteadyFocus:IsAvailable() or Player:BuffP(S.PreciseShotsBuff) and Player:BuffDownP(S.TrueshotBuff) or Player:Focus() > 85) then
+      if HR.Cast(S.ArcaneShot) then return "arcane_shot 200"; end
     end
     -- steady_shot
     if S.SteadyShot:IsCastableP() then
-      if HR.Cast(S.SteadyShot) then return "steady_shot 198"; end
+      if HR.Cast(S.SteadyShot) then return "steady_shot 208"; end
     end
   end
   Trickshots = function()
     -- barrage
     if S.Barrage:IsCastableP() then
-      if HR.Cast(S.Barrage) then return "barrage 200"; end
+      if HR.Cast(S.Barrage) then return "barrage 210"; end
     end
     -- explosive_shot
     if S.ExplosiveShot:IsCastableP() then
-      if HR.Cast(S.ExplosiveShot) then return "explosive_shot 202"; end
+      if HR.Cast(S.ExplosiveShot) then return "explosive_shot 212"; end
     end
     -- rapid_fire,if=buff.trick_shots.up&(azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1|azerite.surging_shots.enabled|talent.streamline.enabled)
     if S.RapidFire:IsCastableP() and (Player:BuffP(S.TrickShotsBuff) and (S.FocusedFire:AzeriteEnabled() or S.IntheRhythm:AzeriteRank() > 1 or S.SurgingShots:AzeriteEnabled() or S.Streamline:IsAvailable())) then
-      if HR.Cast(S.RapidFire) then return "rapid_fire 204"; end
+      if HR.Cast(S.RapidFire) then return "rapid_fire 214"; end
     end
     -- aimed_shot,if=buff.trick_shots.up&(buff.precise_shots.down|cooldown.aimed_shot.full_recharge_time<action.aimed_shot.cast_time)
     if S.AimedShot:IsCastableP() and (Player:BuffP(S.TrickShotsBuff) and (Player:BuffDownP(S.PreciseShotsBuff) or S.AimedShot:FullRechargeTimeP() < S.AimedShot:CastTime())) then
-      if HR.Cast(S.AimedShot) then return "aimed_shot 216"; end
+      if HR.Cast(S.AimedShot) then return "aimed_shot 226"; end
     end
     -- rapid_fire,if=buff.trick_shots.up
     if S.RapidFire:IsCastableP() and (Player:BuffP(S.TrickShotsBuff)) then
-      if HR.Cast(S.RapidFire) then return "rapid_fire 228"; end
+      if HR.Cast(S.RapidFire) then return "rapid_fire 238"; end
     end
     -- multishot,if=buff.trick_shots.down|buff.precise_shots.up|focus>70
     if S.Multishot:IsCastableP() and (Player:BuffDownP(S.TrickShotsBuff) or Player:BuffP(S.PreciseShotsBuff) or Player:Focus() > 70) then
-      if HR.Cast(S.Multishot) then return "multishot 232"; end
+      if HR.Cast(S.Multishot) then return "multishot 242"; end
     end
     -- piercing_shot
     if S.PiercingShot:IsCastableP() then
-      if HR.Cast(S.PiercingShot) then return "piercing_shot 238"; end
+      if HR.Cast(S.PiercingShot) then return "piercing_shot 248"; end
     end
     -- a_murder_of_crows
     if S.AMurderofCrows:IsCastableP() then
-      if HR.Cast(S.AMurderofCrows) then return "a_murder_of_crows 240"; end
+      if HR.Cast(S.AMurderofCrows) then return "a_murder_of_crows 250"; end
     end
     -- serpent_sting,if=refreshable&!action.serpent_sting.in_flight
     if S.SerpentSting:IsCastableP() and (Target:DebuffRefreshableCP(S.SerpentStingDebuff) and not S.SerpentSting:InFlight()) then
-      if HR.Cast(S.SerpentSting) then return "serpent_sting 242"; end
+      if HR.Cast(S.SerpentSting) then return "serpent_sting 252"; end
     end
     -- steady_shot
     if S.SteadyShot:IsCastableP() then
-      if HR.Cast(S.SteadyShot) then return "steady_shot 256"; end
+      if HR.Cast(S.SteadyShot) then return "steady_shot 266"; end
     end
   end
   -- call precombat

@@ -172,7 +172,7 @@ local function APL()
     if S.LightsJudgment:IsCastableP() and HR.CDsON() and (not S.Seraphim:IsAvailable() or Player:BuffP(S.SeraphimBuff)) then
       if HR.Cast(S.LightsJudgment) then return "lights_judgment 113"; end
     end
-    -- blessed_hammer,strikes=2
+    -- blessed_hammer,strikes=3
     if S.BlessedHammer:IsCastableP() then
       if HR.Cast(S.BlessedHammer) then return "blessed_hammer 119"; end
     end
