@@ -122,6 +122,11 @@ SPELL_INFO = {
             'surrender_to_madness':             {SPELL:     193223,
                                                  READY:     True,
                                                  BUFF:      193223},
+
+            # Azerite
+            'thought_harvester':                {SPELL:     273319},
+            'harvested_thoughts':               {SPELL:     273320,
+                                                 BUFF:      273321},                                     
         },
     },
 }
