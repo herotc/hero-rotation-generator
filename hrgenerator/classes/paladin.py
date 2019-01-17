@@ -47,8 +47,7 @@ SPELL_INFO = {
                                                  BUFF:      642},
             'lay_on_hand':                      {SPELL:     633},
             'avenging_wrath':                   {SPELL:     31884,
-                                                 BUFF:      31884,
-                                                 OGCDAOGCD: True},
+                                                 BUFF:      31884},
             'consecration':                     {SPELL:     26573}, # Holy/Prot
         },
         PROTECTION: {
@@ -83,8 +82,7 @@ SPELL_INFO = {
         RETRIBUTION: {
             'crusade':                          {SPELL:     231895,
                                                  BUFF:      231895,
-                                                 CD:        True,
-                                                 OGCDAOGCD: True},
+                                                 CD:        True},
             'blade_of_justice':                 {SPELL:     184575},
             'shield_of_vengeance':              {SPELL:     184662},
             'execution_sentence':               {SPELL:     267798,

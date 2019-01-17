@@ -148,11 +148,11 @@ local function APL()
     end
     -- avenging_wrath,if=buff.inquisition.up|!talent.inquisition.enabled
     if S.AvengingWrath:IsCastableP() and (Player:BuffP(S.InquisitionBuff) or not S.Inquisition:IsAvailable()) then
-      if HR.Cast(S.AvengingWrath, Settings.Retribution.OffGCDasOffGCD.AvengingWrath) then return "avenging_wrath 32"; end
+      if HR.Cast(S.AvengingWrath) then return "avenging_wrath 32"; end
     end
     -- crusade,if=holy_power>=4
     if S.Crusade:IsCastableP() and (Player:HolyPower() >= 4) then
-      if HR.Cast(S.Crusade, Settings.Retribution.OffGCDasOffGCD.Crusade) then return "crusade 38"; end
+      if HR.Cast(S.Crusade) then return "crusade 38"; end
     end
   end
   Finishers = function()
