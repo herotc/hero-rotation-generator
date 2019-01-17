@@ -5,7 +5,7 @@ Paladin specific constants and functions.
 @author: skasch
 """
 
-from ..constants import COMMON, SPELL, BUFF, DEBUFF, INTERRUPT, RANGE, CD
+from ..constants import COMMON, SPELL, BUFF, DEBUFF, INTERRUPT, RANGE, CD, READY, OGCDAOGCD
 
 PALADIN = 'paladin'
 HOLY = 'holy'
@@ -30,8 +30,8 @@ ACTION_LIST_INFO = {
 
 DEFAULT_POTION = {
     PALADIN: {
-        PROTECTION:     'prolonged_power',
-        RETRIBUTION:    'old_war',
+        PROTECTION:     'battle_potion_of_stamina',
+        RETRIBUTION:    'battle_potion_of_strength',
     }
 }
 
@@ -47,9 +47,9 @@ SPELL_INFO = {
                                                  BUFF:      642},
             'lay_on_hand':                      {SPELL:     633},
             'avenging_wrath':                   {SPELL:     31884,
-                                                 BUFF:      31884},
-            'consecration':                     {SPELL:     26573},
-            # Legendaries
+                                                 BUFF:      31884,
+                                                 OGCDAOGCD: True},
+            'consecration':                     {SPELL:     26573}, # Holy/Prot
         },
         PROTECTION: {
             'shield_of_the_righteous':          {SPELL:     53600},
@@ -83,31 +83,36 @@ SPELL_INFO = {
         RETRIBUTION: {
             'crusade':                          {SPELL:     231895,
                                                  BUFF:      231895,
-                                                 CD:        True},
+                                                 CD:        True,
+                                                 OGCDAOGCD: True},
             'blade_of_justice':                 {SPELL:     184575},
             'shield_of_vengeance':              {SPELL:     184662},
             'execution_sentence':               {SPELL:     267798,
-                                                 DEBUFF:    267799},
+                                                 DEBUFF:    267799,
+                                                 READY:     True},
             'judgment':                         {SPELL:     20271,
                                                  DEBUFF:    197277,
                                                  RANGE:     30},
             'divine_storm':                     {SPELL:     53385,
-                                                 RANGE:     8},
+                                                 RANGE:     8,
+                                                 READY:     True},
             'divine_purpose':                   {BUFF:      223817},
-            'templars_verdict':                 {SPELL:     85256},
+            'templars_verdict':                 {SPELL:     85256,
+                                                 READY:     True},
             'wake_of_ashes':                    {SPELL:     255937},
             'zeal':                             {SPELL:     269569},
             'crusader_strike':                  {SPELL:     35395},
             'rebuke':                           {SPELL:     96231,
                                                  INTERRUPT: True},
             'inquisition':                      {SPELL:     84963,
-                                                 BUFF:      84963},
+                                                 BUFF:      84963,
+                                                 READY:     True},
             'divine_judgment':                  {SPELL:     271580},
-            'divine_right':                     {BUFF:      278523},
             'hammer_of_wrath':                  {SPELL:     24275},
-            'divine_right':                     {SPELL:     277678,
-                                                # doublecheck this ID
-                                                 BUFF:      278523},
+            'consecration':                     {SPELL:     205228},
+            'righteous_verdict':                {SPELL:     267610},
+            'empyrean_power':                   {SPELL:     286390,
+                                                 BUFF:      286393}, # CHECK BUFF ID
         },
     },
 }

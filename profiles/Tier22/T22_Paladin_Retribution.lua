@@ -32,19 +32,18 @@ Spell.Paladin.Retribution = {
   InquisitionBuff                       = Spell(84963),
   Inquisition                           = Spell(84963),
   Crusade                               = Spell(231895),
-  RighteousVerdict                      = Spell(),
+  RighteousVerdict                      = Spell(267610),
   ExecutionSentence                     = Spell(267798),
   DivineStorm                           = Spell(53385),
   DivinePurposeBuff                     = Spell(223817),
-  EmpyreanPowerBuff                     = Spell(),
+  EmpyreanPowerBuff                     = Spell(286393),
   JudgmentDebuff                        = Spell(197277),
   TemplarsVerdict                       = Spell(85256),
   HammerofWrath                         = Spell(24275),
   BladeofJustice                        = Spell(184575),
   Judgment                              = Spell(20271),
-  Consecration                          = Spell(26573),
+  Consecration                          = Spell(205228),
   CrusaderStrike                        = Spell(35395),
-  Sequence                              = Spell(),
   Rebuke                                = Spell(96231)
 };
 local S = Spell.Paladin.Retribution;
@@ -52,7 +51,7 @@ local S = Spell.Paladin.Retribution;
 -- Items
 if not Item.Paladin then Item.Paladin = {} end
 Item.Paladin.Retribution = {
-  OldWar                           = Item(127844)
+  BattlePotionofStrength           = Item(163224)
 };
 local I = Item.Paladin.Retribution;
 
@@ -68,10 +67,30 @@ local Settings = {
 };
 
 -- Variables
+local VarOpenerDone = 0;
 local VarDsCastable = 0;
 local VarHow = 0;
+local Opener1 = 0;
+local Opener2 = 0;
+local Opener3 = 0;
+local Opener4 = 0;
+local Opener5 = 0;
+local Opener6 = 0;
+local Opener7 = 0;
+local Opener8 = 0;
+local Opener9 = 0;
 
 HL:RegisterForEvent(function()
+  VarOpenerDone = 0
+  Opener1 = 0
+  Opener2 = 0
+  Opener3 = 0
+  Opener4 = 0
+  Opener5 = 0
+  Opener6 = 0
+  Opener7 = 0
+  Opener8 = 0
+  Opener9 = 0
   VarDsCastable = 0
   VarHow = 0
 end, "PLAYER_REGEN_ENABLED")
@@ -82,7 +101,6 @@ local function UpdateRanges()
     HL.GetEnemies(i);
   end
 end
-
 
 local function num(val)
   if val then return 1 else return 0 end
@@ -103,8 +121,8 @@ local function APL()
     -- augmentation
     -- snapshot_stats
     -- potion
-    if I.OldWar:IsReady() and Settings.Commons.UsePotions then
-      if HR.CastSuggested(I.OldWar) then return "old_war 4"; end
+    if I.BattlePotionofStrength:IsReady() and Settings.Commons.UsePotions then
+      if HR.CastSuggested(I.BattlePotionofStrength) then return "battle_potion_of_strength 4"; end
     end
     -- arcane_torrent,if=!talent.wake_of_ashes.enabled
     if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (not S.WakeofAshes:IsAvailable()) then
@@ -113,8 +131,8 @@ local function APL()
   end
   Cooldowns = function()
     -- potion,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<25|target.time_to_die<=40)
-    if I.OldWar:IsReady() and Settings.Commons.UsePotions and ((Player:HasHeroism() or Player:BuffP(S.AvengingWrathBuff) or Player:BuffP(S.CrusadeBuff) and Player:BuffRemainsP(S.CrusadeBuff) < 25 or Target:TimeToDie() <= 40)) then
-      if HR.CastSuggested(I.OldWar) then return "old_war 10"; end
+    if I.BattlePotionofStrength:IsReady() and Settings.Commons.UsePotions and ((Player:HasHeroism() or Player:BuffP(S.AvengingWrathBuff) or Player:BuffP(S.CrusadeBuff) and Player:BuffRemainsP(S.CrusadeBuff) < 25 or Target:TimeToDie() <= 40)) then
+      if HR.CastSuggested(I.BattlePotionofStrength) then return "battle_potion_of_strength 10"; end
     end
     -- lights_judgment,if=spell_targets.lights_judgment>=2|(!raid_event.adds.exists|raid_event.adds.in>75)
     if S.LightsJudgment:IsCastableP() and HR.CDsON() and (Cache.EnemiesCount[5] >= 2 or (not (Cache.EnemiesCount[30] > 1) or 10000000000 > 75)) then
@@ -130,11 +148,11 @@ local function APL()
     end
     -- avenging_wrath,if=buff.inquisition.up|!talent.inquisition.enabled
     if S.AvengingWrath:IsCastableP() and (Player:BuffP(S.InquisitionBuff) or not S.Inquisition:IsAvailable()) then
-      if HR.Cast(S.AvengingWrath) then return "avenging_wrath 32"; end
+      if HR.Cast(S.AvengingWrath, Settings.Retribution.OffGCDasOffGCD.AvengingWrath) then return "avenging_wrath 32"; end
     end
     -- crusade,if=holy_power>=4
-    if S.Crusade:IsCastableP() and HR.CDsON() and (Player:HolyPower() >= 4) then
-      if HR.Cast(S.Crusade) then return "crusade 38"; end
+    if S.Crusade:IsCastableP() and (Player:HolyPower() >= 4) then
+      if HR.Cast(S.Crusade, Settings.Retribution.OffGCDasOffGCD.Crusade) then return "crusade 38"; end
     end
   end
   Finishers = function()
@@ -143,27 +161,27 @@ local function APL()
       VarDsCastable = num(Cache.EnemiesCount[8] >= 2 and not S.RighteousVerdict:IsAvailable() or Cache.EnemiesCount[8] >= 3 and S.RighteousVerdict:IsAvailable())
     end
     -- inquisition,if=buff.inquisition.down|buff.inquisition.remains<5&holy_power>=3|talent.execution_sentence.enabled&cooldown.execution_sentence.remains<10&buff.inquisition.remains<15|cooldown.avenging_wrath.remains<15&buff.inquisition.remains<20&holy_power>=3
-    if S.Inquisition:IsCastableP() and (Player:BuffDownP(S.InquisitionBuff) or Player:BuffRemainsP(S.InquisitionBuff) < 5 and Player:HolyPower() >= 3 or S.ExecutionSentence:IsAvailable() and S.ExecutionSentence:CooldownRemainsP() < 10 and Player:BuffRemainsP(S.InquisitionBuff) < 15 or S.AvengingWrath:CooldownRemainsP() < 15 and Player:BuffRemainsP(S.InquisitionBuff) < 20 and Player:HolyPower() >= 3) then
+    if S.Inquisition:IsReadyP() and (Player:BuffDownP(S.InquisitionBuff) or Player:BuffRemainsP(S.InquisitionBuff) < 5 and Player:HolyPower() >= 3 or S.ExecutionSentence:IsAvailable() and S.ExecutionSentence:CooldownRemainsP() < 10 and Player:BuffRemainsP(S.InquisitionBuff) < 15 or S.AvengingWrath:CooldownRemainsP() < 15 and Player:BuffRemainsP(S.InquisitionBuff) < 20 and Player:HolyPower() >= 3) then
       if HR.Cast(S.Inquisition) then return "inquisition 46"; end
     end
     -- execution_sentence,if=spell_targets.divine_storm<=2&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)
-    if S.ExecutionSentence:IsCastableP() and (Cache.EnemiesCount[8] <= 2 and (not S.Crusade:IsAvailable() or S.Crusade:CooldownRemainsP() > Player:GCD() * 2)) then
+    if S.ExecutionSentence:IsReadyP() and (Cache.EnemiesCount[8] <= 2 and (not S.Crusade:IsAvailable() or S.Crusade:CooldownRemainsP() > Player:GCD() * 2)) then
       if HR.Cast(S.ExecutionSentence) then return "execution_sentence 62"; end
     end
     -- divine_storm,if=variable.ds_castable&buff.divine_purpose.react
-    if S.DivineStorm:IsCastableP() and (bool(VarDsCastable) and bool(Player:BuffStackP(S.DivinePurposeBuff))) then
+    if S.DivineStorm:IsReadyP() and (bool(VarDsCastable) and bool(Player:BuffStackP(S.DivinePurposeBuff))) then
       if HR.Cast(S.DivineStorm) then return "divine_storm 68"; end
     end
     -- divine_storm,if=variable.ds_castable&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)|buff.empyrean_power.up&debuff.judgment.down&buff.divine_purpose.down
-    if S.DivineStorm:IsCastableP() and (bool(VarDsCastable) and (not S.Crusade:IsAvailable() or S.Crusade:CooldownRemainsP() > Player:GCD() * 2) or Player:BuffP(S.EmpyreanPowerBuff) and Target:DebuffDownP(S.JudgmentDebuff) and Player:BuffDownP(S.DivinePurposeBuff)) then
+    if S.DivineStorm:IsReadyP() and (bool(VarDsCastable) and (not S.Crusade:IsAvailable() or S.Crusade:CooldownRemainsP() > Player:GCD() * 2) or Player:BuffP(S.EmpyreanPowerBuff) and Target:DebuffDownP(S.JudgmentDebuff) and Player:BuffDownP(S.DivinePurposeBuff)) then
       if HR.Cast(S.DivineStorm) then return "divine_storm 74"; end
     end
     -- templars_verdict,if=buff.divine_purpose.react
-    if S.TemplarsVerdict:IsCastableP() and (bool(Player:BuffStackP(S.DivinePurposeBuff))) then
+    if S.TemplarsVerdict:IsReadyP() and (bool(Player:BuffStackP(S.DivinePurposeBuff))) then
       if HR.Cast(S.TemplarsVerdict) then return "templars_verdict 88"; end
     end
     -- templars_verdict,if=(!talent.crusade.enabled|cooldown.crusade.remains>gcd*3)&(!talent.execution_sentence.enabled|buff.crusade.up&buff.crusade.stack<10|cooldown.execution_sentence.remains>gcd*2)
-    if S.TemplarsVerdict:IsCastableP() and ((not S.Crusade:IsAvailable() or S.Crusade:CooldownRemainsP() > Player:GCD() * 3) and (not S.ExecutionSentence:IsAvailable() or Player:BuffP(S.CrusadeBuff) and Player:BuffStackP(S.CrusadeBuff) < 10 or S.ExecutionSentence:CooldownRemainsP() > Player:GCD() * 2)) then
+    if S.TemplarsVerdict:IsReadyP() and ((not S.Crusade:IsAvailable() or S.Crusade:CooldownRemainsP() > Player:GCD() * 3) and (not S.ExecutionSentence:IsAvailable() or Player:BuffP(S.CrusadeBuff) and Player:BuffStackP(S.CrusadeBuff) < 10 or S.ExecutionSentence:CooldownRemainsP() > Player:GCD() * 2)) then
       if HR.Cast(S.TemplarsVerdict) then return "templars_verdict 92"; end
     end
   end
@@ -218,25 +236,276 @@ local function APL()
     end
   end
   Opener = function()
+    -- Common to all openers
+    -- shield_of_vengeance
+    if Opener1 == 0 then
+      if S.ShieldofVengeance:IsCastableP() then
+        if HR.Cast(S.ShieldofVengeance) then return "Common Opener 1 - Shield of Vengeance"; end
+      else
+        Opener1 = 1
+      end
+    end
+    -- blade_of_justice
+    if Opener2 == 0 then
+      if S.BladeofJustice:IsCastableP() then
+        if HR.Cast(S.BladeofJustice) then return "Common Opener 2 - Blade of Justice"; end
+      else
+        Opener2 = 1
+      end
+    end
+    -- judgment
+    if Opener3 == 0 then
+      if S.Judgment:IsCastableP() then
+        if HR.Cast(S.Judgment) then return "Common Opener 3 - Judgment"; end
+      else
+        Opener3 = 1
+      end
+    end
     -- sequence,if=talent.wake_of_ashes.enabled&talent.crusade.enabled&talent.execution_sentence.enabled&!talent.hammer_of_wrath.enabled,name=wake_opener_ES_CS:shield_of_vengeance:blade_of_justice:judgment:crusade:templars_verdict:wake_of_ashes:templars_verdict:crusader_strike:execution_sentence
-    if S.Sequence:IsCastableP() and (S.WakeofAshes:IsAvailable() and S.Crusade:IsAvailable() and S.ExecutionSentence:IsAvailable() and not S.HammerofWrath:IsAvailable()) then
-      if HR.Cast(S.Sequence) then return "sequence 170"; end
+    if S.WakeofAshes:IsAvailable() and S.Crusade:IsAvailable() and S.ExecutionSentence:IsAvailable() and not S.HammerofWrath:IsAvailable() then
+      -- wake_opener_ES_CS
+      -- crusade
+      if Opener4 == 0 then
+        if S.Crusade:IsCastableP() then
+          if HR.Cast(S.Crusade) then return "wake_opener_ES_CS 4 - Crusade"; end
+        else
+          Opener4 = 1
+        end
+      end
+      -- templars_verdict
+      if Opener5 == 0 then
+        if S.TemplarsVerdict:IsReadyP() and not Player:PrevGCDP(1, S.TemplarsVerdict) then
+          if HR.Cast(S.TemplarsVerdict) then return "wake_opener_ES_CS 5 - Templars Verdict"; end
+        else
+          Opener5 = 1
+        end
+      end
+      -- wake_of_ashes
+      if Opener6 == 0 then
+        if S.WakeofAshes:IsCastableP() then
+          if HR.Cast(S.WakeofAshes) then return "wake_opener_ES_CS 6 - Wake of Ashes"; end
+        else
+          Opener6 = 1
+        end
+      end
+      -- templars_verdict
+      if Opener7 == 0 then
+        if S.TemplarsVerdict:IsReadyP() and not Player:PrevGCDP(1, S.TemplarsVerdict) then
+          if HR.Cast(S.TemplarsVerdict) then return "wake_opener_ES_CS 7 - Templars Verdict"; end
+        else
+          Opener7 = 1
+        end
+      end
+      -- crusader_strike
+      if Opener8 == 0 then
+        if S.CrusaderStrike:IsCastableP() and not Player:PrevGCDP(1, S.CrusaderStrike) then
+          if HR.Cast(S.CrusaderStrike) then return "wake_opener_ES_CS 8 - Crusader Strike"; end
+        else
+          Opener8 = 1
+        end
+      end
+      -- execution_sentence
+      if Opener9 == 0 then
+        if S.ExecutionSentence:IsReadyP() then
+          if HR.Cast(S.ExecutionSentence) then return "wake_opener_ES_CS 9 - Execution Sentence"; end
+        else
+          Opener9 = 1
+        end
+      end
+      -- opener done
+      VarOpenerDone = 1
     end
     -- sequence,if=talent.wake_of_ashes.enabled&talent.crusade.enabled&!talent.execution_sentence.enabled&!talent.hammer_of_wrath.enabled,name=wake_opener_CS:shield_of_vengeance:blade_of_justice:judgment:crusade:templars_verdict:wake_of_ashes:templars_verdict:crusader_strike:templars_verdict
-    if S.Sequence:IsCastableP() and (S.WakeofAshes:IsAvailable() and S.Crusade:IsAvailable() and not S.ExecutionSentence:IsAvailable() and not S.HammerofWrath:IsAvailable()) then
-      if HR.Cast(S.Sequence) then return "sequence 180"; end
+    if S.WakeofAshes:IsAvailable() and S.Crusade:IsAvailable() and not S.ExecutionSentence:IsAvailable() and not S.HammerofWrath:IsAvailable() then
+      -- wake_opener_CS
+      -- crusade
+      if Opener4 == 0 then
+        if S.Crusade:IsCastableP() then
+          if HR.Cast(S.Crusade) then return "wake_opener_CS 4 - Crusade"; end
+        else
+          Opener4 = 1
+        end
+      end
+      -- templars_verdict
+      if Opener5 == 0 then
+        if S.TemplarsVerdict:IsReadyP() and not Player:PrevGCDP(1, S.TemplarsVerdict) then
+          if HR.Cast(S.TemplarsVerdict) then return "wake_opener_CS 5 - Templars Verdict"; end
+        else
+          Opener5 = 1
+        end
+      end
+      -- wake_of_ashes
+      if Opener6 == 0 then
+        if S.WakeofAshes:IsCastableP() then
+          if HR.Cast(S.WakeofAshes) then return "wake_opener_CS 6 - Wake of Ashes"; end
+        else
+          Opener6 = 1
+        end
+      end
+      -- templars_verdict
+      if Opener7 == 0 then
+        if S.TemplarsVerdict:IsReadyP() and not Player:PrevGCDP(1, S.TemplarsVerdict) then
+          if HR.Cast(S.TemplarsVerdict) then return "wake_opener_CS 7 - Templars Verdict"; end
+        else
+          Opener7 = 1
+        end
+      end
+      -- crusader_strike
+      if Opener8 == 0 then
+        if S.CrusaderStrike:IsCastableP() and not Player:PrevGCDP(1, S.CrusaderStrike) then
+          if HR.Cast(S.CrusaderStrike) then return "wake_opener_CS 8 - Crusader Strike"; end
+        else
+          Opener8 = 1
+        end
+      end
+      -- templars_verdict
+      if Opener9 == 0 then
+        if S.TemplarsVerdict:IsReadyP() and not Player:PrevGCDP(1, S.TemplarsVerdict) then
+          if HR.Cast(S.TemplarsVerdict) then return "wake_opener_CS 9 - Templars Verdict"; end
+        else
+          Opener9 = 1
+        end
+      end
+      -- opener done
+      VarOpenerDone = 1
     end
     -- sequence,if=talent.wake_of_ashes.enabled&talent.crusade.enabled&talent.execution_sentence.enabled&talent.hammer_of_wrath.enabled,name=wake_opener_ES_HoW:shield_of_vengeance:blade_of_justice:judgment:crusade:templars_verdict:wake_of_ashes:templars_verdict:hammer_of_wrath:execution_sentence
-    if S.Sequence:IsCastableP() and (S.WakeofAshes:IsAvailable() and S.Crusade:IsAvailable() and S.ExecutionSentence:IsAvailable() and S.HammerofWrath:IsAvailable()) then
-      if HR.Cast(S.Sequence) then return "sequence 190"; end
+    if S.WakeofAshes:IsAvailable() and S.Crusade:IsAvailable() and S.ExecutionSentence:IsAvailable() and S.HammerofWrath:IsAvailable() then
+      -- wake_opener_ES_HoW
+      -- crusade
+      if Opener4 == 0 then
+        if S.Crusade:IsCastableP() then
+          if HR.Cast(S.Crusade) then return "wake_opener_ES_HoW 4 - Crusade"; end
+        else
+          Opener4 = 1
+        end
+      end
+      -- templars_verdict
+      if Opener5 == 0 then
+        if S.TemplarsVerdict:IsReadyP() and not Player:PrevGCDP(1, S.TemplarsVerdict) then
+          if HR.Cast(S.TemplarsVerdict) then return "wake_opener_ES_HoW 5 - Templars Verdict"; end
+        else
+          Opener5 = 1
+        end
+      end
+      -- wake_of_ashes
+      if Opener6 == 0 then
+        if S.WakeofAshes:IsCastableP() then
+          if HR.Cast(S.WakeofAshes) then return "wake_opener_ES_HoW 6 - Wake of Ashes"; end
+        else
+          Opener6 = 1
+        end
+      end
+      -- templars_verdict
+      if Opener7 == 0 then
+        if S.TemplarsVerdict:IsReadyP() and not Player:PrevGCDP(1, S.TemplarsVerdict) then
+          if HR.Cast(S.TemplarsVerdict) then return "wake_opener_ES_HoW 7 - Templars Verdict"; end
+        else
+          Opener7 = 1
+        end
+      end
+      -- hammer_of_wrath
+      if Opener8 == 0 then
+        if S.HammerofWrath:IsCastableP() then
+          if HR.Cast(S.HammerofWrath) then return "wake_opener_ES_HoW 8 - Hammer of Wrath"; end
+        else
+          Opener8 = 1
+        end
+      end
+      -- execution_sentence
+      if Opener9 == 0 then
+        if S.ExecutionSentence:IsReadyP() then
+          if HR.Cast(S.ExecutionSentence) then return "wake_opener_ES_HoW 9 - Execution Sentence"; end
+        else
+          Opener9 = 1
+        end
+      end
+      -- opener done
+      VarOpenerDone = 1
     end
     -- sequence,if=talent.wake_of_ashes.enabled&talent.crusade.enabled&!talent.execution_sentence.enabled&talent.hammer_of_wrath.enabled,name=wake_opener_HoW:shield_of_vengeance:blade_of_justice:judgment:crusade:templars_verdict:wake_of_ashes:templars_verdict:hammer_of_wrath:templars_verdict
-    if S.Sequence:IsCastableP() and (S.WakeofAshes:IsAvailable() and S.Crusade:IsAvailable() and not S.ExecutionSentence:IsAvailable() and S.HammerofWrath:IsAvailable()) then
-      if HR.Cast(S.Sequence) then return "sequence 200"; end
+    if S.WakeofAshes:IsAvailable() and S.Crusade:IsAvailable() and not S.ExecutionSentence:IsAvailable() and S.HammerofWrath:IsAvailable() then
+      -- wake_opener_HoW
+      -- crusade
+      if Opener4 == 0 then
+        if S.Crusade:IsCastableP() then
+          if HR.Cast(S.Crusade) then return "wake_opener_ES_HoW 4 - Crusade"; end
+        else
+          Opener4 = 1
+        end
+      end
+      -- templars_verdict
+      if Opener5 == 0 then
+        if S.TemplarsVerdict:IsReadyP() and not Player:PrevGCDP(1, S.TemplarsVerdict) then
+          if HR.Cast(S.TemplarsVerdict) then return "wake_opener_ES_HoW 5 - Templars Verdict"; end
+        else
+          Opener5 = 1
+        end
+      end
+      -- wake_of_ashes
+      if Opener6 == 0 then
+        if S.WakeofAshes:IsCastableP() then
+          if HR.Cast(S.WakeofAshes) then return "wake_opener_ES_HoW 6 - Wake of Ashes"; end
+        else
+          Opener6 = 1
+        end
+      end
+      -- templars_verdict
+      if Opener7 == 0 then
+        if S.TemplarsVerdict:IsReadyP() and not Player:PrevGCDP(1, S.TemplarsVerdict) then
+          if HR.Cast(S.TemplarsVerdict) then return "wake_opener_ES_HoW 7 - Templars Verdict"; end
+        else
+          Opener7 = 1
+        end
+      end
+      -- hammer_of_wrath
+      if Opener8 == 0 then
+        if S.HammerofWrath:IsCastableP() then
+          if HR.Cast(S.HammerofWrath) then return "wake_opener_ES_HoW 8 - Hammer of Wrath"; end
+        else
+          Opener8 = 1
+        end
+      end
+      -- templars_verdict
+      if Opener9 == 0 then
+        if S.TemplarsVerdict:IsReadyP() and not Player:PrevGCDP(1, S.TemplarsVerdict) then
+          if HR.Cast(S.TemplarsVerdict) then return "wake_opener_ES_HoW 7 - Templars Verdict"; end
+        else
+          Opener9 = 1
+        end
+      end
+      -- opener done
+      VarOpenerDone = 1
     end
     -- sequence,if=talent.wake_of_ashes.enabled&talent.inquisition.enabled,name=wake_opener_Inq:shield_of_vengeance:blade_of_justice:judgment:inquisition:avenging_wrath:wake_of_ashes
-    if S.Sequence:IsCastableP() and (S.WakeofAshes:IsAvailable() and S.Inquisition:IsAvailable()) then
-      if HR.Cast(S.Sequence) then return "sequence 210"; end
+    if S.WakeofAshes:IsAvailable() and S.Inquisition:IsAvailable() then
+      -- wake_opener_Inq
+      -- inquisition
+      if Opener4 == 0 then
+        if S.Inquisition:IsReadyP() and not Player:PrevGCDP(1, S.Inquisition) then
+          if HR.Cast(S.Inquisition) then return "wake_opener_Inq 4 - Inquisition"; end
+        else
+          Opener4 = 1
+        end
+      end
+      -- avenging_wrath
+      if Opener5 == 0 then
+        if S.AvengingWrath:IsCastableP() then
+          if HR.Cast(S.AvengingWrath) then return "wake_opener_Inq 5 - AvengingWrath"; end
+        else
+          Opener5 = 1
+        end
+      end
+      -- wake_of_ashes
+      if Opener6 == 0 then
+        if S.WakeofAshes:IsCastableP() then
+          if HR.Cast(S.WakeofAshes) then return "wake_opener_Inq 6 - Wake of Ashes"; end
+        else
+          Opener6 = 1
+        end
+      end
+      -- opener done
+      VarOpenerDone = 1
     end
   end
   -- call precombat
@@ -250,15 +519,15 @@ local function APL()
       if HR.CastAnnotated(S.Rebuke, false, "Interrupt") then return "rebuke 218"; end
     end
     -- call_action_list,name=opener
-    if (true) then
+    if VarOpenerDone == 0 then
       local ShouldReturn = Opener(); if ShouldReturn then return ShouldReturn; end
     end
     -- call_action_list,name=cooldowns
-    if HR.CDsON() then
+    if VarOpenerDone == 1 and HR.CDsON() then
       local ShouldReturn = Cooldowns(); if ShouldReturn then return ShouldReturn; end
     end
     -- call_action_list,name=generators
-    if (true) then
+    if VarOpenerDone == 1 then
       local ShouldReturn = Generators(); if ShouldReturn then return ShouldReturn; end
     end
   end
