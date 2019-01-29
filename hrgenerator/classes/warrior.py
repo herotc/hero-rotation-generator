@@ -24,6 +24,7 @@ DEFAULT_POTION = {
     WARRIOR: {
         ARMS: 'battle_potion_of_strength',
         FURY: 'battle_potion_of_strength',
+        PROTECTION: 'battle_potion_of_strength',
     }
 }
 
