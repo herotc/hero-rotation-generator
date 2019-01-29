@@ -83,6 +83,7 @@ SPELL_INFO = {
         'prolonged_power':              {BUFF:      229206},
         'potion_of_prolonged_power':    {BUFF:      229206},
         'potion_of_deadly_grace':       {BUFF:      188027},
+        'potion_of_rising_death':       {BUFF:      269853},
         'pool_resource':                {SPELL:     9999000010},
     }
 }
@@ -103,6 +104,7 @@ ITEM_INFO = {
     'battle_potion_of_intellect':   163222,
     'battle_potion_of_agility':     163223,
     'battle_potion_of_strength':    163224,
+    'potion_of_rising_death':       152559,
 }
 for class_ in CLASSES:
     ITEM_INFO.update(class_.ITEM_INFO)
