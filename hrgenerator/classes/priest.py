@@ -23,8 +23,8 @@ CLASS_SPECS = {
 
 DEFAULT_POTION = {
     PRIEST: {
-        SHADOW: 'prolonged_power',
-        HOLY: 'prolonged_power',
+        SHADOW: 'battle_potion_of_intellect',
+        HOLY: 'battle_potion_of_intellect',
     }
 }
 
@@ -86,7 +86,7 @@ SPELL_INFO = {
 
             'body_and_soul':                    {SPELL:     64129},
             'sanlayn':                          {SPELL:     199855},
-            'mania':                            {SPELL:     193173},
+            'intangibility':                    {SPELL:     288733},
             
             'twist_of_fate':                    {SPELL:     109142},
             'misery':                           {SPELL:     238558},
@@ -126,7 +126,11 @@ SPELL_INFO = {
             # Azerite
             'thought_harvester':                {SPELL:     273319},
             'harvested_thoughts':               {SPELL:     273320,
-                                                 BUFF:      273321},                                     
+                                                 BUFF:      273321},
+            'whispers_of_the_damned':           {SPELL:     275722},
+            'searing_dialogue':                   {SPELL:     272788},
+            'death_throes':                     {SPELL:     278659},
+            'spiteful_apparitions':             {SPELL:     277682},
         },
     },
 }
