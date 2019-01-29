@@ -1,1 +1,1 @@
-python -m hrgenerator -p profiles\Tier22\T22_%1_%2.simc
+python -m hrgenerator -p profiles\Tier23\T23_%1_%2.simc
