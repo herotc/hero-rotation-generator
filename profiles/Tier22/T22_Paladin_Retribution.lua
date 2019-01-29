@@ -44,6 +44,7 @@ Spell.Paladin.Retribution = {
   Judgment                              = Spell(20271),
   Consecration                          = Spell(205228),
   CrusaderStrike                        = Spell(35395),
+  Sequence                              = Spell(),
   Rebuke                                = Spell(96231)
 };
 local S = Spell.Paladin.Retribution;
@@ -67,30 +68,10 @@ local Settings = {
 };
 
 -- Variables
-local VarOpenerDone = 0;
 local VarDsCastable = 0;
 local VarHow = 0;
-local Opener1 = 0;
-local Opener2 = 0;
-local Opener3 = 0;
-local Opener4 = 0;
-local Opener5 = 0;
-local Opener6 = 0;
-local Opener7 = 0;
-local Opener8 = 0;
-local Opener9 = 0;
 
 HL:RegisterForEvent(function()
-  VarOpenerDone = 0
-  Opener1 = 0
-  Opener2 = 0
-  Opener3 = 0
-  Opener4 = 0
-  Opener5 = 0
-  Opener6 = 0
-  Opener7 = 0
-  Opener8 = 0
-  Opener9 = 0
   VarDsCastable = 0
   VarHow = 0
 end, "PLAYER_REGEN_ENABLED")
@@ -101,6 +82,7 @@ local function UpdateRanges()
     HL.GetEnemies(i);
   end
 end
+
 
 local function num(val)
   if val then return 1 else return 0 end
@@ -151,7 +133,7 @@ local function APL()
       if HR.Cast(S.AvengingWrath) then return "avenging_wrath 32"; end
     end
     -- crusade,if=holy_power>=4
-    if S.Crusade:IsCastableP() and (Player:HolyPower() >= 4) then
+    if S.Crusade:IsCastableP() and HR.CDsON() and (Player:HolyPower() >= 4) then
       if HR.Cast(S.Crusade) then return "crusade 38"; end
     end
   end
@@ -236,276 +218,25 @@ local function APL()
     end
   end
   Opener = function()
-    -- Common to all openers
-    -- shield_of_vengeance
-    if Opener1 == 0 then
-      if S.ShieldofVengeance:IsCastableP() then
-        if HR.Cast(S.ShieldofVengeance) then return "Common Opener 1 - Shield of Vengeance"; end
-      else
-        Opener1 = 1
-      end
-    end
-    -- blade_of_justice
-    if Opener2 == 0 then
-      if S.BladeofJustice:IsCastableP() then
-        if HR.Cast(S.BladeofJustice) then return "Common Opener 2 - Blade of Justice"; end
-      else
-        Opener2 = 1
-      end
-    end
-    -- judgment
-    if Opener3 == 0 then
-      if S.Judgment:IsCastableP() then
-        if HR.Cast(S.Judgment) then return "Common Opener 3 - Judgment"; end
-      else
-        Opener3 = 1
-      end
-    end
     -- sequence,if=talent.wake_of_ashes.enabled&talent.crusade.enabled&talent.execution_sentence.enabled&!talent.hammer_of_wrath.enabled,name=wake_opener_ES_CS:shield_of_vengeance:blade_of_justice:judgment:crusade:templars_verdict:wake_of_ashes:templars_verdict:crusader_strike:execution_sentence
-    if S.WakeofAshes:IsAvailable() and S.Crusade:IsAvailable() and S.ExecutionSentence:IsAvailable() and not S.HammerofWrath:IsAvailable() then
-      -- wake_opener_ES_CS
-      -- crusade
-      if Opener4 == 0 then
-        if S.Crusade:IsCastableP() then
-          if HR.Cast(S.Crusade) then return "wake_opener_ES_CS 4 - Crusade"; end
-        else
-          Opener4 = 1
-        end
-      end
-      -- templars_verdict
-      if Opener5 == 0 then
-        if S.TemplarsVerdict:IsReadyP() and not Player:PrevGCDP(1, S.TemplarsVerdict) then
-          if HR.Cast(S.TemplarsVerdict) then return "wake_opener_ES_CS 5 - Templars Verdict"; end
-        else
-          Opener5 = 1
-        end
-      end
-      -- wake_of_ashes
-      if Opener6 == 0 then
-        if S.WakeofAshes:IsCastableP() then
-          if HR.Cast(S.WakeofAshes) then return "wake_opener_ES_CS 6 - Wake of Ashes"; end
-        else
-          Opener6 = 1
-        end
-      end
-      -- templars_verdict
-      if Opener7 == 0 then
-        if S.TemplarsVerdict:IsReadyP() and not Player:PrevGCDP(1, S.TemplarsVerdict) then
-          if HR.Cast(S.TemplarsVerdict) then return "wake_opener_ES_CS 7 - Templars Verdict"; end
-        else
-          Opener7 = 1
-        end
-      end
-      -- crusader_strike
-      if Opener8 == 0 then
-        if S.CrusaderStrike:IsCastableP() and not Player:PrevGCDP(1, S.CrusaderStrike) then
-          if HR.Cast(S.CrusaderStrike) then return "wake_opener_ES_CS 8 - Crusader Strike"; end
-        else
-          Opener8 = 1
-        end
-      end
-      -- execution_sentence
-      if Opener9 == 0 then
-        if S.ExecutionSentence:IsReadyP() then
-          if HR.Cast(S.ExecutionSentence) then return "wake_opener_ES_CS 9 - Execution Sentence"; end
-        else
-          Opener9 = 1
-        end
-      end
-      -- opener done
-      VarOpenerDone = 1
+    if S.Sequence:IsCastableP() and (S.WakeofAshes:IsAvailable() and S.Crusade:IsAvailable() and S.ExecutionSentence:IsAvailable() and not S.HammerofWrath:IsAvailable()) then
+      if HR.Cast(S.Sequence) then return "sequence 170"; end
     end
     -- sequence,if=talent.wake_of_ashes.enabled&talent.crusade.enabled&!talent.execution_sentence.enabled&!talent.hammer_of_wrath.enabled,name=wake_opener_CS:shield_of_vengeance:blade_of_justice:judgment:crusade:templars_verdict:wake_of_ashes:templars_verdict:crusader_strike:templars_verdict
-    if S.WakeofAshes:IsAvailable() and S.Crusade:IsAvailable() and not S.ExecutionSentence:IsAvailable() and not S.HammerofWrath:IsAvailable() then
-      -- wake_opener_CS
-      -- crusade
-      if Opener4 == 0 then
-        if S.Crusade:IsCastableP() then
-          if HR.Cast(S.Crusade) then return "wake_opener_CS 4 - Crusade"; end
-        else
-          Opener4 = 1
-        end
-      end
-      -- templars_verdict
-      if Opener5 == 0 then
-        if S.TemplarsVerdict:IsReadyP() and not Player:PrevGCDP(1, S.TemplarsVerdict) then
-          if HR.Cast(S.TemplarsVerdict) then return "wake_opener_CS 5 - Templars Verdict"; end
-        else
-          Opener5 = 1
-        end
-      end
-      -- wake_of_ashes
-      if Opener6 == 0 then
-        if S.WakeofAshes:IsCastableP() then
-          if HR.Cast(S.WakeofAshes) then return "wake_opener_CS 6 - Wake of Ashes"; end
-        else
-          Opener6 = 1
-        end
-      end
-      -- templars_verdict
-      if Opener7 == 0 then
-        if S.TemplarsVerdict:IsReadyP() and not Player:PrevGCDP(1, S.TemplarsVerdict) then
-          if HR.Cast(S.TemplarsVerdict) then return "wake_opener_CS 7 - Templars Verdict"; end
-        else
-          Opener7 = 1
-        end
-      end
-      -- crusader_strike
-      if Opener8 == 0 then
-        if S.CrusaderStrike:IsCastableP() and not Player:PrevGCDP(1, S.CrusaderStrike) then
-          if HR.Cast(S.CrusaderStrike) then return "wake_opener_CS 8 - Crusader Strike"; end
-        else
-          Opener8 = 1
-        end
-      end
-      -- templars_verdict
-      if Opener9 == 0 then
-        if S.TemplarsVerdict:IsReadyP() and not Player:PrevGCDP(1, S.TemplarsVerdict) then
-          if HR.Cast(S.TemplarsVerdict) then return "wake_opener_CS 9 - Templars Verdict"; end
-        else
-          Opener9 = 1
-        end
-      end
-      -- opener done
-      VarOpenerDone = 1
+    if S.Sequence:IsCastableP() and (S.WakeofAshes:IsAvailable() and S.Crusade:IsAvailable() and not S.ExecutionSentence:IsAvailable() and not S.HammerofWrath:IsAvailable()) then
+      if HR.Cast(S.Sequence) then return "sequence 180"; end
     end
     -- sequence,if=talent.wake_of_ashes.enabled&talent.crusade.enabled&talent.execution_sentence.enabled&talent.hammer_of_wrath.enabled,name=wake_opener_ES_HoW:shield_of_vengeance:blade_of_justice:judgment:crusade:templars_verdict:wake_of_ashes:templars_verdict:hammer_of_wrath:execution_sentence
-    if S.WakeofAshes:IsAvailable() and S.Crusade:IsAvailable() and S.ExecutionSentence:IsAvailable() and S.HammerofWrath:IsAvailable() then
-      -- wake_opener_ES_HoW
-      -- crusade
-      if Opener4 == 0 then
-        if S.Crusade:IsCastableP() then
-          if HR.Cast(S.Crusade) then return "wake_opener_ES_HoW 4 - Crusade"; end
-        else
-          Opener4 = 1
-        end
-      end
-      -- templars_verdict
-      if Opener5 == 0 then
-        if S.TemplarsVerdict:IsReadyP() and not Player:PrevGCDP(1, S.TemplarsVerdict) then
-          if HR.Cast(S.TemplarsVerdict) then return "wake_opener_ES_HoW 5 - Templars Verdict"; end
-        else
-          Opener5 = 1
-        end
-      end
-      -- wake_of_ashes
-      if Opener6 == 0 then
-        if S.WakeofAshes:IsCastableP() then
-          if HR.Cast(S.WakeofAshes) then return "wake_opener_ES_HoW 6 - Wake of Ashes"; end
-        else
-          Opener6 = 1
-        end
-      end
-      -- templars_verdict
-      if Opener7 == 0 then
-        if S.TemplarsVerdict:IsReadyP() and not Player:PrevGCDP(1, S.TemplarsVerdict) then
-          if HR.Cast(S.TemplarsVerdict) then return "wake_opener_ES_HoW 7 - Templars Verdict"; end
-        else
-          Opener7 = 1
-        end
-      end
-      -- hammer_of_wrath
-      if Opener8 == 0 then
-        if S.HammerofWrath:IsCastableP() then
-          if HR.Cast(S.HammerofWrath) then return "wake_opener_ES_HoW 8 - Hammer of Wrath"; end
-        else
-          Opener8 = 1
-        end
-      end
-      -- execution_sentence
-      if Opener9 == 0 then
-        if S.ExecutionSentence:IsReadyP() then
-          if HR.Cast(S.ExecutionSentence) then return "wake_opener_ES_HoW 9 - Execution Sentence"; end
-        else
-          Opener9 = 1
-        end
-      end
-      -- opener done
-      VarOpenerDone = 1
+    if S.Sequence:IsCastableP() and (S.WakeofAshes:IsAvailable() and S.Crusade:IsAvailable() and S.ExecutionSentence:IsAvailable() and S.HammerofWrath:IsAvailable()) then
+      if HR.Cast(S.Sequence) then return "sequence 190"; end
     end
     -- sequence,if=talent.wake_of_ashes.enabled&talent.crusade.enabled&!talent.execution_sentence.enabled&talent.hammer_of_wrath.enabled,name=wake_opener_HoW:shield_of_vengeance:blade_of_justice:judgment:crusade:templars_verdict:wake_of_ashes:templars_verdict:hammer_of_wrath:templars_verdict
-    if S.WakeofAshes:IsAvailable() and S.Crusade:IsAvailable() and not S.ExecutionSentence:IsAvailable() and S.HammerofWrath:IsAvailable() then
-      -- wake_opener_HoW
-      -- crusade
-      if Opener4 == 0 then
-        if S.Crusade:IsCastableP() then
-          if HR.Cast(S.Crusade) then return "wake_opener_ES_HoW 4 - Crusade"; end
-        else
-          Opener4 = 1
-        end
-      end
-      -- templars_verdict
-      if Opener5 == 0 then
-        if S.TemplarsVerdict:IsReadyP() and not Player:PrevGCDP(1, S.TemplarsVerdict) then
-          if HR.Cast(S.TemplarsVerdict) then return "wake_opener_ES_HoW 5 - Templars Verdict"; end
-        else
-          Opener5 = 1
-        end
-      end
-      -- wake_of_ashes
-      if Opener6 == 0 then
-        if S.WakeofAshes:IsCastableP() then
-          if HR.Cast(S.WakeofAshes) then return "wake_opener_ES_HoW 6 - Wake of Ashes"; end
-        else
-          Opener6 = 1
-        end
-      end
-      -- templars_verdict
-      if Opener7 == 0 then
-        if S.TemplarsVerdict:IsReadyP() and not Player:PrevGCDP(1, S.TemplarsVerdict) then
-          if HR.Cast(S.TemplarsVerdict) then return "wake_opener_ES_HoW 7 - Templars Verdict"; end
-        else
-          Opener7 = 1
-        end
-      end
-      -- hammer_of_wrath
-      if Opener8 == 0 then
-        if S.HammerofWrath:IsCastableP() then
-          if HR.Cast(S.HammerofWrath) then return "wake_opener_ES_HoW 8 - Hammer of Wrath"; end
-        else
-          Opener8 = 1
-        end
-      end
-      -- templars_verdict
-      if Opener9 == 0 then
-        if S.TemplarsVerdict:IsReadyP() and not Player:PrevGCDP(1, S.TemplarsVerdict) then
-          if HR.Cast(S.TemplarsVerdict) then return "wake_opener_ES_HoW 7 - Templars Verdict"; end
-        else
-          Opener9 = 1
-        end
-      end
-      -- opener done
-      VarOpenerDone = 1
+    if S.Sequence:IsCastableP() and (S.WakeofAshes:IsAvailable() and S.Crusade:IsAvailable() and not S.ExecutionSentence:IsAvailable() and S.HammerofWrath:IsAvailable()) then
+      if HR.Cast(S.Sequence) then return "sequence 200"; end
     end
     -- sequence,if=talent.wake_of_ashes.enabled&talent.inquisition.enabled,name=wake_opener_Inq:shield_of_vengeance:blade_of_justice:judgment:inquisition:avenging_wrath:wake_of_ashes
-    if S.WakeofAshes:IsAvailable() and S.Inquisition:IsAvailable() then
-      -- wake_opener_Inq
-      -- inquisition
-      if Opener4 == 0 then
-        if S.Inquisition:IsReadyP() and not Player:PrevGCDP(1, S.Inquisition) then
-          if HR.Cast(S.Inquisition) then return "wake_opener_Inq 4 - Inquisition"; end
-        else
-          Opener4 = 1
-        end
-      end
-      -- avenging_wrath
-      if Opener5 == 0 then
-        if S.AvengingWrath:IsCastableP() then
-          if HR.Cast(S.AvengingWrath) then return "wake_opener_Inq 5 - AvengingWrath"; end
-        else
-          Opener5 = 1
-        end
-      end
-      -- wake_of_ashes
-      if Opener6 == 0 then
-        if S.WakeofAshes:IsCastableP() then
-          if HR.Cast(S.WakeofAshes) then return "wake_opener_Inq 6 - Wake of Ashes"; end
-        else
-          Opener6 = 1
-        end
-      end
-      -- opener done
-      VarOpenerDone = 1
+    if S.Sequence:IsCastableP() and (S.WakeofAshes:IsAvailable() and S.Inquisition:IsAvailable()) then
+      if HR.Cast(S.Sequence) then return "sequence 210"; end
     end
   end
   -- call precombat
@@ -519,15 +250,15 @@ local function APL()
       if HR.CastAnnotated(S.Rebuke, false, "Interrupt") then return "rebuke 218"; end
     end
     -- call_action_list,name=opener
-    if VarOpenerDone == 0 then
+    if (true) then
       local ShouldReturn = Opener(); if ShouldReturn then return ShouldReturn; end
     end
     -- call_action_list,name=cooldowns
-    if VarOpenerDone == 1 and HR.CDsON() then
+    if HR.CDsON() then
       local ShouldReturn = Cooldowns(); if ShouldReturn then return ShouldReturn; end
     end
     -- call_action_list,name=generators
-    if VarOpenerDone == 1 then
+    if (true) then
       local ShouldReturn = Generators(); if ShouldReturn then return ShouldReturn; end
     end
   end

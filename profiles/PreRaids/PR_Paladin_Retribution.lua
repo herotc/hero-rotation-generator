@@ -32,17 +32,17 @@ Spell.Paladin.Retribution = {
   InquisitionBuff                       = Spell(84963),
   Inquisition                           = Spell(84963),
   Crusade                               = Spell(231895),
-  RighteousVerdict                      = Spell(),
+  RighteousVerdict                      = Spell(267610),
   ExecutionSentence                     = Spell(267798),
   DivineStorm                           = Spell(53385),
   DivinePurposeBuff                     = Spell(223817),
-  EmpyreanPowerBuff                     = Spell(),
+  EmpyreanPowerBuff                     = Spell(286393),
   JudgmentDebuff                        = Spell(197277),
   TemplarsVerdict                       = Spell(85256),
   HammerofWrath                         = Spell(24275),
   BladeofJustice                        = Spell(184575),
   Judgment                              = Spell(20271),
-  Consecration                          = Spell(26573),
+  Consecration                          = Spell(205228),
   CrusaderStrike                        = Spell(35395),
   Sequence                              = Spell(),
   Rebuke                                = Spell(96231)
@@ -52,7 +52,7 @@ local S = Spell.Paladin.Retribution;
 -- Items
 if not Item.Paladin then Item.Paladin = {} end
 Item.Paladin.Retribution = {
-  OldWar                           = Item(127844),
+  BattlePotionofStrength           = Item(163224),
   JesHowler                        = Item()
 };
 local I = Item.Paladin.Retribution;
@@ -104,8 +104,8 @@ local function APL()
     -- augmentation
     -- snapshot_stats
     -- potion
-    if I.OldWar:IsReady() and Settings.Commons.UsePotions then
-      if HR.CastSuggested(I.OldWar) then return "old_war 4"; end
+    if I.BattlePotionofStrength:IsReady() and Settings.Commons.UsePotions then
+      if HR.CastSuggested(I.BattlePotionofStrength) then return "battle_potion_of_strength 4"; end
     end
     -- arcane_torrent,if=!talent.wake_of_ashes.enabled
     if S.ArcaneTorrent:IsCastableP() and HR.CDsON() and (not S.WakeofAshes:IsAvailable()) then
@@ -118,8 +118,8 @@ local function APL()
       if HR.CastSuggested(I.JesHowler) then return "jes_howler 10"; end
     end
     -- potion,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<25|target.time_to_die<=40)
-    if I.OldWar:IsReady() and Settings.Commons.UsePotions and ((Player:HasHeroism() or Player:BuffP(S.AvengingWrathBuff) or Player:BuffP(S.CrusadeBuff) and Player:BuffRemainsP(S.CrusadeBuff) < 25 or Target:TimeToDie() <= 40)) then
-      if HR.CastSuggested(I.OldWar) then return "old_war 18"; end
+    if I.BattlePotionofStrength:IsReady() and Settings.Commons.UsePotions and ((Player:HasHeroism() or Player:BuffP(S.AvengingWrathBuff) or Player:BuffP(S.CrusadeBuff) and Player:BuffRemainsP(S.CrusadeBuff) < 25 or Target:TimeToDie() <= 40)) then
+      if HR.CastSuggested(I.BattlePotionofStrength) then return "battle_potion_of_strength 18"; end
     end
     -- lights_judgment,if=spell_targets.lights_judgment>=2|(!raid_event.adds.exists|raid_event.adds.in>75)
     if S.LightsJudgment:IsCastableP() and HR.CDsON() and (Cache.EnemiesCount[5] >= 2 or (not (Cache.EnemiesCount[30] > 1) or 10000000000 > 75)) then
@@ -148,27 +148,27 @@ local function APL()
       VarDsCastable = num(Cache.EnemiesCount[8] >= 2 and not S.RighteousVerdict:IsAvailable() or Cache.EnemiesCount[8] >= 3 and S.RighteousVerdict:IsAvailable())
     end
     -- inquisition,if=buff.inquisition.down|buff.inquisition.remains<5&holy_power>=3|talent.execution_sentence.enabled&cooldown.execution_sentence.remains<10&buff.inquisition.remains<15|cooldown.avenging_wrath.remains<15&buff.inquisition.remains<20&holy_power>=3
-    if S.Inquisition:IsCastableP() and (Player:BuffDownP(S.InquisitionBuff) or Player:BuffRemainsP(S.InquisitionBuff) < 5 and Player:HolyPower() >= 3 or S.ExecutionSentence:IsAvailable() and S.ExecutionSentence:CooldownRemainsP() < 10 and Player:BuffRemainsP(S.InquisitionBuff) < 15 or S.AvengingWrath:CooldownRemainsP() < 15 and Player:BuffRemainsP(S.InquisitionBuff) < 20 and Player:HolyPower() >= 3) then
+    if S.Inquisition:IsReadyP() and (Player:BuffDownP(S.InquisitionBuff) or Player:BuffRemainsP(S.InquisitionBuff) < 5 and Player:HolyPower() >= 3 or S.ExecutionSentence:IsAvailable() and S.ExecutionSentence:CooldownRemainsP() < 10 and Player:BuffRemainsP(S.InquisitionBuff) < 15 or S.AvengingWrath:CooldownRemainsP() < 15 and Player:BuffRemainsP(S.InquisitionBuff) < 20 and Player:HolyPower() >= 3) then
       if HR.Cast(S.Inquisition) then return "inquisition 54"; end
     end
     -- execution_sentence,if=spell_targets.divine_storm<=2&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)
-    if S.ExecutionSentence:IsCastableP() and (Cache.EnemiesCount[8] <= 2 and (not S.Crusade:IsAvailable() or S.Crusade:CooldownRemainsP() > Player:GCD() * 2)) then
+    if S.ExecutionSentence:IsReadyP() and (Cache.EnemiesCount[8] <= 2 and (not S.Crusade:IsAvailable() or S.Crusade:CooldownRemainsP() > Player:GCD() * 2)) then
       if HR.Cast(S.ExecutionSentence) then return "execution_sentence 70"; end
     end
     -- divine_storm,if=variable.ds_castable&buff.divine_purpose.react
-    if S.DivineStorm:IsCastableP() and (bool(VarDsCastable) and bool(Player:BuffStackP(S.DivinePurposeBuff))) then
+    if S.DivineStorm:IsReadyP() and (bool(VarDsCastable) and bool(Player:BuffStackP(S.DivinePurposeBuff))) then
       if HR.Cast(S.DivineStorm) then return "divine_storm 76"; end
     end
     -- divine_storm,if=variable.ds_castable&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)|buff.empyrean_power.up&debuff.judgment.down&buff.divine_purpose.down
-    if S.DivineStorm:IsCastableP() and (bool(VarDsCastable) and (not S.Crusade:IsAvailable() or S.Crusade:CooldownRemainsP() > Player:GCD() * 2) or Player:BuffP(S.EmpyreanPowerBuff) and Target:DebuffDownP(S.JudgmentDebuff) and Player:BuffDownP(S.DivinePurposeBuff)) then
+    if S.DivineStorm:IsReadyP() and (bool(VarDsCastable) and (not S.Crusade:IsAvailable() or S.Crusade:CooldownRemainsP() > Player:GCD() * 2) or Player:BuffP(S.EmpyreanPowerBuff) and Target:DebuffDownP(S.JudgmentDebuff) and Player:BuffDownP(S.DivinePurposeBuff)) then
       if HR.Cast(S.DivineStorm) then return "divine_storm 82"; end
     end
     -- templars_verdict,if=buff.divine_purpose.react
-    if S.TemplarsVerdict:IsCastableP() and (bool(Player:BuffStackP(S.DivinePurposeBuff))) then
+    if S.TemplarsVerdict:IsReadyP() and (bool(Player:BuffStackP(S.DivinePurposeBuff))) then
       if HR.Cast(S.TemplarsVerdict) then return "templars_verdict 96"; end
     end
     -- templars_verdict,if=(!talent.crusade.enabled|cooldown.crusade.remains>gcd*3)&(!talent.execution_sentence.enabled|buff.crusade.up&buff.crusade.stack<10|cooldown.execution_sentence.remains>gcd*2)
-    if S.TemplarsVerdict:IsCastableP() and ((not S.Crusade:IsAvailable() or S.Crusade:CooldownRemainsP() > Player:GCD() * 3) and (not S.ExecutionSentence:IsAvailable() or Player:BuffP(S.CrusadeBuff) and Player:BuffStackP(S.CrusadeBuff) < 10 or S.ExecutionSentence:CooldownRemainsP() > Player:GCD() * 2)) then
+    if S.TemplarsVerdict:IsReadyP() and ((not S.Crusade:IsAvailable() or S.Crusade:CooldownRemainsP() > Player:GCD() * 3) and (not S.ExecutionSentence:IsAvailable() or Player:BuffP(S.CrusadeBuff) and Player:BuffStackP(S.CrusadeBuff) < 10 or S.ExecutionSentence:CooldownRemainsP() > Player:GCD() * 2)) then
       if HR.Cast(S.TemplarsVerdict) then return "templars_verdict 100"; end
     end
   end

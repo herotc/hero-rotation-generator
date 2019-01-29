@@ -59,7 +59,7 @@ local S = Spell.Mage.Fire;
 -- Items
 if not Item.Mage then Item.Mage = {} end
 Item.Mage.Fire = {
-  ProlongedPower                   = Item(142117)
+  BattlePotionofIntellect          = Item(163222)
 };
 local I = Item.Mage.Fire;
 
@@ -138,8 +138,8 @@ local function APL()
       if HR.Cast(S.MirrorImage) then return "mirror_image 10"; end
     end
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 12"; end
+    if I.BattlePotionofIntellect:IsReady() and Settings.Commons.UsePotions then
+      if HR.CastSuggested(I.BattlePotionofIntellect) then return "battle_potion_of_intellect 12"; end
     end
     -- pyroblast
     if S.Pyroblast:IsCastableP() and Everyone.TargetIsValid() then
@@ -182,8 +182,8 @@ local function APL()
       if HR.Cast(S.Combustion, Settings.Fire.OffGCDasOffGCD.Combustion) then return "combustion 110"; end
     end
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 130"; end
+    if I.BattlePotionofIntellect:IsReady() and Settings.Commons.UsePotions then
+      if HR.CastSuggested(I.BattlePotionofIntellect) then return "battle_potion_of_intellect 130"; end
     end
     -- blood_fury
     if S.BloodFury:IsCastableP() and HR.CDsON() then
@@ -272,8 +272,8 @@ local function APL()
       if HR.Cast(S.Combustion, Settings.Fire.OffGCDasOffGCD.Combustion) then return "combustion 250"; end
     end
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 270"; end
+    if I.BattlePotionofIntellect:IsReady() and Settings.Commons.UsePotions then
+      if HR.CastSuggested(I.BattlePotionofIntellect) then return "battle_potion_of_intellect 270"; end
     end
     -- blood_fury
     if S.BloodFury:IsCastableP() and HR.CDsON() then

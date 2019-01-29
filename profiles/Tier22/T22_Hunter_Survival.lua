@@ -242,13 +242,13 @@ local function APL()
       if HR.CastSuggested(I.BattlePotionofAgility) then return "battle_potion_of_agility 38"; end
     end
     -- aspect_of_the_eagle,if=target.distance>=6
-    if S.AspectoftheEagle:IsCastableP() and HR.CDsON() and (not Target:IsInRange("Melee")) then
+    if S.AspectoftheEagle:IsCastableP() and HR.CDsON() and (target.distance >= 6) then
       if HR.Cast(S.AspectoftheEagle, Settings.Survival.OffGCDasOffGCD.AspectoftheEagle) then return "aspect_of_the_eagle 50"; end
     end
   end
   Cleave = function()
     -- variable,name=carve_cdr,op=setif,value=active_enemies,value_else=5,condition=active_enemies<5
-    if true then
+    if  then
       if HR.CastCycle(VarCarveCdr, 8, EvaluateCycleCarveCdr62) then return "carve_cdr 76" end
     end
     -- a_murder_of_crows

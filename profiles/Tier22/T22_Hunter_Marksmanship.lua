@@ -113,7 +113,7 @@ local function APL()
       if HR.CastSuggested(I.BattlePotionofAgility) then return "battle_potion_of_agility 12"; end
     end
     -- hunters_mark
-    if S.HuntersMark:IsCastableP() and Target:DebuffDown(S.HuntersMarkDebuff) then
+    if S.HuntersMark:IsCastableP() and Player:DebuffDownP(S.HuntersMarkDebuff) then
       if HR.Cast(S.HuntersMark) then return "hunters_mark 14"; end
     end
     -- double_tap,precast_time=10
@@ -131,7 +131,7 @@ local function APL()
   end
   Cds = function()
     -- hunters_mark,if=debuff.hunters_mark.down
-    if S.HuntersMark:IsCastableP() and (Target:DebuffDown(S.HuntersMarkDebuff)) then
+    if S.HuntersMark:IsCastableP() and (Target:DebuffDownP(S.HuntersMarkDebuff)) then
       if HR.Cast(S.HuntersMark) then return "hunters_mark 46"; end
     end
     -- double_tap,if=target.time_to_die<15|cooldown.aimed_shot.remains<gcd&(buff.trueshot.up&(buff.unerring_vision.stack>7|!azerite.unerring_vision.enabled)|!talent.calling_the_shots.enabled)&(!azerite.surging_shots.enabled&!talent.streamline.enabled&!azerite.focused_fire.enabled)
@@ -167,7 +167,7 @@ local function APL()
       if HR.CastSuggested(I.BattlePotionofAgility) then return "battle_potion_of_agility 104"; end
     end
     -- trueshot,if=cooldown.rapid_fire.remains&target.time_to_die>cooldown.trueshot.duration_guess+duration|(target.health.pct<20|!talent.careful_aim.enabled)|target.time_to_die<15
-    if S.Trueshot:IsCastableP() and (bool(S.RapidFire:CooldownRemainsP()) and Target:TimeToDie() > S.Trueshot:CooldownRemainsP() + S.TrueshotBuff:BaseDuration() or (Target:HealthPercentage() < 20 or not S.CarefulAim:IsAvailable()) or Target:TimeToDie() < 15) then
+    if S.Trueshot:IsCastableP() and (bool(S.RapidFire:CooldownRemainsP()) and Target:TimeToDie() > cooldown.trueshot.duration_guess + S.TrueshotBuff:BaseDuration() or (Target:HealthPercentage() < 20 or not S.CarefulAim:IsAvailable()) or Target:TimeToDie() < 15) then
       if HR.Cast(S.Trueshot, Settings.Marksmanship.GCDasOffGCD.Trueshot) then return "trueshot 112"; end
     end
   end

@@ -40,7 +40,7 @@ local S = Spell.Priest.Holy;
 -- Items
 if not Item.Priest then Item.Priest = {} end
 Item.Priest.Holy = {
-  ProlongedPower                   = Item(142117)
+  BattlePotionofIntellect          = Item(163222)
 };
 local I = Item.Priest.Holy;
 
@@ -83,8 +83,8 @@ local function APL()
     -- augmentation
     -- snapshot_stats
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 4"; end
+    if I.BattlePotionofIntellect:IsReady() and Settings.Commons.UsePotions then
+      if HR.CastSuggested(I.BattlePotionofIntellect) then return "battle_potion_of_intellect 4"; end
     end
     -- smite
     if S.Smite:IsCastableP() then
@@ -98,8 +98,8 @@ local function APL()
   if Everyone.TargetIsValid() then
     -- use_items
     -- potion,if=buff.bloodlust.react|(raid_event.adds.up&(raid_event.adds.remains>20|raid_event.adds.duration<20))|target.time_to_die<=30
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:HasHeroism() or ((Cache.EnemiesCount[40] > 1) and (0 > 20 or raid_event.adds.duration < 20)) or Target:TimeToDie() <= 30) then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 10"; end
+    if I.BattlePotionofIntellect:IsReady() and Settings.Commons.UsePotions and (Player:HasHeroism() or ((Cache.EnemiesCount[40] > 1) and (0 > 20 or raid_event.adds.duration < 20)) or Target:TimeToDie() <= 30) then
+      if HR.CastSuggested(I.BattlePotionofIntellect) then return "battle_potion_of_intellect 10"; end
     end
     -- holy_fire,if=dot.holy_fire.ticking&(dot.holy_fire.remains<=gcd|dot.holy_fire.stack<2)&spell_targets.holy_nova<7
     if S.HolyFire:IsCastableP() and (Target:DebuffP(S.HolyFireDebuff) and (Target:DebuffRemainsP(S.HolyFireDebuff) <= Player:GCD() or Target:DebuffStackP(S.HolyFireDebuff) < 2) and Cache.EnemiesCount[5] < 7) then

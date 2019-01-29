@@ -21,11 +21,11 @@ local HR     = HeroRotation
 -- Spells
 if not Spell.Priest then Spell.Priest = {} end
 Spell.Priest.Shadow = {
-  WhispersoftheDamned                   = Spell(),
-  SearingDialogue                       = Spell(),
-  DeathThroes                           = Spell(),
-  ThoughtHarvester                      = Spell(),
-  SpitefulApparitions                   = Spell(),
+  WhispersoftheDamned                   = Spell(275722),
+  SearingDialogue                       = Spell(272788),
+  DeathThroes                           = Spell(278659),
+  ThoughtHarvester                      = Spell(273319),
+  SpitefulApparitions                   = Spell(277682),
   ShadowformBuff                        = Spell(232698),
   Shadowform                            = Spell(232698),
   MindBlast                             = Spell(8092),
@@ -35,7 +35,7 @@ Spell.Priest.Shadow = {
   DarkAscension                         = Spell(280711),
   VoidformBuff                          = Spell(194249),
   MindSear                              = Spell(48045),
-  HarvestedThoughtsBuff                 = Spell(),
+  HarvestedThoughtsBuff                 = Spell(273321),
   VoidBolt                              = Spell(205448),
   ShadowWordDeath                       = Spell(32379),
   SurrenderToMadness                    = Spell(193223),
@@ -54,7 +54,7 @@ local S = Spell.Priest.Shadow;
 -- Items
 if not Item.Priest then Item.Priest = {} end
 Item.Priest.Shadow = {
-  ProlongedPower                   = Item(142117)
+  BattlePotionofIntellect          = Item(163222)
 };
 local I = Item.Priest.Shadow;
 
@@ -143,8 +143,8 @@ local function APL()
     -- augmentation
     -- snapshot_stats
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 4"; end
+    if I.BattlePotionofIntellect:IsReady() and Settings.Commons.UsePotions then
+      if HR.CastSuggested(I.BattlePotionofIntellect) then return "battle_potion_of_intellect 4"; end
     end
     -- variable,name=mind_blast_targets,op=set,value=floor((4.5+azerite.whispers_of_the_damned.rank)%(1+0.4*azerite.searing_dialogue.rank))
     if (true) then
@@ -330,8 +330,8 @@ local function APL()
   if Everyone.TargetIsValid() then
     -- use_item,slot=trinket2
     -- potion,if=buff.bloodlust.react|target.time_to_die<=80|target.health.pct<35
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:HasHeroism() or Target:TimeToDie() <= 80 or Target:HealthPercentage() < 35) then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 263"; end
+    if I.BattlePotionofIntellect:IsReady() and Settings.Commons.UsePotions and (Player:HasHeroism() or Target:TimeToDie() <= 80 or Target:HealthPercentage() < 35) then
+      if HR.CastSuggested(I.BattlePotionofIntellect) then return "battle_potion_of_intellect 263"; end
     end
     -- variable,name=dots_up,op=set,value=dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking
     if (true) then

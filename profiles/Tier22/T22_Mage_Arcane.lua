@@ -63,7 +63,7 @@ local S = Spell.Mage.Arcane;
 -- Items
 if not Item.Mage then Item.Mage = {} end
 Item.Mage.Arcane = {
-  DeadlyGrace                      = Item(127843)
+  BattlePotionofIntellect          = Item(163222)
 };
 local I = Item.Mage.Arcane;
 
@@ -177,8 +177,8 @@ local function APL()
       if HR.Cast(S.MirrorImage) then return "mirror_image 12"; end
     end
     -- potion
-    if I.DeadlyGrace:IsReady() and Settings.Commons.UsePotions then
-      if HR.CastSuggested(I.DeadlyGrace) then return "deadly_grace 14"; end
+    if I.BattlePotionofIntellect:IsReady() and Settings.Commons.UsePotions then
+      if HR.CastSuggested(I.BattlePotionofIntellect) then return "battle_potion_of_intellect 14"; end
     end
     -- arcane_blast
     if S.ArcaneBlast:IsReadyP() then
@@ -248,8 +248,8 @@ local function APL()
       if HR.Cast(S.PresenceofMind, Settings.Arcane.OffGCDasOffGCD.PresenceofMind) then return "presence_of_mind 93"; end
     end
     -- potion,if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up|!(race.troll|race.orc))
-    if I.DeadlyGrace:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.ArcanePowerBuff) and (Player:BuffP(S.BerserkingBuff) or Player:BuffP(S.BloodFuryBuff) or not (Player:IsRace("Troll") or Player:IsRace("Orc")))) then
-      if HR.CastSuggested(I.DeadlyGrace) then return "deadly_grace 111"; end
+    if I.BattlePotionofIntellect:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.ArcanePowerBuff) and (Player:BuffP(S.BerserkingBuff) or Player:BuffP(S.BloodFuryBuff) or not (Player:IsRace("Troll") or Player:IsRace("Orc")))) then
+      if HR.CastSuggested(I.BattlePotionofIntellect) then return "battle_potion_of_intellect 111"; end
     end
     -- arcane_orb,if=buff.arcane_charge.stack=0|(active_enemies<3|(active_enemies<2&talent.resonance.enabled))
     if S.ArcaneOrb:IsCastableP() and (Player:ArcaneChargesP() == 0 or (Cache.EnemiesCount[40] < 3 or (Cache.EnemiesCount[40] < 2 and S.Resonance:IsAvailable()))) then

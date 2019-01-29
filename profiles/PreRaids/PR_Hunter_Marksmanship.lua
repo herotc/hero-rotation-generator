@@ -21,47 +21,47 @@ local HR     = HeroRotation
 -- Spells
 if not Spell.Hunter then Spell.Hunter = {} end
 Spell.Hunter.Marksmanship = {
-  SummonPet                             = Spell(),
-  HuntersMarkDebuff                     = Spell(185365),
-  HuntersMark                           = Spell(),
-  DoubleTap                             = Spell(),
-  TrueshotBuff                          = Spell(193526),
-  Trueshot                              = Spell(193526),
+  SummonPet                             = Spell(883),
+  HuntersMarkDebuff                     = Spell(257284),
+  HuntersMark                           = Spell(257284),
+  DoubleTap                             = Spell(260402),
+  TrueshotBuff                          = Spell(288613),
+  Trueshot                              = Spell(288613),
   AimedShot                             = Spell(19434),
-  UnerringVisionBuff                    = Spell(),
-  UnerringVision                        = Spell(),
-  CallingtheShots                       = Spell(),
-  SurgingShots                          = Spell(),
-  Streamline                            = Spell(),
-  FocusedFire                           = Spell(),
-  RapidFire                             = Spell(),
+  UnerringVisionBuff                    = Spell(274446),
+  UnerringVision                        = Spell(274444),
+  CallingtheShots                       = Spell(260404),
+  SurgingShots                          = Spell(287707),
+  Streamline                            = Spell(260367),
+  FocusedFire                           = Spell(278531),
+  RapidFire                             = Spell(257044),
   Berserking                            = Spell(26297),
   BloodFury                             = Spell(20572),
   AncestralCall                         = Spell(274738),
   Fireblood                             = Spell(265221),
   LightsJudgment                        = Spell(255647),
-  CarefulAim                            = Spell(),
+  CarefulAim                            = Spell(260228),
   ExplosiveShot                         = Spell(212431),
   Barrage                               = Spell(120360),
   AMurderofCrows                        = Spell(131894),
   SerpentSting                          = Spell(271788),
   SerpentStingDebuff                    = Spell(271788),
   ArcaneShot                            = Spell(185358),
-  MasterMarksmanBuff                    = Spell(),
-  PreciseShotsBuff                      = Spell(),
-  IntheRhythm                           = Spell(),
+  MasterMarksmanBuff                    = Spell(269576),
+  PreciseShotsBuff                      = Spell(260242),
+  IntheRhythm                           = Spell(264198),
   PiercingShot                          = Spell(198670),
-  SteadyFocus                           = Spell(),
-  SteadyShot                            = Spell(),
-  TrickShotsBuff                        = Spell(),
-  Multishot                             = Spell(2643)
+  SteadyFocus                           = Spell(193533),
+  SteadyShot                            = Spell(56641),
+  TrickShotsBuff                        = Spell(257622),
+  Multishot                             = Spell(257620)
 };
 local S = Spell.Hunter.Marksmanship;
 
 -- Items
 if not Item.Hunter then Item.Hunter = {} end
 Item.Hunter.Marksmanship = {
-  ProlongedPower                   = Item(142117)
+  BattlePotionofAgility            = Item(163223)
 };
 local I = Item.Hunter.Marksmanship;
 
@@ -94,24 +94,6 @@ local function bool(val)
   return val ~= 0
 end
 
-local function TargetDebuffRemainsP (Spell, AnyCaster, Offset)
-  if Spell == S.Vulnerability and (S.Windburst:InFlight() or S.MarkedShot:InFlight() or Player:PrevGCDP(1, S.Windburst, true)) then
-    return 7;
-  else
-    return DebuffRemainsP(Spell);
-  end
-end
-
-local function TargetDebuffP (Spell, AnyCaster, Offset)
-  if Spell == S.Vulnerability then
-    return DebuffP(Spell) or S.Windburst:InFlight() or S.MarkedShot:InFlight() or Player:PrevGCDP(1, S.Windburst, true);
-  elseif Spell == S.HuntersMark then
-    return DebuffP(Spell) or S.ArcaneShot:InFlight(S.MarkingTargets) or S.MultiShot:InFlight(S.MarkingTargets) or S.Sidewinders:InFlight(S.MarkingTargets);
-  else
-    return DebuffP(Spell);
-  end
-end
-
 --- ======= ACTION LISTS =======
 local function APL()
   local Precombat, Cds, St, Trickshots
@@ -123,12 +105,12 @@ local function APL()
     -- food
     -- summon_pet,if=active_enemies<3
     if S.SummonPet:IsCastableP() and (Cache.EnemiesCount[40] < 3) then
-      if HR.Cast(S.SummonPet) then return "summon_pet 3"; end
+      if HR.Cast(S.SummonPet, Settings.Marksmanship.GCDasOffGCD.SummonPet) then return "summon_pet 3"; end
     end
     -- snapshot_stats
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 12"; end
+    if I.BattlePotionofAgility:IsReady() and Settings.Commons.UsePotions then
+      if HR.CastSuggested(I.BattlePotionofAgility) then return "battle_potion_of_agility 12"; end
     end
     -- hunters_mark
     if S.HuntersMark:IsCastableP() and Player:DebuffDownP(S.HuntersMarkDebuff) then
@@ -140,10 +122,10 @@ local function APL()
     end
     -- trueshot,precast_time=1.5,if=active_enemies>2
     if S.Trueshot:IsCastableP() and Player:BuffDownP(S.TrueshotBuff) and (Cache.EnemiesCount[40] > 2) then
-      if HR.Cast(S.Trueshot) then return "trueshot 20"; end
+      if HR.Cast(S.Trueshot, Settings.Marksmanship.GCDasOffGCD.Trueshot) then return "trueshot 20"; end
     end
     -- aimed_shot,if=active_enemies<3
-    if S.AimedShot:IsCastableP() and (Cache.EnemiesCount[40] < 3) then
+    if S.AimedShot:IsReadyP() and (Cache.EnemiesCount[40] < 3) then
       if HR.Cast(S.AimedShot) then return "aimed_shot 38"; end
     end
   end
@@ -181,12 +163,12 @@ local function APL()
       if HR.Cast(S.LightsJudgment) then return "lights_judgment 102"; end
     end
     -- potion,if=buff.trueshot.react&buff.bloodlust.react|buff.trueshot.up&target.health.pct<20&talent.careful_aim.enabled|target.time_to_die<25
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (bool(Player:BuffStackP(S.TrueshotBuff)) and Player:HasHeroism() or Player:BuffP(S.TrueshotBuff) and Target:HealthPercentage() < 20 and S.CarefulAim:IsAvailable() or Target:TimeToDie() < 25) then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 104"; end
+    if I.BattlePotionofAgility:IsReady() and Settings.Commons.UsePotions and (bool(Player:BuffStackP(S.TrueshotBuff)) and Player:HasHeroism() or Player:BuffP(S.TrueshotBuff) and Target:HealthPercentage() < 20 and S.CarefulAim:IsAvailable() or Target:TimeToDie() < 25) then
+      if HR.CastSuggested(I.BattlePotionofAgility) then return "battle_potion_of_agility 104"; end
     end
     -- trueshot,if=cooldown.rapid_fire.remains&target.time_to_die>cooldown.trueshot.duration_guess+duration|(target.health.pct<20|!talent.careful_aim.enabled)|target.time_to_die<15
     if S.Trueshot:IsCastableP() and (bool(S.RapidFire:CooldownRemainsP()) and Target:TimeToDie() > cooldown.trueshot.duration_guess + S.TrueshotBuff:BaseDuration() or (Target:HealthPercentage() < 20 or not S.CarefulAim:IsAvailable()) or Target:TimeToDie() < 15) then
-      if HR.Cast(S.Trueshot) then return "trueshot 112"; end
+      if HR.Cast(S.Trueshot, Settings.Marksmanship.GCDasOffGCD.Trueshot) then return "trueshot 112"; end
     end
   end
   St = function()
@@ -195,12 +177,12 @@ local function APL()
       if HR.Cast(S.ExplosiveShot) then return "explosive_shot 126"; end
     end
     -- barrage,if=active_enemies>1
-    if S.Barrage:IsCastableP() and (Cache.EnemiesCount[40] > 1) then
+    if S.Barrage:IsReadyP() and (Cache.EnemiesCount[40] > 1) then
       if HR.Cast(S.Barrage) then return "barrage 128"; end
     end
     -- a_murder_of_crows
     if S.AMurderofCrows:IsCastableP() then
-      if HR.Cast(S.AMurderofCrows) then return "a_murder_of_crows 136"; end
+      if HR.Cast(S.AMurderofCrows, Settings.Marksmanship.GCDasOffGCD.AMurderofCrows) then return "a_murder_of_crows 136"; end
     end
     -- serpent_sting,if=refreshable&!action.serpent_sting.in_flight
     if S.SerpentSting:IsCastableP() and (Target:DebuffRefreshableCP(S.SerpentStingDebuff) and not S.SerpentSting:InFlight()) then
@@ -215,7 +197,7 @@ local function APL()
       if HR.Cast(S.ArcaneShot) then return "arcane_shot 158"; end
     end
     -- aimed_shot,if=buff.precise_shots.down|cooldown.aimed_shot.full_recharge_time<action.aimed_shot.cast_time|buff.trueshot.up
-    if S.AimedShot:IsCastableP() and (Player:BuffDownP(S.PreciseShotsBuff) or S.AimedShot:FullRechargeTimeP() < S.AimedShot:CastTime() or Player:BuffP(S.TrueshotBuff)) then
+    if S.AimedShot:IsReadyP() and (Player:BuffDownP(S.PreciseShotsBuff) or S.AimedShot:FullRechargeTimeP() < S.AimedShot:CastTime() or Player:BuffP(S.TrueshotBuff)) then
       if HR.Cast(S.AimedShot) then return "aimed_shot 170"; end
     end
     -- rapid_fire,if=focus+cast_regen<focus.max|azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1|azerite.surging_shots.enabled|talent.streamline.enabled
@@ -237,7 +219,7 @@ local function APL()
   end
   Trickshots = function()
     -- barrage
-    if S.Barrage:IsCastableP() then
+    if S.Barrage:IsReadyP() then
       if HR.Cast(S.Barrage) then return "barrage 210"; end
     end
     -- explosive_shot
@@ -249,7 +231,7 @@ local function APL()
       if HR.Cast(S.RapidFire) then return "rapid_fire 214"; end
     end
     -- aimed_shot,if=buff.trick_shots.up&(buff.precise_shots.down|cooldown.aimed_shot.full_recharge_time<action.aimed_shot.cast_time)
-    if S.AimedShot:IsCastableP() and (Player:BuffP(S.TrickShotsBuff) and (Player:BuffDownP(S.PreciseShotsBuff) or S.AimedShot:FullRechargeTimeP() < S.AimedShot:CastTime())) then
+    if S.AimedShot:IsReadyP() and (Player:BuffP(S.TrickShotsBuff) and (Player:BuffDownP(S.PreciseShotsBuff) or S.AimedShot:FullRechargeTimeP() < S.AimedShot:CastTime())) then
       if HR.Cast(S.AimedShot) then return "aimed_shot 226"; end
     end
     -- rapid_fire,if=buff.trick_shots.up
@@ -266,7 +248,7 @@ local function APL()
     end
     -- a_murder_of_crows
     if S.AMurderofCrows:IsCastableP() then
-      if HR.Cast(S.AMurderofCrows) then return "a_murder_of_crows 250"; end
+      if HR.Cast(S.AMurderofCrows, Settings.Marksmanship.GCDasOffGCD.AMurderofCrows) then return "a_murder_of_crows 250"; end
     end
     -- serpent_sting,if=refreshable&!action.serpent_sting.in_flight
     if S.SerpentSting:IsCastableP() and (Target:DebuffRefreshableCP(S.SerpentStingDebuff) and not S.SerpentSting:InFlight()) then

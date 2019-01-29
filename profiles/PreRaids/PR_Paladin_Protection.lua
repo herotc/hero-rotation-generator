@@ -42,7 +42,7 @@ local S = Spell.Paladin.Protection;
 -- Items
 if not Item.Paladin then Item.Paladin = {} end
 Item.Paladin.Protection = {
-  ProlongedPower                   = Item(142117),
+  BattlePotionofStamina            = Item(),
   MerekthasFang                    = Item(),
   RazdunksBigRedButton             = Item()
 };
@@ -87,8 +87,8 @@ local function APL()
     -- augmentation
     -- snapshot_stats
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 4"; end
+    if I.BattlePotionofStamina:IsReady() and Settings.Commons.UsePotions then
+      if HR.CastSuggested(I.BattlePotionofStamina) then return "battle_potion_of_stamina 4"; end
     end
     -- lights_judgment
     if S.LightsJudgment:IsCastableP() and HR.CDsON() then
@@ -113,8 +113,8 @@ local function APL()
       if HR.Cast(S.BastionofLight) then return "bastion_of_light 24"; end
     end
     -- potion,if=buff.avenging_wrath.up
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.AvengingWrathBuff)) then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 28"; end
+    if I.BattlePotionofStamina:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.AvengingWrathBuff)) then
+      if HR.CastSuggested(I.BattlePotionofStamina) then return "battle_potion_of_stamina 28"; end
     end
     -- use_items,if=buff.seraphim.up|!talent.seraphim.enabled
     -- use_item,name=merekthas_fang,if=!buff.avenging_wrath.up&(buff.seraphim.up|!talent.seraphim.enabled)
