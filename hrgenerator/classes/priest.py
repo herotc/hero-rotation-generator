@@ -128,18 +128,14 @@ SPELL_INFO = {
             'harvested_thoughts':               {SPELL:     273320,
                                                  BUFF:      273321},
             'whispers_of_the_damned':           {SPELL:     275722},
-            'searing_dialogue':                   {SPELL:     272788},
+            'searing_dialogue':                 {SPELL:     272788},
             'death_throes':                     {SPELL:     278659},
             'spiteful_apparitions':             {SPELL:     277682},
         },
     },
 }
 
-# TODO insanity_drain_stacks
-
 ITEM_INFO = {
-    'zeks_exterminatus':            144438,
-    'mangazas_madness':             132864,
 }
 
 CLASS_FUNCTIONS = {
