@@ -201,6 +201,10 @@ class Action(Decorable):
             exec_cast = self.execution().object_().print_cast()
             exec_value = convert_type(self.value_tree(), NUM)
             return f'{exec_cast} = {exec_cast} + {exec_value}'
+        elif self.operation() == 'sub':
+            exec_cast = self.execution().object_().print_cast()
+            exec_value = convert_type(self.value_tree(), NUM)
+            return f'{exec_cast} = {exec_cast} - {exec_value}'
         elif self.operation() == 'setif':
             exec_cast = self.execution().object_().print_cast()
             exec_value = convert_type(self.value_tree(), NUM)
