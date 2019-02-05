@@ -46,17 +46,18 @@ Spell.Warlock.Demonology = {
   Berserking                            = Spell(26297),
   BloodFury                             = Spell(20572),
   Fireblood                             = Spell(265221),
-  DemonicStrength                       = Spell(267171),
+  ExplosivePotential                    = Spell(275395),
+  ExplosivePotentialBuff                = Spell(275395),
   DreadstalkersBuff                     = Spell(),
-  DemonicConsumption                    = Spell(),
-  GrimoireFelguardBuff                  = Spell()
+  DemonicStrength                       = Spell(267171),
+  DemonicConsumption                    = Spell(267215)
 };
 local S = Spell.Warlock.Demonology;
 
 -- Items
 if not Item.Warlock then Item.Warlock = {} end
 Item.Warlock.Demonology = {
-  ProlongedPower                   = Item(142117),
+  BattlePotionofIntellect          = Item(163222),
   Item132369                       = Item(132369)
 };
 local I = Item.Warlock.Demonology;
@@ -133,8 +134,8 @@ local function APL()
     end
     -- snapshot_stats
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 10"; end
+    if I.BattlePotionofIntellect:IsReady() and Settings.Commons.UsePotions then
+      if HR.CastSuggested(I.BattlePotionofIntellect) then return "battle_potion_of_intellect 10"; end
     end
     -- demonbolt
     if S.Demonbolt:IsCastableP() then
@@ -248,8 +249,8 @@ local function APL()
     if S.SummonDemonicTyrant:IsCastableP() and (Player:BuffRemainsP(S.NetherPortalBuff) < S.SummonDemonicTyrant:CastTime() + 0.5) then
       if HR.Cast(S.SummonDemonicTyrant) then return "summon_demonic_tyrant 205"; end
     end
-    -- demonbolt,if=buff.demonic_core.up
-    if S.Demonbolt:IsCastableP() and (Player:BuffP(S.DemonicCoreBuff)) then
+    -- demonbolt,if=buff.demonic_core.up&soul_shard<=3
+    if S.Demonbolt:IsCastableP() and (Player:BuffP(S.DemonicCoreBuff) and Player:SoulShardsP() <= 3) then
       if HR.Cast(S.Demonbolt) then return "demonbolt 213"; end
     end
     -- call_action_list,name=build_a_shard
@@ -288,30 +289,42 @@ local function APL()
     local ShouldReturn = Precombat(); if ShouldReturn then return ShouldReturn; end
   end
   if Everyone.TargetIsValid() then
-    -- potion,if=pet.demonic_tyrant.active|target.time_to_die<30
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (bool(pet.demonic_tyrant.active) or Target:TimeToDie() < 30) then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 244"; end
+    -- potion,if=pet.demonic_tyrant.active&(!talent.nether_portal.enabled|cooldown.nether_portal.remains>160)|target.time_to_die<30
+    if I.BattlePotionofIntellect:IsReady() and Settings.Commons.UsePotions and (bool(pet.demonic_tyrant.active) and (not S.NetherPortal:IsAvailable() or S.NetherPortal:CooldownRemainsP() > 160) or Target:TimeToDie() < 30) then
+      if HR.CastSuggested(I.BattlePotionofIntellect) then return "battle_potion_of_intellect 244"; end
     end
     -- use_items,if=pet.demonic_tyrant.active|target.time_to_die<=15
     -- berserking,if=pet.demonic_tyrant.active|target.time_to_die<=15
     if S.Berserking:IsCastableP() and HR.CDsON() and (bool(pet.demonic_tyrant.active) or Target:TimeToDie() <= 15) then
-      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return "berserking 247"; end
+      if HR.Cast(S.Berserking, Settings.Commons.OffGCDasOffGCD.Racials) then return "berserking 251"; end
     end
     -- blood_fury,if=pet.demonic_tyrant.active|target.time_to_die<=15
     if S.BloodFury:IsCastableP() and HR.CDsON() and (bool(pet.demonic_tyrant.active) or Target:TimeToDie() <= 15) then
-      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return "blood_fury 249"; end
+      if HR.Cast(S.BloodFury, Settings.Commons.OffGCDasOffGCD.Racials) then return "blood_fury 253"; end
     end
     -- fireblood,if=pet.demonic_tyrant.active|target.time_to_die<=15
     if S.Fireblood:IsCastableP() and HR.CDsON() and (bool(pet.demonic_tyrant.active) or Target:TimeToDie() <= 15) then
-      if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return "fireblood 251"; end
+      if HR.Cast(S.Fireblood, Settings.Commons.OffGCDasOffGCD.Racials) then return "fireblood 255"; end
+    end
+    -- hand_of_guldan,if=azerite.explosive_potential.rank&time<5&soul_shard>2&buff.explosive_potential.down&buff.wild_imps.stack<3&!prev_gcd.1.hand_of_guldan&&!prev_gcd.2.hand_of_guldan
+    if S.HandofGuldan:IsCastableP() and (bool(S.ExplosivePotential:AzeriteRank()) and HL.CombatTime() < 5 and Player:SoulShardsP() > 2 and Player:BuffDownP(S.ExplosivePotentialBuff) and Player:BuffStackP(S.WildImpsBuff) < 3 and not Player:PrevGCDP(1, S.HandofGuldan) and true and not Player:PrevGCDP(2, S.HandofGuldan)) then
+      if HR.Cast(S.HandofGuldan) then return "hand_of_guldan 257"; end
+    end
+    -- implosion,if=azerite.explosive_potential.rank&buff.wild_imps.stack>2&buff.explosive_potential.down
+    if S.Implosion:IsCastableP() and (bool(S.ExplosivePotential:AzeriteRank()) and Player:BuffStackP(S.WildImpsBuff) > 2 and Player:BuffDownP(S.ExplosivePotentialBuff)) then
+      if HR.Cast(S.Implosion) then return "implosion 269"; end
     end
     -- doom,if=!ticking&time_to_die>30&spell_targets.implosion<2
     if S.Doom:IsCastableP() and (not Target:DebuffP(S.DoomDebuff) and Target:TimeToDie() > 30 and Cache.EnemiesCount[40] < 2) then
-      if HR.Cast(S.Doom) then return "doom 253"; end
+      if HR.Cast(S.Doom) then return "doom 277"; end
+    end
+    -- bilescourge_bombers,if=azerite.explosive_potential.rank>0&time<10&spell_targets.implosion<2&buff.dreadstalkers.remains&talent.nether_portal.enabled
+    if S.BilescourgeBombers:IsCastableP() and (S.ExplosivePotential:AzeriteRank() > 0 and HL.CombatTime() < 10 and Cache.EnemiesCount[40] < 2 and bool(Player:BuffRemainsP(S.DreadstalkersBuff)) and S.NetherPortal:IsAvailable()) then
+      if HR.Cast(S.BilescourgeBombers) then return "bilescourge_bombers 291"; end
     end
     -- demonic_strength,if=(buff.wild_imps.stack<6|buff.demonic_power.up)|spell_targets.implosion<2
     if S.DemonicStrength:IsCastableP() and ((Player:BuffStackP(S.WildImpsBuff) < 6 or Player:BuffP(S.DemonicPowerBuff)) or Cache.EnemiesCount[40] < 2) then
-      if HR.Cast(S.DemonicStrength) then return "demonic_strength 267"; end
+      if HR.Cast(S.DemonicStrength) then return "demonic_strength 299"; end
     end
     -- call_action_list,name=nether_portal,if=talent.nether_portal.enabled&spell_targets.implosion<=2
     if (S.NetherPortal:IsAvailable() and Cache.EnemiesCount[40] <= 2) then
@@ -321,45 +334,45 @@ local function APL()
     if (Cache.EnemiesCount[40] > 1) then
       local ShouldReturn = Implosion(); if ShouldReturn then return ShouldReturn; end
     end
-    -- grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains<13|!equipped.132369
-    if S.GrimoireFelguard:IsCastableP() and (S.SummonDemonicTyrant:CooldownRemainsP() < 13 or not I.Item132369:IsEquipped()) then
-      if HR.Cast(S.GrimoireFelguard) then return "grimoire_felguard 279"; end
+    -- grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains<13
+    if S.GrimoireFelguard:IsCastableP() and (S.SummonDemonicTyrant:CooldownRemainsP() < 13) then
+      if HR.Cast(S.GrimoireFelguard) then return "grimoire_felguard 311"; end
     end
-    -- summon_vilefiend,if=equipped.132369|cooldown.summon_demonic_tyrant.remains>40|cooldown.summon_demonic_tyrant.remains<12
-    if S.SummonVilefiend:IsCastableP() and (I.Item132369:IsEquipped() or S.SummonDemonicTyrant:CooldownRemainsP() > 40 or S.SummonDemonicTyrant:CooldownRemainsP() < 12) then
-      if HR.Cast(S.SummonVilefiend) then return "summon_vilefiend 285"; end
+    -- summon_vilefiend,if=cooldown.summon_demonic_tyrant.remains>40|cooldown.summon_demonic_tyrant.remains<12
+    if S.SummonVilefiend:IsCastableP() and (S.SummonDemonicTyrant:CooldownRemainsP() > 40 or S.SummonDemonicTyrant:CooldownRemainsP() < 12) then
+      if HR.Cast(S.SummonVilefiend) then return "summon_vilefiend 315"; end
     end
-    -- call_dreadstalkers,if=equipped.132369|(cooldown.summon_demonic_tyrant.remains<9&buff.demonic_calling.remains)|(cooldown.summon_demonic_tyrant.remains<11&!buff.demonic_calling.remains)|cooldown.summon_demonic_tyrant.remains>14
-    if S.CallDreadstalkers:IsCastableP() and (I.Item132369:IsEquipped() or (S.SummonDemonicTyrant:CooldownRemainsP() < 9 and bool(Player:BuffRemainsP(S.DemonicCallingBuff))) or (S.SummonDemonicTyrant:CooldownRemainsP() < 11 and not bool(Player:BuffRemainsP(S.DemonicCallingBuff))) or S.SummonDemonicTyrant:CooldownRemainsP() > 14) then
-      if HR.Cast(S.CallDreadstalkers) then return "call_dreadstalkers 293"; end
-    end
-    -- summon_demonic_tyrant,if=equipped.132369|(buff.dreadstalkers.remains>cast_time&(buff.wild_imps.stack>=3+talent.inner_demons.enabled+talent.demonic_consumption.enabled*3|prev_gcd.1.hand_of_guldan&(!talent.demonic_consumption.enabled|buff.wild_imps.stack>=3+talent.inner_demons.enabled))&(soul_shard<3|buff.dreadstalkers.remains<gcd*2.7|buff.grimoire_felguard.remains<gcd*2.7))
-    if S.SummonDemonicTyrant:IsCastableP() and (I.Item132369:IsEquipped() or (Player:BuffRemainsP(S.DreadstalkersBuff) > S.SummonDemonicTyrant:CastTime() and (Player:BuffStackP(S.WildImpsBuff) >= 3 + num(S.InnerDemons:IsAvailable()) + num(S.DemonicConsumption:IsAvailable()) * 3 or Player:PrevGCDP(1, S.HandofGuldan) and (not S.DemonicConsumption:IsAvailable() or Player:BuffStackP(S.WildImpsBuff) >= 3 + num(S.InnerDemons:IsAvailable()))) and (Player:SoulShardsP() < 3 or Player:BuffRemainsP(S.DreadstalkersBuff) < Player:GCD() * 2.7 or Player:BuffRemainsP(S.GrimoireFelguardBuff) < Player:GCD() * 2.7))) then
-      if HR.Cast(S.SummonDemonicTyrant) then return "summon_demonic_tyrant 307"; end
-    end
-    -- power_siphon,if=buff.wild_imps.stack>=2&buff.demonic_core.stack<=2&buff.demonic_power.down&spell_targets.implosion<2
-    if S.PowerSiphon:IsCastableP() and (Player:BuffStackP(S.WildImpsBuff) >= 2 and Player:BuffStackP(S.DemonicCoreBuff) <= 2 and Player:BuffDownP(S.DemonicPowerBuff) and Cache.EnemiesCount[40] < 2) then
-      if HR.Cast(S.PowerSiphon) then return "power_siphon 335"; end
-    end
-    -- doom,if=talent.doom.enabled&refreshable&time_to_die>(dot.doom.remains+30)
-    if S.Doom:IsCastableP() and (S.Doom:IsAvailable() and Target:DebuffRefreshableCP(S.DoomDebuff) and Target:TimeToDie() > (Target:DebuffRemainsP(S.DoomDebuff) + 30)) then
-      if HR.Cast(S.Doom) then return "doom 343"; end
-    end
-    -- hand_of_guldan,if=soul_shard>=5|(soul_shard>=3&cooldown.call_dreadstalkers.remains>4&(!talent.summon_vilefiend.enabled|cooldown.summon_vilefiend.remains>3))
-    if S.HandofGuldan:IsCastableP() and (Player:SoulShardsP() >= 5 or (Player:SoulShardsP() >= 3 and S.CallDreadstalkers:CooldownRemainsP() > 4 and (not S.SummonVilefiend:IsAvailable() or S.SummonVilefiend:CooldownRemainsP() > 3))) then
-      if HR.Cast(S.HandofGuldan) then return "hand_of_guldan 361"; end
-    end
-    -- soul_strike,if=soul_shard<5&buff.demonic_core.stack<=2
-    if S.SoulStrike:IsCastableP() and (Player:SoulShardsP() < 5 and Player:BuffStackP(S.DemonicCoreBuff) <= 2) then
-      if HR.Cast(S.SoulStrike) then return "soul_strike 369"; end
-    end
-    -- demonbolt,if=soul_shard<=3&buff.demonic_core.up&((cooldown.summon_demonic_tyrant.remains<10|cooldown.summon_demonic_tyrant.remains>22)|buff.demonic_core.stack>=3|buff.demonic_core.remains<5|time_to_die<25)
-    if S.Demonbolt:IsCastableP() and (Player:SoulShardsP() <= 3 and Player:BuffP(S.DemonicCoreBuff) and ((S.SummonDemonicTyrant:CooldownRemainsP() < 10 or S.SummonDemonicTyrant:CooldownRemainsP() > 22) or Player:BuffStackP(S.DemonicCoreBuff) >= 3 or Player:BuffRemainsP(S.DemonicCoreBuff) < 5 or Target:TimeToDie() < 25)) then
-      if HR.Cast(S.Demonbolt) then return "demonbolt 373"; end
+    -- call_dreadstalkers,if=(cooldown.summon_demonic_tyrant.remains<9&buff.demonic_calling.remains)|(cooldown.summon_demonic_tyrant.remains<11&!buff.demonic_calling.remains)|cooldown.summon_demonic_tyrant.remains>14
+    if S.CallDreadstalkers:IsCastableP() and ((S.SummonDemonicTyrant:CooldownRemainsP() < 9 and bool(Player:BuffRemainsP(S.DemonicCallingBuff))) or (S.SummonDemonicTyrant:CooldownRemainsP() < 11 and not bool(Player:BuffRemainsP(S.DemonicCallingBuff))) or S.SummonDemonicTyrant:CooldownRemainsP() > 14) then
+      if HR.Cast(S.CallDreadstalkers) then return "call_dreadstalkers 321"; end
     end
     -- bilescourge_bombers
     if S.BilescourgeBombers:IsCastableP() then
-      if HR.Cast(S.BilescourgeBombers) then return "bilescourge_bombers 389"; end
+      if HR.Cast(S.BilescourgeBombers) then return "bilescourge_bombers 333"; end
+    end
+    -- summon_demonic_tyrant,if=soul_shard<3&(!talent.demonic_consumption.enabled|buff.wild_imps.stack>0)
+    if S.SummonDemonicTyrant:IsCastableP() and (Player:SoulShardsP() < 3 and (not S.DemonicConsumption:IsAvailable() or Player:BuffStackP(S.WildImpsBuff) > 0)) then
+      if HR.Cast(S.SummonDemonicTyrant) then return "summon_demonic_tyrant 335"; end
+    end
+    -- power_siphon,if=buff.wild_imps.stack>=2&buff.demonic_core.stack<=2&buff.demonic_power.down&spell_targets.implosion<2
+    if S.PowerSiphon:IsCastableP() and (Player:BuffStackP(S.WildImpsBuff) >= 2 and Player:BuffStackP(S.DemonicCoreBuff) <= 2 and Player:BuffDownP(S.DemonicPowerBuff) and Cache.EnemiesCount[40] < 2) then
+      if HR.Cast(S.PowerSiphon) then return "power_siphon 341"; end
+    end
+    -- doom,if=talent.doom.enabled&refreshable&time_to_die>(dot.doom.remains+30)
+    if S.Doom:IsCastableP() and (S.Doom:IsAvailable() and Target:DebuffRefreshableCP(S.DoomDebuff) and Target:TimeToDie() > (Target:DebuffRemainsP(S.DoomDebuff) + 30)) then
+      if HR.Cast(S.Doom) then return "doom 349"; end
+    end
+    -- hand_of_guldan,if=soul_shard>=5|(soul_shard>=3&cooldown.call_dreadstalkers.remains>4&(!talent.summon_vilefiend.enabled|cooldown.summon_vilefiend.remains>3))
+    if S.HandofGuldan:IsCastableP() and (Player:SoulShardsP() >= 5 or (Player:SoulShardsP() >= 3 and S.CallDreadstalkers:CooldownRemainsP() > 4 and (not S.SummonVilefiend:IsAvailable() or S.SummonVilefiend:CooldownRemainsP() > 3))) then
+      if HR.Cast(S.HandofGuldan) then return "hand_of_guldan 367"; end
+    end
+    -- soul_strike,if=soul_shard<5&buff.demonic_core.stack<=2
+    if S.SoulStrike:IsCastableP() and (Player:SoulShardsP() < 5 and Player:BuffStackP(S.DemonicCoreBuff) <= 2) then
+      if HR.Cast(S.SoulStrike) then return "soul_strike 375"; end
+    end
+    -- demonbolt,if=soul_shard<=3&buff.demonic_core.up
+    if S.Demonbolt:IsCastableP() and (Player:SoulShardsP() <= 3 and Player:BuffP(S.DemonicCoreBuff)) then
+      if HR.Cast(S.Demonbolt) then return "demonbolt 379"; end
     end
     -- call_action_list,name=build_a_shard
     if (true) then
