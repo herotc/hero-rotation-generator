@@ -5,7 +5,7 @@ Paladin specific constants and functions.
 @author: skasch
 """
 
-from ..constants import COMMON, SPELL, BUFF, DEBUFF, INTERRUPT, RANGE, CD, READY, OGCDAOGCD
+from ..constants import COMMON, SPELL, BUFF, DEBUFF, INTERRUPT, RANGE, CD, READY, OGCDAOGCD, GCDAOGCD
 
 PALADIN = 'paladin'
 HOLY = 'holy'
@@ -47,7 +47,9 @@ SPELL_INFO = {
                                                  BUFF:      642},
             'lay_on_hand':                      {SPELL:     633},
             'avenging_wrath':                   {SPELL:     31884,
-                                                 BUFF:      31884},
+                                                 BUFF:      31884,
+                                                 CD:        True,
+                                                 GCDAOGCD:  True},
             'consecration':                     {SPELL:     26573}, # Holy/Prot
         },
         PROTECTION: {
@@ -82,7 +84,8 @@ SPELL_INFO = {
         RETRIBUTION: {
             'crusade':                          {SPELL:     231895,
                                                  BUFF:      231895,
-                                                 CD:        True},
+                                                 CD:        True,
+                                                 GCDAOGCD:  True},
             'blade_of_justice':                 {SPELL:     184575},
             'shield_of_vengeance':              {SPELL:     184662},
             'execution_sentence':               {SPELL:     267798,
