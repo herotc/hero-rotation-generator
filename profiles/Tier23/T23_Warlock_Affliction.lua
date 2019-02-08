@@ -42,7 +42,7 @@ Spell.Warlock.Affliction = {
   Corruption                            = Spell(172),
   CreepingDeath                         = Spell(264000),
   WritheInAgony                         = Spell(196102),
-  PandemicInvocation                    = Spell(),
+  PandemicInvocation                    = Spell(289364),
   UnstableAffliction                    = Spell(30108),
   UnstableAfflictionDebuff              = Spell(30108),
   Deathbolt                             = Spell(264106),
@@ -59,7 +59,7 @@ Spell.Warlock.Affliction = {
   CascadingCalamityBuff                 = Spell(275378),
   SowtheSeeds                           = Spell(196226),
   ActiveUasBuff                         = Spell(233490),
-  PhantomSingularityDebuff              = Spell(),
+  PhantomSingularityDebuff              = Spell(205179),
   Berserking                            = Spell(26297)
 };
 local S = Spell.Warlock.Affliction;
@@ -67,7 +67,7 @@ local S = Spell.Warlock.Affliction;
 -- Items
 if not Item.Warlock then Item.Warlock = {} end
 Item.Warlock.Affliction = {
-  ProlongedPower                   = Item(142117)
+  BattlePotionofIntellect          = Item(163222)
 };
 local I = Item.Warlock.Affliction;
 
@@ -290,8 +290,8 @@ local function APL()
     end
     -- snapshot_stats
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 14"; end
+    if I.BattlePotionofIntellect:IsReady() and Settings.Commons.UsePotions then
+      if HR.CastSuggested(I.BattlePotionofIntellect) then return "battle_potion_of_intellect 14"; end
     end
     -- seed_of_corruption,if=spell_targets.seed_of_corruption_aoe>=3
     if S.SeedofCorruption:IsCastableP() and Player:DebuffDownP(S.SeedofCorruptionDebuff) and (Cache.EnemiesCount[5] >= 3) then
@@ -308,8 +308,8 @@ local function APL()
   end
   Cooldowns = function()
     -- potion,if=(talent.dark_soul_misery.enabled&cooldown.summon_darkglare.up&cooldown.dark_soul.up)|cooldown.summon_darkglare.up|target.time_to_die<30
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and ((S.DarkSoulMisery:IsAvailable() and S.SummonDarkglare:CooldownUpP() and S.DarkSoul:CooldownUpP()) or S.SummonDarkglare:CooldownUpP() or Target:TimeToDie() < 30) then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 30"; end
+    if I.BattlePotionofIntellect:IsReady() and Settings.Commons.UsePotions and ((S.DarkSoulMisery:IsAvailable() and S.SummonDarkglare:CooldownUpP() and S.DarkSoul:CooldownUpP()) or S.SummonDarkglare:CooldownUpP() or Target:TimeToDie() < 30) then
+      if HR.CastSuggested(I.BattlePotionofIntellect) then return "battle_potion_of_intellect 30"; end
     end
     -- use_items,if=!cooldown.summon_darkglare.up,if=cooldown.summon_darkglare.remains>70|time_to_die<20|((buff.active_uas.stack=5|soul_shard=0)&(!talent.phantom_singularity.enabled|cooldown.phantom_singularity.remains)&(!talent.deathbolt.enabled|cooldown.deathbolt.remains<=gcd|!cooldown.deathbolt.remains)&!cooldown.summon_darkglare.remains)
     -- fireblood,if=!cooldown.summon_darkglare.up

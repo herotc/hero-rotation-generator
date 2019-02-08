@@ -24,9 +24,9 @@ CLASS_SPECS = {
 
 DEFAULT_POTION = {
     WARLOCK: {
-        AFFLICTION:     'prolonged_power',
-        DEMONOLOGY:     'prolonged_power',
-        DESTRUCTION:    'prolonged_power',
+        AFFLICTION:     'battle_potion_of_intellect',
+        DEMONOLOGY:     'battle_potion_of_intellect',
+        DESTRUCTION:    'battle_potion_of_intellect',
     }
 }
 
@@ -47,8 +47,6 @@ ACTION_LIST_INFO = {
 SPELL_INFO = {
     WARLOCK: {
         COMMON: {
-            # Legendaries
-            'lessons_of_spacetime':             {BUFF:      236174},
         },
         AFFLICTION: {
             'haunt':                            {SPELL:     48181,
@@ -68,7 +66,7 @@ SPELL_INFO = {
             'siphon_life':                      {SPELL:     63106,
                                                  DEBUFF:    63106},
             'phantom_singularity':              {SPELL:     205179,
-                                                 BUFF:      205179,
+                                                 DEBUFF:    205179,
                                                  GCDAOGCD:  True},
             'seed_of_corruption':               {SPELL:     27243,
                                                  DEBUFF:    27243,
@@ -105,32 +103,30 @@ SPELL_INFO = {
             'absolute_corruption':              {SPELL:     196103},
             'shadow_embrace':                   {SPELL:     32388,
                                                  DEBUFF:    32390},
+            # Azerite
             'cascading_calamity':               {SPELL:     275372,
                                                  BUFF:      275378},
-            # Azerite
             'sudden_onset':                     {SPELL:     278721},
             'inevitable_demise':                {SPELL:     273521,
                                                  BUFF:      273525},
+            'pandemic_invocation':              {SPELL:     289364},
             # Placeholders
             'active_uas':                       {BUFF:      233490}
         },
         DEMONOLOGY: {
+            'shadow_bolt':                      {SPELL:     686},
             'summon_pet':                       {SPELL:     30146},
             'inner_demons':                     {SPELL:     267216},
             'demonbolt':                        {SPELL:     264178},
             'soul_strike':                      {SPELL:     264057},
-            'shadow_bolt':                      {SPELL:     686},
             'implosion':                        {SPELL:     196277,
-                                                 RANGE:     40},
-            #'wild_imps':                        {BUFF:}             ??? buff.wild_imps.stack -> Player:BuffStackP(S.WildImpsBuff)  
+                                                 RANGE:     40}, 
             'call_dreadstalkers':               {SPELL:     104316},
-            #                                                        ??? buff.dreadstalkers.remains -> Player:BuffRemainsP(S.DreadstalkersBuff)
             'bilescourge_bombers':              {SPELL:     267211},
             'hand_of_guldan':                   {SPELL:     105174},
             'demonic_power':                    {BUFF:      265273},
             'summon_demonic_tyrant':            {SPELL:     265187},
             'grimoire_felguard':                {SPELL:     111898},
-            #                                     BUFF:      }       ??? buff.grimoire_felguard.remains -> Player:BuffRemainsP(S.GrimoireFelguardBuff)
             'demonic_calling':                  {SPELL:     205145,
                                                  BUFF:      205146},
             'demonic_core':                     {BUFF:      264173},
@@ -141,15 +137,23 @@ SPELL_INFO = {
             'doom':                             {SPELL:     265412,
                                                  DEBUFF:    265412},    
             'demonic_strength':                 {SPELL:     267171},
+            'demonic_consumption':              {SPELL:     267215},
+            
+            # Azerite Traits
+            'explosive_potential':              {SPELL:     275395,
+                                                 BUFF:      275395},
+            'forbidden_knowledge':              {SPELL:     279666},
+            'baleful_invocation':               {SPELL:     287059},
         },
         DESTRUCTION: {
+            'shadow_bolt':                      {SPELL:     686},
             'summon_pet':                       {SPELL:     688},
             'grimoire_of_sacrifice':            {SPELL:     108503},
             'soul_fire':                        {SPELL:     6353},
             'incinerate':                       {SPELL:     29722},
             'rain_of_fire':                     {SPELL:     5740,
                                                  DEBUFF:    5740,
-                                                 RANGE:     35},
+                                                 RANGE:     40},
             'cataclysm':                        {SPELL:     152108,
                                                  RANGE:     40},
             'immolate':                         {SPELL:     348,
@@ -189,7 +193,6 @@ SPELL_INFO = {
 }
 
 ITEM_INFO = {
-    'lessons_of_spacetime':             144369,
 }
 
 

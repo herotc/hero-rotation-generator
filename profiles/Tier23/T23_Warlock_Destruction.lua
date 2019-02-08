@@ -59,7 +59,7 @@ local S = Spell.Warlock.Destruction;
 -- Items
 if not Item.Warlock then Item.Warlock = {} end
 Item.Warlock.Destruction = {
-  ProlongedPower                   = Item(142117)
+  BattlePotionofIntellect          = Item(163222)
 };
 local I = Item.Warlock.Destruction;
 
@@ -75,7 +75,7 @@ local Settings = {
 };
 
 
-local EnemyRanges = {40, 35, 5}
+local EnemyRanges = {40, 5}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do
     HL.GetEnemies(i);
@@ -115,19 +115,19 @@ end
 
 
 local function EvaluateCycleHavoc48(TargetUnit)
-  return not (target == sim.target) and TargetUnit:TimeToDie() > 10 and Cache.EnemiesCount[35] <= 8 + raid_event.invulnerable.up and S.GrimoireofSupremacy:IsAvailable() and bool(pet.infernal.active) and TargetUnit:DebuffRemainsP(S.HavocDebuff) <= 10
+  return not (target == sim.target) and TargetUnit:TimeToDie() > 10 and Cache.EnemiesCount[40] <= 8 + raid_event.invulnerable.up and S.GrimoireofSupremacy:IsAvailable() and bool(pet.infernal.active) and TargetUnit:DebuffRemainsP(S.HavocDebuff) <= 10
 end
 
 local function EvaluateCycleChaosBolt73(TargetUnit)
-  return not bool(TargetUnit:DebuffRemainsP(S.HavocDebuff)) and S.GrimoireofSupremacy:IsAvailable() and pet.infernal.remains > S.ChaosBolt:ExecuteTime() and Cache.EnemiesCount[40] <= 8 + raid_event.invulnerable.up and ((108 * (Cache.EnemiesCount[35] + raid_event.invulnerable.up) / 3) < (240 * (1 + 0.08 * Player:BuffStackP(S.GrimoireofSupremacyBuff)) / 2 * num((1 + Player:BuffRemainsP(S.ActiveHavocBuff) > S.ChaosBolt:ExecuteTime()))))
+  return not bool(TargetUnit:DebuffRemainsP(S.HavocDebuff)) and S.GrimoireofSupremacy:IsAvailable() and pet.infernal.remains > S.ChaosBolt:ExecuteTime() and Cache.EnemiesCount[40] <= 8 + raid_event.invulnerable.up and ((108 * (Cache.EnemiesCount[40] + raid_event.invulnerable.up) / 3) < (240 * (1 + 0.08 * Player:BuffStackP(S.GrimoireofSupremacyBuff)) / 2 * num((1 + Player:BuffRemainsP(S.ActiveHavocBuff) > S.ChaosBolt:ExecuteTime()))))
 end
 
 local function EvaluateCycleHavoc106(TargetUnit)
-  return not (target == sim.target) and TargetUnit:TimeToDie() > 10 and Cache.EnemiesCount[35] <= 4 + raid_event.invulnerable.up
+  return not (target == sim.target) and TargetUnit:TimeToDie() > 10 and Cache.EnemiesCount[40] <= 4 + raid_event.invulnerable.up
 end
 
 local function EvaluateCycleChaosBolt115(TargetUnit)
-  return not bool(TargetUnit:DebuffRemainsP(S.HavocDebuff)) and Player:BuffRemainsP(S.ActiveHavocBuff) > S.ChaosBolt:ExecuteTime() and Cache.EnemiesCount[35] <= 4 + raid_event.invulnerable.up
+  return not bool(TargetUnit:DebuffRemainsP(S.HavocDebuff)) and Player:BuffRemainsP(S.ActiveHavocBuff) > S.ChaosBolt:ExecuteTime() and Cache.EnemiesCount[40] <= 4 + raid_event.invulnerable.up
 end
 
 local function EvaluateCycleImmolate130(TargetUnit)
@@ -151,19 +151,19 @@ local function EvaluateCycleIncinerate198(TargetUnit)
 end
 
 local function EvaluateCycleHavoc248(TargetUnit)
-  return not (target == sim.target) and TargetUnit:TimeToDie() > 10 and Cache.EnemiesCount[35] <= 4 + raid_event.invulnerable.up and S.GrimoireofSupremacy:IsAvailable() and bool(pet.infernal.active) and TargetUnit:DebuffRemainsP(S.HavocDebuff) <= 10
+  return not (target == sim.target) and TargetUnit:TimeToDie() > 10 and Cache.EnemiesCount[40] <= 4 + raid_event.invulnerable.up and S.GrimoireofSupremacy:IsAvailable() and bool(pet.infernal.active) and TargetUnit:DebuffRemainsP(S.HavocDebuff) <= 10
 end
 
 local function EvaluateCycleChaosBolt273(TargetUnit)
-  return not bool(TargetUnit:DebuffRemainsP(S.HavocDebuff)) and S.GrimoireofSupremacy:IsAvailable() and pet.infernal.remains > S.ChaosBolt:ExecuteTime() and Cache.EnemiesCount[40] <= 4 + raid_event.invulnerable.up and ((108 * (Cache.EnemiesCount[35] + raid_event.invulnerable.up) / 3) < (240 * (1 + 0.08 * Player:BuffStackP(S.GrimoireofSupremacyBuff)) / 2 * num((1 + Player:BuffRemainsP(S.ActiveHavocBuff) > S.ChaosBolt:ExecuteTime()))))
+  return not bool(TargetUnit:DebuffRemainsP(S.HavocDebuff)) and S.GrimoireofSupremacy:IsAvailable() and pet.infernal.remains > S.ChaosBolt:ExecuteTime() and Cache.EnemiesCount[40] <= 4 + raid_event.invulnerable.up and ((108 * (Cache.EnemiesCount[40] + raid_event.invulnerable.up) / 3) < (240 * (1 + 0.08 * Player:BuffStackP(S.GrimoireofSupremacyBuff)) / 2 * num((1 + Player:BuffRemainsP(S.ActiveHavocBuff) > S.ChaosBolt:ExecuteTime()))))
 end
 
 local function EvaluateCycleHavoc306(TargetUnit)
-  return not (target == sim.target) and TargetUnit:TimeToDie() > 10 and Cache.EnemiesCount[35] <= 4 + raid_event.invulnerable.up
+  return not (target == sim.target) and TargetUnit:TimeToDie() > 10 and Cache.EnemiesCount[40] <= 4 + raid_event.invulnerable.up
 end
 
 local function EvaluateCycleChaosBolt315(TargetUnit)
-  return not bool(TargetUnit:DebuffRemainsP(S.HavocDebuff)) and Player:BuffRemainsP(S.ActiveHavocBuff) > S.ChaosBolt:ExecuteTime() and Cache.EnemiesCount[35] <= 4 + raid_event.invulnerable.up
+  return not bool(TargetUnit:DebuffRemainsP(S.HavocDebuff)) and Player:BuffRemainsP(S.ActiveHavocBuff) > S.ChaosBolt:ExecuteTime() and Cache.EnemiesCount[40] <= 4 + raid_event.invulnerable.up
 end
 
 local function EvaluateCycleImmolate330(TargetUnit)
@@ -183,19 +183,19 @@ local function EvaluateCycleIncinerate371(TargetUnit)
 end
 
 local function EvaluateCycleHavoc406(TargetUnit)
-  return not (target == sim.target) and TargetUnit:TimeToDie() > 10 and Cache.EnemiesCount[35] <= 4 + raid_event.invulnerable.up + num(S.InternalCombustion:IsAvailable()) and S.GrimoireofSupremacy:IsAvailable() and bool(pet.infernal.active) and TargetUnit:DebuffRemainsP(S.HavocDebuff) <= 10
+  return not (target == sim.target) and TargetUnit:TimeToDie() > 10 and Cache.EnemiesCount[40] <= 4 + raid_event.invulnerable.up + num(S.InternalCombustion:IsAvailable()) and S.GrimoireofSupremacy:IsAvailable() and bool(pet.infernal.active) and TargetUnit:DebuffRemainsP(S.HavocDebuff) <= 10
 end
 
 local function EvaluateCycleChaosBolt435(TargetUnit)
-  return not bool(TargetUnit:DebuffRemainsP(S.HavocDebuff)) and S.GrimoireofSupremacy:IsAvailable() and pet.infernal.remains > S.ChaosBolt:ExecuteTime() and Cache.EnemiesCount[35] <= 4 + raid_event.invulnerable.up + num(S.InternalCombustion:IsAvailable()) and ((108 * (Cache.EnemiesCount[35] + raid_event.invulnerable.up) / (3 - 0.16 * (Cache.EnemiesCount[35] + raid_event.invulnerable.up))) < (240 * (1 + 0.08 * Player:BuffStackP(S.GrimoireofSupremacyBuff)) / 2 * num((1 + Player:BuffRemainsP(S.ActiveHavocBuff) > S.ChaosBolt:ExecuteTime()))))
+  return not bool(TargetUnit:DebuffRemainsP(S.HavocDebuff)) and S.GrimoireofSupremacy:IsAvailable() and pet.infernal.remains > S.ChaosBolt:ExecuteTime() and Cache.EnemiesCount[40] <= 4 + raid_event.invulnerable.up + num(S.InternalCombustion:IsAvailable()) and ((108 * (Cache.EnemiesCount[40] + raid_event.invulnerable.up) / (3 - 0.16 * (Cache.EnemiesCount[40] + raid_event.invulnerable.up))) < (240 * (1 + 0.08 * Player:BuffStackP(S.GrimoireofSupremacyBuff)) / 2 * num((1 + Player:BuffRemainsP(S.ActiveHavocBuff) > S.ChaosBolt:ExecuteTime()))))
 end
 
 local function EvaluateCycleHavoc464(TargetUnit)
-  return not (target == sim.target) and TargetUnit:TimeToDie() > 10 and Cache.EnemiesCount[35] <= 3 + raid_event.invulnerable.up and (S.Eradication:IsAvailable() or S.InternalCombustion:IsAvailable())
+  return not (target == sim.target) and TargetUnit:TimeToDie() > 10 and Cache.EnemiesCount[40] <= 3 + raid_event.invulnerable.up and (S.Eradication:IsAvailable() or S.InternalCombustion:IsAvailable())
 end
 
 local function EvaluateCycleChaosBolt481(TargetUnit)
-  return not bool(TargetUnit:DebuffRemainsP(S.HavocDebuff)) and Player:BuffRemainsP(S.ActiveHavocBuff) > S.ChaosBolt:ExecuteTime() and Cache.EnemiesCount[35] <= 3 + raid_event.invulnerable.up and (S.Eradication:IsAvailable() or S.InternalCombustion:IsAvailable())
+  return not bool(TargetUnit:DebuffRemainsP(S.HavocDebuff)) and Player:BuffRemainsP(S.ActiveHavocBuff) > S.ChaosBolt:ExecuteTime() and Cache.EnemiesCount[40] <= 3 + raid_event.invulnerable.up and (S.Eradication:IsAvailable() or S.InternalCombustion:IsAvailable())
 end
 
 local function EvaluateCycleImmolate500(TargetUnit)
@@ -276,8 +276,8 @@ local function APL()
     end
     -- snapshot_stats
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 10"; end
+    if I.BattlePotionofIntellect:IsReady() and Settings.Commons.UsePotions then
+      if HR.CastSuggested(I.BattlePotionofIntellect) then return "battle_potion_of_intellect 10"; end
     end
     -- soul_fire
     if S.SoulFire:IsCastableP() then
@@ -314,7 +314,7 @@ local function APL()
       if HR.CastCycle(S.Havoc, 40, EvaluateCycleHavoc48) then return "havoc 58" end
     end
     -- havoc,if=spell_targets.rain_of_fire<=8+raid_event.invulnerable.up&talent.grimoire_of_supremacy.enabled&pet.infernal.active&pet.infernal.remains<=10
-    if S.Havoc:IsCastableP() and (Cache.EnemiesCount[35] <= 8 + raid_event.invulnerable.up and S.GrimoireofSupremacy:IsAvailable() and bool(pet.infernal.active) and Target:DebuffRemainsP(S.HavocDebuff) <= 10) then
+    if S.Havoc:IsCastableP() and (Cache.EnemiesCount[40] <= 8 + raid_event.invulnerable.up and S.GrimoireofSupremacy:IsAvailable() and bool(pet.infernal.active) and Target:DebuffRemainsP(S.HavocDebuff) <= 10) then
       if HR.Cast(S.Havoc) then return "havoc 59"; end
     end
     -- chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&talent.grimoire_of_supremacy.enabled&pet.infernal.remains>execute_time&active_enemies<=8+raid_event.invulnerable.up&((108*(spell_targets.rain_of_fire+raid_event.invulnerable.up)%3)<(240*(1+0.08*buff.grimoire_of_supremacy.stack)%2*(1+buff.active_havoc.remains>execute_time)))
@@ -326,7 +326,7 @@ local function APL()
       if HR.CastCycle(S.Havoc, 40, EvaluateCycleHavoc106) then return "havoc 108" end
     end
     -- havoc,if=spell_targets.rain_of_fire<=4+raid_event.invulnerable.up
-    if S.Havoc:IsCastableP() and (Cache.EnemiesCount[35] <= 4 + raid_event.invulnerable.up) then
+    if S.Havoc:IsCastableP() and (Cache.EnemiesCount[40] <= 4 + raid_event.invulnerable.up) then
       if HR.Cast(S.Havoc) then return "havoc 109"; end
     end
     -- chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&buff.active_havoc.remains>execute_time&spell_targets.rain_of_fire<=4+raid_event.invulnerable.up
@@ -368,8 +368,8 @@ local function APL()
       if HR.Cast(S.DarkSoulInstability) then return "dark_soul_instability 209"; end
     end
     -- potion,if=pet.infernal.active|target.time_to_die<65
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (bool(pet.infernal.active) or Target:TimeToDie() < 65) then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 211"; end
+    if I.BattlePotionofIntellect:IsReady() and Settings.Commons.UsePotions and (bool(pet.infernal.active) or Target:TimeToDie() < 65) then
+      if HR.CastSuggested(I.BattlePotionofIntellect) then return "battle_potion_of_intellect 211"; end
     end
     -- berserking
     if S.Berserking:IsCastableP() and HR.CDsON() then
@@ -407,7 +407,7 @@ local function APL()
       if HR.CastCycle(S.Havoc, 40, EvaluateCycleHavoc248) then return "havoc 258" end
     end
     -- havoc,if=spell_targets.rain_of_fire<=4+raid_event.invulnerable.up&talent.grimoire_of_supremacy.enabled&pet.infernal.active&pet.infernal.remains<=10
-    if S.Havoc:IsCastableP() and (Cache.EnemiesCount[35] <= 4 + raid_event.invulnerable.up and S.GrimoireofSupremacy:IsAvailable() and bool(pet.infernal.active) and Target:DebuffRemainsP(S.HavocDebuff) <= 10) then
+    if S.Havoc:IsCastableP() and (Cache.EnemiesCount[40] <= 4 + raid_event.invulnerable.up and S.GrimoireofSupremacy:IsAvailable() and bool(pet.infernal.active) and Target:DebuffRemainsP(S.HavocDebuff) <= 10) then
       if HR.Cast(S.Havoc) then return "havoc 259"; end
     end
     -- chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&talent.grimoire_of_supremacy.enabled&pet.infernal.remains>execute_time&active_enemies<=4+raid_event.invulnerable.up&((108*(spell_targets.rain_of_fire+raid_event.invulnerable.up)%3)<(240*(1+0.08*buff.grimoire_of_supremacy.stack)%2*(1+buff.active_havoc.remains>execute_time)))
@@ -419,7 +419,7 @@ local function APL()
       if HR.CastCycle(S.Havoc, 40, EvaluateCycleHavoc306) then return "havoc 308" end
     end
     -- havoc,if=spell_targets.rain_of_fire<=4+raid_event.invulnerable.up
-    if S.Havoc:IsCastableP() and (Cache.EnemiesCount[35] <= 4 + raid_event.invulnerable.up) then
+    if S.Havoc:IsCastableP() and (Cache.EnemiesCount[40] <= 4 + raid_event.invulnerable.up) then
       if HR.Cast(S.Havoc) then return "havoc 309"; end
     end
     -- chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&buff.active_havoc.remains>execute_time&spell_targets.rain_of_fire<=4+raid_event.invulnerable.up
@@ -473,7 +473,7 @@ local function APL()
       if HR.CastCycle(S.Havoc, 40, EvaluateCycleHavoc406) then return "havoc 418" end
     end
     -- havoc,if=spell_targets.rain_of_fire<=4+raid_event.invulnerable.up+talent.internal_combustion.enabled&talent.grimoire_of_supremacy.enabled&pet.infernal.active&pet.infernal.remains<=10
-    if S.Havoc:IsCastableP() and (Cache.EnemiesCount[35] <= 4 + raid_event.invulnerable.up + num(S.InternalCombustion:IsAvailable()) and S.GrimoireofSupremacy:IsAvailable() and bool(pet.infernal.active) and Target:DebuffRemainsP(S.HavocDebuff) <= 10) then
+    if S.Havoc:IsCastableP() and (Cache.EnemiesCount[40] <= 4 + raid_event.invulnerable.up + num(S.InternalCombustion:IsAvailable()) and S.GrimoireofSupremacy:IsAvailable() and bool(pet.infernal.active) and Target:DebuffRemainsP(S.HavocDebuff) <= 10) then
       if HR.Cast(S.Havoc) then return "havoc 419"; end
     end
     -- chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&talent.grimoire_of_supremacy.enabled&pet.infernal.remains>execute_time&spell_targets.rain_of_fire<=4+raid_event.invulnerable.up+talent.internal_combustion.enabled&((108*(spell_targets.rain_of_fire+raid_event.invulnerable.up)%(3-0.16*(spell_targets.rain_of_fire+raid_event.invulnerable.up)))<(240*(1+0.08*buff.grimoire_of_supremacy.stack)%2*(1+buff.active_havoc.remains>execute_time)))
@@ -485,7 +485,7 @@ local function APL()
       if HR.CastCycle(S.Havoc, 40, EvaluateCycleHavoc464) then return "havoc 470" end
     end
     -- havoc,if=spell_targets.rain_of_fire<=3+raid_event.invulnerable.up&(talent.eradication.enabled|talent.internal_combustion.enabled)
-    if S.Havoc:IsCastableP() and (Cache.EnemiesCount[35] <= 3 + raid_event.invulnerable.up and (S.Eradication:IsAvailable() or S.InternalCombustion:IsAvailable())) then
+    if S.Havoc:IsCastableP() and (Cache.EnemiesCount[40] <= 3 + raid_event.invulnerable.up and (S.Eradication:IsAvailable() or S.InternalCombustion:IsAvailable())) then
       if HR.Cast(S.Havoc) then return "havoc 471"; end
     end
     -- chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&buff.active_havoc.remains>execute_time&spell_targets.rain_of_fire<=3+raid_event.invulnerable.up&(talent.eradication.enabled|talent.internal_combustion.enabled)
