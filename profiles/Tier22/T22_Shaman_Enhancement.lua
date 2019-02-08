@@ -21,7 +21,7 @@ local HR     = HeroRotation
 -- Spells
 if not Spell.Shaman then Spell.Shaman = {} end
 Spell.Shaman.Enhancement = {
-  LightningShield                       = Spell(),
+  LightningShield                       = Spell(192106),
   CrashLightning                        = Spell(187874),
   CrashLightningBuff                    = Spell(187874),
   Rockbiter                             = Spell(193786),
@@ -35,50 +35,50 @@ Spell.Shaman.Enhancement = {
   AscendanceBuff                        = Spell(114051),
   Ascendance                            = Spell(114051),
   FeralSpirit                           = Spell(51533),
-  Strike                                = Spell(),
+  --Strike                                = Spell(),
   EarthenSpike                          = Spell(188089),
   Stormstrike                           = Spell(17364),
-  LightningConduit                      = Spell(),
-  LightningConduitDebuff                = Spell(),
+  LightningConduit                      = Spell(275388),
+  LightningConduitDebuff                = Spell(275391),
   StormbringerBuff                      = Spell(201845),
-  GatheringStormsBuff                   = Spell(),
+  GatheringStormsBuff                   = Spell(198300),
   LightningBolt                         = Spell(187837),
   Overcharge                            = Spell(210727),
   Sundering                             = Spell(197214),
-  ForcefulWinds                         = Spell(),
+  ForcefulWinds                         = Spell(262647),
   Flametongue                           = Spell(193796),
-  SearingAssault                        = Spell(),
+  SearingAssault                        = Spell(192087),
   LavaLash                              = Spell(60103),
   HotHand                               = Spell(201900),
   HotHandBuff                           = Spell(215785),
-  StrengthofEarthBuff                   = Spell(),
+  StrengthofEarthBuff                   = Spell(273465),
   CrashingStorm                         = Spell(192246),
   Frostbrand                            = Spell(196834),
   Hailstorm                             = Spell(210853),
   FrostbrandBuff                        = Spell(196834),
-  PrimalPrimerDebuff                    = Spell(),
-  PrimalPrimer                          = Spell(),
+  PrimalPrimerDebuff                    = Spell(273006),
+  PrimalPrimer                          = Spell(272992),
   FlametongueBuff                       = Spell(194084),
   FuryofAir                             = Spell(197211),
   FuryofAirBuff                         = Spell(197211),
-  TotemMastery                          = Spell(),
-  ResonanceTotemBuff                    = Spell(),
+  TotemMastery                          = Spell(262395),
+  ResonanceTotemBuff                    = Spell(262419),
   SunderingDebuff                       = Spell(197214),
-  NaturalHarmony                        = Spell(),
-  NaturalHarmonyFrostBuff               = Spell(),
-  NaturalHarmonyFireBuff                = Spell(),
-  NaturalHarmonyNatureBuff              = Spell(),
+  NaturalHarmony                        = Spell(278697),
+  NaturalHarmonyFrostBuff               = Spell(279029),
+  NaturalHarmonyFireBuff                = Spell(279028),
+  NaturalHarmonyNatureBuff              = Spell(279033),
   WindShear                             = Spell(57994),
   EarthenSpikeDebuff                    = Spell(188089),
   Boulderfist                           = Spell(246035),
-  StrengthofEarth                       = Spell()
+  StrengthofEarth                       = Spell(273461)
 };
 local S = Spell.Shaman.Enhancement;
 
 -- Items
 if not Item.Shaman then Item.Shaman = {} end
 Item.Shaman.Enhancement = {
-  ProlongedPower                   = Item(142117)
+  BattlePotionofAgility            = Item(163223)
 };
 local I = Item.Shaman.Enhancement;
 
@@ -173,8 +173,8 @@ local function APL()
     -- augmentation
     -- snapshot_stats
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 4"; end
+    if I.BattlePotionofAgility:IsReady() and Settings.Commons.UsePotions then
+      if HR.CastSuggested(I.BattlePotionofAgility) then return "battle_potion_of_agility 4"; end
     end
     -- lightning_shield
     if S.LightningShield:IsCastableP() then
@@ -214,15 +214,15 @@ local function APL()
       if HR.Cast(S.AncestralCall, Settings.Commons.OffGCDasOffGCD.Racials) then return "ancestral_call 47"; end
     end
     -- potion,if=buff.ascendance.up|!talent.ascendance.enabled&feral_spirit.remains>5|target.time_to_die<=60
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.AscendanceBuff) or not S.Ascendance:IsAvailable() and feral_spirit.remains > 5 or Target:TimeToDie() <= 60) then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 51"; end
+    if I.BattlePotionofAgility:IsReady() and Settings.Commons.UsePotions and (Player:BuffP(S.AscendanceBuff) or not S.Ascendance:IsAvailable() and feral_spirit.remains > 5 or Target:TimeToDie() <= 60) then
+      if HR.CastSuggested(I.BattlePotionofAgility) then return "battle_potion_of_agility 51"; end
     end
     -- feral_spirit
     if S.FeralSpirit:IsCastableP() then
       if HR.Cast(S.FeralSpirit) then return "feral_spirit 57"; end
     end
     -- ascendance,if=cooldown.strike.remains>0
-    if S.Ascendance:IsCastableP() and (S.Strike:CooldownRemainsP() > 0) then
+    if S.Ascendance:IsCastableP() and (S.WindStrike:CooldownRemainsP() > 0 or S.Stormstrike:CooldownRemainsP() > 0) then
       if HR.Cast(S.Ascendance) then return "ascendance 59"; end
     end
     -- earth_elemental

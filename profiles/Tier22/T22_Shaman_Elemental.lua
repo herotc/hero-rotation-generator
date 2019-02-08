@@ -32,7 +32,7 @@ Spell.Shaman.Elemental = {
   LiquidMagmaTotem                      = Spell(192222),
   FlameShock                            = Spell(188389),
   FlameShockDebuff                      = Spell(188389),
-  WindGustBuff                          = Spell(),
+  WindGustBuff                          = Spell(263806),
   Earthquake                            = Spell(61882),
   MasteroftheElements                   = Spell(16166),
   MasteroftheElementsBuff               = Spell(260734),
@@ -41,15 +41,15 @@ Spell.Shaman.Elemental = {
   LavaBeam                              = Spell(114074),
   ChainLightning                        = Spell(188443),
   FrostShock                            = Spell(196840),
-  SurgeofPowerBuff                      = Spell(),
+  SurgeofPowerBuff                      = Spell(285514),
   Icefury                               = Spell(210714),
   IcefuryBuff                           = Spell(210714),
-  NaturalHarmony                        = Spell(),
-  SurgeofPower                          = Spell(),
+  NaturalHarmony                        = Spell(278697),
+  SurgeofPower                          = Spell(262303),
   LightningBolt                         = Spell(188196),
   EarthShock                            = Spell(8042),
-  CalltheThunder                        = Spell(),
-  EchooftheElementals                   = Spell(),
+  CalltheThunder                        = Spell(260897),
+  EchooftheElementals                   = Spell(275381),
   ResonanceTotemBuff                    = Spell(202192),
   WindShear                             = Spell(57994),
   BloodFury                             = Spell(20572),
@@ -62,7 +62,7 @@ local S = Spell.Shaman.Elemental;
 -- Items
 if not Item.Shaman then Item.Shaman = {} end
 Item.Shaman.Elemental = {
-  ProlongedPower                   = Item(142117)
+  BattlePotionofIntellect          = Item(163222)
 };
 local I = Item.Shaman.Elemental;
 
@@ -78,7 +78,7 @@ local Settings = {
 };
 
 
-local EnemyRanges = {40}
+local EnemyRanges = {40, 5}
 local function UpdateRanges()
   for _, i in ipairs(EnemyRanges) do
     HL.GetEnemies(i);
@@ -142,8 +142,8 @@ local function APL()
       if HR.Cast(S.StormElemental, Settings.Elemental.GCDasOffGCD.StormElemental) then return "storm_elemental 23"; end
     end
     -- potion
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 27"; end
+    if I.BattlePotionofIntellect:IsReady() and Settings.Commons.UsePotions then
+      if HR.CastSuggested(I.BattlePotionofIntellect) then return "battle_potion_of_intellect 27"; end
     end
     -- elemental_blast,if=talent.elemental_blast.enabled
     if S.ElementalBlast:IsCastableP() and (S.ElementalBlast:IsAvailable()) then
@@ -313,8 +313,8 @@ local function APL()
   if Everyone.TargetIsValid() then
     -- bloodlust,if=azerite.ancestral_resonance.enabled
     -- potion,if=expected_combat_length-time<30|cooldown.fire_elemental.remains>120|cooldown.storm_elemental.remains>120
-    if I.ProlongedPower:IsReady() and Settings.Commons.UsePotions and (expected_combat_length - HL.CombatTime() < 30 or S.FireElemental:CooldownRemainsP() > 120 or S.StormElemental:CooldownRemainsP() > 120) then
-      if HR.CastSuggested(I.ProlongedPower) then return "prolonged_power 458"; end
+    if I.BattlePotionofIntellect:IsReady() and Settings.Commons.UsePotions and (expected_combat_length - HL.CombatTime() < 30 or S.FireElemental:CooldownRemainsP() > 120 or S.StormElemental:CooldownRemainsP() > 120) then
+      if HR.CastSuggested(I.BattlePotionofIntellect) then return "battle_potion_of_intellect 458"; end
     end
     -- wind_shear
     if S.WindShear:IsCastableP() and Target:IsInterruptible() and Settings.General.InterruptEnabled then
@@ -351,7 +351,7 @@ local function APL()
       if HR.Cast(S.AncestralCall, Settings.Commons.OffGCDasOffGCD.Racials) then return "ancestral_call 510"; end
     end
     -- run_action_list,name=aoe,if=active_enemies>2&(spell_targets.chain_lightning>2|spell_targets.lava_beam>2)
-    if (Cache.EnemiesCount[40] > 2 and (Cache.EnemiesCount[40] > 2 or Cache.EnemiesCount[40] > 2)) then
+    if (Cache.EnemiesCount[40] > 2 and (Cache.EnemiesCount[40] > 2 or Cache.EnemiesCount[5] > 2)) then
       return Aoe();
     end
     -- run_action_list,name=single_target
