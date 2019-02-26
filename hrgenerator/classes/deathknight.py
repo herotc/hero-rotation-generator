@@ -148,6 +148,7 @@ SPELL_INFO = {
             'pestilence':                       {SPELL:     277234},
             'defile':                           {SPELL:     152280},
             'epidemic':                         {SPELL:     207317,
+                                                 READY:     True,
                                                  RANGE:     10},
             'unholy_frenzy':                    {SPELL:     207289,
                                                  BUFF:      207289,
