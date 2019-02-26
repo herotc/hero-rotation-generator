@@ -141,7 +141,7 @@ SPELL_INFO = {
             
             # Azerite Traits
             'explosive_potential':              {SPELL:     275395,
-                                                 BUFF:      275395},
+                                                 BUFF:      275398},
             'forbidden_knowledge':              {SPELL:     279666},
             'baleful_invocation':               {SPELL:     287059},
         },
