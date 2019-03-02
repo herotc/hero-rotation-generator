@@ -127,7 +127,7 @@ SPELL_INFO = {
             'volley':                       {SPELL:     194386},
             # Azerite Traits
             'unerring_vision':              {SPELL:     274444,
-                                             BUFF:      274446},
+                                             BUFF:      274447},
             'surging_shots':                {SPELL:     287707},
             'focused_fire':                 {SPELL:     278531},
             'in_the_rhythm':                {SPELL:     264198},
