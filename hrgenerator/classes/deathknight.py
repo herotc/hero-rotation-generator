@@ -7,7 +7,7 @@ Death Knight specific constants and functions.
 
 from ..constants import (SPELL, BUFF, DEBUFF, COMMON,
                          GCDAOGCD, OGCDAOGCD, USABLE, INTERRUPT,
-                         MELEE, CD, RANGE)
+                         MELEE, CD, RANGE, READY)
 
 DEATHKNIGHT = 'deathknight'
 BLOOD = 'blood'
