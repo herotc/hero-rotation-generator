@@ -38,8 +38,6 @@ DEFAULT_RANGE = {
 SPELL_INFO = {
     WARRIOR: {
         COMMON: {
-            'battle_cry':                           {SPELL:     1719,
-                                                     BUFF:      1719},
             'stone_heart':                          {BUFF:      225947},
             'charge':                               {SPELL:     100,
                                                      GCDAOGCD:  True},
@@ -47,10 +45,9 @@ SPELL_INFO = {
                                                      BUFF:      107574,
                                                      CD:        True,
                                                      GCDAOGCD:  True},
-            # Trinkets
-            'umbral_moonglaives':                   {SPELL:     242553},
-            # Legendaries
-            'fujiedas_fury':                        {BUFF:      207775},
+            'dragon_roar':                          {SPELL:     118000,
+                                                     CD:        True,
+                                                     GCDAOGCD:  True},
             # Azerite
             'crushing_assault':                     {SPELL:     278751,
                                                      BUFF:      278826},
@@ -138,9 +135,6 @@ SPELL_INFO = {
                                                      BUFF:      202539},
             'heroic_leap':                          {SPELL:     6544},
             'carnage':                              {SPELL:     202922},
-            'dragon_roar':                          {SPELL:     118000,
-                                                     CD:        True,
-                                                     GCDAOGCD:  True},
             'reckless_abandon':                     {SPELL:     202751},
             'recklessness':                         {SPELL:     1719,
                                                      BUFF:      1719,
@@ -151,6 +145,29 @@ SPELL_INFO = {
                                                      CD:        True,
                                                      GCDAOGCD:  True},
         },
+        PROTECTION: {
+            'thunder_clap':                         {SPELL:     6343},
+            'demoralizing_shout':                   {SPELL:     1160,
+                                                     GCDAOGCD:  True},
+            'booming_voice':                        {SPELL:     202743},
+            'revenge':                              {SPELL:     6572,
+                                                     READY:     True},
+            'ravager':                              {SPELL:     228920},
+            'shield_block':                         {SPELL:     2565,
+                                                     BUFF:      132404,
+                                                     READY:     True,
+                                                     OGCDAOGCD: True},
+            'shield_slam':                          {SPELL:     23922},
+            'unstoppable_force':                    {SPELL:     275336},
+            'devastate':                            {SPELL:     20243},
+            'intercept':                            {SPELL:     198304},
+            'ignore_pain':                          {SPELL:     190456,
+                                                     READY:     True,
+                                                     OGCDAOGCD: True},
+            # Azerite
+            'brace_for_impact':                     {SPELL:     277636},
+            'deafening_crash':                      {SPELL:     272824},
+        },
     },
 }
 
@@ -160,6 +177,7 @@ ITEM_INFO = {
     'kazzalax_fujiedas_fury':           137053,
     'umbral_moonglaives':               147012,
     'weight_of_the_earth':              137077,
+    'grongs_primal_rage':               165574,
 }
 
 CLASS_FUNCTIONS = {
@@ -170,6 +188,8 @@ CLASS_FUNCTIONS = {
             'ArmsPreAplSetup',
         ],
         FURY: [
+        ],
+        PROTECTION: [
         ],
     },
 }
