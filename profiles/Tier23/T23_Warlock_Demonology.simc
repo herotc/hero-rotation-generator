@@ -30,13 +30,12 @@ actions.precombat+=/potion
 actions.precombat+=/demonbolt
 
 # Executed every time the actor is available.
-actions=implosion,if=azerite.explosive_potential.enabled&talent.demonic_consumption.enabled&prev_gcd.1.summon_demonic_tyrant
-actions+=/potion,if=pet.demonic_tyrant.active&(!talent.nether_portal.enabled|cooldown.nether_portal.remains>160)|target.time_to_die<30
+actions=potion,if=pet.demonic_tyrant.active&(!talent.nether_portal.enabled|cooldown.nether_portal.remains>160)|target.time_to_die<30
 actions+=/use_items,if=pet.demonic_tyrant.active|target.time_to_die<=15
 actions+=/berserking,if=pet.demonic_tyrant.active|target.time_to_die<=15
 actions+=/blood_fury,if=pet.demonic_tyrant.active|target.time_to_die<=15
 actions+=/fireblood,if=pet.demonic_tyrant.active|target.time_to_die<=15
-actions+=/call_action_list,name=dcon_ep_opener,if=azerite.explosive_potential.rank&talent.demonic_consumption.enabled&time<30&!cooldown.summon_demonic_tyrant.remains
+actions+=/call_action_list,name=dcon_opener,if=talent.demonic_consumption.enabled&time<30&!cooldown.summon_demonic_tyrant.remains
 actions+=/hand_of_guldan,if=azerite.explosive_potential.rank&time<5&soul_shard>2&buff.explosive_potential.down&buff.wild_imps.stack<3&!prev_gcd.1.hand_of_guldan&&!prev_gcd.2.hand_of_guldan
 actions+=/demonbolt,if=soul_shard<=3&buff.demonic_core.up&buff.demonic_core.stack=4
 actions+=/implosion,if=azerite.explosive_potential.rank&buff.wild_imps.stack>2&buff.explosive_potential.remains<action.shadow_bolt.execute_time&(!talent.demonic_consumption.enabled|cooldown.summon_demonic_tyrant.remains>12)
@@ -56,28 +55,28 @@ actions+=/power_siphon,if=buff.wild_imps.stack>=2&buff.demonic_core.stack<=2&buf
 actions+=/doom,if=talent.doom.enabled&refreshable&time_to_die>(dot.doom.remains+30)
 actions+=/hand_of_guldan,if=soul_shard>=5|(soul_shard>=3&cooldown.call_dreadstalkers.remains>4&(cooldown.summon_demonic_tyrant.remains>20|(cooldown.summon_demonic_tyrant.remains<gcd*2&talent.demonic_consumption.enabled|cooldown.summon_demonic_tyrant.remains<gcd*4&!talent.demonic_consumption.enabled))&(!talent.summon_vilefiend.enabled|cooldown.summon_vilefiend.remains>3))
 actions+=/soul_strike,if=soul_shard<5&buff.demonic_core.stack<=2
-actions+=/demonbolt,if=soul_shard<=3&buff.demonic_core.up&((cooldown.summon_demonic_tyrant.remains<6|cooldown.summon_demonic_tyrant.remains>22)|buff.demonic_core.stack>=3|buff.demonic_core.remains<5|time_to_die<25)
+actions+=/demonbolt,if=soul_shard<=3&buff.demonic_core.up&((cooldown.summon_demonic_tyrant.remains<6|cooldown.summon_demonic_tyrant.remains>22&!azerite.shadows_bite.enabled)|buff.demonic_core.stack>=3|buff.demonic_core.remains<5|time_to_die<25|buff.shadows_bite.remains)
 actions+=/call_action_list,name=build_a_shard
 
 actions.build_a_shard=soul_strike,if=!talent.demonic_consumption.enabled|time>15|prev_gcd.1.hand_of_guldan&!buff.bloodlust.remains
 actions.build_a_shard+=/shadow_bolt
 
-actions.dcon_ep_opener=hand_of_guldan,line_cd=30
-actions.dcon_ep_opener+=/implosion,if=buff.wild_imps.stack>2&buff.explosive_potential.down
-actions.dcon_ep_opener+=/doom,line_cd=30
-actions.dcon_ep_opener+=/hand_of_guldan,if=prev_gcd.1.hand_of_guldan&soul_shard>0&prev_gcd.2.soul_strike
-actions.dcon_ep_opener+=/demonic_strength,if=prev_gcd.1.hand_of_guldan&!prev_gcd.2.hand_of_guldan&(buff.wild_imps.stack>1&action.hand_of_guldan.in_flight)
-actions.dcon_ep_opener+=/bilescourge_bombers
-actions.dcon_ep_opener+=/soul_strike,line_cd=30,if=!buff.bloodlust.remains|time>5&prev_gcd.1.hand_of_guldan
-actions.dcon_ep_opener+=/summon_vilefiend,if=soul_shard=5
-actions.dcon_ep_opener+=/grimoire_felguard,if=soul_shard=5
-actions.dcon_ep_opener+=/call_dreadstalkers,if=soul_shard=5
-actions.dcon_ep_opener+=/hand_of_guldan,if=soul_shard=5
-actions.dcon_ep_opener+=/hand_of_guldan,if=soul_shard>=3&prev_gcd.2.hand_of_guldan&time>5&(prev_gcd.1.soul_strike|!talent.soul_strike.enabled&prev_gcd.1.shadow_bolt)
+actions.dcon_opener=hand_of_guldan,line_cd=30,if=azerite.explosive_potential.enabled
+actions.dcon_opener+=/implosion,if=azerite.explosive_potential.enabled&buff.wild_imps.stack>2&buff.explosive_potential.down
+actions.dcon_opener+=/doom,line_cd=30
+actions.dcon_opener+=/hand_of_guldan,if=prev_gcd.1.hand_of_guldan&soul_shard>0&prev_gcd.2.soul_strike
+actions.dcon_opener+=/demonic_strength,if=prev_gcd.1.hand_of_guldan&!prev_gcd.2.hand_of_guldan&(buff.wild_imps.stack>1&action.hand_of_guldan.in_flight)
+actions.dcon_opener+=/bilescourge_bombers
+actions.dcon_opener+=/soul_strike,line_cd=30,if=!buff.bloodlust.remains|time>5&prev_gcd.1.hand_of_guldan
+actions.dcon_opener+=/summon_vilefiend,if=soul_shard=5
+actions.dcon_opener+=/grimoire_felguard,if=soul_shard=5
+actions.dcon_opener+=/call_dreadstalkers,if=soul_shard=5
+actions.dcon_opener+=/hand_of_guldan,if=soul_shard=5
+actions.dcon_opener+=/hand_of_guldan,if=soul_shard>=3&prev_gcd.2.hand_of_guldan&time>5&(prev_gcd.1.soul_strike|!talent.soul_strike.enabled&prev_gcd.1.shadow_bolt)
 # 2000%spell_haste is shorthand for the cast time of Demonic Tyrant. The intent is to only begin casting if a certain number of imps will be out by the end of the cast.
-actions.dcon_ep_opener+=/summon_demonic_tyrant,if=prev_gcd.1.demonic_strength|prev_gcd.1.hand_of_guldan&prev_gcd.2.hand_of_guldan|!talent.demonic_strength.enabled&buff.wild_imps.stack+imps_spawned_during.2000%spell_haste>=6
-actions.dcon_ep_opener+=/demonbolt,if=soul_shard<=3&buff.demonic_core.remains
-actions.dcon_ep_opener+=/call_action_list,name=build_a_shard
+actions.dcon_opener+=/summon_demonic_tyrant,if=prev_gcd.1.demonic_strength|prev_gcd.1.hand_of_guldan&prev_gcd.2.hand_of_guldan|!talent.demonic_strength.enabled&buff.wild_imps.stack+imps_spawned_during.2000%spell_haste>=6
+actions.dcon_opener+=/demonbolt,if=soul_shard<=3&buff.demonic_core.remains
+actions.dcon_opener+=/call_action_list,name=build_a_shard
 
 actions.implosion=implosion,if=(buff.wild_imps.stack>=6&(soul_shard<3|prev_gcd.1.call_dreadstalkers|buff.wild_imps.stack>=9|prev_gcd.1.bilescourge_bombers|(!prev_gcd.1.hand_of_guldan&!prev_gcd.2.hand_of_guldan))&!prev_gcd.1.hand_of_guldan&!prev_gcd.2.hand_of_guldan&buff.demonic_power.down)|(time_to_die<3&buff.wild_imps.stack>0)|(prev_gcd.2.call_dreadstalkers&buff.wild_imps.stack>2&!talent.demonic_calling.enabled)
 actions.implosion+=/grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains<13|!equipped.132369
@@ -115,7 +114,7 @@ actions.nether_portal_building+=/hand_of_guldan,if=soul_shard>=5
 actions.nether_portal_building+=/call_action_list,name=build_a_shard
 
 head=blazewing_hood,id=165500,bonus_id=4824/1537/4775,azerite_powers=231/562/459/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulders=gigacharged_shoulderpads,id=165497,bonus_id=4824/1537/4775,azerite_powers=231/562/459/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=divine_fury_raiment,id=165834,bonus_id=4824/1537/4775,azerite_powers=429/231/30/13
@@ -131,12 +130,12 @@ trinket2=balefire_branch,id=159630,bonus_id=1572/4780
 main_hand=phoenixfire_staff,id=165587,bonus_id=4800/1537,enchant=masterful_navigation
 
 # Gear Summary
-# gear_ilvl=415.27
-# gear_stamina=9920
-# gear_intellect=6880
-# gear_crit_rating=829
-# gear_haste_rating=1222
-# gear_mastery_rating=1286
+# gear_ilvl=415.93
+# gear_stamina=9970
+# gear_intellect=6905
+# gear_crit_rating=839
+# gear_haste_rating=1232
+# gear_mastery_rating=1296
 # gear_versatility_rating=214
 # gear_armor=1442
 # set_bonus=gift_of_the_loa_2pc=1

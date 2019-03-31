@@ -146,7 +146,8 @@ SPELL_INFO = {
             'doom':                             {SPELL:     265412,
                                                  DEBUFF:    265412},    
             'demonic_strength':                 {SPELL:     267171,
-                                                 READY:     True},
+                                                 READY:     True,
+                                                 GCDAOGCD:  True},
             'demonic_consumption':              {SPELL:     267215},
             
             # Azerite Traits
@@ -154,6 +155,8 @@ SPELL_INFO = {
                                                  BUFF:      275398},
             'forbidden_knowledge':              {SPELL:     279666},
             'baleful_invocation':               {SPELL:     287059},
+            'shadows_bite':                     {SPELL:     272944,
+                                                 BUFF:      272945},
         },
         DESTRUCTION: {
             'shadow_bolt':                      {SPELL:     686},
