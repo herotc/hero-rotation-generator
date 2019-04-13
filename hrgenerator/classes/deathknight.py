@@ -128,9 +128,9 @@ SPELL_INFO = {
                                                  RANGE:     30},
             'scourge_strike':                   {SPELL:     55090},
             'army_of_the_dead':                 {SPELL:     42650},
-            'apocalypse':                       {SPELL:     275699,
+            'apocalypse':                       {SPELL:     275699},
+            'dark_transformation':              {SPELL:     63560,
                                                  GCDAOGCD:  True},
-            'dark_transformation':              {SPELL:     63560},
             'death_coil':                       {SPELL:     47541,
                                                  USABLE:    True},
             'festering_strike':                 {SPELL:     85948},
@@ -141,18 +141,18 @@ SPELL_INFO = {
                                                  RANGE:     30},
             'bursting_sores':                   {SPELL:     207264},
             'unholy_blight':                    {SPELL:     115989},
-            'soul_reaper':                      {SPELL:     130736,
-                                                 GCDAOGCD:  True},
+            'soul_reaper':                      {SPELL:     130736},
             'pestilence':                       {SPELL:     277234},
             'defile':                           {SPELL:     152280},
             'epidemic':                         {SPELL:     207317,
                                                  READY:     True,
                                                  RANGE:     10},
+            'army_of_the_damned':               {SPELL:     276837},
             'unholy_frenzy':                    {SPELL:     207289,
-                                                 BUFF:      207289,
-                                                 GCDAOGCD:  True},
-            'summon_gargoyle':                  {SPELL:     49206,
-                                                 GCDAOGCD:  True},
+                                                 BUFF:      207289},
+            'summon_gargoyle':                  {SPELL:     49206},
+            #Azerite Traits
+            'magus_of_the_dead':                {SPELL:     288417},
             #Buffs/Procs 
             'master_of_ghouls':                 {BUFF:      246995},
             'festering_wound':                  {DEBUFF:    194310},
@@ -163,9 +163,10 @@ SPELL_INFO = {
 }
 
 ITEM_INFO = {
-    'bygone_bee_almanac':               163936,
-    'jes_howler':                       159627,
-    'galecallers_beak':                 161379
+    'bygone_bee_almanac':                163936,
+    'jes_howler':                        159627,
+    'galecallers_beak':                  161379,
+    'ramping_amplitude_gigavolt_engine': 165580,
 }
 
 CLASS_FUNCTIONS = {
