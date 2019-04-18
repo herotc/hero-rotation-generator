@@ -24,7 +24,7 @@ Spell.Priest.Shadow = {
   WhispersoftheDamned                   = Spell(275722),
   SearingDialogue                       = Spell(272788),
   DeathThroes                           = Spell(278659),
-  ThoughtHarvester                      = Spell(273319),
+  ThoughtHarvester                      = Spell(288340),
   SpitefulApparitions                   = Spell(277682),
   ShadowformBuff                        = Spell(232698),
   Shadowform                            = Spell(232698),
@@ -35,7 +35,7 @@ Spell.Priest.Shadow = {
   DarkAscension                         = Spell(280711),
   VoidformBuff                          = Spell(194249),
   MindSear                              = Spell(48045),
-  HarvestedThoughtsBuff                 = Spell(273321),
+  HarvestedThoughtsBuff                 = Spell(288343),
   VoidBolt                              = Spell(205448),
   ShadowWordDeath                       = Spell(32379),
   SurrenderToMadness                    = Spell(193223),
@@ -168,7 +168,7 @@ local function APL()
     end
     -- shadowform,if=!buff.shadowform.up
     if S.Shadowform:IsCastableP() and Player:BuffDownP(S.ShadowformBuff) and (not Player:BuffP(S.ShadowformBuff)) then
-      if HR.Cast(S.Shadowform) then return "shadowform 44"; end
+      if HR.Cast(S.Shadowform, Settings.Shadow.GCDasOffGCD.Shadowform) then return "shadowform 44"; end
     end
     -- mind_blast,if=spell_targets.mind_sear<2|azerite.thought_harvester.rank=0
     if S.MindBlast:IsReadyP() and Everyone.TargetIsValid() and (Cache.EnemiesCount[40] < 2 or S.ThoughtHarvester:AzeriteRank() == 0) then
@@ -206,7 +206,7 @@ local function APL()
     end
     -- surrender_to_madness,if=buff.voidform.stack>10+(10*buff.bloodlust.up)
     if S.SurrenderToMadness:IsReadyP() and (Player:BuffStackP(S.VoidformBuff) > 10 + (10 * num(Player:HasHeroism()))) then
-      if HR.Cast(S.SurrenderToMadness) then return "surrender_to_madness 89"; end
+      if HR.Cast(S.SurrenderToMadness, Settings.Shadow.GCDasOffGCD.SurrenderToMadness) then return "surrender_to_madness 89"; end
     end
     -- dark_void,if=raid_event.adds.in>10&(dot.shadow_word_pain.refreshable|target.time_to_die>30)
     if S.DarkVoid:IsReadyP() and (10000000000 > 10 and (Target:DebuffRefreshableCP(S.ShadowWordPainDebuff) or Target:TimeToDie() > 30)) then
@@ -214,7 +214,7 @@ local function APL()
     end
     -- mindbender
     if S.Mindbender:IsReadyP() then
-      if HR.Cast(S.Mindbender) then return "mindbender 97"; end
+      if HR.Cast(S.Mindbender, Settings.Shadow.GCDasOffGCD.Mindbender) then return "mindbender 97"; end
     end
     -- mind_blast,target_if=spell_targets.mind_sear<variable.mind_blast_targets
     if S.MindBlast:IsReadyP() then
@@ -276,7 +276,7 @@ local function APL()
     end
     -- surrender_to_madness,if=buff.voidform.stack>10+(10*buff.bloodlust.up)
     if S.SurrenderToMadness:IsReadyP() and (Player:BuffStackP(S.VoidformBuff) > 10 + (10 * num(Player:HasHeroism()))) then
-      if HR.Cast(S.SurrenderToMadness) then return "surrender_to_madness 200"; end
+      if HR.Cast(S.SurrenderToMadness, Settings.Shadow.GCDasOffGCD.SurrenderToMadness) then return "surrender_to_madness 200"; end
     end
     -- dark_void,if=raid_event.adds.in>10
     if S.DarkVoid:IsReadyP() and (10000000000 > 10) then
@@ -284,7 +284,7 @@ local function APL()
     end
     -- mindbender,if=talent.mindbender.enabled|(buff.voidform.stack>18|target.time_to_die<15)
     if S.Mindbender:IsReadyP() and (S.Mindbender:IsAvailable() or (Player:BuffStackP(S.VoidformBuff) > 18 or Target:TimeToDie() < 15)) then
-      if HR.Cast(S.Mindbender) then return "mindbender 206"; end
+      if HR.Cast(S.Mindbender, Settings.Shadow.GCDasOffGCD.Mindbender) then return "mindbender 206"; end
     end
     -- shadow_word_death,if=!buff.voidform.up|(cooldown.shadow_word_death.charges=2&buff.voidform.stack<15)
     if S.ShadowWordDeath:IsReadyP() and (not Player:BuffP(S.VoidformBuff) or (S.ShadowWordDeath:ChargesP() == 2 and Player:BuffStackP(S.VoidformBuff) < 15)) then

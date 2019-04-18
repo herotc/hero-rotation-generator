@@ -5,7 +5,7 @@ Priest specific constants and functions.
 @author: skasch
 """
 
-from ..constants import COMMON, SPELL, BUFF, DEBUFF, INTERRUPT, RANGE, READY, OPENER
+from ..constants import COMMON, SPELL, BUFF, DEBUFF, INTERRUPT, RANGE, READY, OPENER, GCDAOGCD
 
 PRIEST = 'priest'
 DISCIPLINE = 'discipline'
@@ -50,13 +50,15 @@ SPELL_INFO = {
             'mind_sear':                        {SPELL:     48045,
                                                  RANGE:     40},
             'shadowform':                       {SPELL:     232698,
-                                                 BUFF:      232698},
+                                                 BUFF:      232698,
+                                                 GCDAOGCD:  True},
             'voidform':                         {SPELL:     194249,
                                                  BUFF:      194249},
             'silence':                          {SPELL:     15487,
                                                  READY:     True,
                                                  RANGE:     40,
-                                                 INTERRUPT: True},
+                                                 INTERRUPT: True,
+                                                 GCDAOGCD:  True},
             'vampiric_touch':                   {SPELL:     34914,
                                                  DEBUFF:    34914,
                                                  RANGE:     40,
@@ -72,7 +74,8 @@ SPELL_INFO = {
                                                  BUFF:      47585},
             'shadowfiend':                      {SPELL:     34433,
                                                  READY:     True,
-                                                 RANGE:     40},
+                                                 RANGE:     40,
+                                                 GCDAOGCD:  True},
             
             
             #Talents
@@ -110,7 +113,8 @@ SPELL_INFO = {
             'lingering_insanity':               {SPELL:     199849},
             'mindbender':                       {SPELL:     200174,
                                                  READY:     True,
-                                                 RANGE:     40},
+                                                 RANGE:     40,
+                                                 GCDAOGCD:  True},
             'void_torrent':                     {SPELL:     263165,
                                                  READY:     True,
                                                  RANGE:     40},
@@ -121,12 +125,13 @@ SPELL_INFO = {
                                                  RANGE:     40},
             'surrender_to_madness':             {SPELL:     193223,
                                                  READY:     True,
-                                                 BUFF:      193223},
+                                                 BUFF:      193223,
+                                                 GCDAOGCD:  True},
 
             # Azerite
-            'thought_harvester':                {SPELL:     273319},
+            'thought_harvester':                {SPELL:     288340},
             'harvested_thoughts':               {SPELL:     273320,
-                                                 BUFF:      273321},
+                                                 BUFF:      288343},
             'whispers_of_the_damned':           {SPELL:     275722},
             'searing_dialogue':                 {SPELL:     272788},
             'death_throes':                     {SPELL:     278659},
