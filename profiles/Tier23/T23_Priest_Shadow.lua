@@ -206,7 +206,7 @@ local function APL()
     end
     -- surrender_to_madness,if=buff.voidform.stack>10+(10*buff.bloodlust.up)
     if S.SurrenderToMadness:IsReadyP() and (Player:BuffStackP(S.VoidformBuff) > 10 + (10 * num(Player:HasHeroism()))) then
-      if HR.Cast(S.SurrenderToMadness, Settings.Shadow.GCDasOffGCD.SurrenderToMadness) then return "surrender_to_madness 89"; end
+      if HR.Cast(S.SurrenderToMadness, Settings.Shadow.OffGCDasOffGCD.SurrenderToMadness) then return "surrender_to_madness 89"; end
     end
     -- dark_void,if=raid_event.adds.in>10&(dot.shadow_word_pain.refreshable|target.time_to_die>30)
     if S.DarkVoid:IsReadyP() and (10000000000 > 10 and (Target:DebuffRefreshableCP(S.ShadowWordPainDebuff) or Target:TimeToDie() > 30)) then
@@ -276,7 +276,7 @@ local function APL()
     end
     -- surrender_to_madness,if=buff.voidform.stack>10+(10*buff.bloodlust.up)
     if S.SurrenderToMadness:IsReadyP() and (Player:BuffStackP(S.VoidformBuff) > 10 + (10 * num(Player:HasHeroism()))) then
-      if HR.Cast(S.SurrenderToMadness, Settings.Shadow.GCDasOffGCD.SurrenderToMadness) then return "surrender_to_madness 200"; end
+      if HR.Cast(S.SurrenderToMadness, Settings.Shadow.OffGCDasOffGCD.SurrenderToMadness) then return "surrender_to_madness 200"; end
     end
     -- dark_void,if=raid_event.adds.in>10
     if S.DarkVoid:IsReadyP() and (10000000000 > 10) then

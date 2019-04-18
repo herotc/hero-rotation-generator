@@ -5,7 +5,7 @@ Priest specific constants and functions.
 @author: skasch
 """
 
-from ..constants import COMMON, SPELL, BUFF, DEBUFF, INTERRUPT, RANGE, READY, OPENER, GCDAOGCD
+from ..constants import COMMON, SPELL, BUFF, DEBUFF, INTERRUPT, RANGE, READY, OPENER, GCDAOGCD, OGCDAOGCD
 
 PRIEST = 'priest'
 DISCIPLINE = 'discipline'
@@ -57,8 +57,7 @@ SPELL_INFO = {
             'silence':                          {SPELL:     15487,
                                                  READY:     True,
                                                  RANGE:     40,
-                                                 INTERRUPT: True,
-                                                 GCDAOGCD:  True},
+                                                 INTERRUPT: True},
             'vampiric_touch':                   {SPELL:     34914,
                                                  DEBUFF:    34914,
                                                  RANGE:     40,
@@ -126,7 +125,7 @@ SPELL_INFO = {
             'surrender_to_madness':             {SPELL:     193223,
                                                  READY:     True,
                                                  BUFF:      193223,
-                                                 GCDAOGCD:  True},
+                                                 OGCDAOGCD:  True},
 
             # Azerite
             'thought_harvester':                {SPELL:     288340},
