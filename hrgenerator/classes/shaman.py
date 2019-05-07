@@ -48,12 +48,14 @@ SPELL_INFO = {
         ELEMENTAL: {
             'flame_shock':                      {SPELL:     188389,
                                                  DEBUFF:    188389},
-            'earthquake':                       {SPELL:     61882},
+            'earthquake':                       {SPELL:     61882,
+                                                 READY:     True},
             'lava_burst':                       {SPELL:     51505},
             'lava_surge':                       {BUFF:      77762},
             'chain_lightning':                  {SPELL:     188443,
                                                  RANGE:     40},
-            'earth_shock':                      {SPELL:     8042},
+            'earth_shock':                      {SPELL:     8042,
+                                                 READY:     True},
             'lightning_bolt':                   {SPELL:     188196},
             'frost_shock':                      {SPELL:     196840,
                                                  DEBUFF:    196840},
@@ -63,6 +65,7 @@ SPELL_INFO = {
             'wind_gust':                        {BUFF:      263806},
             'lava_beam':                        {SPELL:     114074},
             # talents
+            'echo_of_the_elements':             {SPELL:     108283},
             'aftershock':                       {SPELL:     273221},
             'totem_mastery':                    {SPELL:     210643},
             'stormkeeper':                      {SPELL:     191634,
@@ -86,6 +89,11 @@ SPELL_INFO = {
             'resonance_totem':                  {BUFF:      202192},
             # azerite traits
             'echo_of_the_elementals':           {SPELL:     275381},
+            'igneous_potential':                {SPELL:     279829},
+            'lava_shock':                       {SPELL:     273448,
+                                                 BUFF:      273453},
+            'tectonic_thunder':                 {SPELL:     286949,
+                                                 BUFF:      286949}, # Needs confirmed
         },
         ENHANCEMENT: {
             'windstrike':                       {SPELL:     115356},
