@@ -81,7 +81,8 @@ SPELL_INFO = {
                                              DEBUFF:    273333}, 
             'arcane_pummeling':             {SPELL:     270669},  
             'brain_storm':                  {SPELL:     273326,
-                                             BUFF:      273330},                                                               
+                                             BUFF:      273330},
+            'equipoise':                    {SPELL:     286027},
         },
         ARCANE: {
             'arcane_charge':                {BUFF:      36032},
@@ -119,7 +120,7 @@ SPELL_INFO = {
             'arcane_orb':                   {SPELL:     153626},
             # 'prismatic_barrier':            {SPELL:     235450},
             # 'greater_invisibility':         {SPELL:     110959},
-            'summon_arcane_familiar':       {SPELL:     205022,
+            'arcane_familiar':              {SPELL:     205022,
                                              BUFF:      210126},
             'clearcasting':                 {BUFF:      263725},
             'rule_of_threes':               {BUFF:      264774},
@@ -216,22 +217,7 @@ SPELL_INFO = {
 }
 
 ITEM_INFO = {
-    'mystic_kilt_of_the_rune_master':   209280,
-    'mantle_of_the_first_kirin_tor':    248098,
-    'marquee_bindings_of_the_sun_king': 132406,
-    'koralons_burning_touch':           132454,
-    'shard_of_exodar':                  132410,
-    'contained_infernal_core':          151809,
-    'soul_of_the_archmage':             151642,
-    'pyrotex_ignition_cloth':           144355,
-    'sephuzs_secret':                   132452,
-    'kiljaedens_burning_wish':          144259,
-    'darcklis_dragonfire_diadem':       132863,
-    'norgannons_foresight':             132455,
-    'belovirs_final_stand':             133977,
-    'prydaz_xavarics_magnum_opus':      132444,
-    'shard_of_the_exodar':              132410,
-    'gravity_spiral':                   144274,
+    'tidestorm_codex':                  165576,
 }
 
 CLASS_FUNCTIONS = {
