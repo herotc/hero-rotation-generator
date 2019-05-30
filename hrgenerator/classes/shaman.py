@@ -5,7 +5,7 @@ Shaman specific constants and functions.
 @author: skasch
 """
 
-from ..constants import COMMON, SPELL, BUFF, DEBUFF, INTERRUPT, RANGE, CD, GCDAOGCD
+from ..constants import COMMON, SPELL, BUFF, DEBUFF, INTERRUPT, RANGE, CD, GCDAOGCD, READY
 
 SHAMAN = 'shaman'
 ELEMENTAL = 'elemental'

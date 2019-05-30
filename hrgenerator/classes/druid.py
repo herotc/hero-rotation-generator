@@ -5,7 +5,7 @@ Druid specific constants and functions.
 @author: skasch
 """
 
-from ..constants import SPELL, BUFF, DEBUFF, COMMON, RANGE, GCDAOGCD, OGCDAOGCD, CD, OPENER
+from ..constants import SPELL, BUFF, DEBUFF, COMMON, RANGE, GCDAOGCD, OGCDAOGCD, CD, OPENER, READY
 
 DRUID = 'druid'
 BALANCE = 'balance'
@@ -26,7 +26,7 @@ DEFAULT_POTION = {
     DRUID: {
         BALANCE:    'prolonged_power',
         FERAL:      'battle_potion_of_agility',
-        GUARDIAN:   'prolonged_power',
+        GUARDIAN:   'battle_potion_of_agility',
     }
 }
 
@@ -39,7 +39,8 @@ DEFAULT_RANGE = {
 SPELL_INFO = {
     DRUID: {
         COMMON: {
-            'bear_form':                        {SPELL:     5487},
+            'bear_form':                        {SPELL:     5487,
+                                                 BUFF:      5487},
             'cat_form':                         {SPELL:     768,
                                                  BUFF:      768,
                                                  GCDAOGCD:  True},
@@ -90,11 +91,12 @@ SPELL_INFO = {
             'power_of_the_moon':                {SPELL:     273367},
             'wild_fleshrending':                {SPELL:     279527},
             'iron_jaws':                        {BUFF:      276026},
+            'layered_mane':                     {SPELL:     279552},
         },
         BALANCE: {
             'moonkin_form':                     {SPELL:     24858},
             'celestial_alignment':              {SPELL:     194223,
-                                                 BUFF:      194223},                   
+                                                 BUFF:      194223},
             'lunar_strike':                     {SPELL:     194153,
                                                  RANGE:     40},
             'innervate':                        {SPELL:     29166},
@@ -194,7 +196,8 @@ SPELL_INFO = {
             'gore':                             {BUFF:      93622},
             'gory_fur':                         {BUFF:      201671},
             'mangle':                           {SPELL:     33917},
-            'maul':                             {SPELL:     6807},
+            'maul':                             {SPELL:     6807,
+                                                 READY:     True},
             'blood_frenzy':                     {SPELL:     203962},
             'brambles':                         {SPELL:     203953},
             'bristling_fur':                    {SPELL:     155835},
