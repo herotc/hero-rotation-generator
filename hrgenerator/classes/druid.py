@@ -24,7 +24,7 @@ CLASS_SPECS = {
 
 DEFAULT_POTION = {
     DRUID: {
-        BALANCE:    'prolonged_power',
+        BALANCE:    'battle_potion_of_intellect',
         FERAL:      'battle_potion_of_agility',
         GUARDIAN:   'battle_potion_of_agility',
     }
@@ -92,6 +92,11 @@ SPELL_INFO = {
             'wild_fleshrending':                {SPELL:     279527},
             'iron_jaws':                        {BUFF:      276026},
             'layered_mane':                     {SPELL:     279552},
+            'streaking_stars':                  {SPELL:     272871},
+            'arcanic_pulsar':                   {SPELL:     287773,
+                                                 BUFF:      287790},
+            'lively_spirit':                    {SPELL:     279642,
+                                                 BUFF:      279646}, # Needs double checked
         },
         BALANCE: {
             'moonkin_form':                     {SPELL:     24858},
@@ -226,13 +231,10 @@ SPELL_INFO = {
 }
 
 ITEM_INFO = {
-    'the_emerald_dreamcatcher': 137062,
-    'lady_and_the_child':       144295,
-    'oneths_intuition':         137092,
-    'sephuzs_secret':           132452,
-    'radiant_moonlight':        151800,
-    'ailuro_pouncers':          137024,
-    'luffa_wrappings':          137056,
+    'dread_gladiators_badge':   161902,
+    'balefire_branch':          159630,
+    'azurethos_singed_plumage': 161377,
+    'tidestorm_codex':          165576,
 }
 
 CLASS_FUNCTIONS = {
