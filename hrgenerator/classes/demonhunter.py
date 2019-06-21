@@ -5,7 +5,7 @@ Demon Hunter specific constants and functions.
 @author: skasch
 """
 
-from ..constants import MELEE, SPELL, BUFF, DEBUFF, COMMON, RANGE, BOOL
+from ..constants import MELEE, SPELL, BUFF, DEBUFF, COMMON, RANGE, BOOL, READY
 
 DEMONHUNTER = 'demonhunter'
 HAVOC = 'havoc'
