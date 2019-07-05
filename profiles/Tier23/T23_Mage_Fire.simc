@@ -1,4 +1,4 @@
-mage="T23_Mage_Fire"
+mage="T24_Mage_Fire"
 source=default
 spec=fire
 level=120
@@ -8,9 +8,9 @@ position=ranged_back
 talents=3031022
 
 # Default consumables
-potion=battle_potion_of_intellect
-flask=endless_fathoms
-food=bountiful_captains_feast
+potion=unbridled_fury
+flask=greater_flask_of_endless_fathoms
+food=biltong
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -34,7 +34,14 @@ actions.precombat+=/pyroblast
 # Executed every time the actor is available.
 actions=counterspell
 actions+=/mirror_image,if=buff.combustion.down
+actions+=/concentrated_flame
+actions+=/focused_azerite_beam
+actions+=/purifying_blast
+actions+=/ripple_in_space
+actions+=/the_unbound_force
+actions+=/worldvein_resonance
 actions+=/rune_of_power,if=talent.firestarter.enabled&firestarter.remains>full_recharge_time|cooldown.combustion.remains>variable.combustion_rop_cutoff&buff.combustion.down|target.time_to_die<cooldown.combustion.remains&buff.combustion.down
+actions+=/use_item,name=malformed_heralds_legwraps,if=cooldown.combustion.remains>55
 actions+=/call_action_list,name=combustion_phase,if=(talent.rune_of_power.enabled&cooldown.combustion.remains<=action.rune_of_power.cast_time|cooldown.combustion.ready)&!firestarter.active|buff.combustion.up
 actions+=/call_action_list,name=rop_phase,if=buff.rune_of_power.up&buff.combustion.down
 actions+=/variable,name=fire_blast_pooling,value=talent.rune_of_power.enabled&cooldown.rune_of_power.remains<cooldown.fire_blast.full_recharge_time&(cooldown.combustion.remains>variable.combustion_rop_cutoff|firestarter.active)&(cooldown.rune_of_power.remains<target.time_to_die|action.rune_of_power.charges>0)|cooldown.combustion.remains<action.fire_blast.full_recharge_time+cooldown.fire_blast.duration*azerite.blaster_master.enabled&!firestarter.active&cooldown.combustion.remains<target.time_to_die|talent.firestarter.enabled&firestarter.active&firestarter.remains<cooldown.fire_blast.full_recharge_time+cooldown.fire_blast.duration*azerite.blaster_master.enabled
@@ -70,20 +77,25 @@ actions.bm_combustion_phase+=/scorch
 
 # Combustion phase prepares abilities with a delay, then launches into the Combustion sequence
 actions.combustion_phase=lights_judgment,if=buff.combustion.down
-actions.combustion_phase+=/call_action_list,name=bm_combustion_phase,if=azerite.blaster_master.enabled&talent.flame_on.enabled
+actions.combustion_phase+=/call_action_list,name=bm_combustion_phase,if=azerite.blaster_master.enabled&talent.flame_on.enabled&!essence.memory_of_lucid_dreams.enabled
+actions.combustion_phase+=/blood_of_the_enemy
+actions.combustion_phase+=/memory_of_lucid_dreams
+actions.combustion_phase+=/guardian_of_azeroth
 actions.combustion_phase+=/rune_of_power,if=buff.combustion.down
-actions.combustion_phase+=/call_action_list,name=active_talents
-actions.combustion_phase+=/combustion,use_off_gcd=1,use_while_casting=1,if=(!azerite.blaster_master.enabled|!talent.flame_on.enabled)&((action.meteor.in_flight&action.meteor.in_flight_remains<=0.5)|!talent.meteor.enabled)&(buff.rune_of_power.up|!talent.rune_of_power.enabled)
+actions.combustion_phase+=/call_action_list,name=active_talents,if=(azerite.blaster_master.enabled&buff.blaster_master.stack>=3)|!azerite.blaster_master.enabled
+actions.combustion_phase+=/combustion,use_off_gcd=1,use_while_casting=1,if=!essence.memory_of_lucid_dreams.enabled&(!azerite.blaster_master.enabled|!talent.flame_on.enabled)&((action.meteor.in_flight&action.meteor.in_flight_remains<=0.5)|!talent.meteor.enabled)&(buff.rune_of_power.up|!talent.rune_of_power.enabled)
+actions.combustion_phase+=/combustion,use_off_gcd=1,use_while_casting=1,if=essence.memory_of_lucid_dreams.enabled&(buff.rune_of_power.up|!talent.rune_of_power.enabled)
 actions.combustion_phase+=/potion
 actions.combustion_phase+=/blood_fury
 actions.combustion_phase+=/berserking
 actions.combustion_phase+=/fireblood
 actions.combustion_phase+=/ancestral_call
 actions.combustion_phase+=/call_action_list,name=trinkets
-actions.combustion_phase+=/flamestrike,if=((talent.flame_patch.enabled&active_enemies>2)|active_enemies>6)&buff.hot_streak.react
+actions.combustion_phase+=/flamestrike,if=((talent.flame_patch.enabled&active_enemies>2)|active_enemies>6)&buff.hot_streak.react&!azerite.blaster_master.enabled
 actions.combustion_phase+=/pyroblast,if=buff.pyroclasm.react&buff.combustion.remains>cast_time
 actions.combustion_phase+=/pyroblast,if=buff.hot_streak.react
-actions.combustion_phase+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=(!azerite.blaster_master.enabled|!talent.flame_on.enabled)&((buff.combustion.up&(buff.heating_up.react&!action.pyroblast.in_flight&!action.scorch.executing)|(action.scorch.execute_remains&buff.heating_up.down&buff.hot_streak.down&!action.pyroblast.in_flight)))
+actions.combustion_phase+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=essence.memory_of_lucid_dreams.enabled&((buff.combustion.up&(buff.heating_up.react&!action.pyroblast.in_flight&!action.scorch.executing)|(action.scorch.execute_remains&buff.heating_up.down&buff.hot_streak.down&!action.pyroblast.in_flight)))
+actions.combustion_phase+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=!essence.memory_of_lucid_dreams.enabled&(!azerite.blaster_master.enabled|!talent.flame_on.enabled)&((buff.combustion.up&(buff.heating_up.react&!action.pyroblast.in_flight&!action.scorch.executing)|(action.scorch.execute_remains&buff.heating_up.down&buff.hot_streak.down&!action.pyroblast.in_flight)))
 actions.combustion_phase+=/pyroblast,if=prev_gcd.1.scorch&buff.heating_up.up
 actions.combustion_phase+=/phoenix_flames
 actions.combustion_phase+=/scorch,if=buff.combustion.remains>cast_time&buff.combustion.up|buff.combustion.down
@@ -125,7 +137,7 @@ actions.standard_rotation+=/scorch
 actions.trinkets=use_items
 
 head=soulfuel_headdress,id=159279,bonus_id=1587/4819/4775,azerite_powers=168/193/459/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1600,azerite_level=65
 shoulders=brood_cleansers_amice,id=159254,bonus_id=1587/4819/4775,azerite_powers=168/196/31/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=inmates_straight_robe,id=159268,bonus_id=1587/4819/4775,azerite_powers=168/479/22/13
@@ -142,12 +154,12 @@ main_hand=desecrated_blade_of_the_disciples,id=165919,bonus_id=4800/1537,enchant
 off_hand=cursed_monkey_palm,id=165582,bonus_id=4800/1537
 
 # Gear Summary
-# gear_ilvl=414.31
-# gear_stamina=9856
-# gear_intellect=6880
-# gear_crit_rating=728
-# gear_haste_rating=1440
-# gear_mastery_rating=845
-# gear_versatility_rating=509
+# gear_ilvl=417.06
+# gear_stamina=10127
+# gear_intellect=7009
+# gear_crit_rating=772
+# gear_haste_rating=1484
+# gear_mastery_rating=889
+# gear_versatility_rating=515
 # gear_armor=1442
 # set_bonus=gift_of_the_loa_2pc=1

@@ -158,6 +158,8 @@ SPELL_INFO = {
                                              RANGE:     40},
             'pyroclasm':                    {BUFF:      269651},
             'searing_touch':                {SPELL:     269644},
+            'blaster_master':               {SPELL:     274596,
+                                             BUFF:      274598},
         },
         FROST: {
             'blizzard':                     {SPELL:     190356,
@@ -218,6 +220,7 @@ SPELL_INFO = {
 
 ITEM_INFO = {
     'tidestorm_codex':                  165576,
+    'malformed_heralds_legwraps':       167835,
 }
 
 CLASS_FUNCTIONS = {
